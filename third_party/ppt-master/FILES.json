@@ -1,0 +1,133 @@
+[
+  {
+    "file": "references/executor-base.md",
+    "upstream": "skills/ppt-master/references/executor-base.md",
+    "sha256LF": "6a87f6dddd317478a1baedc08e59bd96cc943f148de4f09fb5a4516d3be0cf5b"
+  },
+  {
+    "file": "references/plan-core.md",
+    "upstream": "skills/ppt-master/references/plan-core.md",
+    "sha256LF": "50e623b83de90cfd3f860496e8a9a0b289f8f3aeb1546152c61df37a84d64c8a"
+  },
+  {
+    "file": "references/shared-standards-core.md",
+    "upstream": "skills/ppt-master/references/shared-standards-core.md",
+    "sha256LF": "658bf3ede7e0d16ed28fa6722f3ba451ae6a83325e04f5c4fea4f72915f40770"
+  },
+  {
+    "file": "python/elements.py",
+    "upstream": "skills/ppt-master/scripts/svg_to_pptx/drawingml/elements.py",
+    "sha256LF": "d2b2f8a42023b8a174d76ebe1e2b0d386f25c05aebd792b420a80d1d50a49c21"
+  },
+  {
+    "file": "python/formula.py",
+    "upstream": "skills/ppt-master/scripts/pptx_shapes/formula.py",
+    "sha256LF": "4e140cffb5413362746f20abbbdce107f8a4de8a79edcf4843093c662985259f"
+  },
+  {
+    "file": "python/geometry_properties.py",
+    "upstream": "skills/ppt-master/scripts/svg_to_pptx/geometry_properties.py",
+    "sha256LF": "4408dbc0cc6b9b392ef1d97c613595a5f61b3b6107c79ea892b28365b874de0e"
+  },
+  {
+    "file": "python/paths.py",
+    "upstream": "skills/ppt-master/scripts/svg_to_pptx/drawingml/paths.py",
+    "sha256LF": "3d8599d6510c9ad32a4b8ef1079a7ae65f0f09abd240f245366e6384b6103b90"
+  },
+  {
+    "file": "python/styles.py",
+    "upstream": "skills/ppt-master/scripts/svg_to_pptx/drawingml/styles.py",
+    "sha256LF": "b9d186aa2b396b7cfbdba428f1c2d84e18afd12c2c4c83126aecf43c31a5ce60"
+  },
+  {
+    "file": "python/tspan_flattener.py",
+    "upstream": "skills/ppt-master/scripts/svg_to_pptx/tspan_flattener.py",
+    "sha256LF": "3dfa78ef67e42e80b9ac06dba3985212fc5d4e7c56a039091d046e6de66f884d"
+  },
+  {
+    "file": "python/utils.py",
+    "upstream": "skills/ppt-master/scripts/svg_to_pptx/drawingml/utils.py",
+    "sha256LF": "6e59401afef1f46e6769cb2c5ca320773eec4f680d74d8c49a38d20ad13ce85d"
+  },
+  {
+    "file": "fixtures/editorial.svg",
+    "upstream": "skills/ppt-master/scripts/confirm_ui/static/style_previews/editorial.svg",
+    "sha256LF": "56cd8435d9b29688f8fba1c1b27e377318e17f38891034cc2577b5a76217bb4f"
+  },
+  {
+    "file": "fixtures/glassmorphism.svg",
+    "upstream": "skills/ppt-master/scripts/confirm_ui/static/style_previews/glassmorphism.svg",
+    "sha256LF": "d9a8633de30ca63fc21e89e35ef0caa380c935d8357fe8d67b78d8d96fddb902"
+  },
+  {
+    "file": "fixtures/memphis.svg",
+    "upstream": "skills/ppt-master/scripts/confirm_ui/static/style_previews/memphis.svg",
+    "sha256LF": "1c82b7dee41c7edfe7e3f21d5bbf6c55fc9d5167afb76058366bb8e4ce6eabe2"
+  },
+  {
+    "file": "fixtures/soft-rounded.svg",
+    "upstream": "skills/ppt-master/scripts/confirm_ui/static/style_previews/soft-rounded.svg",
+    "sha256LF": "288c3ba0fc9bddf3d0c0cd135e078ff7d43e0458f6edf93ee40a0325e2a56a53"
+  },
+  {
+    "file": "fixtures/swiss-minimal.svg",
+    "upstream": "skills/ppt-master/scripts/confirm_ui/static/style_previews/swiss-minimal.svg",
+    "sha256LF": "31c231ed198e83801e5b87f5545b6655c1bf7fdda8d86a8808cf6d486d72dc24"
+  },
+  {
+    "file": "data/LICENSE-APACHE-2.0.txt",
+    "upstream": "skills/ppt-master/scripts/pptx_shapes/data/LICENSE-APACHE-2.0.txt",
+    "sha256LF": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  },
+  {
+    "file": "data/LICENSE-OPEN-XML-SDK-MIT.txt",
+    "upstream": "skills/ppt-master/scripts/pptx_shapes/data/LICENSE-OPEN-XML-SDK-MIT.txt",
+    "sha256LF": "cfc21f5e8bd655ae997eec916138b707b1d290b83272c02a95c9f821b8c87310"
+  },
+  {
+    "file": "data/NOTICE.md",
+    "upstream": "skills/ppt-master/scripts/pptx_shapes/data/NOTICE.md",
+    "sha256LF": "57f3e499fbf289e2d03a3a494ea69a5cd1685a707ad8f2618e46144ea1ec88cb"
+  },
+  {
+    "file": "data/preset-adjustments.json",
+    "upstream": "skills/ppt-master/scripts/pptx_shapes/data/presetShapeDefinitions.xml",
+    "derived": "avLst/gd name/fmla values extracted without geometry changes",
+    "sha256LF": "2bdc5a2d5336b95c242151c9d0e31f8104e3a99e70e19951fa27866642669a84"
+  },
+  {
+    "file": "data/font-metrics.json",
+    "upstream": "skills/ppt-master/scripts/svg_to_pptx/drawingml/font_metrics.json",
+    "sha256LF": "2618fbebf57ade12f9c5bb3a20c6006ade95dd72d4301deff0c59557b05fd9d6"
+  },
+  {
+    "file": "python/text_baseline.py",
+    "upstream": "skills/ppt-master/scripts/svg_to_pptx/drawingml/text_baseline.py",
+    "sha256LF": "75d9528917f03223b03dace7d6b71707a219d3a58c2aefc0ec594688f3530f64"
+  },
+  {
+    "file": "data/animation-presets.json",
+    "upstream": "skills/ppt-master/scripts/pptx_animation_presets.json",
+    "sha256LF": "ddf7b0a0065d17e8acfe8eee021f13771b67d649d4ba9bf8d5eeeb59c5d15e4e"
+  },
+  {
+    "file": "python/shape_boolean.py",
+    "upstream": "skills/ppt-master/scripts/svg_to_pptx/shape_boolean.py",
+    "sha256LF": "a60c958ea93bec08a83da3ae0d2ea41a60df65248fabf2c59b54425876e00bed"
+  },
+  {
+    "file": "python/animation_config.py",
+    "upstream": "skills/ppt-master/scripts/svg_to_pptx/animation_config.py",
+    "sha256LF": "c57629adf33bf51d01e09f15fb85d105c5425ac66e2772eeab28942a47a788e8"
+  },
+  {
+    "file": "python/formula_profile.py",
+    "upstream": "skills/ppt-master/scripts/svg_to_pptx/native_objects/formula_profile.py",
+    "sha256LF": "bedc1382bfc5f0c771f0137d75a3df246fd7d896f7610ff519b14c073b27bbd3"
+  },
+  {
+    "file": "python/pptx_transitions.py",
+    "upstream": "skills/ppt-master/scripts/pptx_transitions.py",
+    "sha256LF": "9c6a5746357e433079d4655914177910821c5e1aef6551a79b786a166fe670eb"
+  }
+]

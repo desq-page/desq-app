@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Savanna: debug app + local core",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "https://localhost:6173",
+      "webRoot": "${workspaceFolder}/editor-vuejs",
+      "preLaunchTask": "Savanna: local dev",
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "${workspaceFolder:desq-core}/**",
+        "!**/node_modules/**"
+      ],
+      "sourceMapPathOverrides": {
+        "/@fs/*": "/*",
+        "*/desq-core/*": "${workspaceFolder:desq-core}/*"
+      },
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "savanna-cloudflare-publisher",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "node scripts/build.mjs",
+    "upload:app-assets": "node scripts/app-assets.mjs --upload",
+    "deploy:worker": "node scripts/app-assets.mjs && wrangler deploy --config wrangler.generated.json",
+    "deploy:app": "npm run build && wrangler deploy --config wrangler.generated.json",
+    "deploy": "npm run build && npm run upload:app-assets && wrangler deploy --config wrangler.generated.json"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  },
+  "dependencies": {
+    "shared-vuejs": "file:../packages/shared-vuejs-0.2.2.tgz",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "license": "AGPL-3.0-only"
+}

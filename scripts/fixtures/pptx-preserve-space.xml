@@ -1,0 +1,92 @@
+<p:txBody xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+<a:p>
+<a:pPr algn="l"><a:lnSpc><a:spcPts val="2700"/></a:lnSpc></a:pPr>
+<a:r>
+<a:rPr lang="vi-VN" sz="1800" dirty="0">
+
+<a:solidFill><a:srgbClr val="3A3128"></a:srgbClr></a:solidFill>
+
+<a:latin typeface="+mn-lt"/>
+<a:ea typeface="+mn-ea"/>
+<a:cs typeface="+mn-cs"/>
+
+</a:rPr>
+<a:t xml:space="preserve">Năng suất Robusta tăng từ </a:t>
+</a:r>
+<a:r>
+<a:rPr lang="vi-VN" sz="1800" b="1" dirty="0">
+
+<a:solidFill><a:srgbClr val="9C2B1B"></a:srgbClr></a:solidFill>
+
+<a:latin typeface="+mn-lt"/>
+<a:ea typeface="+mn-ea"/>
+<a:cs typeface="+mn-cs"/>
+
+</a:rPr>
+<a:t>2,73</a:t>
+</a:r>
+<a:br/>
+<a:r>
+<a:rPr lang="vi-VN" sz="1800" dirty="0">
+
+<a:solidFill><a:srgbClr val="3A3128"></a:srgbClr></a:solidFill>
+
+<a:latin typeface="+mn-lt"/>
+<a:ea typeface="+mn-ea"/>
+<a:cs typeface="+mn-cs"/>
+
+</a:rPr>
+<a:t xml:space="preserve">lên </a:t>
+</a:r>
+<a:r>
+<a:rPr lang="vi-VN" sz="1800" b="1" dirty="0">
+
+<a:solidFill><a:srgbClr val="9C2B1B"></a:srgbClr></a:solidFill>
+
+<a:latin typeface="+mn-lt"/>
+<a:ea typeface="+mn-ea"/>
+<a:cs typeface="+mn-cs"/>
+
+</a:rPr>
+<a:t>2,93 tấn/ha</a:t>
+</a:r>
+<a:r>
+<a:rPr lang="vi-VN" sz="1800" dirty="0">
+
+<a:solidFill><a:srgbClr val="3A3128"></a:srgbClr></a:solidFill>
+
+<a:latin typeface="+mn-lt"/>
+<a:ea typeface="+mn-ea"/>
+<a:cs typeface="+mn-cs"/>
+
+</a:rPr>
+<a:t xml:space="preserve"> giữa hai niên vụ,</a:t>
+</a:r>
+<a:br/>
+<a:r>
+<a:rPr lang="vi-VN" sz="1800" dirty="0">
+
+<a:solidFill><a:srgbClr val="3A3128"></a:srgbClr></a:solidFill>
+
+<a:latin typeface="+mn-lt"/>
+<a:ea typeface="+mn-ea"/>
+<a:cs typeface="+mn-cs"/>
+
+</a:rPr>
+<a:t>trong khi Arabica giữ nguyên</a:t>
+</a:r>
+<a:br/>
+<a:r>
+<a:rPr lang="vi-VN" sz="1800" dirty="0">
+
+<a:solidFill><a:srgbClr val="3A3128"></a:srgbClr></a:solidFill>
+
+<a:latin typeface="+mn-lt"/>
+<a:ea typeface="+mn-ea"/>
+<a:cs typeface="+mn-cs"/>
+
+</a:rPr>
+<a:t>quanh mức 1,0–1,2 triệu bao.</a:t>
+</a:r>
+</a:p>
+</p:txBody>

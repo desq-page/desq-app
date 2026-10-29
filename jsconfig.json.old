@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "baseUrl": ".",
+    "target": "es6",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "jsx":"preserve",
+    "strict": true,
+    "strictNullChecks": true
+  }
+}

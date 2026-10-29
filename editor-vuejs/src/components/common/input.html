@@ -1,0 +1,98 @@
+<body style="margin:0; overflow:hidden">
+  <textarea id="input" type="text" class="input"></textarea>
+  <script>
+//inputmode="numeric" min="1" max="400"
+  let myinput = document.querySelector("#input");
+
+  myinput.onkeydown = (e) => {
+    if (e.key == 'Enter') {
+      e.preventDefault();
+      updateText(e);
+    }
+  }
+
+  function setAttr(attr) {
+    Object.keys(attr).forEach(key => {
+      if (key == 'style') {
+        myinput.style.cssText = attr[key]
+      } else {
+        myinput.setAttribute(key, attr[key]);
+      }
+    });
+  }
+  function initValue(val, autofocus, disabled) {
+    if (val && myinput.value !== val) {
+      myinput.value = val;
+    }
+    if (disabled) {
+      myinput.disabled = true;
+    } else {
+      myinput.disabled = false;
+    }
+    if (autofocus && !disabled) {
+      myinput.focus();
+      myinput.select();
+    }
+  }
+  function updateValue(val, disabled) {
+    if (myinput.value !== val) {
+      myinput.value = val;
+    }
+    if (disabled) {
+        myinput.disabled = true;
+      } else {
+        myinput.disabled = false;
+      }
+  }
+  function updateText(e) {
+    // this.value = this.value?.replace(/\n/g,''); // disable next line
+    if (e.type == "keyup" && e.key == "Enter" || e.type == "change" || e.type=="blur") {
+      if (myinput.getAttribute("inputmode") == 'number' && myinput.min && myinput.max) {
+        if (+myinput.value < +myinput.min) myinput.value = myinput.min;
+        if (+myinput.value > +myinput.max) myinput.value = myinput.max;
+      }
+      myinput.classList.remove('hasChanges');
+      window.parent.postMessage({
+        evt: 'change',
+        val: myinput.value
+      }, "*");
+    } else {
+      myinput.classList.add('hasChanges');
+      window.parent.postMessage({
+        evt: 'input',
+        val: myinput.value
+      }, "*");
+    }
+  }
+
+  myinput.onkeyup = updateText;
+  </script>
+  <style>
+  .input {
+    width: 100%;
+    height: 25px;
+    line-height: 25px;
+    border: none; 
+    font-size: 14px; 
+    text-align: center;
+    padding: 0;
+    outline: none;
+    resize: none;
+    font-family: sans-serif;
+    box-sizing: border-box;
+  }
+  .input.hasChanges {
+    text-decoration: underline dashed;
+    opacity: 0.6;
+  }
+  .input:focus {
+      outline: none;
+  }
+  .input::placeholder {
+    color: #bbb;
+  }
+  .hasChanges::placeholder {
+    opacity: 0;
+  }
+  </style>
+</body>

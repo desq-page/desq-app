@@ -1,0 +1,66 @@
+[
+  {
+    "id": "builtin-ocean",
+    "name": "Built-in",
+    "description": "Twelve coordinated editable layouts: opening, photo story, comparison, ideas, process, metrics, agenda, timeline and closing. Selectable theme colors.",
+    "palette": {
+      "background": "#F7FAFC",
+      "foreground": "#142D43",
+      "accent": "#087F8C",
+      "secondary": "#C46B32",
+      "muted": "#4C6374",
+      "surface": "#E6EFF3",
+      "dark": "#142D43"
+    },
+    "layouts": [
+      {
+        "id": "cover",
+        "description": "Large headline with an accent panel and circular motif."
+      },
+      {
+        "id": "photo-story",
+        "description": "Large landscape picture on the right; headline and explanation on the left."
+      },
+      {
+        "id": "editorial",
+        "description": "A strong statement, supporting explanation and a contrasting takeaway band."
+      },
+      {
+        "id": "comparison",
+        "description": "Two equal panels for contrasting options with aligned headings and text."
+      },
+      {
+        "id": "three-cards",
+        "description": "Three distinct modules with numbered markers, labels and concise explanations."
+      },
+      {
+        "id": "process",
+        "description": "Four connected numbered stages with labels and explanations."
+      },
+      {
+        "id": "metrics",
+        "description": "Three large supplied values with labels and explanatory captions; never invent numbers."
+      },
+      {
+        "id": "closing",
+        "description": "A clear final action beside a portrait picture, with an accent footer."
+      },
+      {
+        "id": "photo-left",
+        "description": "Tall picture on the left with an oversized headline and explanation on the right."
+      },
+      {
+        "id": "agenda",
+        "description": "A contrasting title panel beside three stacked numbered topics and explanations."
+      },
+      {
+        "id": "timeline",
+        "description": "Three staggered milestones along a vertical timeline; labels may contain supplied dates."
+      },
+      {
+        "id": "spotlight",
+        "description": "An oversized central statement with a contrasting supporting takeaway panel."
+      }
+    ]
+  }
+]

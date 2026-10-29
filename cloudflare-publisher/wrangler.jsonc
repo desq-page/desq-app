@@ -1,0 +1,73 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "savanna-publisher",
+	"main": "src/worker.js",
+	"compatibility_date": "2026-10-06",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "AGENT_SESSIONS",
+				"class_name": "AgentSession"
+			}
+		]
+	},
+	"migrations": [
+		{
+			"tag": "agent-sessions-v1",
+			"new_sqlite_classes": [
+				"AgentSession"
+			]
+		}
+	],
+	"workers_dev": false,
+	"observability": {
+		"enabled": true,
+		"head_sampling_rate": 1
+	},
+	"assets": {
+		"directory": "../editor-vuejs/dist",
+		"binding": "ASSETS",
+		"run_worker_first": true,
+		"not_found_handling": "single-page-application"
+	},
+	"routes": [
+		{
+			"pattern": "desq.page",
+			"custom_domain": true
+		},
+		{
+			"pattern": "publish-api.desq.page",
+			"custom_domain": true
+		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "CONTENT",
+			"bucket_name": "savanna-published"
+		},
+		{
+			"binding": "APP_FILES",
+			"bucket_name": "savanna-app-assets"
+		},
+		{
+			"bucket_name": "savanna-published",
+			"binding": "savanna_published",
+			"remote": true
+		},
+		{
+			"bucket_name": "savanna-app-assets",
+			"binding": "savanna_app_assets",
+			"remote": true
+		}
+	],
+	"vars": {
+		"PUBLIC_ORIGIN": "https://desq.page",
+		"API_ORIGIN": "https://publish-api.desq.page",
+		"ALLOWED_ORIGINS": "https://desq.page,https://localhost:6173",
+		"APP_LARGE_ASSET_PATHS": "/rmbg/isnet/onnx/model.onnx,/rmbg/isnet/onnx/model_fp16.onnx",
+		"GOOGLE_CLIENT_ID": "519623835982-3oo1a0hka006t79o3j1qqk0u1vsm5de7.apps.googleusercontent.com"
+	}
+}

@@ -1,0 +1,126 @@
+import { runBrowserFixture } from '../../scripts/browser-fixture.mjs';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtemp, writeFile, readFile, rm } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
+const chrome = process.env.CHROME_BIN || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/chromium', '/usr/bin/google-chrome'].find(existsSync);
+
+test('shared canvas supports marquee, crop, handles, undo and remount offline', { skip: !chrome, timeout: 60000 }, async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'shared-canvas-'));
+  try {
+    let html = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
+    html = html.replace(/src="(editor|document)\.js"/g, (_, name) => `src="${new URL('../dist/' + name + '.js', import.meta.url).href}"`);
+    html = html.replace('<head>', '<head><base href="' + new URL('../dist/', import.meta.url).href + '">');
+    // Resolve the renderer next to the runtime, using the same file:// packaging contract.
+    const fixture = String.raw`<script>
+    window.addEventListener('DOMContentLoaded', async () => {
+      const errors=[];window.addEventListener('error',e=>errors.push(e.error?.stack||e.message));
+      const tick = () => new Promise(r => setTimeout(r, 80));
+      const check = (ok, message) => { if (!ok) throw Error(message); };
+      const click = label => { const b = document.querySelector('[aria-label="' + label + '"]'); check(b, 'button ' + label); b.click(); };
+      const pointer = (el, type, x, y) => el.dispatchEvent(new PointerEvent(type, { bubbles: true, cancelable: true, button: 0, clientX: x, clientY: y }));
+      try {
+        await SavannaVanEditor.ready();
+        const host = document.querySelector('[data-savanna-editor]');
+        const api = SavannaVanEditor.mount(host, {document: await SavannaVanEditor.getEditor(host).getDocument()});
+        await api.ready; await tick();
+        check(!!host.querySelector('#workcanvas #sld'), 'shared workcanvas and SlideEdit mounted');
+        check(!api.dirty, 'initial document stays clean');
+        click('Rectangle'); await tick();
+        click('Ellipse'); await tick();
+        let doc = (await api.getDocument());
+        const ids = doc.slides[0].shapes.slice(-2).map(s => s.id);
+        check(ids.every(id => document.getElementById(id)), 'shared model IDs used');
+        const canvas = document.getElementById('workcanvas');
+        const slide = document.getElementById('sld').getBoundingClientRect();
+        pointer(canvas, 'pointerdown', slide.left + 2, slide.top + 2);
+        pointer(document, 'pointermove', slide.right - 2, slide.bottom - 2);
+        await tick(); check(!!host.querySelector('.swipe-selector') && getComputedStyle(host.querySelector('.swipe-selector')).display !== 'none', 'marquee overlay visible');
+        pointer(document, 'pointerup', slide.right - 2, slide.bottom - 2);
+        await tick();
+        check(host.querySelectorAll('#sld .shp.selected').length >= 2, 'marquee selects multiple shapes');
+        click('Group'); await tick();
+        check((await api.getDocument()).slides[0].shapes.some(s => s.children?.length >= 2), 'shared grouping commits');
+        click('Undo'); await tick();
+        check(!(await api.getDocument()).slides[0].shapes.some(s => s.children?.length), 'grouping undoes');
+        doc = (await api.getDocument());
+        const image = { id:'crop-image', name:'Crop picture', type:'image', x:100, y:100, w:300, h:200,
+          blipFill:{blip:{$_target:'picture'}} };
+        doc.slides[0].shapes.push(image);
+        doc.assets.picture='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j8ioAAAAASUVORK5CYII=';
+        await api.load(doc); await tick();
+        const node = document.getElementById('crop-image');
+        const box = node.getBoundingClientRect();
+        pointer(node, 'pointerdown', box.left + 10, box.top + 10);
+        pointer(document, 'pointerup', box.left + 10, box.top + 10); await tick();
+        check(!!host.querySelector('.handle-box'), 'shared handles mounted');
+        click('Crop'); await tick();
+        check(!!host.querySelector('.handle-box[data-crop]'), 'native crop image handles visible');
+        const handle = host.querySelector('.sizing-hand.r:not(.crop-img)') || host.querySelector('.sizing-hand.r');
+        const h = handle.getBoundingClientRect();
+        pointer(handle, 'pointerdown', h.left + h.width/2, h.top + h.height/2);
+        pointer(document, 'pointermove', h.left - 25, h.top + h.height/2);
+        pointer(document, 'pointerup', h.left - 25, h.top + h.height/2);
+        await tick(); click('Finish crop'); await tick();
+        const cropped = (await api.getDocument()).slides[0].shapes.find(s=>s.id==='crop-image');
+        check(cropped.w !== 300 || cropped.blipFill.stretch?.fillRect, 'crop gesture changes geometry');
+        check(cropped.blipFill.blip.$_target === 'picture' && !cropped.blipFill.blip.dataUrl, 'stable asset reference preserved');
+        click('Undo'); await tick();
+        const restored = (await api.getDocument()).slides[0].shapes.find(s=>s.id==='crop-image');
+        check(restored.w === 300 && !restored.blipFill.stretch?.fillRect, 'crop undoes');
+        click('Guides'); await tick();
+        check(document.querySelector('[aria-label="Guides"]').getAttribute('aria-pressed') === 'true', 'guide controls use shared canvas');
+        const tools = [...host.querySelectorAll('.ve-insert label')].find(label => label.textContent.includes('Draw on canvas')).querySelector('select');
+        const shapeCount = (await api.getDocument()).slides[0].shapes.length;
+        tools.value = 'rect'; tools.dispatchEvent(new Event('change', {bubbles:true}));
+        const bounds = document.getElementById('sld').getBoundingClientRect();
+        pointer(document.getElementById('workcanvas'), 'pointerdown', bounds.left + 30, bounds.top + 30);
+        await tick();
+        pointer(document, 'pointermove', bounds.left + 60, bounds.top + 55);
+        pointer(document, 'pointermove', bounds.left + 90, bounds.top + 80);
+        await tick();
+        pointer(document, 'pointerup', bounds.left + 90, bounds.top + 80);
+        await tick();
+        check((await api.getDocument()).slides[0].shapes.length === shapeCount + 1, 'shared drawing inserts a shape');
+        click('Undo'); await tick();
+        check((await api.getDocument()).slides[0].shapes.length === shapeCount, 'drawing undoes');
+        doc = await api.getDocument();
+        const poster = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j8ioAAAAASUVORK5CYII=';
+        const mediaShape = (id, media, target, x) => ({ id, name:id, type:'image', x, y:200, w:160, h:100,
+          d:'R0,0,160,100', blipFill:{blip:{$_target:'ppt/media/poster.png'}}, [media]:{$_target:target} });
+        doc.slides[0].shapes.push(mediaShape('media-audio','audio','ppt/media/media1.mp3',200), mediaShape('media-video','video','ppt/media/media2.mp4',400));
+        doc.assets['ppt/media/poster.png'] = poster;
+        doc.assets['ppt/media/media1.mp3'] = 'data:audio/mpeg;base64,SUQz';
+        doc.assets['ppt/media/media2.mp4'] = 'data:video/mp4;base64,AAAA';
+        await api.load(doc); await tick();
+        const audio = document.querySelector('#media-audio audio');
+        const video = document.querySelector('#media-video video');
+        check(audio?.src.startsWith('blob:'), 'audio uses resolved local asset: ' + audio?.src);
+        check(video?.src.startsWith('blob:'), 'video uses resolved local asset: ' + video?.src);
+        check(video?.poster.startsWith('blob:'), 'video poster uses resolved local asset');
+        click('Rectangle'); await tick();
+        const mediaSaved = (await api.getDocument()).slides[0].shapes;
+        check(mediaSaved.find(s=>s.id==='media-audio').audio.$_target==='ppt/media/media1.mp3' && !mediaSaved.find(s=>s.id==='media-audio').audio.dataUrl, 'audio target remains stable after editing');
+        check(mediaSaved.find(s=>s.id==='media-video').video.$_target==='ppt/media/media2.mp4' && !mediaSaved.find(s=>s.id==='media-video').video.dataUrl, 'video target remains stable after editing');
+        click('Present');
+        for (let i=0;i<80&&!document.querySelector('#viewport video');i++) await tick();
+        check(document.querySelector('#viewport video')?.src.startsWith('data:video/mp4'), 'presentation uses embedded video');
+        check(document.querySelector('#viewport audio')?.src.startsWith('data:audio/mpeg'), 'presentation uses embedded audio');
+        click('Exit presentation'); await tick();
+        check(!errors.length, errors.join('\n'));
+        const snapshot = (await api.getDocument());
+        api.destroy();
+        const next = SavannaVanEditor.mount(host, { document: snapshot }); await next.ready; await tick();
+        check(host.querySelectorAll('#workcanvas').length === 1, 'remount cleans shared canvas');
+        next.destroy();
+        const result=document.createElement('pre');result.id='result';result.textContent='PASS';document.body.append(result);
+      } catch(e) { const result=document.createElement('pre');result.id='result';result.textContent=e.stack;document.body.append(result); }
+    });</script>`;
+    await writeFile(join(dir, 'test.html'), html.replace('</body>', fixture + '</body>'));
+    const output = await runBrowserFixture(chrome, pathToFileURL(join(dir, 'test.html')).href, join(dir, 'profile'));
+    assert.equal(output.match(/<pre id="result">([\s\S]*?)<\/pre>/)?.[1], 'PASS', output.slice(-3000));
+  } finally { await rm(dir, {recursive:true, force:true}); }
+});

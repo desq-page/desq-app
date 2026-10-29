@@ -1,0 +1,107 @@
+# Logs
+.chatgpt-agent/
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+.DS_Store
+dist
+dist-ssr
+coverage
+*.local
+
+/cypress/videos/
+/cypress/screenshots/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+uploads/
+editor-vuejs/server/uploads
+stats.html
+public/virtual-background
+mongodb
+editor-vuejs/public/player_assets
+editor-vuejs/public/player
+editor-vuejs/mongodb
+editor-vuejs/dist
+editor-vuejs/nginx/certs
+#editor-vuejs/public/mainpage/*
+nginx/certs/*
+player-vuejs/debug/*
+pptx
+!/shared-vuejs/src/edlib/pptx/
+!/shared-vuejs/src/edlib/pptx/**
+*.onnx
+*.db
+pptxold/
+shared-vuejs/jsconfig.json.old
+# Temporary library development builds
+shared-vuejs/.dist-dev-*
+editor-vuejs/server/agent-host.bundle.mjs
+
+# Pinned upstream working checkout; shipped files live in third_party/.
+/tmp/ppt-master-upstream/
+shared-vuejs/src/edlib/pptx/.DS_Store
+
+# Reproducible Presenton PPTX conversion drafts and inspection output.
+/.tmp/presenton/
+
+# Standalone VanJS editor build artifacts
+editor-vanjs/dist/
+editor-vuejs/public/editor-vanjs.js
+editor-vuejs/public/editor-vanjs-presentation.js
+editor-vuejs/public/editor-vanjs.css
+editor-vuejs/public/editor-vanjs-renderer.js
+editor-vuejs/public/editor-vanjs-renderer.css
+editor-vuejs/public/editor-vanjs-charts.js
+
+# Local credentials and environment
+.env
+.env.*
+!.env.example
+!.env.*.example
+.dev.vars
+.dev.vars.*
+.wrangler/
+*.pem
+*.key
+# Build products
+/player/dist/
+/shared-vuejs/dist/
+
+# Local core build notifications
+/.savanna-local.json
+
+# Shared-workspace debugger setup
+!.vscode/launch.json
+!.vscode/tasks.json
+/.savanna-local-assets/
+
+# Credential files must never be tracked
+**/client_secret*.json
+**/*service-account*.json
+**/credentials*.json
+*.p12
+*.pfx
+/editor-vuejs/public/editor-vanjs-player.js
+/editor-vuejs/public/editor-vanjs-player.css
+
+# Shared assets are copied from the core packages during startup and builds.
+/editor-vuejs/public/player_tpl.html
+/editor-vuejs/public/images/a_pixel.png
+/editor-vuejs/public/fonts/Carlito-Regular.ttf
+/editor-vuejs/public/fonts/Carlito.woff
+/editor-vuejs/public/fonts/Carlito.woff2
+/editor-vuejs/public/fonts/Symbola.woff2

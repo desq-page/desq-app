@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "families": [
+    {
+      "id": "builtin-ocean",
+      "file": "templates/builtin/builtin.pptx",
+      "slides": 12,
+      "sha256": "6893252e82367483cd39540b12443c376215865c2b871a4d00a49e67e89d6507",
+      "bytes": 85281
+    }
+  ]
+}

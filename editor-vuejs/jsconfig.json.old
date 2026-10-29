@@ -1,0 +1,11 @@
+{
+  "extends": "../jsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*" 
+      ]
+     }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "allowJs":true,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": false,
+    // "baseUrl": ".",
+    "target": "es2021",
+    "module": "esnext", // 👈️ set to esnext
+    "outDir": "dist",
+    // "jsx":"preserve",
+    "strict": false,
+    "strictNullChecks": true,
+    "noImplicitAny": false,
+    "moduleResolution": "bundler",
+    // "allowImportingTsExtensions": true,
+    // "noEmit": true,
+     "useDefineForClassFields": true,
+    "skipLibCheck": true,
+    "typeRoots": [
+      "./typings",
+      "./node_modules/@types/"
+    ],
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "shared-vuejs/jsx",
+  },
+  "exclude": [
+    "**/node_modules",
+    "shared-vuejs/src",
+    "**/typings",
+    "nginx",
+    "pptxold",
+    "**/public",
+    "**/dist",
+    "**/server"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Savanna: local dev",
+      "type": "shell",
+      "command": "npm",
+      "args": [
+        "run",
+        "dev:local",
+        "--",
+        "--strictPort"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "savanna-local",
+        "pattern": {
+          "regexp": "^ERROR: (.*)$",
+          "message": 1
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "\\[local core\\]",
+          "endsPattern": "Local:.*https?://"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    }
+  ]
+}

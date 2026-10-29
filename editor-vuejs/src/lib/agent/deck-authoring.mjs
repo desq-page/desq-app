@@ -1,0 +1,9 @@
+// Native-JSON adaptation of PPT Master's plan/executor/checker separation.
+// Upstream reference paths and capability boundaries are recorded in docs/ppt-master-savanna.md.
+export const DECK_AUTHORING_VERSION = 'html-svg-browser-v6';
+export const COMPOSITION_WORKFLOW = `Deck production has three roles:
+STRATEGIST: lock the audience, intended outcome, supplied facts and count. Give every page a job, identify its semantic units, and state whether they are peers, ordered steps, contrasting alternatives, or a central idea with supporting parts. Plan the whole roster before composing pages.
+EXECUTOR: make that information structure visible. Peer concepts may use three-column; ordered steps process/timeline; alternatives comparison; dependencies hub-spoke or custom labeled AutoShapes. Use a quiet shared canvas and vary object geometry, scale and placement. A color change is not a composition change. An image placeholder is not a diagram. Do not turn every page into title + bullets + picture.
+CHECKER: inspect the compiled carrier receipts and geometry, not just layout names. Check that relationships are readable and every content unit survives. Repair the owning page when the final draft repeats a basic composition. No slide is inserted until this contract passes, except when the user explicitly asks for a uniform layout or text-only treatment.
+Native example for peer concepts: {layout:"three-column",relationship:"membership",items:[{title:"Concept A",body:"Explanation"},{title:"Concept B",body:"Explanation"},{title:"Concept C",body:"Explanation"}]}.
+Native custom example: {kind:"shape",shape:"roundRect",x:54,y:170,width:350,height:240,fill:"#E6EFF3",text:"An editable labeled content module",fontSize:22}. Text belongs inside the AutoShape, not in a separate screenshot. Use custom elements for compositions that need more freedom.`;

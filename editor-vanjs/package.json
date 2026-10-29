@@ -1,0 +1,23 @@
+{
+  "name": "editor-vanjs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/build.mjs --watch",
+    "build": "node scripts/build.mjs",
+    "analyze": "node scripts/build.mjs",
+    "test": "node scripts/build.mjs && node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "vanjs-core": "^1.6.0",
+    "vanjs-ext": "^0.6.3",
+    "shared-vuejs": "file:../packages/shared-vuejs-0.2.2.tgz",
+    "@savanna/player": "file:../packages/savanna-player-1.0.3.tgz"
+  },
+  "devDependencies": {
+    "esbuild": "0.27.7",
+    "rollup-plugin-visualizer": "^5.12.0"
+  },
+  "license": "AGPL-3.0-only"
+}

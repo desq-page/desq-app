@@ -1,0 +1,20 @@
+{
+  "name": "editor-vuejs",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "editor:dev": "node ../scripts/prepare-player-assets.mjs && vite",
+    "build": "node ../scripts/prepare-player-assets.mjs && node ../editor-vanjs/scripts/build.mjs --publish && node ../scripts/build-agent-references.mjs && node ../scripts/generate-notices.mjs && cross-env PROD=1 NODE_OPTIONS=--max-old-space-size=4096 vite build",
+    "build:dev": "node ../scripts/prepare-player-assets.mjs && node ../editor-vanjs/scripts/build.mjs --publish && node ../scripts/build-agent-references.mjs && node ../scripts/generate-notices.mjs && cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build --debug",
+    "preview": "vite preview --port 4173",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "jest": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "editor:dev:package": "node ../scripts/prepare-player-assets.mjs && vite"
+  },
+  "dependencies": {
+    "vue3-google-login": "^2.0.33",
+    "shared-vuejs": "file:../packages/shared-vuejs-0.2.2.tgz",
+    "@savanna/player": "file:../packages/savanna-player-1.0.3.tgz"
+  },
+  "license": "AGPL-3.0-only"
+}
