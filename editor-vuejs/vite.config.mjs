@@ -86,24 +86,6 @@ export default defineConfig(({ command, mode }) => ({
     mkcert(),
     vue(),
     visualizer(),
-    // obfuscatorPlugin({
-    //   options: {
-    //     // your javascript-obfuscator options
-    //     // debugProtection: !!process.env.PROD,
-    //     ignoreImports: true,
-    //     selfDefending: true,
-    //     // transformObjectKeys: true,
-    //     // renameProperties: true, // fail
-    //     numbersToExpressions: true,
-    //     splitStrings: true,
-    //     stringArrayCallsTransform: true,
-    //     domainLock: [".desq.page", ".wyslide.com", "localhost"],
-    //     // controlFlowFlattening: true,
-    //     // ...  [See more options](https://github.com/javascript-obfuscator/javascript-obfuscator)
-    //   },
-    //   exclude: [/node_modules/, /tiff2png/],
-    //   apply: "build",
-    // }),
     vitePluginBundleObfuscator(allObfuscatorConfig),
     {
       enforce: "post",
