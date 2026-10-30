@@ -1,9 +1,10 @@
 import { agentHostPlugin } from '../cloudflare-publisher/src/agent/node.mjs';
 import path from "node:path";
 import { join } from "node:path";
+import { createRequire } from "node:module";
 import { buildSync } from "esbuild";
 
-import { defineConfig } from "vite";
+import { createLogger, defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 // import { optimizeCssModules } from "vite-plugin-optimize-css-modules";
 import { visualizer } from "rollup-plugin-visualizer";
@@ -14,6 +15,7 @@ import { staticHomePagePlugin } from "../scripts/render-homepage.mjs";
 import { localCorePlugin } from "../scripts/local-core-vite.mjs";
 import { vanEditorDevPlugin } from "../scripts/van-editor-dev.mjs";
 import { vanRuntimeGuard } from "../scripts/van-runtime-guard.mjs";
+import { suppressPackagedSourcemapWarnings } from "../scripts/packaged-sourcemap-logger.mjs";
 /* note: for device to trust, install rootCA from ~/.vite-plugin-mkcert to device */
 
 // All configurations
@@ -63,14 +65,33 @@ const productionMinify = process.env.PROD
   ? { compress: { dropConsole: true, dropDebugger: true } }
   : undefined;
 
+const require = createRequire(import.meta.url);
+const pdfWorker = require.resolve('pdfjs-dist/build/pdf.worker.min.mjs').replaceAll('\\', '/');
+
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => ({
+  customLogger: process.env.DESQ_LOCAL_CORE === '1' ? undefined
+    : suppressPackagedSourcemapWarnings(createLogger(), path.resolve(import.meta.dirname, '..')),
   assetsInclude: ["**/input.html"],
-  // These imports are reached through the lazy agent panel and its workers.
-  // Bundle them before serving the editor, so opening the panel does not
-  // invalidate dependency URLs already loaded by the page.
+  // Prebundle lazy dependencies before serving the editor so Vite does not
+  // invalidate dependency URLs already loaded by the page when they are used.
   optimizeDeps: {
-    include: ['idb', '@huggingface/transformers'],
+    include: [
+      'idb', '@huggingface/transformers',
+      ...(process.env.DESQ_LOCAL_CORE === '1' ? [] : ['shared-vuejs/api/unzipPPTX']),
+    ],
+    // Let Vite serve the worker as a URL module instead of asking Rolldown
+    // to open a Windows filename containing the ?url query.
+    rolldownOptions: {
+      plugins: [{
+        name: 'pdf-worker-url',
+        resolveId(source) {
+          if (source === 'pdfjs-dist/build/pdf.worker.min.mjs?url') {
+            return { id: `/@fs/${pdfWorker}?url`, external: true };
+          }
+        },
+      }],
+    },
     entries: [
       path.resolve(import.meta.dirname, 'index.html'),
       path.resolve(import.meta.dirname, 'src/lib/agent/*.worker.mjs'),
