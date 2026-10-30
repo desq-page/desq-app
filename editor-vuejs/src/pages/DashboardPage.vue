@@ -56,8 +56,9 @@
               {{ openingFile ? "Opening file…" : "Open a file" }}
               <span aria-hidden="true">↗</span>
             </button>
-            <p id="open-file-privacy" class="privacy-caption">Free. Work offline in this browser. Your files stay private on your device.</p>
+            
           </div>
+          
           <input
             ref="openFileInput"
             type="file"
@@ -69,7 +70,10 @@
             PowerPoint <b>.pptx</b> <span>·</span> Word <b>.docx</b>
             <span>·</span> Publisher <b>.pub</b>
             <span>·</span> Editable HTML <b>.html</b>
+            <br/>
+            <span id="open-file-privacy" class="privacy-caption">Work offline in this browser. Your files stay private on your device.</span>
           </p>
+          
         </div>
       </section>
 
@@ -412,7 +416,7 @@ h1 span {
 }
 .workspace-actions > .button { align-self: start; }
 .open-file-action { display: flex; flex-direction: column; gap: 8px; }
-.privacy-caption { margin: 0; max-width: 240px; text-align: center; color: #487b39; font-size: 11px; font-weight: 600; line-height: 1.5; }
+.privacy-caption { margin: 0; grid-column: 1/-1; text-align: center; color: #487b39; font-size: 11px; font-weight: 600; line-height: 1.5; }
 .button {
   display: inline-flex;
   justify-content: center;
