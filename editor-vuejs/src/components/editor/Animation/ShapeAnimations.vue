@@ -246,7 +246,6 @@ import {
   setParagraphAnimation,
   setSmartArtAnimation,
 } from "shared-vuejs/api/animUtils";
-import { switchEditingPoint } from "shared-vuejs/api/shape";
 import { Link } from "@vicons/tabler";
 import { animationTabbarItems } from "./animationTabbar";
 import g from "shared-vuejs/api/global";
@@ -413,7 +412,6 @@ function selectEff(shpId, rowIdx, grpIdx, event) {
         exclusive: true,
       },
     );
-    switchEditingPoint();
   } else {
     addHandle(shpId, {
       exclusive: true,

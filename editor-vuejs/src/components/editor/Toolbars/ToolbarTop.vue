@@ -69,8 +69,7 @@
             :disabled="
               !(
                 piniaSelect().selShps.length > 0 &&
-                (piniaSelect().editingPoint == -1 ||
-                  piniaSelect().selShpFormat?.type == 'line') &&
+                !showPointTab() &&
                 !piniaInfo().useGrid
               )
             "
@@ -163,8 +162,7 @@
             :disabled="
               !(
                 piniaSelect().selShps.length > 0 &&
-                (piniaSelect().editingPoint == -1 ||
-                  piniaSelect().selShpFormat?.type == 'line') &&
+                !showPointTab() &&
                 !piniaInfo().useGrid
               )
             "
@@ -292,8 +290,7 @@
             :disabled="
               !(
                 piniaSelect().selShps.length > 0 &&
-                (piniaSelect().editingPoint == -1 ||
-                  piniaSelect().selShpFormat?.type == 'line') &&
+                !showPointTab() &&
                 !piniaInfo().useGrid
               )
             "
@@ -393,7 +390,7 @@
             />
           </template>
         </div>
-        <div :class="$style['header-left']" v-else>
+        <div :class="$style['edit-point-toolbar']" v-else>
           <ToolbarEditPoint />
         </div>
       </NTabPane>
@@ -620,6 +617,7 @@ watch(
     () => piniaInfo().useGrid,
     () => piniaSelect().selShpFormat?.id,
     () => piniaSelect().selShpFormat?.type,
+    () => piniaSelect().selShps[0],
     () => piniaSelect().selShps.length > 0,
     () => piniaSlides().masterView,
   ],
@@ -654,11 +652,10 @@ function disableText() {
 }
 
 function showPointTab() {
-  return (
-    showEditingPoint() &&
-    piniaSelect().editingPoint >= 0 &&
-    piniaSelect().selShpFormat?.type !== "line"
-  );
+  const selection = piniaSelect();
+  if (selection.editingPoint < 0) return false;
+  if (selection.selShps.length === 1 && selection.selShps[0]?.startsWith("motionSh-")) return true;
+  return showEditingPoint() && selection.selShpFormat?.type !== "line";
 }
 
 function showSpecialTab() {
@@ -829,5 +826,13 @@ const $style = useCssModule();
 }
 .header-right {
   justify-content: end;
+}
+.edit-point-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: safe center;
+  width: 100%;
+  overflow-x: auto;
+  color: black;
 }
 </style>
