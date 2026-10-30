@@ -1,10 +1,10 @@
 {
   "packages": {
     "desq-player-1.0.3.tgz": {
-      "sha256": "f035fd68a5a6a5e55dfb1ad255831098d76135cea99d8fe160660e300bcd15af"
+      "sha256": "7adcc2ca837b6d6811911ea7a3990cdbd853f87a4974859bf61014dbaa815019"
     },
     "shared-vuejs-0.2.2.tgz": {
-      "sha256": "031b52e36b5abb90b0069e357ace8df29348e3d8b5e419bcf40a2be21b69c107"
+      "sha256": "4606e58a830473458597db0d282f7d15c1f1aa22150b684ad60bb2ef21789590"
     }
   }
 }
