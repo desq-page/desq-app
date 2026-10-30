@@ -55,7 +55,7 @@ const questions = [
                 <a href="/work" class="button button-lime">Create a presentation <span aria-hidden="true">↗</span></a>
                 <a href="#features" class="text-link">Explore the features <span aria-hidden="true">↓</span></a>
               </div>
-              <p class="hero-note"><span aria-hidden="true">✓</span> Just a browser. Works offline. Your files stay private.</p>
+              <p class="hero-note"><span aria-hidden="true">✓</span> Free to edit. Just a browser. Works offline. Your files stay private.</p>
             </div>
 
             <div class="presentation-preview" role="group" aria-label="Animated presentation design preview">
@@ -137,7 +137,7 @@ const questions = [
       <section class="cta-section" aria-labelledby="cta-title"><div class="page-width cta-inner"><div><p class="eyebrow">EVERY FEATURE. ONE HTML FILE.</p><h2 id="cta-title">Your next great presentation<br />starts in your browser.</h2></div><div class="cta-actions"><a href="/work" class="button button-lime">Create a presentation <span aria-hidden="true">↗</span></a><span>No installation. No account required to edit.</span></div></div></section>
     </main>
 
-    <footer class="site-footer page-width"><a href="/" class="wordmark">DESQ</a><p>The complete presentation editor in HTML.</p><nav aria-label="Footer navigation"><a href="/work">Workspace</a><a href="/terms">Terms</a><a href="/support">Support</a></nav></footer>
+    <footer class="site-footer page-width"><a href="/" class="wordmark">DESQ</a><p>Office documents, with a life on the web.</p><nav aria-label="Footer navigation"><a href="/work">Workspace</a><a href="/terms">Terms</a><a href="/support">Support</a></nav></footer>
   </div>
 </template>
 

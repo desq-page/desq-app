@@ -36,7 +36,7 @@
           </p>
           <p class="intro-description">
             Create something new, open an office document, or pick up where you
-            left off.
+            left off. Editing is free.
           </p>
         </div>
         <div class="workspace-actions">
@@ -56,7 +56,7 @@
               {{ openingFile ? "Opening file…" : "Open a file" }}
               <span aria-hidden="true">↗</span>
             </button>
-            <p id="open-file-privacy" class="privacy-caption">Work offline in this browser. Your files stay private on your device.</p>
+            <p id="open-file-privacy" class="privacy-caption">Free. Work offline in this browser. Your files stay private on your device.</p>
           </div>
           <input
             ref="openFileInput"
@@ -128,7 +128,7 @@
       </aside>
     </main>
     <footer class="workspace-footer page-width">
-      <span>DESQ — The complete presentation editor in HTML.</span
+      <span>DESQ — Office documents, with a life on the web.</span
       ><RouterLink to="/support">Support</RouterLink>
       <RouterLink to="/terms">Terms &amp; Privacy</RouterLink>
       <RouterLink to="/?home=1"

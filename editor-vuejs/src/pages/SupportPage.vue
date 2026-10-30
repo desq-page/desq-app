@@ -43,7 +43,7 @@ onMounted(() => { document.title = "Support — DESQ"; });
     </main>
 
     <footer class="site-footer page-width">
-      <span>DESQ — The complete presentation editor in HTML.</span>
+      <span>DESQ — Office documents, with a life on the web.</span>
       <RouterLink to="/work">Workspace</RouterLink>
       <RouterLink to="/terms">Terms</RouterLink>
     </footer>
