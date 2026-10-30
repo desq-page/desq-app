@@ -49,7 +49,7 @@ const questions = [
           <div class="hero-stage">
             <div class="hero-copy">
               <p class="eyebrow">THE COMPLETE PRESENTATION EDITOR</p>
-              <h1 id="hero-title">Presentations,<br /><em>made for HTML.</em></h1>
+              <h1 id="hero-title">Presentations,<br />in plain <em>HTML.</em></h1>
               <p class="hero-description">All the power of PowerPoint. All the freedom of the web. Create, edit, and present in HTML. Convert PPTX privately on your device. And save as single HTML with your editor and viewer built in.</p>
               <div class="hero-actions">
                 <a href="/work" class="button button-lime">Create a presentation <span aria-hidden="true">↗</span></a>
