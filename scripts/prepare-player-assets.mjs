@@ -11,7 +11,7 @@ export async function preparePlayerAssets(core = localCoreDirectory()) {
   if (!core) await rm(target,{recursive:true,force:true});
   await mkdir(new URL('css/',target),{recursive:true});
   for (const [name,destinations] of [['player.js',['player.js']],['player.css',['css/player.css','player.css']]]) {
-    const source=resolvePackage('@savanna/player/'+name);
+    const source=resolvePackage('@desq/player/'+name);
     for (const destination of destinations) {
       await copyFile(source,new URL(destination,target));
       if (core) {

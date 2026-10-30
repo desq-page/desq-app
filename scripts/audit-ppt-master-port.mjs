@@ -53,7 +53,7 @@ const coverage = (path) => {
   if (path.startsWith("pptx_package/"))
     return [
       "editor-integration",
-      "Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
+      "Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
     ];
   if (path === "drawingml/styles.py")
     return [
@@ -93,7 +93,7 @@ const coverage = (path) => {
   if (path === "drawingml/converter.py")
     return [
       "partial-port",
-      "Traversal, preflight and Savanna output replace XML packaging; not every upstream gate is translated.",
+      "Traversal, preflight and Desq output replace XML packaging; not every upstream gate is translated.",
     ];
   if (path === "geometry_properties.py")
     return [
@@ -156,7 +156,7 @@ const counts = {};
 for (const m of modules) counts[m.status] = (counts[m.status] || 0) + 1;
 await writeFile(
   "editor-vuejs/docs/ppt-master-audit.md",
-  `# PPT Master source audit\n\nPinned commit: \`${commit}\`. ${modules.length} Python converter modules inventoried.\n\nThis is a coverage inventory, not a full-parity claim. Savanna's native object model can retain DrawingML properties; the remaining work is source-transport parsing and owning-layer integration, not editor feature support.\n\nSee [the function-level inventory](ppt-master-audit.json) and [port contract](ppt-master-port.md).\n\n| Source module | Coverage | Mapping / remaining work |\n| --- | --- | --- |\n${modules.map((m) => `| \`${m.path}\` | ${m.status} | ${m.notes} |`).join("\n")}\n\nUpstream explicitly rejects arbitrary SVG masks in \`drawingml/utils.py:project_mask_errors\`. Native picture clipping is separately supported and now mapped. SVG masks are not being described as an Savanna limitation.\n`,
+  `# PPT Master source audit\n\nPinned commit: \`${commit}\`. ${modules.length} Python converter modules inventoried.\n\nThis is a coverage inventory, not a full-parity claim. Desq's native object model can retain DrawingML properties; the remaining work is source-transport parsing and owning-layer integration, not editor feature support.\n\nSee [the function-level inventory](ppt-master-audit.json) and [port contract](ppt-master-port.md).\n\n| Source module | Coverage | Mapping / remaining work |\n| --- | --- | --- |\n${modules.map((m) => `| \`${m.path}\` | ${m.status} | ${m.notes} |`).join("\n")}\n\nUpstream explicitly rejects arbitrary SVG masks in \`drawingml/utils.py:project_mask_errors\`. Native picture clipping is separately supported and now mapped. SVG masks are not being described as an Desq limitation.\n`,
 );
 console.log(
   JSON.stringify({ commit, sourceModules: modules.length, coverage: counts }),

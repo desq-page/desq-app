@@ -1,12 +1,12 @@
 import * as renderer from './shared-renderer-entry.jsx';
 import { renderPlayerSlide } from './render.jsx';
 import { unpackDocumentAssets } from './document.mjs';
-import * as player from '@savanna/player';
+import * as player from '@desq/player';
 
-globalThis.SavannaRenderer = renderer;
+globalThis.DesqRenderer = renderer;
 
 export async function startPresentation() {
-  const payload = document.getElementById('savanna-document');
+  const payload = document.getElementById('desq-document');
   if (!payload) throw Error('The presentation document is missing.');
   const doc = unpackDocumentAssets(JSON.parse(payload.textContent));
   const style = document.createElement('style');

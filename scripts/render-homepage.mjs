@@ -16,7 +16,7 @@ let cachedPage;
 export async function renderHomePage() {
   const source = await fs.readFile(filename, 'utf8');
   if (source === cachedSource) return cachedPage;
-  const id = 'data-v-savanna-static-home';
+  const id = 'data-v-desq-static-home';
   const { descriptor, errors } = parse(source, { filename });
   if (errors.length) throw errors[0];
   const script = compileScript(descriptor, {
@@ -40,7 +40,7 @@ export async function renderHomePage() {
 
 export function staticHomePagePlugin() {
   return {
-    name: 'savanna-static-home',
+    name: 'desq-static-home',
     generateBundle(_options, bundle) {
       const targets = ['/src/main.js', '/src/pages/DashboardWorkspace.vue',
         '/src/pages/DashboardPage.vue', '/src/pages/DashboardFiles.vue'];

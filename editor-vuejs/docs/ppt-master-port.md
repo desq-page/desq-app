@@ -1,14 +1,14 @@
-# PPT Master JavaScript / Savanna port
+# PPT Master JavaScript / Desq port
 
 ## Running path
 
 The Gemini and ChatGPT companions now load the actual pinned upstream plan-core
 and executor design references. Their transport override asks the model to author
-complete SVG pages, not choose Savanna's old composition presets. This is the
+complete SVG pages, not choose Desq's old composition presets. This is the
 upstream SVG authoring boundary with a JavaScript native-object compiler in place
 of Python's DrawingML/XML packager. One designed slide is supported too.
 
-`savanna_create_deck` takes `slides: [{title, purpose, layout: "svg", svg: "…"}]`.
+`desq_create_deck` takes `slides: [{title, purpose, layout: "svg", svg: "…"}]`.
 The full page belongs to SVG: the compiler adds no title band, background, rounded
 cards or layout decoration. The existing tool, asset resolver, persistence and
 Undo paths remain the editor integration boundary. Legacy layouts remain for
@@ -28,7 +28,7 @@ are in `third_party/ppt-master/`, with the complete MIT license and source/hash
 manifest. Copyright (c) 2025-2026 Hugo He.
 
 The direct JavaScript port maps affine composition, inherited SVG paint/geometry,
-font units and traversal semantics to Savanna's DrawingML-shaped JSON. The SVG
+font units and traversal semantics to Desq's DrawingML-shaped JSON. The SVG
 path grammar and Bezier/arc normalization use `svg-pathdata`; the output remains
 native paths, not SVG images. Python is not loaded or executed at runtime.
 
@@ -86,7 +86,7 @@ The native metadata paths are now connected, but advanced chart options, the ful
 upstream LaTeX profile (including chemistry), animation scheduling/audio sidecars
 and imported-source freshness/style/relationship contracts are not exhaustive.
 These are port gaps, not unsupported
-Savanna/PPTX features. External image resources are resolved through the host's
+Desq/PPTX features. External image resources are resolved through the host's
 asset pipeline rather than arbitrary model-authored file paths or URLs.
 
 Arbitrary SVG masks are also explicitly rejected by upstream PPT Master's
@@ -100,7 +100,7 @@ advance; baseline placement now uses the upstream font tables and rational
 rounding, including the fixed unknown-font fallback. Font availability, fallback
 and weight mapping can differ from upstream/PowerPoint. Pixel-identical text is
 not claimed. SVG previews show actual converted paths and runs, but do not prove
-the final Savanna/PPTX renderer is pixel-identical.
+the final Desq/PPTX renderer is pixel-identical.
 
 Upstream research/intake, template reconstruction, advanced effects,
 structured masters, narration, source-preserving roundtrips and

@@ -18,20 +18,20 @@ export async function installEditorAgent(registry, { window: win, document: doc,
   const registered = [];
   let nativeError = '';
   const api = Object.freeze({ version: 1, listTools: registry.listTools, executeTool: registry.executeTool });
-  win.savannaAgent = api;
+  win.desqAgent = api;
 
   const listener = async event => {
     if (event.source !== win.parent || win.parent === win ||
       ![win.location.origin, ...origins].includes(event.origin)) return;
     const request = event.data;
-    if (!request || request.protocol !== 'savanna-agent-v1' ||
+    if (!request || request.protocol !== 'desq-agent-v1' ||
       typeof request.id !== 'string' || request.id.length > 128) return;
     let result;
     if (request.method === 'listTools') result = { ok: true, result: registry.listTools() };
     else if (request.method === 'executeTool' && typeof request.name === 'string')
       result = await registry.executeTool(request.name, request.arguments);
     else result = { ok: false, error: 'Unknown agent request.' };
-    if (!disposed) event.source.postMessage({ protocol: 'savanna-agent-v1', id: request.id, ...result }, event.origin);
+    if (!disposed) event.source.postMessage({ protocol: 'desq-agent-v1', id: request.id, ...result }, event.origin);
   };
   win.addEventListener('message', listener);
   if (context?.registerTool) {
@@ -64,7 +64,7 @@ export async function installEditorAgent(registry, { window: win, document: doc,
       controller.abort();
       registry.dispose();
       win.removeEventListener('message', listener);
-      if (win.savannaAgent === api) delete win.savannaAgent;
+      if (win.desqAgent === api) delete win.desqAgent;
       // Some browser previews expose document.modelContext as an alias of
       // the old API but still require explicit unregisterTool cleanup.
       for (const name of registered) context?.unregisterTool?.(name);

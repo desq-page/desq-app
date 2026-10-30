@@ -63,15 +63,23 @@ async function registerWorker() {
     };
     registration.addEventListener("updatefound", observeInstallingWorker);
     observeInstallingWorker();
-    navigator.serviceWorker.ready.then(hooks.ready).catch(handleError);
+    await navigator.serviceWorker.ready;
+    hooks.ready();
   } catch (error) {
     handleError(error);
+    throw error;
   }
 }
 
-if ("serviceWorker" in navigator) {
+export const serviceWorkerReady = "serviceWorker" in navigator ? (() => {
   let refreshing = false;
+  let hadController = Boolean(navigator.serviceWorker.controller);
+  let startupTimedOut = false;
   navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (!hadController) {
+      hadController = Boolean(navigator.serviceWorker.controller);
+      if (!startupTimedOut) return;
+    }
     if (refreshing) return;
     refreshing = true;
     window.location.reload();
@@ -79,10 +87,19 @@ if ("serviceWorker" in navigator) {
 
   navigator.serviceWorker.addEventListener("message", hooks.message);
 
-  // The load event may have fired before this module was evaluated.
-  if (document.readyState === "complete") {
-    registerWorker();
-  } else {
-    window.addEventListener("load", registerWorker, { once: true });
-  }
-}
+  // An active worker does not necessarily control this page yet. Wait for
+  // claim() before mounting components that request OPFS-backed /res/ URLs.
+  const controlled = new Promise((resolve) => {
+    if (navigator.serviceWorker.controller) return resolve();
+    const onChange = () => {
+      if (!navigator.serviceWorker.controller) return;
+      navigator.serviceWorker.removeEventListener("controllerchange", onChange);
+      resolve();
+    };
+    navigator.serviceWorker.addEventListener("controllerchange", onChange);
+  });
+  return Promise.race([
+    registerWorker().then(() => controlled).catch(() => {}),
+    new Promise((resolve) => setTimeout(() => { startupTimedOut = true; resolve(); }, 10000)),
+  ]);
+})() : Promise.resolve();

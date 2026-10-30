@@ -1,10 +1,10 @@
 {
   "packages": {
-    "savanna-player-1.0.3.tgz": {
-      "sha256": "a0e127e32d28b5936c6a55021940f6aca9a28f1ddee86c7bd78b01e8dffa8896"
+    "desq-player-1.0.3.tgz": {
+      "sha256": "75b249de03054fb4d766e3a8f8fd6a88d77a1e275ea141ee659cc0cece9dd25b"
     },
     "shared-vuejs-0.2.2.tgz": {
-      "sha256": "36849dd6bad38850c73e0ad40242c54a5cae521dfde9ddda49f058dda5c35127"
+      "sha256": "af598613692cb806feb6b8bf57a2ad895dd6133cd1efe046145f010bbbee31fd"
     }
   }
 }

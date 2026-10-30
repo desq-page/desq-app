@@ -37,7 +37,7 @@ function options(entry, filename, globalName, wrapper, kind) {
     define: { global: 'globalThis', 'process.env.NODE_ENV': '"production"', 'import.meta.env.DEV': 'false', 'process.versions.node': 'undefined' }, external: ['module', 'fs', 'path', 'url'], loader: { '.css': 'text', '.txt': 'text', '.wasm': 'binary' }, metafile: true, legalComments: 'none',
     sourcemap: localCore ? 'inline' : false,
     plugins: [...(localCore ? [{name:'local-core', setup(builder) {
-      builder.onResolve({filter:/^(shared-vuejs(?:\/|$)|@savanna\/player(?:\/|$))/}, args => ({path:resolveCorePackage(args.path, localCore)}));
+      builder.onResolve({filter:/^(shared-vuejs(?:\/|$)|@desq\/player(?:\/|$))/}, args => ({path:resolveCorePackage(args.path, localCore)}));
     }}] : []), { name: 'native-editor-boundaries', setup(builder) {
       builder.onResolve({ filter: /^(vue|vue-router|pinia|naive-ui|@vicons\/|@vue\/|@vueuse\/)/ }, args => ({ errors: [{ text: `The standalone editor cannot import ${args.path}.` }] }));
       if (kind === 'editor') {
@@ -111,7 +111,7 @@ async function packageBuild() {
   await writeFile(resolve(outdir, 'editable-editor.zip'), new Uint8Array(await createZip(entries).arrayBuffer()));
   await writeFile(resolve(outdir, 'bundle-report.json'), JSON.stringify(report, null, 2));
   if (published) {
-    const publicRoot = localCore ? resolve(root, '../.savanna-local-assets') : resolve(root, '../editor-vuejs/public');
+    const publicRoot = localCore ? resolve(root, '../.desq-local-assets') : resolve(root, '../editor-vuejs/public');
     await mkdir(publicRoot, {recursive:true});
     // Remove the obsolete optional runtime so Vue's public directory cannot
     // carry it into later builds after charts moved to SVG previews.
@@ -129,25 +129,31 @@ await mkdir(outdir, { recursive: true });
 await Promise.all(['video-worker.txt', 'video-worker.meta.json', 'charts.html', 'charts.meta.json', 'renderer.html', 'renderer.meta.json'].map(name => rm(resolve(statsDir, name), { force: true })));
 await Promise.all(['charts.js', 'renderer.js'].map(name => rm(resolve(outdir, name), { force: true })));
 // Use released standalone assets without rebuilding the player source.
-const playerBundle = await readFile(resolvePackage('@savanna/player/vanjs.js'));
-const playerStyles = await readFile(resolvePackage('@savanna/player/player.css'));
+const playerBundle = await readFile(resolvePackage('@desq/player/vanjs.js'));
+const playerStyles = await readFile(resolvePackage('@desq/player/player.css'));
 await writeFile(resolve(outdir, 'player.js'), playerBundle);
 await writeFile(resolve(outdir, 'player.css'), playerStyles);
 for (const [name, output, data] of [['player', 'dist/player.js', playerBundle], ['player-css', 'dist/player.css', playerStyles]]) {
-  const input = `@savanna/player/${name === 'player' ? 'vanjs.js' : 'player.css'}`;
+  const input = `@desq/player/${name === 'player' ? 'vanjs.js' : 'player.css'}`;
   await bundleStatsPlugin.record(name, { inputs: { [input]: { bytes: data.length, imports: [] } },
     outputs: { [output]: { bytes: data.length, inputs: { [input]: { bytesInOutput: data.length } } } } });
 }
 if (published) {
   if (!localCore) await rm(resolve(root, '../editor-vuejs/public/player'), {recursive:true,force:true});
   await mkdir(resolve(root, '../editor-vuejs/public/player'), { recursive: true });
-  await writeFile(resolve(root, '../editor-vuejs/public/player/player.js'), await readFile(resolvePackage('@savanna/player/player.js')));
+  await writeFile(resolve(root, '../editor-vuejs/public/player/player.js'), await readFile(resolvePackage('@desq/player/player.js')));
   await writeFile(resolve(root, '../editor-vuejs/public/player/player.css'), playerStyles);
   await mkdir(resolve(root, '../editor-vuejs/public/player/css'), { recursive: true });
   await writeFile(resolve(root, '../editor-vuejs/public/player/css/player.css'), playerStyles);
 }
-await build(options('src/presentation-entry.jsx', 'presentation.js', 'SavannaPresentation', 'savannaPresentationRuntime', 'presentation'));
-const configurations = [options('src/index.jsx', 'editor.js', 'SavannaVanEditor', 'savannaVanRuntime', 'editor')];
+await build(options('src/presentation-entry.jsx', 'presentation.js', 'DesqPresentation', 'desqPresentationRuntime', 'presentation'));
+if (published) {
+  const publicRoot = localCore ? resolve(root, '../.desq-local-assets') : resolve(root, '../editor-vuejs/public');
+  await mkdir(publicRoot, { recursive: true });
+  await writeFile(resolve(publicRoot, 'editor-vanjs-presentation.js'), await readFile(resolve(outdir, 'presentation.js')));
+  await writeFile(resolve(publicRoot, 'editor-vanjs-player.css'), playerStyles);
+}
+const configurations = [options('src/index.jsx', 'editor.js', 'DesqVanEditor', 'desqVanRuntime', 'editor')];
 if (process.argv.includes('--watch')) {
   const contexts = await Promise.all(configurations.map(c => context(c)));
   await Promise.all(contexts.map(c => c.watch()));

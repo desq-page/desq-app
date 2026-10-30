@@ -29,7 +29,7 @@ export async function createGemmaRuntime(
   const { LlmInference } = await loadLibrary();
   let cache;
   try {
-    cache = await cacheStorage?.open("savanna-gemma-models-v1");
+    cache = await cacheStorage?.open("desq-gemma-models-v1");
   } catch {
     onProgress({
       status: "warning",

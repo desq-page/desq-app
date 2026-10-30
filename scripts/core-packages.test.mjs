@@ -4,7 +4,7 @@ import {createRequire} from 'node:module';
 import {readFileSync,existsSync,lstatSync} from 'node:fs';
 import {dirname,resolve} from 'node:path';
 const require=createRequire(import.meta.url);
-for (const name of ['shared-vuejs','@savanna/player']) {
+for (const name of ['shared-vuejs','@desq/player']) {
  test(`${name} installs as an independent compiled package`, () => {
    const file=require.resolve(name+'/package.json');
    const root=dirname(file), manifest=JSON.parse(readFileSync(file,'utf8'));
@@ -17,6 +17,6 @@ for (const name of ['shared-vuejs','@savanna/player']) {
  });
 }
 test('player standalone bundles expose the required browser globals', () => {
- assert.match(readFileSync(require.resolve('@savanna/player/player.js'),'utf8'),/var player=/);
- assert.match(readFileSync(require.resolve('@savanna/player/vanjs.js'),'utf8'),/var SavannaPlayer=/);
+ assert.match(readFileSync(require.resolve('@desq/player/player.js'),'utf8'),/var player=/);
+ assert.match(readFileSync(require.resolve('@desq/player/vanjs.js'),'utf8'),/var DesqPlayer=/);
 });

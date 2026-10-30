@@ -1,5 +1,5 @@
 {
-  "name": "savanna-cloudflare-publisher",
+  "name": "desq-cloudflare-publisher",
   "private": true,
   "type": "module",
   "scripts": {

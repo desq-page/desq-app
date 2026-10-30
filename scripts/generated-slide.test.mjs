@@ -39,10 +39,10 @@ test('oversized content and unresolved images fail before insertion', () => {
 
 test('a complete slide plan binds the captured page and forbids dependent extra calls', () => {
   const tools = createEditorTools({}).listTools(), context = { document: { fileId: 'file' }, page: { pageId: 'page' } };
-  const call = { name: 'savanna_create_slide', arguments: { title: 'Solar energy', bullets: ['Renewable power'], images: [image] } };
+  const call = { name: 'desq_create_slide', arguments: { title: 'Solar energy', bullets: ['Renewable power'], images: [image] } };
   const plan = parseToolPlan(JSON.stringify({ calls: [call] }), tools, context);
   assert.equal(plan.calls[0].arguments.fileId, 'file'); assert.equal(plan.calls[0].arguments.pageId, 'page');
-  assert.throws(() => parseToolPlan(JSON.stringify({ calls: [call, { name: 'savanna_add_text', arguments: { text: 'extra' } }] }), tools, context), /one creation call/);
+  assert.throws(() => parseToolPlan(JSON.stringify({ calls: [call, { name: 'desq_add_text', arguments: { text: 'extra' } }] }), tools, context), /one creation call/);
 });
 
 function commonsResult(overrides = {}) {

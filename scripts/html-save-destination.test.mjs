@@ -38,7 +38,7 @@ const exporters = await import('data:text/javascript;base64,' + Buffer.from(resu
 for (const fn of ['exportEditableHtml','exportSingleEditableHtml','exportSinglePageHtml','exportPresentationZip']) {
   test(`${fn} writes to the destination selected before packaging`, async () => {
     const previousFetch = globalThis.fetch;
-    globalThis.fetch = async () => ({ok:true,text:async () => 'SavannaVanEditor __savannaAssetPool',arrayBuffer:async () => new ArrayBuffer(0)});
+    globalThis.fetch = async () => ({ok:true,text:async () => 'DesqVanEditor __desqAssetPool',arrayBuffer:async () => new ArrayBuffer(0)});
     globalThis.htmlExportFixture = {events:[]};
     const handle = {name:'Chosen file'}, name = fn.includes('Zip') || fn === 'exportEditableHtml' ? 'Chosen.zip' : 'Chosen.html';
     try {

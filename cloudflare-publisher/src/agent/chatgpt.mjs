@@ -53,7 +53,7 @@ export function createChatGPTProvider({ hostId, port = 1455, fetchImpl = fetch, 
   const redirectUri = `http://127.0.0.1:${port}/auth/callback`;
   const callbackPath = hostedOAuth ? new URL(hostedOAuth.redirectUri).pathname : '/auth/callback';
   const cookieSession = req => req.headers.cookie?.split(';').map(part => part.trim())
-    .find(part => part.startsWith('savanna_chatgpt='))?.slice('savanna_chatgpt='.length);
+    .find(part => part.startsWith('desq_chatgpt='))?.slice('desq_chatgpt='.length);
   const cookieSameSite = hostedOAuth ? 'Lax' : 'Strict';
   const clientAuthentication = () => {
     if (!hostedOAuth?.clientSecret) return {};
@@ -165,11 +165,11 @@ export function createChatGPTProvider({ hostId, port = 1455, fetchImpl = fetch, 
     if (!session) {
       if (sessions.size >= 100) return res.status(429).json({ error: 'Too many local sessions.' });
       const newId = random(); session = { id: newId, expiresAt: Date.now() + sessionMaxAgeMs }; sessions.set(newId, session);
-      res.set('Set-Cookie', `savanna_chatgpt=${newId}; HttpOnly; SameSite=${cookieSameSite}; Path=${BASE}; Max-Age=${Math.floor(sessionMaxAgeMs / 1000)}${origin.startsWith('https:') ? '; Secure' : ''}`);
+      res.set('Set-Cookie', `desq_chatgpt=${newId}; HttpOnly; SameSite=${cookieSameSite}; Path=${BASE}; Max-Age=${Math.floor(sessionMaxAgeMs / 1000)}${origin.startsWith('https:') ? '; Secure' : ''}`);
     }
     if (authMode === 'oauth' && session.expiresAt < Date.now() + sessionMaxAgeMs / 2) {
       session.expiresAt = Date.now() + sessionMaxAgeMs;
-      res.set('Set-Cookie', `savanna_chatgpt=${session.id}; HttpOnly; SameSite=${cookieSameSite}; Path=${BASE}; Max-Age=${Math.floor(sessionMaxAgeMs / 1000)}${origin.startsWith('https:') ? '; Secure' : ''}`);
+      res.set('Set-Cookie', `desq_chatgpt=${session.id}; HttpOnly; SameSite=${cookieSameSite}; Path=${BASE}; Max-Age=${Math.floor(sessionMaxAgeMs / 1000)}${origin.startsWith('https:') ? '; Secure' : ''}`);
       onCredentialsChanged();
     }
     req.chatgpt = session; next();
@@ -193,7 +193,7 @@ export function createChatGPTProvider({ hostId, port = 1455, fetchImpl = fetch, 
     session.pending = true; session.error = '';
     const url = new URL(config.authorization_endpoint);
     url.search = new URLSearchParams({ client_id: clientId, ext_agent_host_id: hostId,
-      ...(clientId === 'dynamic_agent_client' ? { agent_name_hint: 'Savanna Editor Agent' } : {}),
+      ...(clientId === 'dynamic_agent_client' ? { agent_name_hint: 'Desq Editor Agent' } : {}),
       ...(session.tokens?.id_token ? { id_token_hint: session.tokens.id_token } : {}),
       ...(session.email ? { login_hint: session.email } : {}),
       redirect_uri: attemptRedirectUri, response_type: 'code', scope: 'openid profile email offline_access resource.invoke chatgpt.tokens.use.direct',

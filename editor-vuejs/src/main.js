@@ -13,7 +13,7 @@ import "../src/assets/handle.css";
 import "../src/assets/text.css";
 import "../src/assets/table.css";
 
-import "./registerServiceWorker";
+import { serviceWorkerReady } from "./registerServiceWorker";
 import { setupDB } from "shared-vuejs/api/db";
 
 const app = createApp(App);
@@ -27,7 +27,7 @@ app.use(router);
 
 const gclientInfo = {
   clientId:
-    "275999195543-kebfjsb7rn5q0a2bn8uf5c76bt51ssus.apps.googleusercontent.com",
+    "712080911540-dgan2oeith32lagdq9nh7cqu5op109ki.apps.googleusercontent.com",
 }; // or  gclientJson
 
 app.use(vue3GoogleLogin, gclientInfo);
@@ -38,7 +38,7 @@ setupDB();
 // setTimeout(connectWs, 100);
 // Keep bootstrap's spinner in the DOM until the initial route and its
 // lazy-loaded components are ready to render.
-export const appReady = router.isReady().then(() => app.mount("body", true));
+export const appReady = Promise.all([router.isReady(), serviceWorkerReady]).then(() => app.mount("body", true));
 // } else {
 //   register(`/service-worker.js?22012025`, {
 //     registrationOptions: { type: "module", scope: "" },

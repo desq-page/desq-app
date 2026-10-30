@@ -1,6 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "savanna-publisher",
+	"name": "desq-publisher",
 	"main": "src/worker.js",
 	"compatibility_date": "2026-10-06",
 	"compatibility_flags": [
@@ -46,20 +46,20 @@
 	"r2_buckets": [
 		{
 			"binding": "CONTENT",
-			"bucket_name": "savanna-published"
+			"bucket_name": "desq-published"
 		},
 		{
 			"binding": "APP_FILES",
-			"bucket_name": "savanna-app-assets"
+			"bucket_name": "desq-app-assets"
 		},
 		{
-			"bucket_name": "savanna-published",
-			"binding": "savanna_published",
+			"bucket_name": "desq-published",
+			"binding": "desq_published",
 			"remote": true
 		},
 		{
-			"bucket_name": "savanna-app-assets",
-			"binding": "savanna_app_assets",
+			"bucket_name": "desq-app-assets",
+			"binding": "desq_app_assets",
 			"remote": true
 		}
 	],
@@ -68,6 +68,6 @@
 		"API_ORIGIN": "https://publish-api.desq.page",
 		"ALLOWED_ORIGINS": "https://desq.page,https://localhost:6173",
 		"APP_LARGE_ASSET_PATHS": "/rmbg/isnet/onnx/model.onnx,/rmbg/isnet/onnx/model_fp16.onnx",
-		"GOOGLE_CLIENT_ID": "519623835982-3oo1a0hka006t79o3j1qqk0u1vsm5de7.apps.googleusercontent.com"
+		"GOOGLE_CLIENT_ID": "712080911540-dgan2oeith32lagdq9nh7cqu5op109ki.apps.googleusercontent.com"
 	}
 }

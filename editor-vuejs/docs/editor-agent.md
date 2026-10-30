@@ -135,7 +135,7 @@ use the existing guarded text proxy; no image-search logic moves to the server.
 ## Deck design workflow
 
 The active Gemini/ChatGPT workflow now uses pinned PPT Master design references
-and complete model-authored SVG pages compiled into native Savanna objects.
+and complete model-authored SVG pages compiled into native Desq objects.
 It bypasses the preset layout menu and shape quotas. See the
 [port contract and compatibility limits](ppt-master-port.md). The agent server must
 report protocol version `ppt-master-browser-v5` in `X-Editor-Agent-Version`. The following preset-based workflow
@@ -158,7 +158,7 @@ This is geometry/content review, not vision inspection of the final rendering.
 Decks use up to three planning requests; ordinary edits still use one.
 The companion and browser verify authoring version `native-composition-v3`;
 an older companion must be restarted before its output can execute.
-See [the native feature map](ppt-master-savanna.md) for authoring controls.
+See [the native feature map](ppt-master-desq.md) for authoring controls.
 
 ## Image generation fallback
 
@@ -190,7 +190,7 @@ inserted after the current slide; existing content is preserved. Layout and
 data checks run before insertion; cloud models get one correction attempt for a
 bad deck draft. Chat shows insertion progress. Each page has normal Undo.
 
-See [PPT Master → Savanna mapping](ppt-master-savanna.md) for the architecture,
+See [PPT Master → Desq mapping](ppt-master-desq.md) for the architecture,
 supported native fields, limits, and PowerPoint features not yet exposed by the
 generator. Full PPT Master feature parity is not claimed.
 
@@ -212,7 +212,7 @@ diagnostics are excluded from this conversation context.
 
 With Gemini or ChatGPT connected, try: **Create a slide about solar energy with
 a title, three concise bullet points, and a photo of solar panels.** The model
-drafts the actual content and calls `savanna_create_slide`. This command creates
+drafts the actual content and calls `desq_create_slide`. This command creates
 one complete page after the current slide and selects it. Titles, subtitle,
 optional body text and bullets are editable text shapes, with automatic layout
 and text sizing to the presentation's dimensions. Light and dark themes are
@@ -354,8 +354,8 @@ complete SVG page per inference. Each page compiles and validates before proceed
 an invalid page gets one repair. A separate review receives compact compiled
 geometry/content summaries and requests targeted page revisions. Invalid review
 JSON gets one repair. Only after all pages validate does the client return one
-validated savanna_create_deck call, preserving the roster and captured document.
-The same compiler retains native text, shapes, images and Savanna metadata.
+validated desq_create_deck call, preserving the roster and captured document.
+The same compiler retains native text, shapes, images and Desq metadata.
 
 Example: **Create a simple three-slide Hello World deck with a cover, an
 explanation and a closing. Make it colorful with images.** The default is eight
@@ -402,10 +402,10 @@ model panel, and the embedding interface.
 A same-origin parent can use:
 
 ```js
-const agent = iframe.contentWindow.savannaAgent;
+const agent = iframe.contentWindow.desqAgent;
 const tools = agent.listTools();
-const document = await agent.executeTool('savanna_get_document', {});
-await agent.executeTool('savanna_rename_document', {
+const document = await agent.executeTool('desq_get_document', {});
+await agent.executeTool('desq_rename_document', {
   fileId: document.result.fileId,
   name: 'Project plan',
 });
@@ -435,30 +435,30 @@ function editorRequest(method, extra = {}) {
     }, 30000);
     function receive(event) {
       if (event.origin !== editorOrigin || event.source !== iframe.contentWindow ||
-          event.data?.protocol !== 'savanna-agent-v1' || event.data.id !== id) return;
+          event.data?.protocol !== 'desq-agent-v1' || event.data.id !== id) return;
       clearTimeout(timer);
       window.removeEventListener('message', receive);
       resolve(event.data);
     }
     window.addEventListener('message', receive);
     iframe.contentWindow.postMessage({
-      protocol: 'savanna-agent-v1', id, method, ...extra,
+      protocol: 'desq-agent-v1', id, method, ...extra,
     }, editorOrigin);
   });
 }
 const tools = await editorRequest('listTools');
 const document = await editorRequest('executeTool', {
-  name: 'savanna_get_document', arguments: {},
+  name: 'desq_get_document', arguments: {},
 });
 if (!document.ok) throw new Error(document.error);
 const renamed = await editorRequest('executeTool', {
-  name: 'savanna_rename_document',
+  name: 'desq_rename_document',
   arguments: { fileId: document.result.fileId, name: 'Project plan' },
 });
 ```
 
 Tool schemas are returned by `listTools`; do not hardcode shape or page IDs. Read
-`savanna_get_document` and `savanna_get_page` first. Edits require the expected
+`desq_get_document` and `desq_get_page` first. Edits require the expected
 file/page IDs and reject a request if the user changed documents or pages.
 Executions serialize and errors return `{ ok: false, error }`. Commands are
 available only when the route's document and current page are loaded.
@@ -472,7 +472,7 @@ for staged generation, validation, review, cancellation and worker-budget checks
 
 ## AutoShapes
 
-`savanna_add_autoshape` exposes all 173 named presets from the editor's public
+`desq_add_autoshape` exposes all 173 named presets from the editor's public
 AutoShapes palette: basic shapes, stars, arrows, callouts, flowchart shapes, math
 symbols, banners, action buttons and connectors. Its schema is derived from the
 shared palette catalog rather than a separately maintained three-shape list.
@@ -493,7 +493,7 @@ palette geometry cases: On-Page Connector, Sort, Filter, Start and Stop.
 
 ## Relative selected-shape moves
 
-Gemini, OpenAI and external WebMCP clients can use savanna_move_shape_by with
+Gemini, OpenAI and external WebMCP clients can use desq_move_shape_by with
 dx/dy and an optional shapeId. Positive dy moves down; positive dx moves right.
 An omitted axis is zero. An omitted shapeId requires exactly one selected shape.
 The adapter computes coordinates after pending text saves, validates the target
@@ -526,7 +526,7 @@ and any unsupported targets in the tool description. Then run the inventory
 and regression suite. This registry feeds WebMCP and the cloud agents. New tools
 are discoverable through listTools. Local Qwen only returns a deck creation call.
 
-`savanna_format_text` formats all text in a plain, unlinked textbox. It accepts
+`desq_format_text` formats all text in a plain, unlinked textbox. It accepts
 fontSize (the numeric size used by the editor's toolbar), fontFamily, bold, italic,
 underline, and textColor. Omit shapeId for one selected textbox; local plans bind
 that selection from the captured context. It preserves content, paragraph
@@ -535,9 +535,9 @@ not a caret or selected substring, and does not promise auto-resizing the box.
 Examples: `Set the selected text size to 32`, `Make the selected textbox bold`,
 and `Change the title font to Arial`. These use Gemini/OpenAI or external WebMCP clients.
 
-Paragraph insertion uses `savanna_insert_text` on the single selected textbox (or an explicit shape ID). “Insert a disclaimer after last paragraph” appends new paragraphs inside that box; it does not create a textbox or replace its existing content. An optional one-based `afterParagraph` targets another paragraph. Existing runs and paragraph formatting are preserved, and new paragraphs inherit the preceding paragraph's style. Linked document frames and groups are unsupported; a single editable table cell is supported. If drafting needs more context, the model should ask for it.
+Paragraph insertion uses `desq_insert_text` on the single selected textbox (or an explicit shape ID). “Insert a disclaimer after last paragraph” appends new paragraphs inside that box; it does not create a textbox or replace its existing content. An optional one-based `afterParagraph` targets another paragraph. Existing runs and paragraph formatting are preserved, and new paragraphs inherit the preceding paragraph's style. Linked document frames and groups are unsupported; a single editable table cell is supported. If drafting needs more context, the model should ask for it.
 
-When the caret is inside a plain textbox, the agent saves its position before focus moves to the command panel. “Add text” and “insert text” use `savanna_insert_text_at_cursor` at that position through the native editor text/history path. Explicit paragraph placement uses the paragraph insertion tool; an explicit new textbox request creates a box. The saved cursor is bound to its document/page and checked again before insertion; changed or rebuilt text requires placing the cursor again. Text-range replacement and linked frames are not supported by this cursor action; a text range inserts after its end and a single table cell is supported.
+When the caret is inside a plain textbox, the agent saves its position before focus moves to the command panel. “Add text” and “insert text” use `desq_insert_text_at_cursor` at that position through the native editor text/history path. Explicit paragraph placement uses the paragraph insertion tool; an explicit new textbox request creates a box. The saved cursor is bound to its document/page and checked again before insertion; changed or rebuilt text requires placing the cursor again. Text-range replacement and linked frames are not supported by this cursor action; a text range inserts after its end and a single table cell is supported.
 
 Text-target precedence: for add/insert text, a caret inserts at its saved position; selected text inserts after the selection without replacing it; a selected shape with `txBody` or a single table cell receives appended paragraphs when there is no caret. Only an explicit new/another textbox request creates a separate textbox while a text target is selected. Multiple selected text shapes or cells require choosing one target. Locked, anchored, linked frames and merged continuation cells remain protected.
 

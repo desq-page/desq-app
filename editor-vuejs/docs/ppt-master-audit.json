@@ -130,7 +130,7 @@
     {
       "path": "drawingml/converter.py",
       "status": "partial-port",
-      "notes": "Traversal, preflight and Savanna output replace XML packaging; not every upstream gate is translated.",
+      "notes": "Traversal, preflight and Desq output replace XML packaging; not every upstream gate is translated.",
       "functions": [
         "_hydrate_native_payloads",
         "_require_native_marker_attributes",
@@ -1237,13 +1237,13 @@
     {
       "path": "pptx_package/__init__.py",
       "status": "editor-integration",
-      "notes": "Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
+      "notes": "Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
       "functions": []
     },
     {
       "path": "pptx_package/builder.py",
       "status": "editor-integration",
-      "notes": "Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
+      "notes": "Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
       "functions": [
         "_slide_size_type",
         "_set_slide_size_type",
@@ -1423,7 +1423,7 @@
     {
       "path": "pptx_package/cli.py",
       "status": "editor-integration",
-      "notes": "Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
+      "notes": "Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
       "functions": [
         "_as_dict",
         "_path_sha256",
@@ -1476,7 +1476,7 @@
     {
       "path": "pptx_package/dimensions.py",
       "status": "editor-integration",
-      "notes": "Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
+      "notes": "Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
       "functions": [
         "get_project_info",
         "get_slide_dimensions",
@@ -1489,7 +1489,7 @@
     {
       "path": "pptx_package/discovery.py",
       "status": "editor-integration",
-      "notes": "Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
+      "notes": "Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
       "functions": [
         "find_svg_files",
         "find_notes_files"
@@ -1498,7 +1498,7 @@
     {
       "path": "pptx_package/media.py",
       "status": "editor-integration",
-      "notes": "Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
+      "notes": "Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
       "functions": [
         "get_png_renderer_info",
         "convert_svg_to_png",
@@ -1509,7 +1509,7 @@
     {
       "path": "pptx_package/narration.py",
       "status": "editor-integration",
-      "notes": "Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
+      "notes": "Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
       "functions": [
         "_qn",
         "_normalize_title",
@@ -1541,7 +1541,7 @@
     {
       "path": "pptx_package/notes.py",
       "status": "editor-integration",
-      "notes": "Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
+      "notes": "Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
       "functions": [
         "markdown_to_plain_text",
         "strip_inline_bold",
@@ -1554,7 +1554,7 @@
     {
       "path": "pptx_package/slide_xml.py",
       "status": "editor-integration",
-      "notes": "Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
+      "notes": "Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
       "functions": [
         "create_slide_xml_with_svg",
         "create_slide_rels_xml"
@@ -1563,7 +1563,7 @@
     {
       "path": "pptx_package/template_structure.py",
       "status": "editor-integration",
-      "notes": "Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
+      "notes": "Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
       "functions": [
         "effective_idx",
         "layout",
@@ -1641,7 +1641,7 @@
     {
       "path": "pptx_package/template_validation.py",
       "status": "editor-integration",
-      "notes": "Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
+      "notes": "Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented.",
       "functions": [
         "__init__",
         "xml",

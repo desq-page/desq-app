@@ -20,6 +20,6 @@ test('embedded editor initializes with its shared renderer', async () => {
     matchMedia: () => ({ matches: false, addEventListener() {}, addListener() {} }) });
   context.window = context;
   for (const script of scripts) vm.runInContext(script[2], context);
-  assert.ok(context.SavannaVanEditor?.van);
-  assert.equal(typeof context.SavannaRenderer?.renderSlide, 'function');
+  assert.ok(context.DesqVanEditor?.van);
+  assert.equal(typeof context.DesqRenderer?.renderSlide, 'function');
 });

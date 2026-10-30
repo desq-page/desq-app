@@ -14,8 +14,8 @@ const frame = ref<HTMLIFrameElement>();
 async function flushFrame() {
   try {
     const child = frame.value?.contentWindow as any;
-    const host = child?.document.querySelector('[data-savanna-editor]');
-    await child?.SavannaVanEditor?.getEditor(host)?.flush();
+    const host = child?.document.querySelector('[data-desq-editor]');
+    await child?.DesqVanEditor?.getEditor(host)?.flush();
   } catch (cause) {
     error.value = cause instanceof Error ? cause.message : String(cause);
     return false;
@@ -27,7 +27,7 @@ onBeforeRouteUpdate(flushFrame);
 watch(() => route.params.id, async (id, _previous, onCleanup) => {
   let cancelled = false;
   const sourceKey = crypto.randomUUID();
-  const registry = (window as any).SavannaVanSources ||= {};
+  const registry = (window as any).DesqVanSources ||= {};
   onCleanup(() => { cancelled = true; delete registry[sourceKey]; });
   source.value = '';
   error.value = '';

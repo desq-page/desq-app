@@ -19,7 +19,7 @@ test(
   "real browser converts HTML and imported templates to native editor JSON, with atomic local repair",
   { skip: !chrome, timeout: 60000 },
   async () => {
-    const directory = mkdtempSync(join(tmpdir(), "savanna-html-test-"));
+    const directory = mkdtempSync(join(tmpdir(), "desq-html-test-"));
     try {
       copyFileSync(resolve('node_modules/pdfjs-dist/build/pdf.worker.min.mjs'),join(directory,'pdf.worker.min.mjs'));
       await build({

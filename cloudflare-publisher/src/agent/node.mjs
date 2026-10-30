@@ -104,5 +104,5 @@ export function agentHostPlugin() {
     });
     server.httpServer?.once('close', () => host?.close());
   };
-  return { name: 'savanna-agent-host', configureServer: install, configurePreviewServer: install };
+  return { name: 'desq-agent-host', configureServer: install, configurePreviewServer: install };
 }

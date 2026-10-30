@@ -48,7 +48,7 @@ export async function planLocalHTML({ command, tools, context, generate,
     design: brief.design, slides };
   const makePlan = (pages = slides) => parseToolPlan(JSON.stringify({
     message: `Prepared ${pages.length} editable HTML slides with ${modelLabel}${brief.template !== 'freeform' ? ` using ${PRESENTON_TEMPLATES.find(t=>t.id===brief.template).name}` : ''}.`,
-    calls: [{ name: 'savanna_create_deck', arguments: { ...deck, slides: pages } }],
+    calls: [{ name: 'desq_create_deck', arguments: { ...deck, slides: pages } }],
   }), tools, context);
   const guide = HTML_AUTHORING_GUIDE.slice(HTML_AUTHORING_GUIDE.indexOf('Include every title'))
     .replace('For repairs return the entire corrected HTML deck.', 'For repairs return the complete corrected section.');
@@ -131,7 +131,7 @@ export async function planLocalHTML({ command, tools, context, generate,
   check();
   onPreview?.(proof.previews);
   if (metrics.warnings.length) {
-    console.warn('[Savanna local design]', metrics.warnings);
+    console.warn('[Desq local design]', metrics.warnings);
     plan.message += ` Design notes: ${metrics.warnings.join(' ')}`;
   }
   return { ...plan, metrics: { ...metrics, designBrief: brief, designFindings: proof.review.findings } };

@@ -35,7 +35,7 @@ test('VanJS route source sends metadata and reads one Vue database record on dem
  delete context.optimized;
  assert.equal(await source.loadAsset('video.mov'),'data:video/quicktime;base64,AQ==');
  const html=vanEditorFrame(header,'https://example.test/editor-vanjs.js','source-key');
- assert.ok(html.includes('parent.SavannaVanSources["source-key"]'));
+ assert.ok(html.includes('parent.DesqVanSources["source-key"]'));
  assert.ok(!html.includes('type="application/json"'));
  assert.ok(!html.includes('"s2"'));
 });

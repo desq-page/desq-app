@@ -1,4 +1,4 @@
-// Direct Savanna JSON mapping of elements.py::_decode_shape_style.
+// Direct Desq JSON mapping of elements.py::_decode_shape_style.
 // Copyright (c) 2025-2026 Hugo He, MIT; upstream notice is retained in third_party/ppt-master/.
 import { XMLParser, XMLValidator } from "fast-xml-parser";
 const colorTags = new Set([

@@ -1,4 +1,4 @@
-# PPT Master workflow → Savanna native JSON
+# PPT Master workflow → Desq native JSON
 
 The active cloud deck-generation path is now the pinned upstream-reference/SVG
 port described in [PPT Master port](ppt-master-port.md). The legacy authoring
@@ -6,7 +6,7 @@ contract below remains supported for existing clients and native tables/charts.
 
 ## Architecture
 
-Savanna already uses a DrawingML-shaped document model. We compile a bounded,
+Desq already uses a DrawingML-shaped document model. We compile a bounded,
 declarative deck specification to that model rather than generating a temporary
 PPTX, importing it, or running Python in the browser.
 
@@ -16,7 +16,7 @@ with the complete [MIT notice](https://github.com/hugohe3/ppt-master/blob/main/L
 
 1. Gemini/ChatGPT plans a thesis, narrative and visual direction in `strategy`,
    then authors audience/objective, slide takeaways, visual concepts and content
-   through `savanna_create_deck`.
+   through `desq_create_deck`.
 2. Schema validation rejects unknown properties and bounds slide/object counts.
 3. A pure preflight checks word wrapping, text fit, safe bounds, overlapping text,
    tables and charts. It produces schematic layout previews and reviews contrast,
@@ -29,7 +29,7 @@ with the complete [MIT notice](https://github.com/hugohe3/ppt-master/blob/main/L
    preset geometry and browser font measurements.
 5. Complete pages are inserted, saved, selected and thumbnailed in sequence via
    public editor APIs. Existing pages are preserved. Each page has normal Undo.
-6. Standard Savanna Save as exports the native PPTX archive.
+6. Standard Desq Save as exports the native PPTX archive.
 
 This is not an implementation of PPT Master's Python runtime, SVG parser,
 document research tools, or all of its PowerPoint authoring capabilities. It is
@@ -37,7 +37,7 @@ the native-JSON deck-generation path and a feature compatibility contract.
 
 ## Feature map
 
-| PPT Master / PowerPoint capability | Savanna JSON representation | Agent authoring status |
+| PPT Master / PowerPoint capability | Desq JSON representation | Agent authoring status |
 | --- | --- | --- |
 | Narrative / audience / slide job | Deck title/audience/objective; per-page `agentMetadata.purpose` | Implemented |
 | Consistent design | Shared design → native fills and run fonts/colors | Five coordinated palettes, custom colors/font, per-slide base/dark/accent tones and standard/split/band variants |
@@ -45,7 +45,7 @@ the native-JSON deck-generation path and a feature compatibility contract.
 | Textboxes | `type:text`, `txBody.bodyPr`, `txBody.p` | Implemented |
 | Rich text | `txBody.p[].r[].rPr` | Bold, italic, color, shared font, size |
 | Bullets | `pPr.buChar`, margins and indent | One textbox; one paragraph per bullet |
-| AutoShapes | `prstGeom`, `d`, fill, line | All presets in Savanna's supplied catalog; real geometry compiler |
+| AutoShapes | `prstGeom`, `d`, fill, line | All presets in Desq's supplied catalog; real geometry compiler |
 | Connectors | Connector presets → `cxnSp` | Visual preset geometry; semantic endpoint attachment not exposed |
 | Images | `pic`, `blipFill.blip.$_target`; OPFS media | Wikimedia search → connected cloud image generation fallback, aspect fit, editable raster, source/AI labels |
 | Citations / credits | Native footer text, image provenance | Implemented; sources must be supplied, not invented |
@@ -66,7 +66,7 @@ the native-JSON deck-generation path and a feature compatibility contract.
 | SVG authoring/import | Parse SVG to native objects | Deliberately bypassed; native declarative objects instead |
 | PDF/DOCX/URL source intake | Extracted source text and provenance | Topic/pasted text via chat only; attachments/research intake remains separate |
 | Template reconstruction / reference matching | Analyze masters/layouts/fonts/images and map slots | Not implemented by this generator |
-| Visual quality / revision | Schematic layout proofs and compiled scene review | Chat previews, contrast/readability/repetition checks, one cloud design review or repair. No image/vision critique of the actual Savanna rendering yet |
+| Visual quality / revision | Schematic layout proofs and compiled scene review | Chat previews, contrast/readability/repetition checks, one cloud design review or repair. No image/vision critique of the actual Desq rendering yet |
 
 ## Schema and limits
 
@@ -139,7 +139,7 @@ must be rebuilt after registry/schema changes.
 ## Native composition workflow adaptation
 
 The strategy/execution/checking separation and content-relationship-to-carrier
-selection are adapted to Savanna from PPT Master 6.7.2, inspected 2026-10-18:
+selection are adapted to Desq from PPT Master 6.7.2, inspected 2026-10-18:
 [plan core](https://github.com/hugohe3/ppt-master/blob/main/skills/ppt-master/references/plan-core.md),
 [executor core](https://github.com/hugohe3/ppt-master/blob/main/skills/ppt-master/references/executor-base.md),
 and [generation workflow](https://github.com/hugohe3/ppt-master/blob/main/skills/ppt-master/workflows/generate-pptx.md).

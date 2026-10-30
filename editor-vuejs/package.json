@@ -14,7 +14,7 @@
   "dependencies": {
     "vue3-google-login": "^2.0.33",
     "shared-vuejs": "file:../packages/shared-vuejs-0.2.2.tgz",
-    "@savanna/player": "file:../packages/savanna-player-1.0.3.tgz"
+    "@desq/player": "file:../packages/desq-player-1.0.3.tgz"
   },
   "license": "AGPL-3.0-only"
 }

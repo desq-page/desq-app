@@ -10,9 +10,9 @@ const npmCli = process.env.npm_execpath || join(dirname(process.execPath), "node
 const useCli = existsSync(npmCli);
 // Production resolves the installed shared library, not the development watcher.
 // The add-in is a sibling repository; never deploy a stale or missing copy.
-const officeDirectory = resolve(process.env.SAVANNA_OFFICEJS_DIR || resolve(root, '../desq-officejs'));
+const officeDirectory = resolve(process.env.DESQ_OFFICEJS_DIR || resolve(root, '../desq-officejs'));
 if (!existsSync(resolve(officeDirectory, 'package.json'))) {
-  throw new Error(`PowerPoint add-in not found at ${officeDirectory}. Check out desq-officejs or set SAVANNA_OFFICEJS_DIR.`);
+  throw new Error(`PowerPoint add-in not found at ${officeDirectory}. Check out desq-officejs or set DESQ_OFFICEJS_DIR.`);
 }
 for (const directory of [resolve(root, 'editor-vuejs'), officeDirectory]) {
   const executable = useCli ? process.execPath : process.platform === "win32" ? (process.env.ComSpec || "cmd.exe") : "npm";

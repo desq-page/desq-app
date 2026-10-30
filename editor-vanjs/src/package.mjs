@@ -5,10 +5,10 @@ const encoder = new TextEncoder(), decoder = new TextDecoder();
 const extensions = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/gif': 'gif', 'image/webp': 'webp', 'image/svg+xml': 'svg',
   'image/avif': 'avif', 'image/bmp': 'bmp', 'video/mp4': 'mp4', 'video/webm': 'webm', 'audio/mpeg': 'mp3', 'audio/wav': 'wav', 'font/woff': 'woff', 'font/woff2': 'woff2', 'font/ttf': 'ttf', 'font/otf': 'otf' };
 export function packageHTML(doc) {
-  return `<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width,initial-scale=1">\n  <title>${escapeHTML(doc.file.name || 'Presentation')}</title>\n  <link rel="stylesheet" href="editor.css" data-savanna-styles>\n  <link rel="stylesheet" href="renderer.css" data-savanna-renderer-styles>\n  <style>html,body,[data-savanna-editor]{height:100%;margin:0}</style>\n</head>\n<body>\n  <div data-savanna-editor></div>\n  <script src="document.js"></script>\n  <script src="editor.js"></script>\n</body>\n</html>\n`;
+  return `<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width,initial-scale=1">\n  <title>${escapeHTML(doc.file.name || 'Presentation')}</title>\n  <link rel="stylesheet" href="editor.css" data-desq-styles>\n  <link rel="stylesheet" href="renderer.css" data-desq-renderer-styles>\n  <style>html,body,[data-desq-editor]{height:100%;margin:0}</style>\n</head>\n<body>\n  <div data-desq-editor></div>\n  <script src="document.js"></script>\n  <script src="editor.js"></script>\n</body>\n</html>\n`;
 }
 export function parseDocumentScript(source) {
-  const match = /^\s*window\.SavannaDocument\s*=\s*([\s\S]*?)\s*;\s*$/.exec(source);
+  const match = /^\s*window\.DesqDocument\s*=\s*([\s\S]*?)\s*;\s*$/.exec(source);
   if (!match) throw Error('Invalid document.js in editable ZIP.');
   return JSON.parse(match[1]);
 }
@@ -67,7 +67,7 @@ export async function packageEntries(documentData, runtime, styles, resources) {
   }
   const entries = [
     { name: 'index.html', data: packageHTML(doc) },
-    { name: 'document.js', data: 'window.SavannaDocument = ' + scriptJSON(doc) + ';\n' },
+    { name: 'document.js', data: 'window.DesqDocument = ' + scriptJSON(doc) + ';\n' },
     { name: 'editor.js', data: runtime }, { name: 'editor.css', data: styles },
     { name: 'renderer.css', data: resources.rendererStyles },
     { name: 'player.js', data: resources.player },
@@ -75,7 +75,7 @@ export async function packageEntries(documentData, runtime, styles, resources) {
     ...resources.playerAssets.map(asset => ({ name: asset.name, data: asset.data, mime: asset.mime })),
     ...media,
   ];
-  const manifest = { format: 'savanna-editable', version: 2, document: 'document.js', entry: 'index.html',
+  const manifest = { format: 'desq-editable', version: 2, document: 'document.js', entry: 'index.html',
     files: entries.map(e => ({ path: e.name, bytes: typeof e.data === 'string' ? encoder.encode(e.data).length : e.data.length, ...(e.mime ? { mime: e.mime } : {}) })) };
   entries.push({ name: 'manifest.json', data: JSON.stringify(manifest, null, 2) + '\n' });
   return entries;

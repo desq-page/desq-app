@@ -20,7 +20,7 @@ test('obfuscated production exporter produces standalone player bootstrap script
   };
   for (const method of ['presentationHTML', 'editableHTML']) {
     const html = context.exporter[method]({ file: { name: 'Deck' }, assets: {} }, 'window.runtime=true;', resources);
-    const script = html.match(/<script>(window\.SavannaEmbeddedPlayer=[\s\S]*?)<\/script>/)?.[1];
+    const script = html.match(/<script>(window\.DesqEmbeddedPlayer=[\s\S]*?)<\/script>/)?.[1];
     assert.ok(script, `${method} contains its bootstrap`);
     const style = {};
     vm.runInNewContext(script, { window: {}, document: { querySelector: () => style } });

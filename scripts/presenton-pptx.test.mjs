@@ -78,13 +78,13 @@ test('native placeholder export preserves explicit index zero and title indices'
 
 test('Presenton generation cannot silently fall back to redrawing HTML',async()=>{
  const {preflightDeckPlan}=await import('../editor-vuejs/src/lib/agent/deck-preflight.mjs');
- assert.throws(()=>preflightDeckPlan({calls:[{name:'savanna_create_deck',arguments:{slides:[{layout:'html',html:'<section>redrawn</section>'}]}}]},
+ assert.throws(()=>preflightDeckPlan({calls:[{name:'desq_create_deck',arguments:{slides:[{layout:'html',html:'<section>redrawn</section>'}]}}]},
    {pptxTemplateContext:{role:'native-template-base'},slideTask:{mode:'create'}}),/native PPTX template as the base/);
 });
 
 test('native generation honours an explicitly selected family',async()=>{
  const {preflightDeckPlan}=await import('../editor-vuejs/src/lib/agent/deck-preflight.mjs');
- assert.throws(()=>preflightDeckPlan({calls:[{name:'savanna_create_deck',arguments:{slides:[{layout:'pptx',templateSelection:{family:'presenton-dynamic',layout:'anything'},templateFields:[{id:'2',text:'Supplied content'}]}]}}]},
+ assert.throws(()=>preflightDeckPlan({calls:[{name:'desq_create_deck',arguments:{slides:[{layout:'pptx',templateSelection:{family:'presenton-dynamic',layout:'anything'},templateFields:[{id:'2',text:'Supplied content'}]}]}}]},
    {htmlTemplate:'builtin-ocean',pptxTemplateContext:{role:'native-template-base'},slideTask:{mode:'create'}}),/selected Presenton family/);
 });
 
@@ -112,7 +112,7 @@ test('native page import resolves chart relationships before mapping shapes',asy
 
 test('a named built-in PPTX template cannot be replaced by another family',async()=>{
  const {preflightDeckPlan}=await import('../editor-vuejs/src/lib/agent/deck-preflight.mjs');
- assert.throws(()=>preflightDeckPlan({calls:[{name:'savanna_create_deck',arguments:{slides:[{layout:'pptx',templateSelection:{family:'presenton-dynamic',layout:'anything'},templateFields:[{id:'0',text:'Facts'}]}]}}]},
+ assert.throws(()=>preflightDeckPlan({calls:[{name:'desq_create_deck',arguments:{slides:[{layout:'pptx',templateSelection:{family:'presenton-dynamic',layout:'anything'},templateFields:[{id:'0',text:'Facts'}]}]}}]},
   {htmlTemplate:'builtin-ocean',pptxTemplateContext:{role:'native-template-base'},slideTask:{mode:'create'}}),/selected Presenton family/);
 });
 

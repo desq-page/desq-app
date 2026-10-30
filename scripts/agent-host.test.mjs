@@ -10,7 +10,7 @@ import { createAgentService, snapshotAgentState, restoreAgentState } from '../cl
 import { createNodeAgentHost } from '../cloudflare-publisher/src/agent/node.mjs';
 import worker, { AgentSession } from '../cloudflare-publisher/src/worker.js';
 
-const origin = 'https://savanna.example';
+const origin = 'https://desq.example';
 const context = { document: { fileId: 'f' }, page: { pageId: 'p' } };
 const plan = JSON.stringify({ message: 'Ready', calls: [] });
 const image = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j9iUAAAAASUVORK5CYII=';
@@ -100,7 +100,7 @@ test('credential snapshots restore model sets, omit in-flight work and discard e
   assert.equal([...restored.gemini.values()][0].controller, undefined);
   const revived = createAgentService({ ...serviceOptions, state: restored });
   const oldId = [...restored.gemini.keys()][0];
-  const response = await revived.fetch(new Request(`${origin}/api/agent/gemini/plan`, { method: 'POST', headers: { Origin: origin, 'X-Editor-Agent': '1', 'Content-Type': 'application/json', Cookie: `savanna_gemini=${oldId}` }, body: JSON.stringify(preparedBody('gemini', 'plan', { model: 'models/gemini-test', command: 'Hi', context })) }));
+  const response = await revived.fetch(new Request(`${origin}/api/agent/gemini/plan`, { method: 'POST', headers: { Origin: origin, 'X-Editor-Agent': '1', 'Content-Type': 'application/json', Cookie: `desq_gemini=${oldId}` }, body: JSON.stringify(preparedBody('gemini', 'plan', { model: 'models/gemini-test', command: 'Hi', context })) }));
   assert.equal(response.status, 200);
 });
 
@@ -116,7 +116,7 @@ test('Fetch cancellation aborts provider inference and clears its busy controlle
   await api('gemini', 'connect', { apiKey: 'google-secret' });
   const id = [...service.state.gemini.keys()][0], controller = new AbortController();
   const response = service.fetch(new Request(`${origin}/api/agent/gemini/plan`, { method: 'POST', signal: controller.signal,
-    headers: { Origin: origin, 'X-Editor-Agent': '1', 'Content-Type': 'application/json', Cookie: `savanna_gemini=${id}` },
+    headers: { Origin: origin, 'X-Editor-Agent': '1', 'Content-Type': 'application/json', Cookie: `desq_gemini=${id}` },
     body: JSON.stringify(preparedBody('gemini', 'plan', { model: 'models/gemini-test', command: 'Hi', context })),
   }));
   await pending; controller.abort();

@@ -12,11 +12,11 @@ test('presentation and editable HTML use one identical document payload and medi
   const resources = { player: 'window.player = {};', playerStyles: 'body{}', playerAssets: [{ name: 'font.woff', mime: 'font/woff', data: new Uint8Array([1]) }] };
   const presentation = presentationHTML(doc, 'window.presentation = true;', resources);
   const editable = editableHTML(doc, 'window.editor = true;', resources);
-  const payload = html => JSON.parse(html.match(/<script type="application\/json" id="savanna-document">([\s\S]*?)<\/script>/)[1]);
+  const payload = html => JSON.parse(html.match(/<script type="application\/json" id="desq-document">([\s\S]*?)<\/script>/)[1]);
   assert.deepEqual(payload(presentation), payload(editable));
   assert.equal(unpackDocumentAssets(payload(presentation)).assets['image.jpeg'], image);
   assert.equal(presentation.split(image).length - 1, 1);
-  assert.doesNotMatch(presentation, /player-slide-|player-document|data-savanna-editor/);
+  assert.doesNotMatch(presentation, /player-slide-|player-document|data-desq-editor/);
 });
 
 test('presentation initializes player from document and renders slides on demand', async () => {

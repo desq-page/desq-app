@@ -16,7 +16,7 @@ function buildAssets() {
 
 // The Vue editor does not need these assets. Build them once, on first use of
 // the VanJS route, including when older generated files are already present.
-export function vanEditorDevPlugin(build = buildAssets, readAsset = name => readFile(new URL(name.slice(1), new URL(localCoreDirectory() ? '../.savanna-local-assets/' : '../editor-vuejs/public/', import.meta.url)))) {
+export function vanEditorDevPlugin(build = buildAssets, readAsset = name => readFile(new URL(name.slice(1), new URL(localCoreDirectory() ? '../.desq-local-assets/' : '../editor-vuejs/public/', import.meta.url)))) {
   // The packaged shared library works without a source watcher.
   let pending, builtGeneration = -1, generation = 0;
   function ensureBuilt() {

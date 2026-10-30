@@ -1,4 +1,4 @@
-# Savanna Cloudflare production deployment
+# Desq Cloudflare production deployment
 
 The main production build and published user content are hosted on Cloudflare.
 The repository defaults to `VITE_PUBLISH_TARGET=cloudflare`; the publishing backend
@@ -18,12 +18,12 @@ The same Worker hosts:
 `ASSETS` binds `editor-vuejs/dist`. The Worker runs first so user folders and API
 requests never fall through to the editor SPA. Missing publications return 404.
 Large bundled application files (currently two ONNX models) go in the private
-`savanna-app-assets` R2 bucket and retain their original application URLs. The
+`desq-app-assets` R2 bucket and retain their original application URLs. The
 build script detects files above 25 MiB and generates `.assetsignore` plus
 `wrangler.generated.json` to keep them outside the Workers static-asset upload.
 See [Workers Static Assets configuration](https://developers.cloudflare.com/workers/static-assets/binding/).
 
-The Cloudflare build also builds the sibling `desq-officejs` project and copies its output into `editor-vuejs/dist/powerpoint-addin/` before asset scanning and deployment. Install dependencies in that project first. Set `SAVANNA_OFFICEJS_DIR` to its path if it is not next to `desq-app`; the build fails if it is unavailable. The `powerpoint-addin` namespace is reserved for this application, so it cannot also be a published-content username.
+The Cloudflare build also builds the sibling `desq-officejs` project and copies its output into `editor-vuejs/dist/powerpoint-addin/` before asset scanning and deployment. Install dependencies in that project first. Set `DESQ_OFFICEJS_DIR` to its path if it is not next to `desq-app`; the build fails if it is unavailable. The `powerpoint-addin` namespace is reserved for this application, so it cannot also be a published-content username.
 
 Cloudflare publishing does not require the Node server or a socket connection.
 The Cloudflare build skips the legacy Docker login/sync requests. Editing files
@@ -101,7 +101,7 @@ to a trailing slash so HTML-relative asset links work. Every file has its own
 player, HTML pages, media and fonts; filenames do not collide across users or files.
 Metadata lives in `_private/`, which the public handler cannot serve.
 
-Username mappings are stored in the `CONTENT` R2 bucket (`savanna-published`):
+Username mappings are stored in the `CONTENT` R2 bucket (`desq-published`):
 `_private/users/{userId}.json` contains `{ "username": "john.smith" }`, and
 `_private/usernames/{username}.json` contains `{ "userId": "..." }`.
 Publication manifests, uploads, and quota locks remain keyed by the verified
@@ -143,8 +143,8 @@ sign in again when asked. No Google client secret is needed for this GIS flow.
    ```sh
    cd cloudflare-publisher
    npx wrangler login
-   npx wrangler r2 bucket create savanna-published
-   npx wrangler r2 bucket create savanna-app-assets
+   npx wrangler r2 bucket create desq-published
+   npx wrangler r2 bucket create desq-app-assets
    npm run deploy
    ```
 

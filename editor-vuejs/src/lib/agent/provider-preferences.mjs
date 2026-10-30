@@ -1,9 +1,10 @@
-const KEY = 'savanna.agent.provider.v1';
+const KEY = 'desq.agent.provider.v1';
 const PROVIDERS = new Set(['chatgpt', 'gemini', 'local']);
 
 export function readAgentProvider(storage) {
   try {
-    const value = (storage || globalThis.localStorage).getItem(KEY);
+    const store = storage || globalThis.localStorage;
+    const value = store.getItem(KEY);
     return PROVIDERS.has(value) ? value : 'chatgpt';
   } catch { return 'chatgpt'; }
 }

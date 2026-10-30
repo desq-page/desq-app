@@ -8,7 +8,7 @@ import { deckLayoutPreviews } from './deck-preview.mjs';
 // Provider-side preflight is pure: never downloads assets or calls editor mutations.
 // Real preset geometry, media and archive checks are repeated by the adapter.
 export function preflightDeckPlan(plan, context) {
-  const call = plan.calls.find(call => call.name === 'savanna_create_deck');
+  const call = plan.calls.find(call => call.name === 'desq_create_deck');
   if (!call) return;
   const { fileId, pageId, ...deck } = call.arguments;
   if (context.pptxTemplateContext?.role === 'native-template-base' && context.slideTask?.mode !== 'edit' && deck.slides.some(slide=>slide.layout!=='pptx')) throw Error('Presenton must use the native PPTX template as the base. Return layout=pptx and templateFields; do not redraw it as HTML/SVG.');
@@ -41,7 +41,7 @@ export async function checkedCloudPlan({ request, body, signal, tools, context, 
   catch (error) {
     // Repair generated arguments before any edit executes. Provider failures
     // remain outside this catch and are never automatically retried.
-    if (!response.text?.includes('savanna_create_deck')) {
+    if (!response.text?.includes('desq_create_deck')) {
       onProgress?.('Correcting the editor command arguments…');
       const first = response;
       response = await request('plan', { signal, body: { ...body, context: { ...body.context,
@@ -65,7 +65,7 @@ export async function checkedCloudPlan({ request, body, signal, tools, context, 
           ...(count === undefined ? {} : { requiredSlideCount: count }) } } } });
       signal?.throwIfAborted();
       check();
-      if (plan.calls.length !== 1 || plan.calls[0].name !== 'savanna_create_deck' ||
+      if (plan.calls.length !== 1 || plan.calls[0].name !== 'desq_create_deck' ||
         (count !== undefined && plan.calls[0].arguments.slides.length !== count))
         throw new Error('Quick correction must preserve the complete deck and slide count. No edits applied.');
       const remaining = deckCompositionErrors(proof.review, requirements);
@@ -99,7 +99,7 @@ export async function checkedCloudPlan({ request, body, signal, tools, context, 
     response.inputTokens = (response.inputTokens || 0) + (first.inputTokens || 0);
     response.repaired = repairedPlan || !!validationError;
     response.reviewed = true;
-    if (plan.calls.length !== 1 || plan.calls[0].name !== 'savanna_create_deck') throw new Error('Deck correction must return one complete deck. No edits applied.');
+    if (plan.calls.length !== 1 || plan.calls[0].name !== 'desq_create_deck') throw new Error('Deck correction must return one complete deck. No edits applied.');
     if (draftSlideCount !== undefined && plan.calls[0].arguments.slides.length !== draftSlideCount)
       throw new Error('Design review changed the slide count. No edits applied; ask the agent to preserve the requested count.');
     const compositionErrors = deckCompositionErrors(proof.review, requirements);
@@ -111,7 +111,7 @@ export async function checkedCloudPlan({ request, body, signal, tools, context, 
         deckRepair: { previousResponse: reviewed.text, validationError: compositionErrors.join(' '), requiredSlideCount: count } } } });
       signal?.throwIfAborted();
       check();
-      if (plan.calls.length !== 1 || plan.calls[0].name !== 'savanna_create_deck' || plan.calls[0].arguments.slides.length !== count)
+      if (plan.calls.length !== 1 || plan.calls[0].name !== 'desq_create_deck' || plan.calls[0].arguments.slides.length !== count)
         throw new Error('Composition repair must preserve the complete deck and slide count. No edits applied.');
       const remaining = deckCompositionErrors(proof.review, requirements);
       if (remaining.length) throw new Error(`Deck composition check failed: ${remaining.join(' ')} No slides were inserted.`);

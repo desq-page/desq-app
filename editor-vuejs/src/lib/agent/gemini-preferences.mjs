@@ -1,4 +1,4 @@
-const KEY = 'savanna.gemini.connection.v1';
+const KEY = 'desq.gemini.connection.v1';
 
 export function readGeminiPreferences(storage) {
   try {

@@ -10,9 +10,9 @@ setupDB();
 //   self.skipWaiting();
 // });
 
-// self.addEventListener("activate", async function (event) {
-//   event.waitUntil(self.clients.claim());
-// });
+self.addEventListener("activate", (event) => {
+  event.waitUntil(self.clients.claim());
+});
 self.addEventListener("message", async (msg) => {
   console.log("message", msg);
   const clients = await self.clients.matchAll({ type: "window" });

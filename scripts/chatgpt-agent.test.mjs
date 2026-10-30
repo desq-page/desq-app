@@ -16,7 +16,7 @@ const sign = (claims = {}, options = {}) => jwt.sign({ sub: 'user', nonce: 'nonc
   { algorithm: 'RS256', keyid: key.kid, issuer: 'https://auth.openai.com', audience: 'oaiapp_test', expiresIn: '1h', ...options });
 const origin = 'https://localhost:6173';
 const context = { document: { fileId: 'file', selectedShapeIds: ['shape'], pages: [] }, page: { pageId: 'page', shapes: [], shapeCount: 0 } };
-const plan = JSON.stringify({ message: '', calls: [{ name: 'savanna_rename_document', arguments: { name: 'Budget' } }] });
+const plan = JSON.stringify({ message: '', calls: [{ name: 'desq_rename_document', arguments: { name: 'Budget' } }] });
 function streamResponse(events) {
   return new Response(events.map(event => `data: ${JSON.stringify(event)}\n\n`).join(''), { headers: { 'Content-Type': 'text/event-stream' } });
 }
@@ -143,7 +143,7 @@ test('local OAuth, session isolation, model catalog, refresh, inference and logo
       }
       assert.equal(body.model, 'model-a'); assert.equal(body.store, false); assert.equal(body.stream, true);
       assert.equal(Object.hasOwn(body, 'text'), false); assert.equal(Object.hasOwn(body, 'max_output_tokens'), false);
-      assert.ok(body.instructions.includes('savanna_rename_document'));
+      assert.ok(body.instructions.includes('desq_rename_document'));
       assert.equal(body.input[0].role, 'user');
       return streamResponse([completed(plan)]);
     }

@@ -149,7 +149,7 @@ const inheritedKeys = new Set([
   "marker-start",
   "marker-end",
   "vector-effect",
-  "data-savanna-hyperlink",
+  "data-desq-hyperlink",
   "visibility",
   "color",
 ]);
@@ -987,10 +987,10 @@ export function compilePageSVG(
                   alpha * opacity(r.style["fill-opacity"]),
                 ),
                 ...(effects(a, alpha) ? { effectLst: effects(a, alpha) } : {}),
-                ...(a["data-savanna-hyperlink"]
+                ...(a["data-desq-hyperlink"]
                   ? {
                       hlinkClick: {
-                        $_target: hyperlink(a["data-savanna-hyperlink"]),
+                        $_target: hyperlink(a["data-desq-hyperlink"]),
                       },
                     }
                   : {}),
@@ -1063,7 +1063,7 @@ export function compilePageSVG(
     )
       return;
     if (tag === "a") {
-      a["data-savanna-hyperlink"] = hyperlink(a.href || a["xlink:href"]);
+      a["data-desq-hyperlink"] = hyperlink(a.href || a["xlink:href"]);
       for (const child of children(node))
         if (tagOf(child) !== "#text") walk(child, a, m, alpha, depth + 1);
       return;
@@ -1197,8 +1197,8 @@ export function compilePageSVG(
           ...(a["data-pptx-shape-style"]
             ? { style: nativeShapeStyle(a["data-pptx-shape-style"]) }
             : {}),
-          ...(a["data-savanna-hyperlink"]
-            ? { link: hyperlink(a["data-savanna-hyperlink"]) }
+          ...(a["data-desq-hyperlink"]
+            ? { link: hyperlink(a["data-desq-hyperlink"]) }
             : {}),
           ...(effects(a, alpha) ? { effectLst: effects(a, alpha) } : {}),
           imageSource: {
@@ -1346,8 +1346,8 @@ export function compilePageSVG(
       ...(a["data-pptx-shape-style"]
         ? { style: nativeShapeStyle(a["data-pptx-shape-style"]) }
         : {}),
-      ...(a["data-savanna-hyperlink"]
-        ? { link: hyperlink(a["data-savanna-hyperlink"]) }
+      ...(a["data-desq-hyperlink"]
+        ? { link: hyperlink(a["data-desq-hyperlink"]) }
         : {}),
       ...(effects(a, alpha) ? { effectLst: effects(a, alpha) } : {}),
       ln:

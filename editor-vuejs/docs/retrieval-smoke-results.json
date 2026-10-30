@@ -7,46 +7,46 @@
   "results": [
     {
       "command": "Put the selected object 200 pixels farther down",
-      "expected": "savanna_move_shape_by",
+      "expected": "desq_move_shape_by",
       "rank": 1,
       "ranked": [
         {
-          "name": "savanna_move_shape_by",
+          "name": "desq_move_shape_by",
           "similarity": 0.8628294132741909,
           "score": 1.0128294132741908
         },
         {
-          "name": "savanna_move_shape",
+          "name": "desq_move_shape",
           "similarity": 0.8700575552972662,
           "score": 0.8700575552972662
         },
         {
-          "name": "savanna_add_autoshape",
+          "name": "desq_add_autoshape",
           "similarity": 0.7878666132439651,
           "score": 0.7878666132439651
         },
         {
-          "name": "savanna_delete_shape",
+          "name": "desq_delete_shape",
           "similarity": 0.7591768482444088,
           "score": 0.7591768482444088
         },
         {
-          "name": "savanna_select_page",
+          "name": "desq_select_page",
           "similarity": 0.7397593020022378,
           "score": 0.7397593020022378
         },
         {
-          "name": "savanna_get_page",
+          "name": "desq_get_page",
           "similarity": 0.7313634096114103,
           "score": 0.7313634096114103
         },
         {
-          "name": "savanna_set_shape_text",
+          "name": "desq_set_shape_text",
           "similarity": 0.7140808720233662,
           "score": 0.7140808720233662
         },
         {
-          "name": "savanna_add_text",
+          "name": "desq_add_text",
           "similarity": 0.6995810594802225,
           "score": 0.6995810594802225
         }
@@ -54,46 +54,46 @@
     },
     {
       "command": "Translate the chosen ellipse 50px left and 10px up",
-      "expected": "savanna_move_shape_by",
+      "expected": "desq_move_shape_by",
       "rank": 1,
       "ranked": [
         {
-          "name": "savanna_move_shape_by",
+          "name": "desq_move_shape_by",
           "similarity": 0.7643054572646798,
           "score": 0.9143054572646798
         },
         {
-          "name": "savanna_add_autoshape",
+          "name": "desq_add_autoshape",
           "similarity": 0.8003925504836049,
           "score": 0.8003925504836049
         },
         {
-          "name": "savanna_move_shape",
+          "name": "desq_move_shape",
           "similarity": 0.757397702658858,
           "score": 0.757397702658858
         },
         {
-          "name": "savanna_get_page",
+          "name": "desq_get_page",
           "similarity": 0.6963676840169422,
           "score": 0.6963676840169422
         },
         {
-          "name": "savanna_delete_shape",
+          "name": "desq_delete_shape",
           "similarity": 0.6944382051204653,
           "score": 0.6944382051204653
         },
         {
-          "name": "savanna_set_shape_text",
+          "name": "desq_set_shape_text",
           "similarity": 0.6942445925170919,
           "score": 0.6942445925170919
         },
         {
-          "name": "savanna_add_text",
+          "name": "desq_add_text",
           "similarity": 0.6861222365369445,
           "score": 0.6861222365369445
         },
         {
-          "name": "savanna_select_page",
+          "name": "desq_select_page",
           "similarity": 0.6736851495122119,
           "score": 0.6736851495122119
         }
@@ -101,46 +101,46 @@
     },
     {
       "command": "Raise the selected textbox by 40 pixels",
-      "expected": "savanna_move_shape_by",
+      "expected": "desq_move_shape_by",
       "rank": 1,
       "ranked": [
         {
-          "name": "savanna_move_shape_by",
+          "name": "desq_move_shape_by",
           "similarity": 0.8102912133337168,
           "score": 0.9602912133337168
         },
         {
-          "name": "savanna_set_shape_text",
+          "name": "desq_set_shape_text",
           "similarity": 0.8028435213557426,
           "score": 0.8028435213557426
         },
         {
-          "name": "savanna_add_text",
+          "name": "desq_add_text",
           "similarity": 0.7931286682991665,
           "score": 0.7931286682991665
         },
         {
-          "name": "savanna_move_shape",
+          "name": "desq_move_shape",
           "similarity": 0.7751556280999691,
           "score": 0.7751556280999691
         },
         {
-          "name": "savanna_delete_shape",
+          "name": "desq_delete_shape",
           "similarity": 0.7607395832023469,
           "score": 0.7607395832023469
         },
         {
-          "name": "savanna_add_autoshape",
+          "name": "desq_add_autoshape",
           "similarity": 0.7526203071998122,
           "score": 0.7526203071998122
         },
         {
-          "name": "savanna_get_page",
+          "name": "desq_get_page",
           "similarity": 0.7233373025053724,
           "score": 0.7233373025053724
         },
         {
-          "name": "savanna_select_page",
+          "name": "desq_select_page",
           "similarity": 0.7071205214167513,
           "score": 0.7071205214167513
         }
@@ -148,46 +148,46 @@
     },
     {
       "command": "Give this file the name Autumn report",
-      "expected": "savanna_rename_document",
+      "expected": "desq_rename_document",
       "rank": 1,
       "ranked": [
         {
-          "name": "savanna_rename_document",
+          "name": "desq_rename_document",
           "similarity": 0.6979357765758519,
           "score": 0.847935776575852
         },
         {
-          "name": "savanna_get_document",
+          "name": "desq_get_document",
           "similarity": 0.7700171537572896,
           "score": 0.7700171537572896
         },
         {
-          "name": "savanna_set_shape_text",
+          "name": "desq_set_shape_text",
           "similarity": 0.7616053871344716,
           "score": 0.7616053871344716
         },
         {
-          "name": "savanna_get_page",
+          "name": "desq_get_page",
           "similarity": 0.710381543126671,
           "score": 0.710381543126671
         },
         {
-          "name": "savanna_move_shape",
+          "name": "desq_move_shape",
           "similarity": 0.7072711505449343,
           "score": 0.7072711505449343
         },
         {
-          "name": "savanna_add_text",
+          "name": "desq_add_text",
           "similarity": 0.7008157513659792,
           "score": 0.7008157513659792
         },
         {
-          "name": "savanna_move_shape_by",
+          "name": "desq_move_shape_by",
           "similarity": 0.6741377009971553,
           "score": 0.6741377009971553
         },
         {
-          "name": "savanna_add_autoshape",
+          "name": "desq_add_autoshape",
           "similarity": 0.6661871271017146,
           "score": 0.6661871271017146
         }
@@ -195,46 +195,46 @@
     },
     {
       "command": "Put a text rectangle on the canvas",
-      "expected": "savanna_add_text",
+      "expected": "desq_add_text",
       "rank": 1,
       "ranked": [
         {
-          "name": "savanna_add_text",
+          "name": "desq_add_text",
           "similarity": 0.7812665259009599,
           "score": 0.7812665259009599
         },
         {
-          "name": "savanna_add_autoshape",
+          "name": "desq_add_autoshape",
           "similarity": 0.7662571713678812,
           "score": 0.7662571713678812
         },
         {
-          "name": "savanna_set_shape_text",
+          "name": "desq_set_shape_text",
           "similarity": 0.7338800197152905,
           "score": 0.7338800197152905
         },
         {
-          "name": "savanna_move_shape",
+          "name": "desq_move_shape",
           "similarity": 0.706178188558654,
           "score": 0.706178188558654
         },
         {
-          "name": "savanna_get_page",
+          "name": "desq_get_page",
           "similarity": 0.7045906282693541,
           "score": 0.7045906282693541
         },
         {
-          "name": "savanna_delete_shape",
+          "name": "desq_delete_shape",
           "similarity": 0.7000938551553596,
           "score": 0.7000938551553596
         },
         {
-          "name": "savanna_move_shape_by",
+          "name": "desq_move_shape_by",
           "similarity": 0.6996147472782513,
           "score": 0.6996147472782513
         },
         {
-          "name": "savanna_select_page",
+          "name": "desq_select_page",
           "similarity": 0.6409091219540123,
           "score": 0.6409091219540123
         }
@@ -242,46 +242,46 @@
     },
     {
       "command": "Write Hello in a new box with a green background",
-      "expected": "savanna_add_text",
+      "expected": "desq_add_text",
       "rank": 1,
       "ranked": [
         {
-          "name": "savanna_add_text",
+          "name": "desq_add_text",
           "similarity": 0.7616322275199187,
           "score": 0.9116322275199187
         },
         {
-          "name": "savanna_set_shape_text",
+          "name": "desq_set_shape_text",
           "similarity": 0.6847532586599542,
           "score": 0.6847532586599542
         },
         {
-          "name": "savanna_delete_shape",
+          "name": "desq_delete_shape",
           "similarity": 0.6510462687933969,
           "score": 0.6510462687933969
         },
         {
-          "name": "savanna_move_shape",
+          "name": "desq_move_shape",
           "similarity": 0.6461035366731972,
           "score": 0.6461035366731972
         },
         {
-          "name": "savanna_move_shape_by",
+          "name": "desq_move_shape_by",
           "similarity": 0.6443371307165994,
           "score": 0.6443371307165994
         },
         {
-          "name": "savanna_get_page",
+          "name": "desq_get_page",
           "similarity": 0.6418974310058879,
           "score": 0.6418974310058879
         },
         {
-          "name": "savanna_add_autoshape",
+          "name": "desq_add_autoshape",
           "similarity": 0.638370617524626,
           "score": 0.638370617524626
         },
         {
-          "name": "savanna_get_document",
+          "name": "desq_get_document",
           "similarity": 0.6215881827376475,
           "score": 0.6215881827376475
         }
@@ -289,46 +289,46 @@
     },
     {
       "command": "Change the heading to Sales forecast",
-      "expected": "savanna_set_shape_text",
+      "expected": "desq_set_shape_text",
       "rank": 1,
       "ranked": [
         {
-          "name": "savanna_set_shape_text",
+          "name": "desq_set_shape_text",
           "similarity": 0.7958524017117138,
           "score": 0.7958524017117138
         },
         {
-          "name": "savanna_move_shape",
+          "name": "desq_move_shape",
           "similarity": 0.705388942710236,
           "score": 0.705388942710236
         },
         {
-          "name": "savanna_move_shape_by",
+          "name": "desq_move_shape_by",
           "similarity": 0.6872356190873634,
           "score": 0.6872356190873634
         },
         {
-          "name": "savanna_select_page",
+          "name": "desq_select_page",
           "similarity": 0.6773898317785193,
           "score": 0.6773898317785193
         },
         {
-          "name": "savanna_get_page",
+          "name": "desq_get_page",
           "similarity": 0.6769712151681718,
           "score": 0.6769712151681718
         },
         {
-          "name": "savanna_rename_document",
+          "name": "desq_rename_document",
           "similarity": 0.6717033687993543,
           "score": 0.6717033687993543
         },
         {
-          "name": "savanna_add_text",
+          "name": "desq_add_text",
           "similarity": 0.6632003025203757,
           "score": 0.6632003025203757
         },
         {
-          "name": "savanna_delete_shape",
+          "name": "desq_delete_shape",
           "similarity": 0.6489775158193625,
           "score": 0.6489775158193625
         }
@@ -336,46 +336,46 @@
     },
     {
       "command": "Erase the selected textbox",
-      "expected": "savanna_delete_shape",
+      "expected": "desq_delete_shape",
       "rank": 1,
       "ranked": [
         {
-          "name": "savanna_delete_shape",
+          "name": "desq_delete_shape",
           "similarity": 0.8417025094632127,
           "score": 0.9917025094632127
         },
         {
-          "name": "savanna_set_shape_text",
+          "name": "desq_set_shape_text",
           "similarity": 0.8465762094827995,
           "score": 0.8465762094827995
         },
         {
-          "name": "savanna_add_text",
+          "name": "desq_add_text",
           "similarity": 0.7913412381169888,
           "score": 0.7913412381169888
         },
         {
-          "name": "savanna_move_shape",
+          "name": "desq_move_shape",
           "similarity": 0.7561565832398356,
           "score": 0.7561565832398356
         },
         {
-          "name": "savanna_move_shape_by",
+          "name": "desq_move_shape_by",
           "similarity": 0.7404784990684541,
           "score": 0.7404784990684541
         },
         {
-          "name": "savanna_add_autoshape",
+          "name": "desq_add_autoshape",
           "similarity": 0.71826348031102,
           "score": 0.71826348031102
         },
         {
-          "name": "savanna_get_page",
+          "name": "desq_get_page",
           "similarity": 0.7176984595465609,
           "score": 0.7176984595465609
         },
         {
-          "name": "savanna_select_page",
+          "name": "desq_select_page",
           "similarity": 0.7160933002073288,
           "score": 0.7160933002073288
         }
@@ -383,46 +383,46 @@
     },
     {
       "command": "Place the selected shape at 50, 120",
-      "expected": "savanna_move_shape",
+      "expected": "desq_move_shape",
       "rank": 1,
       "ranked": [
         {
-          "name": "savanna_move_shape",
+          "name": "desq_move_shape",
           "similarity": 0.8029479803673332,
           "score": 0.9529479803673332
         },
         {
-          "name": "savanna_add_autoshape",
+          "name": "desq_add_autoshape",
           "similarity": 0.8044048595482229,
           "score": 0.8044048595482229
         },
         {
-          "name": "savanna_move_shape_by",
+          "name": "desq_move_shape_by",
           "similarity": 0.7703925425528683,
           "score": 0.7703925425528683
         },
         {
-          "name": "savanna_set_shape_text",
+          "name": "desq_set_shape_text",
           "similarity": 0.7291551197196605,
           "score": 0.7291551197196605
         },
         {
-          "name": "savanna_get_page",
+          "name": "desq_get_page",
           "similarity": 0.7228284240690941,
           "score": 0.7228284240690941
         },
         {
-          "name": "savanna_delete_shape",
+          "name": "desq_delete_shape",
           "similarity": 0.7227858793004374,
           "score": 0.7227858793004374
         },
         {
-          "name": "savanna_add_text",
+          "name": "desq_add_text",
           "similarity": 0.6995024855317588,
           "score": 0.6995024855317588
         },
         {
-          "name": "savanna_select_page",
+          "name": "desq_select_page",
           "similarity": 0.6791349378027456,
           "score": 0.6791349378027456
         }
@@ -430,46 +430,46 @@
     },
     {
       "command": "Take me to slide 3",
-      "expected": "savanna_select_page",
+      "expected": "desq_select_page",
       "rank": 1,
       "ranked": [
         {
-          "name": "savanna_select_page",
+          "name": "desq_select_page",
           "similarity": 0.77284907910421,
           "score": 0.92284907910421
         },
         {
-          "name": "savanna_move_shape_by",
+          "name": "desq_move_shape_by",
           "similarity": 0.7451853470308301,
           "score": 0.7451853470308301
         },
         {
-          "name": "savanna_get_page",
+          "name": "desq_get_page",
           "similarity": 0.7362759845498063,
           "score": 0.7362759845498063
         },
         {
-          "name": "savanna_move_shape",
+          "name": "desq_move_shape",
           "similarity": 0.7272130816420348,
           "score": 0.7272130816420348
         },
         {
-          "name": "savanna_add_text",
+          "name": "desq_add_text",
           "similarity": 0.7165655700724785,
           "score": 0.7165655700724785
         },
         {
-          "name": "savanna_get_document",
+          "name": "desq_get_document",
           "similarity": 0.6921907536312544,
           "score": 0.6921907536312544
         },
         {
-          "name": "savanna_set_shape_text",
+          "name": "desq_set_shape_text",
           "similarity": 0.6852534772322293,
           "score": 0.6852534772322293
         },
         {
-          "name": "savanna_delete_shape",
+          "name": "desq_delete_shape",
           "similarity": 0.6784635160113136,
           "score": 0.6784635160113136
         }
@@ -477,46 +477,46 @@
     },
     {
       "command": "What pages does this file contain?",
-      "expected": "savanna_get_document",
+      "expected": "desq_get_document",
       "rank": 1,
       "ranked": [
         {
-          "name": "savanna_get_document",
+          "name": "desq_get_document",
           "similarity": 0.7956913016127618,
           "score": 0.7956913016127618
         },
         {
-          "name": "savanna_get_page",
+          "name": "desq_get_page",
           "similarity": 0.7452798351663069,
           "score": 0.7452798351663069
         },
         {
-          "name": "savanna_select_page",
+          "name": "desq_select_page",
           "similarity": 0.7162597655311068,
           "score": 0.7162597655311068
         },
         {
-          "name": "savanna_rename_document",
+          "name": "desq_rename_document",
           "similarity": 0.6505399481977385,
           "score": 0.6505399481977385
         },
         {
-          "name": "savanna_delete_shape",
+          "name": "desq_delete_shape",
           "similarity": 0.6476763903014757,
           "score": 0.6476763903014757
         },
         {
-          "name": "savanna_move_shape",
+          "name": "desq_move_shape",
           "similarity": 0.636774084201063,
           "score": 0.636774084201063
         },
         {
-          "name": "savanna_set_shape_text",
+          "name": "desq_set_shape_text",
           "similarity": 0.632739389926348,
           "score": 0.632739389926348
         },
         {
-          "name": "savanna_add_text",
+          "name": "desq_add_text",
           "similarity": 0.6167233278393024,
           "score": 0.6167233278393024
         }
@@ -524,46 +524,46 @@
     },
     {
       "command": "What does the current slide say?",
-      "expected": "savanna_get_page",
+      "expected": "desq_get_page",
       "rank": 1,
       "ranked": [
         {
-          "name": "savanna_get_page",
+          "name": "desq_get_page",
           "similarity": 0.773064908816366,
           "score": 0.773064908816366
         },
         {
-          "name": "savanna_add_text",
+          "name": "desq_add_text",
           "similarity": 0.7542812653416514,
           "score": 0.7542812653416514
         },
         {
-          "name": "savanna_select_page",
+          "name": "desq_select_page",
           "similarity": 0.7523411907662089,
           "score": 0.7523411907662089
         },
         {
-          "name": "savanna_set_shape_text",
+          "name": "desq_set_shape_text",
           "similarity": 0.7375492687565359,
           "score": 0.7375492687565359
         },
         {
-          "name": "savanna_move_shape_by",
+          "name": "desq_move_shape_by",
           "similarity": 0.736068817033531,
           "score": 0.736068817033531
         },
         {
-          "name": "savanna_move_shape",
+          "name": "desq_move_shape",
           "similarity": 0.722617756395649,
           "score": 0.722617756395649
         },
         {
-          "name": "savanna_get_document",
+          "name": "desq_get_document",
           "similarity": 0.7112987314296259,
           "score": 0.7112987314296259
         },
         {
-          "name": "savanna_delete_shape",
+          "name": "desq_delete_shape",
           "similarity": 0.7001148725740687,
           "score": 0.7001148725740687
         }

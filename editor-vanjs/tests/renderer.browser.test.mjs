@@ -10,7 +10,7 @@ import { runBrowserFixture } from '../../scripts/browser-fixture.mjs';
 const chrome = process.env.CHROME_BIN || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/chromium', '/usr/bin/google-chrome'].find(existsSync);
 
 test('native editor uses shared geometry, gradients, grouped text, images, tables and chart previews', { skip: !chrome, timeout: 60000 }, async () => {
-  const temp = await mkdtemp(join(tmpdir(), 'savanna-renderer-'));
+  const temp = await mkdtemp(join(tmpdir(), 'desq-renderer-'));
   try {
     // browser.test builds the same outputs too; do not rebuild shared output
     // concurrently from different test workers.
@@ -22,9 +22,9 @@ test('native editor uses shared geometry, gradients, grouped text, images, table
       const check=(ok,message)=>{if(!ok)throw Error(message)};
       const tick=()=>new Promise(r=>setTimeout(r,60));
       try {
-        await SavannaVanEditor.ready();
-        const R=SavannaRenderer;
-        const doc=SavannaVanEditor.blankDocument();
+        await DesqVanEditor.ready();
+        const R=DesqRenderer;
+        const doc=DesqVanEditor.blankDocument();
         doc.file.fonts=[{type:'google',family:'Roboto'}];
         const fill=v=>({uniClr:{$_otag:'srgbClr',$_val:v}});
         const tx=text=>({bodyPr:{$_lIns:0,$_rIns:0,$_tIns:0,$_bIns:0},p:{r:{t:text,rPr:{$_sz:2400,$_b:1,solidFill:fill('112233'),latin:{$_typeface:'Arial'}}}}});
@@ -43,7 +43,7 @@ test('native editor uses shared geometry, gradients, grouped text, images, table
         const source='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j8ioAAAAASUVORK5CYII=';
         doc.assets['sample.png']=source;
         doc.slides[0].bg={bgPr:{blipFill:{blip:{$_target:'sample.png'},stretch:{fillRect:{}}}}};
-        const api=SavannaVanEditor.mount(document.querySelector('[data-savanna-editor]'),{document:doc});await api.ready;await tick();
+        const api=DesqVanEditor.mount(document.querySelector('[data-desq-editor]'),{document:doc});await api.ready;await tick();
         check(!!document.querySelector('link[href^="https://fonts.googleapis.com/css?"][href*="Roboto"]'), 'document Google font loader is active');
         for(let i=0;i<100&&!document.querySelector('.ve-thumb .slide-bg image');i++)await tick();
         const thumbBackground=document.querySelector('.ve-thumb .slide-bg');
@@ -90,7 +90,7 @@ test('native editor uses shared geometry, gradients, grouped text, images, table
         check(imageURL===new URL('assets/sample.png',document.baseURI).href,'Extracted image paths resolve without an extra media prefix');
         const checkImage=new Image();checkImage.src=imageURL;await checkImage.decode();
         // Charts are supplied as SVG previews by the Vue host.
-        check(!window.SavannaCharts,'Chart renderer remains optional');
+        check(!window.DesqCharts,'Chart renderer remains optional');
         const chart={...base('chart',600,250,400,260),type:'chart',chartSvg:'<svg width="400rem" height="260rem" viewBox="0 0 400 260"><rect width="100" height="100"/></svg>',chartData:{animation:false,xAxis:{type:'category',data:['A','B']},yAxis:{type:'value'},series:[{type:'bar',data:[2,4]}]}};
         const chartDoc=(await api.getDocument());chartDoc.assets['sample.png']=source;chartDoc.slides[0].shapes.push(chart);await api.load(chartDoc);
         for(let i=0;i<200&&!document.querySelector('.ve-canvas .ssr-chart svg');i++)await new Promise(r=>setTimeout(r,20));

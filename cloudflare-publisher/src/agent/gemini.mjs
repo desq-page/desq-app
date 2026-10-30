@@ -20,13 +20,13 @@ export function createGeminiProvider({ apiKey, fetchImpl = fetch, router = creat
     for (const [id, session] of sessions) if (session.expiresAt < Date.now()) {
       session.controller?.abort(); session.key = undefined; sessions.delete(id);
     }
-    const cookie = req.headers.cookie?.split(';').map(part => part.trim()).find(part => part.startsWith('savanna_gemini='));
-    let session = sessions.get(cookie?.slice('savanna_gemini='.length));
+    const cookie = req.headers.cookie?.split(';').map(part => part.trim()).find(part => part.startsWith('desq_gemini='));
+    let session = sessions.get(cookie?.slice('desq_gemini='.length));
     if (!session) {
       if (sessions.size >= 100) return res.status(429).json({ error: 'Too many local Gemini sessions.' });
       const id = randomBytes(32).toString('base64url');
       session = { id, expiresAt: Date.now() + 8 * 3600_000 }; sessions.set(id, session);
-      res.set('Set-Cookie', `savanna_gemini=${id}; HttpOnly; SameSite=Strict; Path=${BASE}; Max-Age=28800${origin.startsWith('https:') ? '; Secure' : ''}`);
+      res.set('Set-Cookie', `desq_gemini=${id}; HttpOnly; SameSite=Strict; Path=${BASE}; Max-Age=28800${origin.startsWith('https:') ? '; Secure' : ''}`);
     }
     req.gemini = session; next();
   });

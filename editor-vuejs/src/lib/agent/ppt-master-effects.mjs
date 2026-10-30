@@ -1,5 +1,5 @@
 // Port of drawingml/styles.py build_shadow_xml/build_glow_xml and utils.py filter parameter mapping.
-// Copyright (c) 2025-2026 Hugo He, MIT. Output is the corresponding Savanna JSON subtree.
+// Copyright (c) 2025-2026 Hugo He, MIT. Output is the corresponding Desq JSON subtree.
 const tag = (n) => Object.keys(n).find((k) => k !== ":@");
 const children = (n) => n[tag(n)] || [];
 const attrs = (n) => {

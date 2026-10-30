@@ -12,7 +12,7 @@ const { publicKey, privateKey } = generateKeyPairSync('rsa', { modulusLength: 20
 const key = { ...publicKey.export({ format: 'jwk' }), kid: 'saved-key' };
 
 function temporary(t) {
-  const directory = mkdtempSync(join(tmpdir(), 'savanna-oauth-'));
+  const directory = mkdtempSync(join(tmpdir(), 'desq-oauth-'));
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   return directory;
 }
@@ -118,7 +118,7 @@ test('local OAuth survives restarts, persists rotating refresh tokens and retain
   assert.equal(returning.searchParams.get('login_hint'), 'user@example.test');
   const another = new URL((await f.api('login', { newAccount: true })).data.url);
   assert.equal(another.searchParams.get('client_id'), 'dynamic_agent_client');
-  assert.equal(another.searchParams.get('agent_name_hint'), 'Savanna Editor Agent');
+  assert.equal(another.searchParams.get('agent_name_hint'), 'Desq Editor Agent');
 });
 
 test('temporary refresh failure retains credentials; rejected grants clear tokens but preserve registration', async t => {

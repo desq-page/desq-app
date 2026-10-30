@@ -30,8 +30,8 @@ test('Vue HTML import restores document records and embedded media without execu
       ` }));
     } }] });
   const context = vm.createContext({ module: { exports: {} }, exports: {}, writes, URL, fetch, Uint8Array,
-    DOMParser: class { parseFromString(text) { return { getElementById: () => {
-      const match = text.match(/<script type="application\/json" id="savanna-document">([\s\S]*?)<\/script>/);
+    DOMParser: class { parseFromString(text) { return { getElementById: id => {
+      const match = text.match(new RegExp(`<script type="application/json" id="${id}">([\\s\\S]*?)</script>`));
       return match ? { textContent: match[1] } : null;
     } }; } } });
   vm.runInContext(result.outputFiles[0].text, context);

@@ -17,7 +17,7 @@ test('agent provider preference survives a fresh read', () => {
 });
 
 test('invalid or unavailable provider preference falls back to ChatGPT', () => {
-  assert.equal(readAgentProvider(storage({ 'savanna.agent.provider.v1': 'other' })), 'chatgpt');
+  assert.equal(readAgentProvider(storage({ 'desq.agent.provider.v1': 'other' })), 'chatgpt');
   assert.equal(readAgentProvider({ getItem() { throw Error('blocked'); } }), 'chatgpt');
   saveAgentProvider('invalid', storage());
 });

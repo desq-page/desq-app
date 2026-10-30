@@ -132,7 +132,7 @@ async function accountUsername(bucket, userId, email, emailVerified) {
   requireValue(/^[A-Za-z0-9][A-Za-z0-9._+-]{0,63}$/.test(username),
     400, "Your email username cannot be used as a publication folder");
   requireValue(!reservedUsernames.has(username.toLowerCase()), 409,
-    "Your email username is reserved for a Savanna site address");
+    "Your email username is reserved for a Desq site address");
   const profileKey = `_private/users/${userId}.json`;
   const aliasKey = `_private/usernames/${username}.json`;
   const alias = await readJson(bucket, aliasKey);

@@ -9,7 +9,7 @@ import { createEditorTools } from '../editor-vuejs/src/lib/agent/editor-tools.mj
 
 const context = { document: { fileId: 'file', selectedShapeIds: ['shape'], pages: [] },
   page: { pageId: 'page', shapes: [{ id: 'shape', text: 'x'.repeat(500) }], shapeCount: 1 } };
-const text = JSON.stringify({ message: '', calls: [{ name: 'savanna_move_shape_by', arguments: { dy: 200 } }] });
+const text = JSON.stringify({ message: '', calls: [{ name: 'desq_move_shape_by', arguments: { dy: 200 } }] });
 const complete = () => ({ candidates: [{ finishReason: 'STOP', content: { parts: [{ thought: true, text: 'internal thinking' }, { text }] } }], usageMetadata: { promptTokenCount: 42 } });
 
 test('Gemini returns only completed visible text and rejects blocked or truncated results', () => {
@@ -35,7 +35,7 @@ test('Gemini client binds selection, limits context, switches models and cancels
   agent.dispose(); assert.equal(signal.aborted, true);
   const invalid = createGeminiAgent(model, async () => ({ text: JSON.stringify({ calls: [{ name: 'run_shell', arguments: {} }] }) }));
   await assert.rejects(invalid.plan('Run shell', tools, context), /unknown tool/);
-  const badArgs = createGeminiAgent(model, async () => ({ text: JSON.stringify({ calls: [{ name: 'savanna_move_shape_by', arguments: { dy: '200' } }] }) }));
+  const badArgs = createGeminiAgent(model, async () => ({ text: JSON.stringify({ calls: [{ name: 'desq_move_shape_by', arguments: { dy: '200' } }] }) }));
   await assert.rejects(badArgs.plan('Move shape', tools, context), /Invalid dy/);
 });
 
@@ -60,7 +60,7 @@ async function fixture(t, options = {}) {
     assert.match(url, /models\/gemini-(flash|pro):generateContent$/);
     planCalls++;
     const body = JSON.parse(request.body);
-    assert.ok(body.systemInstruction.parts[0].text.includes('savanna_move_shape_by'));
+    assert.ok(body.systemInstruction.parts[0].text.includes('desq_move_shape_by'));
     assert.equal(body.generationConfig.responseMimeType, 'application/json');
     assert.equal(body.contents[0].role, 'user');
     if (mode === 'quota') return Response.json({ error: { message: 'test-secret' } }, { status: 429 });
@@ -152,7 +152,7 @@ test('Gemini enforces the command envelope through structured JSON output', asyn
   assert.deepEqual(schema.required, ['message', 'calls']);
   assert.equal(schema.additionalProperties, false);
   assert.deepEqual(schema.properties.calls.items.required, ['name', 'arguments']);
-  assert.ok(schema.properties.calls.items.properties.name.enum.includes('savanna_create_deck'));
+  assert.ok(schema.properties.calls.items.properties.name.enum.includes('desq_create_deck'));
   assert.equal(schema.properties.calls.items.properties.arguments.type, 'object');
   assert.equal(buildProviderPlan('chatgpt', { model: 'gpt-test', command: 'Hello', context }).request.generationConfig, undefined);
 });

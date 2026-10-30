@@ -57,7 +57,7 @@ agent metadata and placeholder index zero, including explicit title indices.
 
 ## Model output
 
-Both cloud and local creation use `savanna_create_deck` with `layout: "pptx"`:
+Both cloud and local creation use `desq_create_deck` with `layout: "pptx"`:
 
 ```json
 {

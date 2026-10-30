@@ -7,7 +7,7 @@ export const cloudflareApiOrigin = (import.meta.env.VITE_CLOUDFLARE_PUBLISH_API 
   "https://publish-api.desq.page").replace(/\/$/, "");
 export const cloudflarePublicOrigin = (import.meta.env.VITE_CLOUDFLARE_PUBLIC_ORIGIN ||
   "https://desq.page").replace(/\/$/, "");
-export const cloudflareGoogleClientId = import.meta.env.VITE_CLOUDFLARE_GOOGLE_CLIENT_ID || "519623835982-3oo1a0hka006t79o3j1qqk0u1vsm5de7.apps.googleusercontent.com";
+export const cloudflareGoogleClientId = import.meta.env.VITE_CLOUDFLARE_GOOGLE_CLIENT_ID || "712080911540-dgan2oeith32lagdq9nh7cqu5op109ki.apps.googleusercontent.com";
 
 export type PublishedCloudflareFile = {
   userId: string; username: string; slug: string; fileId: string; title: string;

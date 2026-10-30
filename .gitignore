@@ -82,12 +82,14 @@ editor-vuejs/public/editor-vanjs-charts.js
 /shared-vuejs/dist/
 
 # Local core build notifications
-/.savanna-local.json
+/.desq-local.json
 
 # Shared-workspace debugger setup
 !.vscode/launch.json
 !.vscode/tasks.json
-/.savanna-local-assets/
+/.desq-local-assets/
+/.*-local-assets/
+/.*-local.json
 
 # Credential files must never be tracked
 **/client_secret*.json

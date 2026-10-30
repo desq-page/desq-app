@@ -8,7 +8,7 @@ The normal save, Undo, thumbnail and PPTX export paths remain the integration bo
 
 ## Conversion
 
-`savanna_create_deck` accepts `slides: [{title, purpose, layout: "html", html: "…"}]`.
+`desq_create_deck` accepts `slides: [{title, purpose, layout: "html", html: "…"}]`.
 Each HTML string contains one `section`, positioned at 0,0 and sized 1280×720.
 Use inline CSS or a local style element inside the section. The model does not
 produce React, executable scripts, or PPTX bytes.

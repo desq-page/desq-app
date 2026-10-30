@@ -2,7 +2,7 @@
 
 Pinned commit: `b113d23720260c411ee47b2b05a73615f954deeb`. 52 Python converter modules inventoried.
 
-This is a coverage inventory, not a full-parity claim. Savanna's native object model can retain DrawingML properties; the remaining work is source-transport parsing and owning-layer integration, not editor feature support.
+This is a coverage inventory, not a full-parity claim. Desq's native object model can retain DrawingML properties; the remaining work is source-transport parsing and owning-layer integration, not editor feature support.
 
 See [the function-level inventory](ppt-master-audit.json) and [port contract](ppt-master-port.md).
 
@@ -14,7 +14,7 @@ See [the function-level inventory](ppt-master-audit.json) and [port contract](pp
 | `canvas_contract.py` | not-ported | Retained in the audit for explicit follow-up; no claim of upstream-wide feature parity. |
 | `drawingml/__init__.py` | editor-integration | Python module exports are replaced by JavaScript module entry points; this is packaging glue rather than a DrawingML feature. |
 | `drawingml/context.py` | editor-integration | The JS compiler context owns definitions, bounded traversal, images, IDs and native geometry callbacks. Upstream archive context is owned by the editor. |
-| `drawingml/converter.py` | partial-port | Traversal, preflight and Savanna output replace XML packaging; not every upstream gate is translated. |
+| `drawingml/converter.py` | partial-port | Traversal, preflight and Desq output replace XML packaging; not every upstream gate is translated. |
 | `drawingml/elements.py` | partial-port | Native freeforms, presets/adjustments, transformed text/images, positioned spans, picture clips/crops, hyperlinks and preserved shape-style XML mapped. Preserved geometry/text object payloads and advanced branches remain. |
 | `drawingml/hyperlinks.py` | partial-port | HTTP(S), mailto and standard slideshow actions map to native shape/text links. Source package relationship reuse and arbitrary internal destinations remain. |
 | `drawingml/paths.py` | delegated-geometry | SVG path normalization/curve and arc conversion use svg-pathdata; output is editable native geometry. |
@@ -44,21 +44,21 @@ See [the function-level inventory](ppt-master-audit.json) and [port contract](pp
 | `native_objects/marker_status.py` | partial-port | Native metadata decodes to editable classic/ChartEx charts with data workbooks, weighted/merged rich-text tables and block/inline Office Math. The JS LaTeX grammar, chart option coverage and imported-source freshness/style contracts are not yet exhaustive; no whole-module parity claim. |
 | `native_objects/table.py` | partial-port | Native metadata decodes to editable classic/ChartEx charts with data workbooks, weighted/merged rich-text tables and block/inline Office Math. The JS LaTeX grammar, chart option coverage and imported-source freshness/style contracts are not yet exhaustive; no whole-module parity claim. |
 | `native_objects/workbook.py` | partial-port | Native metadata decodes to editable classic/ChartEx charts with data workbooks, weighted/merged rich-text tables and block/inline Office Math. The JS LaTeX grammar, chart option coverage and imported-source freshness/style contracts are not yet exhaustive; no whole-module parity claim. |
-| `pptx_package/__init__.py` | editor-integration | Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
-| `pptx_package/builder.py` | editor-integration | Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
-| `pptx_package/cli.py` | editor-integration | Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
-| `pptx_package/dimensions.py` | editor-integration | Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
-| `pptx_package/discovery.py` | editor-integration | Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
-| `pptx_package/media.py` | editor-integration | Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
-| `pptx_package/narration.py` | editor-integration | Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
-| `pptx_package/notes.py` | editor-integration | Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
-| `pptx_package/slide_xml.py` | editor-integration | Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
-| `pptx_package/template_structure.py` | editor-integration | Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
-| `pptx_package/template_validation.py` | editor-integration | Savanna owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
+| `pptx_package/__init__.py` | editor-integration | Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
+| `pptx_package/builder.py` | editor-integration | Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
+| `pptx_package/cli.py` | editor-integration | Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
+| `pptx_package/dimensions.py` | editor-integration | Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
+| `pptx_package/discovery.py` | editor-integration | Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
+| `pptx_package/media.py` | editor-integration | Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
+| `pptx_package/narration.py` | editor-integration | Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
+| `pptx_package/notes.py` | editor-integration | Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
+| `pptx_package/slide_xml.py` | editor-integration | Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
+| `pptx_package/template_structure.py` | editor-integration | Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
+| `pptx_package/template_validation.py` | editor-integration | Desq owns page/archive persistence and relationships. Upstream package-specific templates, narration and structured export have not been reimplemented. |
 | `semantic_markers.py` | not-ported | Retained in the audit for explicit follow-up; no claim of upstream-wide feature parity. |
 | `shape_boolean.py` | partial-port | Union/intersection/subtract/XOR/fragment use Paper.js curve operations in place of skia-pathops. Stable source IDs and actual-font text outlines are connected; advanced imported geometry/Boolean preprocessing contracts remain. |
 | `text_outline.py` | not-ported | Retained in the audit for explicit follow-up; no claim of upstream-wide feature parity. |
 | `tspan_flattener.py` | partial-port | Positioned lines become native editable text frames. Paragraph classification/reflow modes remain. |
 | `use_expander.py` | partial-port | Bounded local defs/use expansion is mapped; external symbol resources are not fetched. |
 
-Upstream explicitly rejects arbitrary SVG masks in `drawingml/utils.py:project_mask_errors`. Native picture clipping is separately supported and now mapped. SVG masks are not being described as an Savanna limitation.
+Upstream explicitly rejects arbitrary SVG masks in `drawingml/utils.py:project_mask_errors`. Native picture clipping is separately supported and now mapped. SVG masks are not being described as an Desq limitation.

@@ -50,7 +50,7 @@ defineProps<{ disabled?: boolean }>();
 const dialog = useDialog();
 const cloudflarePublicHost = new URL(cloudflarePublicOrigin).host;
 // Cache the short-lived credential for refreshes; the API validates it on restore.
-const sessionKey = `savanna-publish-google:${cloudflareGoogleClientId}`;
+const sessionKey = `desq-publish-google:${cloudflareGoogleClientId}`;
 const restoringSession = ref(false);
 const token = ref("");
 const user = ref<{ userId: string; username: string; name: string } | null>(null);

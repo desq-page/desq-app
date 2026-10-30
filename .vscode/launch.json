@@ -2,12 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Savanna: debug app + local core",
+      "name": "DESQ: debug app + local core",
       "type": "pwa-chrome",
       "request": "launch",
       "url": "https://localhost:6173",
       "webRoot": "${workspaceFolder}/editor-vuejs",
-      "preLaunchTask": "Savanna: local dev",
+      "preLaunchTask": "DESQ: local dev",
       "sourceMaps": true,
       "resolveSourceMapLocations": [
         "${workspaceFolder}/**",

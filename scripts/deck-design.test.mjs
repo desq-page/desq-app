@@ -69,7 +69,7 @@ test('both cloud providers review a valid draft once, report previews and keep o
   for (const create of [createGeminiAgent, createChatGPTAgent]) {
     const requests = [], previews = [], progress = [];
     const agent = create('test', async (path, { body }) => {
-      requests.push(body); return { text: JSON.stringify({ message: 'Drafted a deck', calls: [{ name: 'savanna_create_deck', arguments: designSample() }] }), inferenceMs: 2, inputTokens: 7 };
+      requests.push(body); return { text: JSON.stringify({ message: 'Drafted a deck', calls: [{ name: 'desq_create_deck', arguments: designSample() }] }), inferenceMs: 2, inputTokens: 7 };
     });
     const plan = await agent.plan('Create a deck', tools, context, { onPreview: p => previews.push(p), onProgress: p => progress.push(p) });
     assert.equal(requests.length, 2); assert.equal(requests[1].context.deckReview.storyboard.length, 10);
@@ -84,7 +84,7 @@ test('both cloud providers review a valid draft once, report previews and keep o
 
 test('cancellation between draft and review prevents the second request', async () => {
   let count = 0;
-  const agent = createGeminiAgent('test', async () => { count++; return { text: JSON.stringify({ message: 'Deck', calls: [{ name: 'savanna_create_deck', arguments: designSample() }] }) }; });
+  const agent = createGeminiAgent('test', async () => { count++; return { text: JSON.stringify({ message: 'Deck', calls: [{ name: 'desq_create_deck', arguments: designSample() }] }) }; });
   await assert.rejects(agent.plan('Create a deck', createEditorTools({}).listTools(), { document: { fileId: 'f' }, page: { pageId: 'p' } }, { onPreview: () => agent.dispose() }));
   // The request boundary must check cancellation even if preview callbacks stop the agent.
   assert.equal(count, 1);
@@ -99,7 +99,7 @@ test('design review cannot change the slide count, switch to edit tools or retry
       if (count === 2 && mode === 'network') throw Error('Provider unavailable');
       const deck = designSample();
       if (count === 2 && mode === 'count') deck.slides.pop();
-      const calls = count === 2 && mode === 'tool' ? [] : [{ name: 'savanna_create_deck', arguments: deck }];
+      const calls = count === 2 && mode === 'tool' ? [] : [{ name: 'desq_create_deck', arguments: deck }];
       return { text: JSON.stringify({ message: 'Draft', calls }) };
     });
     await assert.rejects(agent.plan('Create a deck', tools, context), mode === 'count' ? /slide count/ : mode === 'network' ? /unavailable/ : /one complete deck/);
@@ -135,7 +135,7 @@ test('the exact Hello World brief repairs text/image-only output into a native t
         middle.layout = 'content'; middle.bullets = middle.items.map(item => item.body); delete middle.items;
         middle.images = [{ query: 'colorful hello world abstract', alt: 'Hello World illustration' }];
       }
-      return { text: JSON.stringify({ message: 'A Hello World deck', calls: [{ name: 'savanna_create_deck', arguments: deck }] }) };
+      return { text: JSON.stringify({ message: 'A Hello World deck', calls: [{ name: 'desq_create_deck', arguments: deck }] }) };
     });
     const plan = await agent.plan(HELLO_WORLD_PROMPT, tools, context);
     assert.equal(requests.length, 2); assert.match(requests[1].context.deckRepair.validationError, /no informational native shapes/);
@@ -161,7 +161,7 @@ test('persistently basic decks stop after one composition repair; uniform-layout
       count++;
       const deck = helloWorldSample();
       deck.slides = Array.from({ length: 3 }, () => ({ title: 'Hello World', purpose: 'Explain', layout: 'content', bullets: ['A simple greeting'], images: [{ query: 'colorful greeting', alt: 'Greeting' }] }));
-      return { text: JSON.stringify({ message: 'Deck', calls: [{ name: 'savanna_create_deck', arguments: deck }] }) };
+      return { text: JSON.stringify({ message: 'Deck', calls: [{ name: 'desq_create_deck', arguments: deck }] }) };
     });
     if (uniform) { await agent.plan('Create 3 slides using the same layout', tools, context); assert.equal(count, 2); }
     else { await assert.rejects(agent.plan(HELLO_WORLD_PROMPT, tools, context), /Deck composition check failed/); assert.equal(count, 2); }

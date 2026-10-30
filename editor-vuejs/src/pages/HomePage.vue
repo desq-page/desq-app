@@ -32,7 +32,7 @@ const questions = [
 </script>
 
 <template>
-  <div class="savanna-home">
+  <div class="desq-home">
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header page-width">
       <a href="/" class="wordmark" aria-label="DESQ home"><img src="/favicon.svg?v=desq-color" alt="" />DESQ</a>
@@ -70,7 +70,7 @@ const questions = [
             </div>
           </div>
 
-          <div id="why-savanna" class="hero-values" aria-label="Why DESQ">
+          <div id="why-desq" class="hero-values" aria-label="Why DESQ">
             <article>
               <div class="value-top"><span>01 / PRESENT IN HTML</span><span class="value-symbol" aria-hidden="true">↗</span></div>
               <h2>Completely in HTML.</h2>
@@ -142,9 +142,9 @@ const questions = [
 </template>
 
 <style scoped>
-.savanna-home { --ink: #19352a; --muted: #5b6c62; --green: #315b3f; --lime: #d0ec9c; --line: #dce3d8; background: #fafbf6; color: var(--ink); font-family: Inter, Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1.6; width: 100%; overflow: clip; }
-.savanna-home *, .savanna-home *::before, .savanna-home *::after { box-sizing: border-box; }
-.savanna-home a { color: inherit; text-decoration: none; }
+.desq-home { --ink: #19352a; --muted: #5b6c62; --green: #315b3f; --lime: #d0ec9c; --line: #dce3d8; background: #fafbf6; color: var(--ink); font-family: Inter, Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1.6; width: 100%; overflow: clip; }
+.desq-home *, .desq-home *::before, .desq-home *::after { box-sizing: border-box; }
+.desq-home a { color: inherit; text-decoration: none; }
 a:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px solid #7ca141; outline-offset: 5px; }
 .page-width { width: min(1240px, calc(100% - 80px)); margin-inline: auto; }
 .skip-link { position: absolute; top: -100px; left: 20px; z-index: 10; padding: 12px; background: white; }
@@ -155,8 +155,8 @@ a:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px solid
 .site-header nav { display: flex; align-items: center; gap: 28px; font-size: 12px; font-weight: 650; }
 .button { display: inline-flex; align-items: center; justify-content: space-between; gap: 22px; border-radius: 5px; padding: 14px 20px; font-size: 13px; font-weight: 750; line-height: 1.45; transition: background .2s, transform .2s; }
 .button:hover { transform: translateY(-2px); }
-.savanna-home .button-dark { background: var(--ink); color: #fff; }
-.savanna-home .button-lime { background: var(--lime); color: #173323; }
+.desq-home .button-dark { background: var(--ink); color: #fff; }
+.desq-home .button-lime { background: var(--lime); color: #173323; }
 .button-lime:hover { background: #e0f5b9; }
 .text-link { font-size: 13px; font-weight: 650; }
 .text-link span { margin-left: 8px; }

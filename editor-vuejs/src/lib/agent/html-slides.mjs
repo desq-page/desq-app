@@ -175,8 +175,8 @@ function materializePseudoElements(page, doc, onWarning) {
   }
   // Snapshot all computed styles before suppressing the originals or changing flow.
   const disable = doc.createElement("style");
-  doc.documentElement.id = "savanna-html-layout-root";
-  const scope = "#savanna-html-layout-root#savanna-html-layout-root";
+  doc.documentElement.id = "desq-html-layout-root";
+  const scope = "#desq-html-layout-root#desq-html-layout-root";
   disable.textContent = `${scope} *::before,${scope} *::after{content:none!important;display:none!important}`;
   doc.body.append(disable);
   for (const { element, pseudo, text, style } of pending) {

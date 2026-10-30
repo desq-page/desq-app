@@ -6,9 +6,9 @@ import { blankDocument } from '../src/model.mjs';
 import { packageEntries, editableZip, readEditableZip, parseDocumentScript } from '../src/package.mjs';
 import { createZip, readZip, crc32 } from '../src/zip.mjs';
 globalThis.crypto ||= webcrypto;
-const runtime = 'window.SavannaVanEditor={};', styles = '.ve-editor{color:red}';
-const resources = { renderer: 'window.SavannaRenderer={};', rendererStyles: '.slide{position:relative}',
-  player: 'window.SavannaPlayer={};', playerStyles: '@font-face{src:url(/fonts/Carlito.woff2)}',
+const runtime = 'window.DesqVanEditor={};', styles = '.ve-editor{color:red}';
+const resources = { renderer: 'window.DesqRenderer={};', rendererStyles: '.slide{position:relative}',
+  player: 'window.DesqPlayer={};', playerStyles: '@font-face{src:url(/fonts/Carlito.woff2)}',
   playerAssets: [{ name: 'assets/fonts/Carlito.woff2', mime: 'font/woff2', data: new Uint8Array([7, 8, 9]) }] };
 
 test('package has readable files, binary media, aliases and a correct inventory', async () => {
@@ -38,7 +38,7 @@ test('ZIP reader supports legacy JSON and rejects executable document scripts', 
   const legacy = createZip([{ name: 'document.json', data: JSON.stringify(oldDoc) },
     { name: 'document.js', data: 'obsolete fallback' }]);
   assert.equal((await readEditableZip(legacy)).file.name, 'Legacy document');
-  assert.throws(() => parseDocumentScript('window.SavannaDocument = {}; globalThis.injected = true;'), /JSON|Invalid/);
+  assert.throws(() => parseDocumentScript('window.DesqDocument = {}; globalThis.injected = true;'), /JSON|Invalid/);
 });
 
 test('ZIP is readable by an independent standard ZIP implementation', async () => {

@@ -12,9 +12,9 @@ import { nextTick, onMounted, ref } from "vue";
 
 // const playerRef = ref();
 
-import * as player from "@savanna/player";
-import "@savanna/player/player.css";
-import { extractSld } from "@savanna/player";
+import * as player from "@desq/player";
+import "@desq/player/player.css";
+import { extractSld } from "@desq/player";
 import { setupDB } from "shared-vuejs/api/db";
 import { prepareExportFile } from "shared-vuejs/api/html";
 import { getMediaRecordFromOPFS } from "shared-vuejs/api/opfs";

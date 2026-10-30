@@ -5,7 +5,7 @@ import { parseToolPlan } from '../editor-vuejs/src/lib/agent/agent-plan.mjs';
 import { createEditorTools } from '../editor-vuejs/src/lib/agent/editor-tools.mjs';
 const tools = createEditorTools({}).listTools();
 const context = { document: { fileId: 'f' }, page: { pageId: 'p' } };
-const text = args => JSON.stringify({ message: 'Add text', calls: [{ name: 'savanna_add_text', arguments: args }] });
+const text = args => JSON.stringify({ message: 'Add text', calls: [{ name: 'desq_add_text', arguments: args }] });
 test('invalid non-deck arguments are repaired once before execution', async () => {
   const requests = [], progress = [];
   const result = await checkedCloudPlan({ tools, context, parse: parseToolPlan,
@@ -15,7 +15,7 @@ test('invalid non-deck arguments are repaired once before execution', async () =
       return { text: requests.length === 1 ? text({ text: 'Hello', fontSize: 24 }) : text({ text: 'Hello' }), inferenceMs: 10 };
     } });
   assert.equal(requests.length, 2);
-  assert.match(requests[1].context.planRepair.validationError, /savanna_add_text: Unknown argument: fontSize/);
+  assert.match(requests[1].context.planRepair.validationError, /desq_add_text: Unknown argument: fontSize/);
   assert.equal(result.plan.calls[0].arguments.text, 'Hello');
   assert.equal(result.response.repaired, true);
   assert.equal(result.response.inferenceMs, 20);
@@ -24,7 +24,7 @@ test('invalid non-deck arguments are repaired once before execution', async () =
 test('repeated invalid output stops after one correction; provider errors do not retry', async () => {
   let requests = 0;
   await assert.rejects(checkedCloudPlan({ tools, context, parse: parseToolPlan, body: { command: 'Add hello', context },
-    request: async () => { requests++; return { text: text({ fontSize: 24 }) }; } }), /savanna_add_text: Unknown argument: fontSize/);
+    request: async () => { requests++; return { text: text({ fontSize: 24 }) }; } }), /desq_add_text: Unknown argument: fontSize/);
   assert.equal(requests, 2);
   requests = 0;
   await assert.rejects(checkedCloudPlan({ tools, context, parse: parseToolPlan, body: { command: 'Add hello', context },
@@ -36,7 +36,7 @@ test('deck strategy fields returned at the top level are nested before validatio
   const deck = { title: 'Test', audience: 'Readers', objective: 'Explain',
     thesis: 'A clear point', narrative: 'Explain then conclude', visualStyle: 'Quiet and spacious',
     slides: [{ title: 'Overview', purpose: 'Explain the topic', layout: 'content' }] };
-  const parse = args => parseToolPlan(JSON.stringify({ calls: [{ name: 'savanna_create_deck', arguments: args }] }), tools, context).calls[0].arguments;
+  const parse = args => parseToolPlan(JSON.stringify({ calls: [{ name: 'desq_create_deck', arguments: args }] }), tools, context).calls[0].arguments;
   const result = parse(deck);
   assert.deepEqual(result.strategy, { thesis: deck.thesis, narrative: deck.narrative, visualStyle: deck.visualStyle });
   assert.equal(Object.hasOwn(result, 'visualStyle'), false);

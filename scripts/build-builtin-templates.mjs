@@ -63,8 +63,8 @@ for(const builtin of builtins) {
  const name=builtin.fileName,template=builtin,bytes=Buffer.from(JSON.stringify(builtin)),familyId=builtin.id;
  const deck=Presentation.create({slideSize:{width:1280,height:720}}),scenes=template.layouts.map(l=>l.scene);
  for(const scene of scenes)buildSlide(deck,scene,template.palette?.background||template.theme?.colors?.background);
- const metadata={version:1,upstream:'savanna',license:'Project source',family:familyId,name:template.name,description:template.description,sourceSHA256:createHash('sha256').update(bytes).digest('hex'),layouts:scenes.map((scene,i)=>({id:scene.id,page:i+1,description:scene.description,slots:scene.slots,warnings:scene.warnings}))};
- if(builtin){metadata.upstream='savanna';metadata.license='Project source';delete metadata.sourceCommit;}
+ const metadata={version:1,upstream:'desq',license:'Project source',family:familyId,name:template.name,description:template.description,sourceSHA256:createHash('sha256').update(bytes).digest('hex'),layouts:scenes.map((scene,i)=>({id:scene.id,page:i+1,description:scene.description,slots:scene.slots,warnings:scene.warnings}))};
+ if(builtin){metadata.upstream='desq';metadata.license='Project source';delete metadata.sourceCommit;}
  // Every rendered content fragment gets an addressable native placeholder.
  for(const [index,scene]of scenes.entries()){
    const slots=metadata.layouts[index].slots;

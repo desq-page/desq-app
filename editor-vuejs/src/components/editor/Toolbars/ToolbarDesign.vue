@@ -42,7 +42,7 @@ const context=computed(()=>{piniaSlides().slideId;piniaSlides().sldState;revisio
 const disabled=computed(()=>busy.value||!context.value.supported);
 const scope='Changes the current slide’s master and all slides using that master. Other masters stay unchanged.';
 const samples = [
-  {id:'savanna',name:'DESQ',colorId:'green',fontId:'office',variant:'light',background:'auto'},
+  {id:'desq',name:'DESQ',colorId:'green',fontId:'office',variant:'light',background:'auto'},
   {id:'studio',name:'Studio',colorId:'office',fontId:'office',variant:'light',background:'auto'},
   {id:'editorial',name:'Editorial',colorId:'paper',fontId:'georgia-arial',variant:'light',background:'lt2'},
   {id:'midnight',name:'Midnight',colorId:'blue',fontId:'trebuchet',variant:'dark',background:'auto'},

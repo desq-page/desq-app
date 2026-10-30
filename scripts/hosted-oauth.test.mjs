@@ -5,13 +5,13 @@ import jwt from 'jsonwebtoken';
 import { hostedOAuthConfiguration } from '../cloudflare-publisher/src/agent/hosted-oauth.mjs';
 import { createAgentService } from '../cloudflare-publisher/src/agent/service.mjs';
 import { agentRequest } from '../cloudflare-publisher/src/agent.js';
-const origin = 'https://savanna.example';
+const origin = 'https://desq.example';
 const env = { OPENAI_OAUTH_CLIENT_ID: 'oaiapp_hosted', OPENAI_OAUTH_PLAN_ENABLED: 'true' };
 
 test('hosted OAuth requires an approved plan client and exact same-origin HTTPS callback', () => {
   assert.equal(hostedOAuthConfiguration({}, [origin]), undefined);
   assert.throws(() => hostedOAuthConfiguration({ OPENAI_OAUTH_CLIENT_ID: 'client' }, [origin]), /approval/);
-  for (const redirect of ['http://savanna.example/api/agent/chatgpt/callback', 'https://evil.example/api/agent/chatgpt/callback', `${origin}/auth/callback`, `${origin}/api/agent/chatgpt/callback?bad=1`])
+  for (const redirect of ['http://desq.example/api/agent/chatgpt/callback', 'https://evil.example/api/agent/chatgpt/callback', `${origin}/auth/callback`, `${origin}/api/agent/chatgpt/callback?bad=1`])
     assert.throws(() => hostedOAuthConfiguration({ ...env, OPENAI_OAUTH_REDIRECT_URI: redirect }, [origin]), /registered HTTPS/);
 });
 
@@ -84,7 +84,7 @@ test('Cloudflare accepts only configured callbacks with an existing browser sess
   const callback = new Request(`${origin}/api/agent/chatgpt/callback?state=test`);
   assert.equal((await agentRequest(callback, config)).status, 400);
   assert.equal(forwarded, 0);
-  const cookie = `__Host-savanna_agent=${'a'.repeat(64)}`;
+  const cookie = `__Host-desq_agent=${'a'.repeat(64)}`;
   assert.equal((await agentRequest(new Request(callback, { headers: { Cookie: cookie } }), config)).status, 200);
   assert.equal(forwarded, 1);
   assert.equal((await agentRequest(new Request(`${origin}/api/agent/chatgpt/login`, { headers: { Cookie: cookie } }), config)).status, 403);

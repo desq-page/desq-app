@@ -12,7 +12,7 @@ import { readZip } from '../src/zip.mjs';
 const chrome = process.env.CHROME_BIN || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/chromium', '/usr/bin/google-chrome'].find(existsSync);
 
 test('offline built editor inserts, edits, moves, undoes, reorders effects and saves/reopens an extracted editable ZIP', { skip: !chrome, timeout: 60000 }, async () => {
-  const temp = await mkdtemp(join(tmpdir(), 'savanna-vanjs-'));
+  const temp = await mkdtemp(join(tmpdir(), 'desq-vanjs-'));
   try {
     const source = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
     const helper = await build({ entryPoints: [new URL('./zip-browser-helper.mjs', import.meta.url).pathname], bundle: true, format: 'iife', write: false });
@@ -27,18 +27,18 @@ window.addEventListener('DOMContentLoaded', async () => {
     check(wrapper, 'Missing field: ' + label); const input = wrapper.querySelector('input,select'); input.value = value; input.dispatchEvent(new Event(event, { bubbles: true }));
   };
   try {
-    check(!!window.SavannaVanEditor, 'IIFE API available');
+    check(!!window.DesqVanEditor, 'IIFE API available');
     check(!document.querySelector('[aria-label=Open]'), 'Open control is absent');
-    await SavannaVanEditor.ready();
+    await DesqVanEditor.ready();
     const localFetch = window.fetch.bind(window);
     window.fetch = (url, ...args) => {
       check(new URL(url, document.baseURI).protocol === 'file:', 'No network request from standalone editor');
       return localFetch(url, ...args);
     };
-    const host = document.querySelector('[data-savanna-editor]');
-    const api = SavannaVanEditor.mount(host, { document: await SavannaVanEditor.getEditor(host).getDocument() });
+    const host = document.querySelector('[data-desq-editor]');
+    const api = DesqVanEditor.mount(host, { document: await DesqVanEditor.getEditor(host).getDocument() });
     await api.ready; await tick();
-    check(!window.SavannaPlayer, 'Player is not loaded at editor startup');
+    check(!window.DesqPlayer, 'Player is not loaded at editor startup');
     check(host.querySelectorAll('.ve-editor').length === 1, 'Mount replaces prior instance');
     check(!host.querySelector('.ve-canvas #sld').textContent.includes('false'), 'Conditional JSX does not render boolean text');
     // Native XML conversion permits singleton paragraph and run objects.
@@ -140,8 +140,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     const editorFont = document.documentElement.style.fontSize;
     const originalWidth = document.querySelector('#sld .shp').getBoundingClientRect().width;
     click('Present');
-    for (let i = 0; i < 100 && !window.SavannaPlayer; i++) await tick();
-    check(!!window.SavannaPlayer, 'Player loads on demand');
+    for (let i = 0; i < 100 && !window.DesqPlayer; i++) await tick();
+    check(!!window.DesqPlayer, 'Player loads on demand');
     for (let i = 0; i < 100 && document.documentElement.style.fontSize === editorFont; i++) await tick();
     check(document.documentElement.style.fontSize !== editorFont, 'Player applies a different scale');
     check(!!host.querySelector('.ve-presentation'), 'Presentation opens');
@@ -174,9 +174,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     for (const [name, data] of entries) { const target = join(extracted, name); await mkdir(join(target, '..'), { recursive: true }); await writeFile(target, data); }
     const extractedHTML = await readFile(join(extracted, 'index.html'), 'utf8');
     const reopenTest = `<script>window.addEventListener('DOMContentLoaded',async()=>{try{
-      await SavannaVanEditor.ready();await new Promise(r=>setTimeout(r,40));
+      await DesqVanEditor.ready();await new Promise(r=>setTimeout(r,40));
       if(!document.querySelector('.ve-editor'))throw Error('Extracted editor did not boot');
-      const api=SavannaVanEditor.getEditor(document.querySelector('[data-savanna-editor]'));await api.ready;
+      const api=DesqVanEditor.getEditor(document.querySelector('[data-desq-editor]'));await api.ready;
       if((await api.getDocument()).slides[0].shapes[2].txBody.p[0].r[0].t!=='Editable offline <safe>')throw Error('Edited text lost');
       const img=new Image();img.src='assets/test-image.png';await img.decode();
       const p=document.createElement('pre');p.id='result';p.textContent='PASS';document.body.append(p);
@@ -185,12 +185,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     const reopened = await runBrowserFixture(chrome, pathToFileURL(join(extracted, 'index.html')).href, join(temp, 'reopen-profile'));
     assert.equal(reopened.match(/<pre id="result">([\s\S]*?)<\/pre>/)?.[1], 'PASS', reopened.slice(-1000));
     // A served package uses the same document.js as a locally opened package.
-    const hostedDoc = JSON.parse((await readFile(join(extracted, 'document.js'), 'utf8')).replace(/^window\.SavannaDocument\s*=\s*/, '').replace(/;\s*$/, ''));
+    const hostedDoc = JSON.parse((await readFile(join(extracted, 'document.js'), 'utf8')).replace(/^window\.DesqDocument\s*=\s*/, '').replace(/;\s*$/, ''));
     hostedDoc.file.name = 'Changed in document.js';
-    await writeFile(join(extracted, 'document.js'), 'window.SavannaDocument = ' + JSON.stringify(hostedDoc) + ';\n');
+    await writeFile(join(extracted, 'document.js'), 'window.DesqDocument = ' + JSON.stringify(hostedDoc) + ';\n');
     const hostedFixture = extractedHTML.replace('</body>', `<script>window.addEventListener('DOMContentLoaded',async()=>{
       for(let i=0;i<200&&!document.querySelector('.ve-editor');i++)await new Promise(r=>setTimeout(r,10));
-      await SavannaVanEditor.getEditor(document.querySelector('[data-savanna-editor]')).ready;
+      await DesqVanEditor.getEditor(document.querySelector('[data-desq-editor]')).ready;
       await new Promise(r=>setTimeout(r,35));
       const title=document.querySelector('.ve-inspector input');const p=document.createElement('pre');p.id='result';
       p.textContent=title?.value==='Changed in document.js'?'PASS':'Document script was not loaded: '+title?.value;document.body.append(p);

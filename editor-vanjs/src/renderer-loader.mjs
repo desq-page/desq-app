@@ -23,13 +23,13 @@ function load(globalName, url) {
   }));
   return pending.get(globalName);
 }
-export const ensureRenderer = () => globalThis.SavannaRenderer
-  ? Promise.resolve(globalThis.SavannaRenderer)
+export const ensureRenderer = () => globalThis.DesqRenderer
+  ? Promise.resolve(globalThis.DesqRenderer)
   : Promise.reject(Error('The editor renderer is unavailable.'));
-export const ensurePlayer = () => load('SavannaPlayer', playerURL);
+export const ensurePlayer = () => load('DesqPlayer', playerURL);
 export async function playerResources() {
-  if (globalThis.SavannaEmbeddedPlayer) {
-    const embedded = globalThis.SavannaEmbeddedPlayer;
+  if (globalThis.DesqEmbeddedPlayer) {
+    const embedded = globalThis.DesqEmbeddedPlayer;
     return { ...embedded, playerAssets: embedded.playerAssets.map(asset => ({ ...asset, data: Uint8Array.from(atob(asset.data), c => c.charCodeAt(0)) })) };
   }
   const [js, css] = await Promise.all([fetch(playerURL), fetch(playerStylesURL)]);
@@ -44,10 +44,10 @@ export async function playerResources() {
   return { player: await js.text(), playerStyles: await css.text(), playerAssets };
 }
 export function ensurePlayerStyles() {
-  if (document.querySelector('[data-savanna-player-styles]')) return Promise.resolve();
+  if (document.querySelector('[data-desq-player-styles]')) return Promise.resolve();
   return new Promise((resolve, reject) => {
     const link = document.createElement('link'); link.rel = 'stylesheet'; link.href = playerStylesURL;
-    link.dataset.savannaPlayerStyles = '';
+    link.dataset.desqPlayerStyles = '';
     link.onload = resolve; link.onerror = () => { link.remove(); reject(Error(`Unable to load ${playerStylesURL}. Keep the extracted ZIP files together.`)); };
     document.head.append(link);
   });

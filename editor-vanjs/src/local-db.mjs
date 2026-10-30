@@ -1,5 +1,5 @@
 // Record-sized transactions keep inactive slides and history off the JS heap.
-export const DATABASE_NAME = 'savanna-vanjs-editor';
+export const DATABASE_NAME = 'desq-vanjs-editor';
 export function openLocalDatabase(name = DATABASE_NAME) {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(name, 1);

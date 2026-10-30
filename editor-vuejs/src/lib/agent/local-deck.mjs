@@ -114,7 +114,7 @@ export async function planLocalDeck({
 }) {
   if (!command.trim() || command.length > 4000)
     throw new Error('Enter a request of up to 4000 characters.');
-  if (!tools.some((tool) => tool.name === 'savanna_create_deck'))
+  if (!tools.some((tool) => tool.name === 'desq_create_deck'))
     throw new Error('Presentation creation is unavailable in this editor.');
   const html = context.slideAuthoring !== 'svg';
   const template = context.htmlTemplate || 'freeform';
@@ -199,7 +199,7 @@ export async function planLocalDeck({
         message: `Prepared ${pages.length} editable slide${pages.length === 1 ? '' : 's'} with Qwen 4B.`,
         calls: [
           {
-            name: 'savanna_create_deck',
+            name: 'desq_create_deck',
             arguments: { ...shared, slides: pages },
           },
         ],

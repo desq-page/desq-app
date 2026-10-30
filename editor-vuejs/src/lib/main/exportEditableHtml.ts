@@ -26,8 +26,8 @@ export async function prepareHtmlExport(format: 'single' | 'zip', embedEditor: b
   const response = await fetch(`${import.meta.env.BASE_URL}editor-vanjs.js`, { cache: 'no-store' });
   if (!response.ok) throw Error('VanJS runtime is unavailable. Build editor-vanjs with --publish before exporting.');
   const runtime = await response.text();
-  if (!runtime.includes('SavannaVanEditor')) throw Error('Invalid VanJS runtime response. Rebuild editor-vanjs with --publish.');
-  if (format === 'single' && !runtime.includes('__savannaAssetPool')) throw Error('The VanJS runtime is outdated and cannot open embedded media. Rebuild editor-vanjs with --publish and retry.');
+  if (!runtime.includes('DesqVanEditor')) throw Error('Invalid VanJS runtime response. Rebuild editor-vanjs with --publish.');
+  if (format === 'single' && !runtime.includes('__desqAssetPool')) throw Error('The VanJS runtime is outdated and cannot open embedded media. Rebuild editor-vanjs with --publish and retry.');
   const resource = async (name: string) => {
     const response = await fetch(`${import.meta.env.BASE_URL}editor-vanjs-${name}`, { cache: 'no-store' });
     if (!response.ok) throw Error(`Shared renderer resource is unavailable: ${name}. Rebuild editor-vanjs with --publish.`);

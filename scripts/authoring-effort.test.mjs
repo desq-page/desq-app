@@ -8,7 +8,7 @@ import { checkedCloudPlan } from '../editor-vuejs/src/lib/agent/deck-preflight.m
 import { designSample } from './deck-design-sample.mjs';
 const tools = createEditorTools({}).listTools();
 const context = { document: { fileId: 'file', width: 1280, height: 720 }, page: { pageId: 'page', shapes: [], shapeCount: 0 } };
-const response = () => ({ text: JSON.stringify({ message: 'Deck', calls: [{ name: 'savanna_create_deck', arguments: designSample() }] }), inferenceMs: 10, inputTokens: 20 });
+const response = () => ({ text: JSON.stringify({ message: 'Deck', calls: [{ name: 'desq_create_deck', arguments: designSample() }] }), inferenceMs: 10, inputTokens: 20 });
 
 test('Quickly keywords select quick workflow; explicit effort survives context compaction and wins', () => {
   assert.equal(authoringEffort('Create slides quickly'), 'quick');
@@ -55,7 +55,7 @@ test('quick generation rejects persistently invalid output before any edits', as
   let calls = 0;
   const taskContext = { ...context, authoringEffort: 'quick' };
   await assert.rejects(checkedCloudPlan({ tools, context: taskContext, parse: parseToolPlan,
-    body: { command: 'Create slides', context: taskContext }, request: async () => { calls++; return { text: JSON.stringify({ calls: [{ name: 'savanna_create_deck', arguments: {} }] }) }; } }), /Missing argument/);
+    body: { command: 'Create slides', context: taskContext }, request: async () => { calls++; return { text: JSON.stringify({ calls: [{ name: 'desq_create_deck', arguments: {} }] }) }; } }), /Missing argument/);
   assert.equal(calls, 2);
 });
 
@@ -63,7 +63,7 @@ test('SVG tab exposes only the SVG transport and preserves the mode in compact c
   const original = JSON.stringify(tools);
   const instructions = editorPlanInstructions(tools, { effort: 'quick', slideAuthoring: 'svg' });
   const exposed = JSON.parse(instructions.split('Tool schemas: ')[1]);
-  const slide = exposed.find(tool => tool.name === 'savanna_create_deck').inputSchema.properties.slides.items;
+  const slide = exposed.find(tool => tool.name === 'desq_create_deck').inputSchema.properties.slides.items;
   assert.deepEqual(slide.properties.layout.enum, ['svg']);
   assert.ok(slide.required.includes('svg'));
   assert.equal(slide.properties.elements, undefined);
@@ -84,7 +84,7 @@ test('one-slide full-canvas legacy output is corrected to SVG before insertion',
       requests.push(options.body);
       if (requests.length === 2) deck.slides = [{ title: 'Test', purpose: 'Explain', layout: 'svg',
         svg: '<svg viewBox="0 0 1280 720"><rect width="1280" height="720" fill="#FFFFFF"/><text x="80" y="100">Test</text></svg>' }];
-      return { text: JSON.stringify({ message: 'Slide', calls: [{ name: 'savanna_create_deck', arguments: deck }] }) };
+      return { text: JSON.stringify({ message: 'Slide', calls: [{ name: 'desq_create_deck', arguments: deck }] }) };
     } });
   assert.equal(requests.length, 2);
   assert.match(requests[1].context.deckRepair.validationError, /requires layout=svg/);

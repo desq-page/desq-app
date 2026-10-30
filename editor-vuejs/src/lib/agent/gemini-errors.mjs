@@ -2,7 +2,7 @@ const reasons = {
   API_KEY_INVALID: 'Google rejected this API key. Copy a Gemini API key from Google AI Studio without quotes or prefixes.',
   API_KEY_EXPIRED: 'This API key has expired. Replace it in Google AI Studio.',
   API_KEY_SERVICE_BLOCKED: 'This key does not permit the Gemini API. Check its API restrictions for generativelanguage.googleapis.com.',
-  API_KEY_HTTP_REFERRER_BLOCKED: 'This key requires an allowed website referrer. Savanna calls Gemini from its backend; use a key configured for that server environment.',
+  API_KEY_HTTP_REFERRER_BLOCKED: 'This key requires an allowed website referrer. Desq calls Gemini from its backend; use a key configured for that server environment.',
   API_KEY_IP_ADDRESS_BLOCKED: 'This key does not allow the production server IP. Localhost and production use different outbound IP addresses.',
   API_KEY_ANDROID_APP_BLOCKED: 'This key is restricted to an Android app and cannot be used by the editor backend.',
   API_KEY_IOS_APP_BLOCKED: 'This key is restricted to an iOS app and cannot be used by the editor backend.',

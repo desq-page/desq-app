@@ -8,7 +8,7 @@ import { DECK_AUTHORING_VERSION } from '../editor-vuejs/src/lib/agent/deck-autho
 import { validateProviderPayload } from '../cloudflare-publisher/src/agent/proxy.mjs';
 const origin = 'https://editor.test';
 const context = { document: { fileId: 'file' }, page: { pageId: 'page', shapes: [] } };
-const text = JSON.stringify({ message: 'Renamed', calls: [{ name: 'savanna_rename_document', arguments: { name: '预算' } }] });
+const text = JSON.stringify({ message: 'Renamed', calls: [{ name: 'desq_rename_document', arguments: { name: '预算' } }] });
 const png = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j9iUAAAAASUVORK5CYII=';
 
 function browserFixture(t) {
@@ -75,7 +75,7 @@ test('frontend owns prompt assembly, model pagination/filtering, raw response pa
   for (const request of browserRequests.filter(request => request.url.endsWith('/plan'))) {
     const payload = JSON.parse(request.options.body);
     assert.deepEqual(Object.keys(payload).sort(), ['model', 'request']);
-    assert.ok(JSON.stringify(payload.request).includes('savanna_rename_document'));
+    assert.ok(JSON.stringify(payload.request).includes('desq_rename_document'));
     assert.ok(!JSON.stringify(request.options.headers).includes('-secret'));
   }
   assert.ok(upstream.filter(request => request.url.endsWith('/responses') || request.url.includes(':generateContent')).every(request => !JSON.parse(request.options.body).context));
@@ -132,7 +132,7 @@ test('both cloud agents request plain keywords through their text transports wit
     const payload = JSON.parse(upstream.at(-1).options.body);
     const instructions = payload.instructions || payload.systemInstruction.parts[0].text;
     assert.ok(instructions.includes('2 to 4 concise Wikimedia Commons search keywords'));
-    assert.ok(!instructions.includes('savanna_create_deck'));
+    assert.ok(!instructions.includes('desq_create_deck'));
     agent.dispose();
   }
 });

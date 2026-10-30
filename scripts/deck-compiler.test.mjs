@@ -66,7 +66,7 @@ test('rich text, arbitrary presets, native tables and chart data survive JSON se
   assert.equal(rich[0].rPr.$_b, 1); assert.equal(rich[1].rPr.$_i, 1);
 });
 
-test('generated charts satisfy the real Savanna PPTX chart serializer contract', () => {
+test('generated charts satisfy the real Desq PPTX chart serializer contract', () => {
   const path = 'shared-vuejs/src/edlib/pptx/export/gen-shape.ts';
   const source = ts.createSourceFile(path, fs.readFileSync(path, 'utf8'), ts.ScriptTarget.Latest, true);
   const fn = source.statements.find(s => s.name?.text === 'genChart');
@@ -123,7 +123,7 @@ test('image manifests, credit attribution and dimensional scaling retain native 
 
 test('deck plans bind captured document and page and cannot mix creation with other calls', () => {
   const tools = createEditorTools({}).listTools();
-  const call = { name: 'savanna_create_deck', arguments: spec() };
+  const call = { name: 'desq_create_deck', arguments: spec() };
   const plan = parseToolPlan(JSON.stringify({ message: 'Build the deck', calls: [call] }), tools, { document: { fileId: 'file' }, page: { pageId: 'page' } });
   assert.equal(plan.calls[0].arguments.fileId, 'file'); assert.equal(plan.calls[0].arguments.pageId, 'page');
   assert.throws(() => parseToolPlan(JSON.stringify({ message: '', calls: [call, call] }), tools), /one creation call/);
@@ -135,7 +135,7 @@ test('cloud deck validation repairs a bad draft once before exposing an executab
   bad.slides[1].layout = 'custom'; bad.slides[1].elements = [element({ kind: 'table', rows: [['a','b'],['c']] })];
   const agent = createGeminiAgent('test', async (path, { body }) => {
     requests.push(body);
-    return { text: JSON.stringify({ message: 'A deck', calls: [{ name: 'savanna_create_deck', arguments: requests.length === 1 ? bad : spec() }] }), inferenceMs: 1, inputTokens: 10 };
+    return { text: JSON.stringify({ message: 'A deck', calls: [{ name: 'desq_create_deck', arguments: requests.length === 1 ? bad : spec() }] }), inferenceMs: 1, inputTokens: 10 };
   });
   const plan = await agent.plan('Build a professional deck', tools, { document: { fileId: 'f', width: 1280, height: 720 }, page: { pageId: 'p', shapes: [] } });
   assert.equal(requests.length, 2); assert.match(requests[1].context.deckRepair.validationError, /rectangular/);
@@ -146,7 +146,7 @@ test('cloud deck validation repairs a bad draft once before exposing an executab
 test('unrepairable drafts stop after one correction and provider failures are never retried', async () => {
   let count = 0;
   const tools = createEditorTools({}).listTools(), context = { document: { fileId: 'f' }, page: { pageId: 'p', shapes: [] } };
-  const agent = createGeminiAgent('test', async () => { count++; return { text: '{"calls":[{"name":"savanna_create_deck"}]}' }; });
+  const agent = createGeminiAgent('test', async () => { count++; return { text: '{"calls":[{"name":"desq_create_deck"}]}' }; });
   await assert.rejects(agent.plan('Build a deck', tools, context)); assert.equal(count, 2); agent.dispose();
   count = 0;
   const unavailable = createGeminiAgent('test', async () => { count++; throw new Error('quota exhausted'); });

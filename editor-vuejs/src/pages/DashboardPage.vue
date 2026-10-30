@@ -1,5 +1,5 @@
 <template>
-  <div class="savanna-dashboard">
+  <div class="desq-dashboard">
     <div class="workspace-header-landscape">
     <header class="workspace-header page-width">
       <RouterLink
@@ -263,7 +263,7 @@ async function loadLocalFiles() {
 }
 </script>
 <style scoped>
-.savanna-dashboard {
+.desq-dashboard {
   --ink: #172923;
   --muted: #63736b;
   --accent: #d7f46b;
@@ -277,16 +277,16 @@ async function loadLocalFiles() {
   line-height: 1.6;
   overflow: hidden;
 }
-.savanna-dashboard *,
-.savanna-dashboard *::before,
-.savanna-dashboard *::after {
+.desq-dashboard *,
+.desq-dashboard *::before,
+.desq-dashboard *::after {
   box-sizing: border-box;
 }
-.savanna-dashboard a {
+.desq-dashboard a {
   color: inherit;
   text-decoration: none;
 }
-.savanna-dashboard a:focus-visible,
+.desq-dashboard a:focus-visible,
 button:focus-visible {
   outline: 3px solid #598d24;
   outline-offset: 4px;

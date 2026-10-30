@@ -9,7 +9,7 @@ test('ZIP save collects player fonts from hosted and extracted editor locations'
   const requests = [];
   t.mock.method(globalThis, 'fetch', async url => {
     requests.push(String(url));
-    return new Response(String(url).endsWith('.js') ? 'window.SavannaPlayer={};'
+    return new Response(String(url).endsWith('.js') ? 'window.DesqPlayer={};'
       : String(url).endsWith('.css') ? '@font-face{src:url(/fonts/Carlito.woff2)}'
       : new Uint8Array([1, 2, 3]));
   });
@@ -20,8 +20,8 @@ test('ZIP save collects player fonts from hosted and extracted editor locations'
     requests.length = 0;
     setRendererURLs(runtime);
     const resources = await playerResources();
-    const archive = await editableZip(blankDocument(), 'window.SavannaVanEditor={};', '.ve-editor{}', {
-      ...resources, renderer: 'window.SavannaRenderer={};', rendererStyles: '.slide{}',
+    const archive = await editableZip(blankDocument(), 'window.DesqVanEditor={};', '.ve-editor{}', {
+      ...resources, renderer: 'window.DesqRenderer={};', rendererStyles: '.slide{}',
     });
     const entries = await readZip(archive);
     for (const name of ['Carlito.woff2']) {

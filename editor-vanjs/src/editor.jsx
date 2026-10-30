@@ -24,7 +24,7 @@ export function mountEditor(host, options = {}) {
   let editorFontSize;
   function exitPresentation() {
     presentationGeneration++;
-    globalThis.SavannaPlayer?.stopPresentation?.();
+    globalThis.DesqPlayer?.stopPresentation?.();
     if (editorFontSize !== undefined) {
       document.documentElement.style.fontSize = editorFontSize;
       editorFontSize = undefined;
@@ -45,7 +45,7 @@ export function mountEditor(host, options = {}) {
       const viewport = document.getElementById('viewport');
       if (!viewport) throw Error('Presentation viewport was not mounted.');
       viewport.replaceChildren();
-      const player = globalThis.SavannaPlayer;
+      const player = globalThis.DesqPlayer;
       const slideList = [...store.slides.rawVal];
       // Read each presentation slide only when the player requests it.
       player.setEmbeddedSlides(async index => renderPlayerSlide(await store.readView(slideList[index - 1].id, {objectURLs:false}), 1));
@@ -225,7 +225,7 @@ export function mountEditor(host, options = {}) {
     </div>;
     const style = textStyle(shape);
     const patch = (key, value) => updateSelected(s => {
-      if (key === 'w' || key === 'h') Object.assign(s, globalThis.SavannaRenderer.resizeShapeGeometry(s, key === 'w' ? value : s.w, key === 'h' ? value : s.h));
+      if (key === 'w' || key === 'h') Object.assign(s, globalThis.DesqRenderer.resizeShapeGeometry(s, key === 'w' ? value : s.w, key === 'h' ? value : s.h));
       else s[key] = value;
     });
     return <div><p>{ui.selection.length} selected</p>
@@ -302,7 +302,7 @@ export function mountEditor(host, options = {}) {
   }
   const slideList = createSlideList(store, ui, chooseSlide);
   const root = <div class="ve-editor" tabindex="-1" onkeydown={keydown}>
-    <header><strong>Savanna · VanJS</strong><Toolbar label="File">
+    <header><strong>Desq · VanJS</strong><Toolbar label="File">
       <Button label="Save editable ZIP" icon="↓" disabled={() => ui.busy} action={() => save(true)}/>
       <Button label="Single Editable HTML" disabled={() => ui.busy} action={() => save(false)}/>
       <Button label="Undo" icon="↶" disabled={() => !ui.canUndo} action={undo}/><Button label="Redo" icon="↷" disabled={() => !ui.canRedo} action={redo}/>

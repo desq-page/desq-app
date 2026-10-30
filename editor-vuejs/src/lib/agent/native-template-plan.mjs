@@ -98,6 +98,6 @@ export async function planNativeTemplate({command,tools,context,generate,brief,m
    }catch(failure){if(attempt)throw Error(`Slide ${index+1}: ${failure.message} No slides inserted.`);error=failure.message;metrics.repairCalls++;}
   }
  }
- const plan=parseToolPlan(JSON.stringify({message:`Prepared ${slides.length} slides using ${template.name} as the native PPTX base, retaining master/layout links and placeholder IDs.`,calls:[{name:'savanna_create_deck',arguments:{title:slides[0].title,colorScheme:brief.officeColorScheme||'office',generationModel:modelLabel,audience:'The requested audience',objective:'Explain the requested topic',slides}}]}),tools,context);
+ const plan=parseToolPlan(JSON.stringify({message:`Prepared ${slides.length} slides using ${template.name} as the native PPTX base, retaining master/layout links and placeholder IDs.`,calls:[{name:'desq_create_deck',arguments:{title:slides[0].title,colorScheme:brief.officeColorScheme||'office',generationModel:modelLabel,audience:'The requested audience',objective:'Explain the requested topic',slides}}]}),tools,context);
  return {...plan,metrics:{...metrics,workflow:'pptx-content-schema',designBrief:brief}};
 }

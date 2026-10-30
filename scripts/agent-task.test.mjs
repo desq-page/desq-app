@@ -21,19 +21,19 @@ test('editing requests a single replacement and ignores stale creation fields', 
 });
 
 test('tab constraints reject unexpected mutations or slide counts before execution', () => {
-  const plan = count => ({ calls: [{ name: 'savanna_create_deck', arguments: { slides: Array(count).fill({}) } }] });
+  const plan = count => ({ calls: [{ name: 'desq_create_deck', arguments: { slides: Array(count).fill({}) } }] });
   validateAgentTaskPlan(plan(3), 'create', 3);
   validateAgentTaskPlan(plan(1), 'edit', 10);
   assert.throws(() => validateAgentTaskPlan(plan(2), 'edit', 2), /exactly 1/);
   assert.throws(() => validateAgentTaskPlan(plan(2), 'create', 3), /exactly 3/);
-  assert.throws(() => validateAgentTaskPlan({ calls: [{ name: 'savanna_delete_shape' }] }, 'create', 1), /No edits applied/);
+  assert.throws(() => validateAgentTaskPlan({ calls: [{ name: 'desq_delete_shape' }] }, 'create', 1), /No edits applied/);
   validateAgentTaskPlan({ calls: [] }, 'edit', 1);
 });
 
 test('local create and replacement requests avoid cloud editor-tool instructions', () => {
   for (const mode of ['create', 'edit']) {
     const task = buildAgentTask({mode,local:true,slideAuthoring:'html',count:2,effort:'quick',topic:'Solar power',command:'Simplify the slide'});
-    assert.doesNotMatch(task.prompt,/savanna_|layout=html/);
+    assert.doesNotMatch(task.prompt,/desq_|layout=html/);
     assert.match(task.prompt,/do not issue editor commands/);
     assert.match(task.prompt,/requested format now/);
     assert.doesNotMatch(task.prompt,/next step/);
@@ -44,7 +44,7 @@ test('local Markdown task requests finished content now rather than an obsolete 
   for(const mode of ['create','edit']){
     const task=buildAgentTask({mode,local:true,slideAuthoring:'markdown',count:2,effort:'quick',topic:'Solar',command:'Simplify'});
     assert.match(task.prompt,/Markdown.*now/);
-    assert.doesNotMatch(task.prompt,/next step|savanna_/);
+    assert.doesNotMatch(task.prompt,/next step|desq_/);
   }
 });
 
@@ -54,9 +54,9 @@ test('Auto lets cloud and local models choose 1 to 10 slides', () => {
     assert.match(task.label, /Auto/);
     assert.match(task.prompt, /1 to 10/);
     assert.doesNotMatch(task.prompt, /exactly auto/);
-    if (local) assert.doesNotMatch(task.prompt, /savanna_/);
+    if (local) assert.doesNotMatch(task.prompt, /desq_/);
   }
-  const plan = count => ({ calls: [{ name: 'savanna_create_deck', arguments: { slides: Array(count).fill({}) } }] });
+  const plan = count => ({ calls: [{ name: 'desq_create_deck', arguments: { slides: Array(count).fill({}) } }] });
   validateAgentTaskPlan(plan(1), 'create', 'auto');
   validateAgentTaskPlan(plan(10), 'create', 'auto');
   assert.throws(() => validateAgentTaskPlan(plan(0), 'create', 'auto'), /1 to 10/);

@@ -13,7 +13,7 @@ test('Vue export bridge flushes edits and produces standalone native JSON with m
   const fixture = blankDocument(); fixture.file.name = 'Native deck.pptx';
   const raw = { ...fixture.file, __editableHtmlRoot: { customRoot: { keep: true } }, slides: fixture.slides, layouts: [{ id: 'master', shapes: [] }, { id: 'layout', parentid: 'master', shapes: [] }] };
   const calls = [], downloads = [];
-  let runtime = 'window.SavannaVanEditor={}; window.SavannaRenderer={}; /* __savannaAssetPool */';
+  let runtime = 'window.DesqVanEditor={}; window.DesqRenderer={}; /* __desqAssetPool */';
   const result = await build({
     entryPoints: [new URL('../../editor-vuejs/src/lib/main/exportEditableHtml.ts', import.meta.url).pathname], bundle: true, write: false,
     format: 'cjs', platform: 'node', define: { 'import.meta.env.BASE_URL': '"/"' },
@@ -35,7 +35,7 @@ test('Vue export bridge flushes edits and produces standalone native JSON with m
   });
   const context = vm.createContext({ module: { exports: {} }, exports: {}, crypto: webcrypto, Blob, Uint8Array, console,
     fixture: { raw, calls, downloads },
-    fetch: async url => ({ ok: true, text: async () => url.endsWith('.css') ? '.ve-editor{color:red}' : url.endsWith('presentation.js') ? 'window.SavannaPresentation={};' : runtime,
+    fetch: async url => ({ ok: true, text: async () => url.endsWith('.css') ? '.ve-editor{color:red}' : url.endsWith('presentation.js') ? 'window.DesqPresentation={};' : runtime,
       arrayBuffer: async () => new Uint8Array([4, 5, 6]).buffer }),
     TextEncoder, TextDecoder, Map, Set, atob, btoa,
     FileReader: class { readAsDataURL() { this.result = 'data:image/png;base64,AQID'; this.onload(); } },
@@ -52,7 +52,7 @@ test('Vue export bridge flushes edits and produces standalone native JSON with m
   assert.equal(doc.layouts.length, 1); assert.equal(doc.masters.length, 1);
   assert.equal(doc.file.slides[0].shapes, undefined);
   assert.equal(doc.file.assets, undefined);
-  assert.equal(new TextDecoder().decode(entries.get('editor.js')), 'window.SavannaVanEditor={}; window.SavannaRenderer={}; /* __savannaAssetPool */');
+  assert.equal(new TextDecoder().decode(entries.get('editor.js')), 'window.DesqVanEditor={}; window.DesqRenderer={}; /* __desqAssetPool */');
   assert.ok(entries.has('player.js')); assert.ok(entries.has('player.css')); assert.ok(entries.has('assets/fonts/Carlito.woff2'));
   assert.deepEqual([...entries.get('assets/pic.png')], [1, 2, 3]);
   assert.equal([...entries.keys()].filter(k => k.startsWith('assets/') && !k.startsWith('assets/fonts/')).length, 1);
@@ -61,25 +61,25 @@ test('Vue export bridge flushes edits and produces standalone native JSON with m
   assert.equal(downloads[1].name, 'Native deck.editable.html');
   assert.equal(downloads[1].blob.type, 'text/html;charset=utf-8');
   const html = await downloads[1].blob.text();
-  assert.match(html, /id="savanna-document"/);
+  assert.match(html, /id="desq-document"/);
   assert.match(html, /data:image\/png;base64,AQID/);
-  assert.match(html, /window\.SavannaVanEditor/);
-  assert.match(html, /window\.SavannaRenderer/);
-  assert.match(html, /window\.SavannaEmbeddedPlayer/);
+  assert.match(html, /window\.DesqVanEditor/);
+  assert.match(html, /window\.DesqRenderer/);
+  assert.match(html, /window\.DesqEmbeddedPlayer/);
   assert.doesNotMatch(html, /<script[^>]+src=/);
-  const payload = JSON.parse(html.match(/<script type="application\/json" id="savanna-document">([\s\S]*?)<\/script>/)[1]);
+  const payload = JSON.parse(html.match(/<script type="application\/json" id="desq-document">([\s\S]*?)<\/script>/)[1]);
   const restored = unpackDocumentAssets(payload);
   assert.equal(restored.assets['pic.png'], 'data:image/png;base64,AQID');
   assert.equal(restored.customRoot.keep, true, 'imported root metadata survives another export');
-  runtime = 'window.SavannaVanEditor={};';
+  runtime = 'window.DesqVanEditor={};';
   await assert.rejects(context.module.exports.exportSingleEditableHtml(), /runtime is outdated/);
   assert.equal(downloads.length, 2, 'an incompatible runtime must not produce a broken HTML file');
   await context.module.exports.exportSinglePageHtml();
   const presentation = await downloads[2].blob.text();
   assert.equal(downloads[2].name, 'Native deck.pptx.html');
-  assert.match(presentation, /window\.SavannaPresentation/);
-  assert.doesNotMatch(presentation, /SavannaVanEditor|player-slide-|player-document/);
-  const portable = unpackDocumentAssets(JSON.parse(presentation.match(/<script type="application\/json" id="savanna-document">([\s\S]*?)<\/script>/)[1]));
+  assert.match(presentation, /window\.DesqPresentation/);
+  assert.doesNotMatch(presentation, /DesqVanEditor|player-slide-|player-document/);
+  const portable = unpackDocumentAssets(JSON.parse(presentation.match(/<script type="application\/json" id="desq-document">([\s\S]*?)<\/script>/)[1]));
   assert.equal(portable.assets['pic.png'], 'data:image/png;base64,AQID');
   assert.deepEqual(portable, restored, 'both exports carry the same complete document');
   assert.equal(presentation.split('data:image/png;base64,AQID').length - 1, 1);

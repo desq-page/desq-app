@@ -40,6 +40,6 @@ export async function planCloudPptxTemplate({request,model,command,tools,context
   }
  }
  const deck={colorScheme:officeColorScheme(outline.colorScheme).id,title:typeof outline.title==='string'?outline.title.slice(0,160)||slides[0].title:slides[0].title,audience:typeof outline.audience==='string'?outline.audience.slice(0,200)||'Requested audience':'Requested audience',objective:typeof outline.objective==='string'?outline.objective.slice(0,300)||'Explain the requested topic':'Explain the requested topic',generationModel:modelLabel||model,slides};
- const plan=parseToolPlan(JSON.stringify({message:`Prepared ${slides.length} slides by filling content schemas from ${template.name}.`,calls:[{name:'savanna_create_deck',arguments:deck}]}),tools,context);
+ const plan=parseToolPlan(JSON.stringify({message:`Prepared ${slides.length} slides by filling content schemas from ${template.name}.`,calls:[{name:'desq_create_deck',arguments:deck}]}),tools,context);
  return {...plan,metrics};
 }

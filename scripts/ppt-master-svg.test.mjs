@@ -34,7 +34,7 @@ const fixture = (name) =>
   readFileSync(`third_party/ppt-master/fixtures/${name}.svg`, "utf8");
 const wrap = (body) => `<svg viewBox="0 0 1280 720">${body}</svg>`;
 
-test("preserved native shape-style DrawingML maps directly to Savanna JSON", () => {
+test("preserved native shape-style DrawingML maps directly to Desq JSON", () => {
   const xml =
     '<p:style xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:lnRef idx="2"><a:schemeClr val="accent1"><a:alpha val="50000"/></a:schemeClr></a:lnRef><a:fillRef idx="1"><a:srgbClr val="FF0000"/></a:fillRef><a:effectRef idx="0"><a:schemeClr val="accent2"/></a:effectRef><a:fontRef idx="minor"><a:schemeClr val="tx1"/></a:fontRef></p:style>';
   const encoded = Buffer.from(xml).toString("base64"),
@@ -112,7 +112,7 @@ test("gradient text and effects pass the preflight reviewer without solid-fill-o
     {
       calls: [
         {
-          name: "savanna_create_deck",
+          name: "desq_create_deck",
           arguments: {
             title: "Gradient",
             audience: "Everyone",

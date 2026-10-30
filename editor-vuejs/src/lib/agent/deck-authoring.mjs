@@ -1,5 +1,5 @@
 // Native-JSON adaptation of PPT Master's plan/executor/checker separation.
-// Upstream reference paths and capability boundaries are recorded in docs/ppt-master-savanna.md.
+// Upstream reference paths and capability boundaries are recorded in docs/ppt-master-desq.md.
 export const DECK_AUTHORING_VERSION = 'html-svg-browser-v6';
 export const COMPOSITION_WORKFLOW = `Deck production has three roles:
 STRATEGIST: lock the audience, intended outcome, supplied facts and count. Give every page a job, identify its semantic units, and state whether they are peers, ordered steps, contrasting alternatives, or a central idea with supporting parts. Plan the whole roster before composing pages.

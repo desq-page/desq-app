@@ -26,7 +26,7 @@ test("HTML transport is exposed for both providers without conflicting SVG instr
     { slideAuthoring: "html" },
   );
   const tools = JSON.parse(instructions.split("Tool schemas: ")[1]);
-  const slide = tools.find((t) => t.name === "savanna_create_deck").inputSchema
+  const slide = tools.find((t) => t.name === "desq_create_deck").inputSchema
     .properties.slides.items;
   assert.deepEqual(slide.properties.layout.enum, ["html"]);
   assert.ok(slide.required.includes("html"));
@@ -45,7 +45,7 @@ test("HTML transport is exposed for both providers without conflicting SVG instr
     assert.match(prompt, /Built-in.*visual system/);
     assert.match(prompt, /photo-story/);
     assert.ok(
-      !prompt.includes("SAVANNA TRANSPORT OVERRIDE:") &&
+      !prompt.includes("DESQ TRANSPORT OVERRIDE:") &&
         !prompt.includes("complete SVG for EVERY slide"),
     );
   }

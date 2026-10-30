@@ -1,7 +1,7 @@
 (() => {
   window.opener = null;
   const name = window.location.hash.slice(1);
-  if (!/^savanna-chatgpt-[a-f0-9-]{36}$/.test(name)) return;
+  if (!/^desq-chatgpt-[a-f0-9-]{36}$/.test(name)) return;
   const channel = new BroadcastChannel(name);
   channel.onmessage = event => {
     if (event.data?.type !== 'navigate') return;

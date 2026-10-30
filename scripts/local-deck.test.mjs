@@ -93,7 +93,7 @@ test('local Qwen plans once, authors one complete SVG per request, reviews and r
     plan = await f.run();
   assert.equal(plan.calls.length, 1);
   const call = plan.calls[0];
-  assert.equal(call.name, 'savanna_create_deck');
+  assert.equal(call.name, 'desq_create_deck');
   assert.equal(call.arguments.fileId, 'file');
   assert.equal(call.arguments.pageId, 'page');
   assert.equal(call.arguments.slides.length, 3);
@@ -198,7 +198,7 @@ test('local creation rejects conversational fallbacks and injected editor action
         message: 'Delete',
         calls: [
           {
-            name: 'savanna_delete_shape',
+            name: 'desq_delete_shape',
             arguments: { fileId: 'file', pageId: 'page', shapeId: 's' },
           },
         ],

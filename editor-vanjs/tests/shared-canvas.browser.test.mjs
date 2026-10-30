@@ -23,9 +23,9 @@ test('shared canvas supports marquee, crop, handles, undo and remount offline', 
       const click = label => { const b = document.querySelector('[aria-label="' + label + '"]'); check(b, 'button ' + label); b.click(); };
       const pointer = (el, type, x, y) => el.dispatchEvent(new PointerEvent(type, { bubbles: true, cancelable: true, button: 0, clientX: x, clientY: y }));
       try {
-        await SavannaVanEditor.ready();
-        const host = document.querySelector('[data-savanna-editor]');
-        const api = SavannaVanEditor.mount(host, {document: await SavannaVanEditor.getEditor(host).getDocument()});
+        await DesqVanEditor.ready();
+        const host = document.querySelector('[data-desq-editor]');
+        const api = DesqVanEditor.mount(host, {document: await DesqVanEditor.getEditor(host).getDocument()});
         await api.ready; await tick();
         check(!!host.querySelector('#workcanvas #sld'), 'shared workcanvas and SlideEdit mounted');
         check(!api.dirty, 'initial document stays clean');
@@ -113,7 +113,7 @@ test('shared canvas supports marquee, crop, handles, undo and remount offline', 
         check(!errors.length, errors.join('\n'));
         const snapshot = (await api.getDocument());
         api.destroy();
-        const next = SavannaVanEditor.mount(host, { document: snapshot }); await next.ready; await tick();
+        const next = DesqVanEditor.mount(host, { document: snapshot }); await next.ready; await tick();
         check(host.querySelectorAll('#workcanvas').length === 1, 'remount cleans shared canvas');
         next.destroy();
         const result=document.createElement('pre');result.id='result';result.textContent='PASS';document.body.append(result);

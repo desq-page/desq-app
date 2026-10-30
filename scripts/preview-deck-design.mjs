@@ -5,7 +5,7 @@ import { compileDeck } from '../editor-vuejs/src/lib/agent/deck-compiler.mjs';
 import { deckLayoutPreviews } from '../editor-vuejs/src/lib/agent/deck-preview.mjs';
 import { designSample, helloWorldSample } from './deck-design-sample.mjs';
 
-// Reproducible schematic layout proof; this is not the Savanna/PPTX renderer.
+// Reproducible schematic layout proof; this is not the Desq/PPTX renderer.
 const output = resolve(process.argv[2] || 'tmp/deck-design-preview');
 await mkdir(output, { recursive: true });
 let id = 0;

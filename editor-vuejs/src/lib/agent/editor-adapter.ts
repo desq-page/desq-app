@@ -385,7 +385,7 @@ export const editorAdapter = {
     if (execution.research?.sources?.length) for (const page of compiled.pages)
       page.agentMetadata.researchSources = execution.research.sources;
     if (spec.slides.some(slide => ['html','markdown'].includes(slide.layout)))
-      for (const warning of new Set(compiled.warnings)) console.warn('[Savanna slide conversion]', warning);
+      for (const warning of new Set(compiled.warnings)) console.warn('[Desq slide conversion]', warning);
     await prepare(args, signal, !execution.replaceCurrent);
     const pageIds: string[] = [], warnings = [...new Set([...fontWarnings, ...compiled.warnings, ...reviewDeck(spec, compiled).findings])];
     if (execution.replaceCurrent) {

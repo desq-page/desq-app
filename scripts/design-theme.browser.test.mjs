@@ -8,7 +8,7 @@ import {pathToFileURL} from 'node:url';
 import {runBrowserFixture} from './browser-fixture.mjs';
 const chrome=['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome','/usr/bin/chromium'].find(existsSync);
 test('master design composes palettes, fonts, variants and backgrounds without changing geometry or other masters',{skip:!chrome,timeout:60000},async()=>{
- const dir=mkdtempSync(join(tmpdir(),'savanna-design-'));
+ const dir=mkdtempSync(join(tmpdir(),'desq-design-'));
  try{
   await build({stdin:{resolveDir:resolve('.'),contents:`
 import {buildMasterDesignPatch} from './shared-vuejs/src/edlib/pptx/design-theme.mjs';

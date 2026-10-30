@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Savanna: local dev",
+      "label": "DESQ: local dev",
       "type": "shell",
       "command": "npm",
       "args": [
@@ -16,7 +16,7 @@
       },
       "isBackground": true,
       "problemMatcher": {
-        "owner": "savanna-local",
+        "owner": "desq-local",
         "pattern": {
           "regexp": "^ERROR: (.*)$",
           "message": 1

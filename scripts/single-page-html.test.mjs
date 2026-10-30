@@ -82,7 +82,7 @@ test('single-page HTML contains the same recoverable document payload as editabl
   slides:[{id:'slide',shapes:[{id:'image',blipFill:{blip:{$_target:'image.jpeg'}}}],timing:{id:'animation'}}],
   layouts:[],masters:[],themes:{theme:{name:'Theme'}},assets:{'image.jpeg':image,'ppt/media/image.jpeg':image}};
  const html=await buildSinglePageHtml({title:'Deck',playerJs,playerCss:'',slides:['x'],assets:[],config:{slides:[{}]},editableDocument:packDocumentAssets(original)});
- const match=html.match(/<script type="application\/json" id="savanna-document">([\s\S]*?)<\/script>/);
+ const match=html.match(/<script type="application\/json" id="desq-document">([\s\S]*?)<\/script>/);
  assert.ok(match);assert.ok(!html.includes('<script>bad()'));
  assert.deepEqual(unpackDocumentAssets(JSON.parse(match[1])),original);
  assert.equal((await documentData(html)).version,3,'presentation playback payload remains intact');
@@ -115,6 +115,6 @@ test('single-page export obtains the document after saving and includes it in th
    return packDocumentAssets({version:1,file,slides:file.slides,assets:{}});
   }});
   const html=await globalThis.singleFixture.download.blob.text();
-  assert.match(html,/id="savanna-document"/);assert.equal(globalThis.singleFixture.download.name,'Deck.pptx.html');
+  assert.match(html,/id="desq-document"/);assert.equal(globalThis.singleFixture.download.name,'Deck.pptx.html');
  }finally{globalThis.DOMParser=previousDOMParser;globalThis.document=previousDocument;delete globalThis.singleFixture;}
 });

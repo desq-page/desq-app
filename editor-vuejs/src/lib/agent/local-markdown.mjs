@@ -99,7 +99,7 @@ export async function planLocalMarkdown({
     parseToolPlan(
       JSON.stringify({
         message: `Prepared ${deck.slides.length} editable slides from Markdown with ${modelLabel}.`,
-        calls: [{ name: "savanna_create_deck", arguments: deck }],
+        calls: [{ name: "desq_create_deck", arguments: deck }],
       }),
       tools,
       context,

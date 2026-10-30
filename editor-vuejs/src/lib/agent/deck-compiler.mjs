@@ -11,7 +11,7 @@ import { markdownPageSVG } from './markdown-slides.mjs';
 import { htmlToSVG } from './html-slides.mjs';
 import {compileMotion} from './ppt-master-motion.mjs';
 
-// Authored SVG/HTML -> native Savanna objects. No model code is executed.
+// Authored SVG/HTML -> native Desq objects. No model code is executed.
 export function compileDeck(deck, { width, height, genId, geometry, assets = new Map(), measureText,outlineText,deferTextOutlines=false } = {}) {
   if (![width, height].every(Number.isFinite) || width < 300 || height < 200 || width > 10000 || height > 10000)
     throw new Error('Unsupported presentation dimensions.');

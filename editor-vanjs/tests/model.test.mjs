@@ -19,7 +19,7 @@ test('native JSON preserves unknown fields and repairs slide metadata after edit
   assert.throws(() => normalizeDocument(invalid), /positive/);
 });
 
-test('text editing and formatting use Savanna txBody runs', () => {
+test('text editing and formatting use Desq txBody runs', () => {
   const shape = createShape('text');
   setText(shape, 'First\nSecond');
   formatText(shape, { $_b: 1, solidFill: color('#123456') });
@@ -71,7 +71,7 @@ test('editable HTML safely embeds JSON, runtime and title without external resou
   const resources = { renderer: 'window.renderer=true;', player: 'window.player=true;', playerStyles: 'body{}', playerAssets: [{name:'assets/fonts/test.woff',mime:'font/woff',data:new Uint8Array([1])}] };
   const html = editableHTML(doc, 'window.example="</script>";', resources);
   assert.ok(!html.includes('<script>bad()'));
-  assert.ok(html.includes('id="savanna-document"'));
+  assert.ok(html.includes('id="desq-document"'));
   assert.ok(!html.includes('window.renderer=true;'), 'renderer is included in the editor runtime');
   assert.deepEqual(JSON.parse(scriptJSON(doc)), doc);
   assert.equal((html.match(/<script /g) || []).length, 2);
@@ -86,7 +86,7 @@ test('editable HTML stores aliased media once and restores each asset', async ()
   const resources = { player: 'window.player=true;', playerStyles: 'body{}', playerAssets: [{ name:'font.woff', mime:'font/woff', data:new Uint8Array([1]) }] };
   const html = editableHTML(doc, 'window.editor=true;', resources);
   assert.equal(html.split(video).length - 1, 1);
-  const payload = JSON.parse(html.match(/<script type="application\/json" id="savanna-document">([\s\S]*?)<\/script>/)[1]);
+  const payload = JSON.parse(html.match(/<script type="application\/json" id="desq-document">([\s\S]*?)<\/script>/)[1]);
   assert.deepEqual(unpackDocumentAssets(payload).assets, doc.assets);
   assert.equal(doc.assets['media/video.mp4'], video, 'export does not mutate the document');
   assert.deepEqual(unpackDocumentAssets({ assets: { video } }), { assets: { video } }, 'older files remain supported');
@@ -102,7 +102,7 @@ test('editable HTML stores player font once and initializes its offline styleshe
   assert.equal(html.split(encoded).length - 1, 1);
   const style = {};
   const context = { window: {}, document: { querySelector: () => style } };
-  vm.runInNewContext(html.match(/<script>(window\.SavannaEmbeddedPlayer=[\s\S]*?)<\/script>/)[1], context);
+  vm.runInNewContext(html.match(/<script>(window\.DesqEmbeddedPlayer=[\s\S]*?)<\/script>/)[1], context);
   assert.equal(style.textContent, `@font-face{src:url(data:font/woff2;base64,${encoded})}`);
 });
 

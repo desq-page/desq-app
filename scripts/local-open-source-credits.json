@@ -8,7 +8,7 @@
     "texts": [
       {
         "file": "Acknowledgement",
-        "text": "Savanna includes code inspired by or locally modified from PubBridge by asleepattheterminal and its contributors. See the upstream license linked above for the original license and copyright notice."
+        "text": "Desq includes code inspired by or locally modified from PubBridge by asleepattheterminal and its contributors. See the upstream license linked above for the original license and copyright notice."
       }
     ]
   },
@@ -21,7 +21,7 @@
     "texts": [
       {
         "file": "Acknowledgement",
-        "text": "Savanna includes code inspired by or locally modified from PPTXjs by meshesha and its contributors. Copyright (c) 2017 meshesha. See the upstream license linked above for the original license notice."
+        "text": "Desq includes code inspired by or locally modified from PPTXjs by meshesha and its contributors. Copyright (c) 2017 meshesha. See the upstream license linked above for the original license notice."
       }
     ]
   },
@@ -38,7 +38,7 @@
       },
       {
         "file": "Attribution",
-        "text": "MediaPipe GenAI Tasks is developed by the MediaPipe Authors. Savanna uses its WebGPU runtime and packaged WASM assets for the Gemma 4 local model integration. The package declares Apache-2.0; the Apache license text is retained here because the published npm package does not include a standalone LICENSE file."
+        "text": "MediaPipe GenAI Tasks is developed by the MediaPipe Authors. Desq uses its WebGPU runtime and packaged WASM assets for the Gemma 4 local model integration. The package declares Apache-2.0; the Apache license text is retained here because the published npm package does not include a standalone LICENSE file."
       }
     ]
   }

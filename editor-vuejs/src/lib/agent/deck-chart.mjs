@@ -1,6 +1,6 @@
 import { editorColor } from './colors.mjs';
 
-// Savanna's PPTX serializer expects the original native chart part as well as
+// Desq's PPTX serializer expects the original native chart part as well as
 // ECharts preview data. Author both from the same validated series.
 export function nativeChartPart({ chartType, categories, series }, accent = '#087F75') {
   // tXml's text-node representation is a string; numeric primitives become

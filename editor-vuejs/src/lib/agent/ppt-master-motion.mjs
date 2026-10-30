@@ -1,4 +1,4 @@
-// PPT Master's authored native preset records -> Savanna's existing timing importer.
+// PPT Master's authored native preset records -> Desq's existing timing importer.
 import { XMLParser, XMLBuilder } from "fast-xml-parser";
 import presets from "./data/ppt-master-animations.mjs";
 import { processAnimation } from "shared-vuejs/api/edlib-pptx-pptx-anim-core";

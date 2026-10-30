@@ -1,7 +1,7 @@
 // Navigation happens inside the same-origin bootstrap popup. The editor never
 // writes a cross-origin WindowProxy.location after OAuth has started.
 export function openChatGPTSignInPopup(view = window) {
-  const name = `savanna-chatgpt-${crypto.randomUUID()}`;
+  const name = `desq-chatgpt-${crypto.randomUUID()}`;
   const channel = new BroadcastChannel(name);
   let ready;
   const initialized = new Promise(resolve => { ready = resolve; });

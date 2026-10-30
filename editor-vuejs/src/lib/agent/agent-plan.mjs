@@ -7,25 +7,25 @@ import { parseQwenToolCall } from './qwen-tool-calls.mjs';
 export function bindPlanContext(plan, context) {
   for (const call of plan.calls) {
     if (
-      call.name.startsWith('savanna_') &&
-      !['savanna_get_document', 'savanna_get_page'].includes(call.name)
+      call.name.startsWith('desq_') &&
+      !['desq_get_document', 'desq_get_page'].includes(call.name)
     ) {
       if (
-        call.name === 'savanna_insert_text' &&
+        call.name === 'desq_insert_text' &&
         context.document.selectedTextTarget?.ambiguous &&
         !call.arguments.shapeId
       )
         throw new Error('Select one text shape or table cell to add text.');
       if (
         [
-          'savanna_move_shape_by',
-          'savanna_format_text',
-          'savanna_insert_text',
+          'desq_move_shape_by',
+          'desq_format_text',
+          'desq_insert_text',
         ].includes(call.name) &&
         !call.arguments.shapeId
       ) {
         const selected =
-          call.name === 'savanna_insert_text' &&
+          call.name === 'desq_insert_text' &&
           context.document.selectedTextTarget?.shapeId
             ? [context.document.selectedTextTarget.shapeId]
             : context.document.selectedShapeIds || [];
@@ -33,22 +33,22 @@ export function bindPlanContext(plan, context) {
           throw new Error('Select exactly one shape, or name a target shape.');
         call.arguments.shapeId = selected[0];
       }
-      if (call.name === 'savanna_insert_text_at_cursor')
+      if (call.name === 'desq_insert_text_at_cursor')
         call.arguments.cursorId ??= context.document.textCursor?.cursorId;
-      if (['savanna_create_slide', 'savanna_create_deck'].includes(call.name))
+      if (['desq_create_slide', 'desq_create_deck'].includes(call.name))
         call.arguments.pageId ??= context.page.pageId;
       call.arguments.fileId ??= context.document.fileId;
       if (
         [
-          'savanna_add_text',
-          'savanna_add_autoshape',
-          'savanna_set_shape_text',
-          'savanna_insert_text',
-          'savanna_insert_text_at_cursor',
-          'savanna_move_shape',
-          'savanna_move_shape_by',
-          'savanna_format_text',
-          'savanna_delete_shape',
+          'desq_add_text',
+          'desq_add_autoshape',
+          'desq_set_shape_text',
+          'desq_insert_text',
+          'desq_insert_text_at_cursor',
+          'desq_move_shape',
+          'desq_move_shape_by',
+          'desq_format_text',
+          'desq_delete_shape',
         ].includes(call.name)
       )
         call.arguments.pageId ??= context.page.pageId;
@@ -146,7 +146,7 @@ export function parseToolPlan(text, tools, context) {
       'The model could not determine an edit. Specify the target and desired change.';
   if (
     plan.calls.some((call) =>
-      ['savanna_create_slide', 'savanna_create_deck'].includes(call?.name),
+      ['desq_create_slide', 'desq_create_deck'].includes(call?.name),
     ) &&
     plan.calls.length !== 1
   )
@@ -169,7 +169,7 @@ export function parseToolPlan(text, tools, context) {
       throw new Error(`The model requested an unknown tool: ${call?.name}`);
     // Models sometimes flatten strategy metadata despite the nested schema.
     // Preserve it in its canonical location; never discard conflicting values.
-    if (call.name === 'savanna_create_deck' && call.arguments &&
+    if (call.name === 'desq_create_deck' && call.arguments &&
         typeof call.arguments === 'object' && !Array.isArray(call.arguments)) {
       const args = call.arguments;
       const normalizeTitle = (value,label) => {

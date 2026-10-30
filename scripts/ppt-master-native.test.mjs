@@ -479,7 +479,7 @@ test("animation parameters, click targets and Boolean output IDs survive complet
     compiled.pages[0].shapes[0].id,
   );
   const proof = preflightDeckPlan(
-    { calls: [{ name: "savanna_create_deck", arguments: deck }] },
+    { calls: [{ name: "desq_create_deck", arguments: deck }] },
     { document: { width: 1280, height: 720 } },
   );
   assert.equal(proof.compiled.pages.length, 1);

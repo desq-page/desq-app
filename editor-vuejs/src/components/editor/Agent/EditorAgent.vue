@@ -413,8 +413,8 @@ async function sendCommand() {
   const results: string[] = [];
   let placeholderCount = 0;
   try {
-    const documentResult = await registry.executeTool('savanna_get_document');
-    const pageResult = await registry.executeTool('savanna_get_page', { limit: 100 });
+    const documentResult = await registry.executeTool('desq_get_document');
+    const pageResult = await registry.executeTool('desq_get_page', { limit: 100 });
     if (!documentResult.ok || !pageResult.ok) throw new Error(documentResult.error || pageResult.error);
     if (mode === 'edit' && (documentResult.result.fileId !== submittedTarget.fileId || pageResult.result.pageId !== submittedTarget.pageId))
       throw new Error('The slide changed before its content could be read. Submit the edit again.');
@@ -431,7 +431,7 @@ async function sendCommand() {
     if (mode === 'edit') for (const call of plan.calls) Object.assign(call.arguments, submittedTarget);
     for (const call of plan.calls) {
       if (!active || generation !== run) break;
-      status.value = call.name === 'savanna_create_deck' ? 'Compiling and checking the deck…' : call.name === 'savanna_create_slide' ? 'Creating slide and resolving requested images…' : 'Applying editor command…';
+      status.value = call.name === 'desq_create_deck' ? 'Compiling and checking the deck…' : call.name === 'desq_create_slide' ? 'Creating slide and resolving requested images…' : 'Applying editor command…';
       reply.text = status.value;
       const result = await registry.executeTool(call.name, call.arguments, { signal, sourceBundles: plan.sourceBundles || sourceBundles.value, replaceCurrent: mode === 'edit',
         ...(local?.rewriteText ? { rewriteText: (field: any, options: any) => local.rewriteText(field, options) } : {}),
@@ -441,18 +441,18 @@ async function sendCommand() {
         if (active && generation === run) { status.value = message; reply.text = message; }
       } });
       if (!result.ok) throw new Error(result.error);
-      if (call.name === 'savanna_create_deck') {
+      if (call.name === 'desq_create_deck') {
         lastTemplateRows.value = deckTemplateUsage(call.arguments.slides);
         lastTemplateNote.value = plan.metrics?.designBrief?.templateFallback ? 'Family fallback: the model did not choose a valid family, so the app used the built-in template.' : '';
       }
-      results.push(`${call.name.replace('savanna_', '')}: ${JSON.stringify(result.result)}`);
+      results.push(`${call.name.replace('desq_', '')}: ${JSON.stringify(result.result)}`);
       placeholderCount += result.result.placeholderCount || 0;
       if (result.result.warnings?.length) results.push(`Warnings: ${result.result.warnings.join('\n')}`);
-      if (call.name === 'savanna_create_deck') reply.text = mode === 'edit' ? `Updated the submitted slide: ${result.result.title}.` : `Created ${result.result.slideCount} editable slides: ${result.result.title}.`;
+      if (call.name === 'desq_create_deck') reply.text = mode === 'edit' ? `Updated the submitted slide: ${result.result.title}.` : `Created ${result.result.slideCount} editable slides: ${result.result.title}.`;
     }
     if (active && generation === run) {
       const completion = plan.calls.length ? (plan.calls.every(call => registry.listTools().find(tool => tool.name === call.name)?.annotations.readOnlyHint) ? 'Read operations completed.' : 'Edits applied.') : '';
-      const deckResult = plan.calls.some(call => call.name === 'savanna_create_deck') ? reply.text : '';
+      const deckResult = plan.calls.some(call => call.name === 'desq_create_deck') ? reply.text : '';
       reply.text = [plan.message, deckResult || completion, ...results.filter(result => result.startsWith('Warnings:')), placeholderCount ? `${placeholderCount} unavailable image(s) were replaced with editable placeholders showing their descriptions.` : ''].filter(Boolean).join('\n\n') || 'No edits applied. Please describe what you would like to change.';
       status.value = reply.text;
     }

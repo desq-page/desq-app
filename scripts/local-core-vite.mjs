@@ -8,11 +8,11 @@ export function localCorePlugin(core = localCoreDirectory()) {
   const player = path.join(core, 'player/dist') + path.sep;
   const isCoreOutput = file => file.startsWith(shared) || file.startsWith(player);
   return {
-    name: 'savanna-local-core', apply: 'serve', enforce: 'pre',
+    name: 'desq-local-core', apply: 'serve', enforce: 'pre',
     config() {
       return {
         resolve: {dedupe: ['vue', 'vanjs-core', 'vanjs-ext']},
-        optimizeDeps: {exclude: ['shared-vuejs', '@savanna/player']},
+        optimizeDeps: {exclude: ['shared-vuejs', '@desq/player']},
         server: {fs: {allow: [searchForWorkspaceRoot(appRoot), core]}},
       };
     },

@@ -67,9 +67,9 @@ export async function planTemplateFill({command,tools,context,generate,isStopped
         ...(context.slideTask?.mode==='edit'?{currentSlide:compactModelContext(context).page}:{}),...(error?{correction:error}:{})},attempt ? 1536 : 1024);
       try {data=validateTemplateContent(parse(text),{template,palette,onWarning:warning=>{
         metrics.warnings.push(`Slide ${index+1}: ${warning}`);
-        console.warn('[Savanna Template Fill content]',{slide:index+1,warning});
+        console.warn('[Desq Template Fill content]',{slide:index+1,warning});
       }});break;}
-      catch(failure){console.warn('[Savanna Template Fill format]',{slide:index+1,attempt:attempt+1,error:failure.message,responsePreview:String(text).slice(0,240),responseCharacters:String(text).length});if(attempt)throw Error(`Slide ${index+1}: ${failure.message} No slides were inserted.`);error=failure.message;}
+      catch(failure){console.warn('[Desq Template Fill format]',{slide:index+1,attempt:attempt+1,error:failure.message,responsePreview:String(text).slice(0,240),responseCharacters:String(text).length});if(attempt)throw Error(`Slide ${index+1}: ${failure.message} No slides were inserted.`);error=failure.message;}
     }
     if(palette==='auto')palette=data.paletteId;
     const original={...data,items:data.items.map(item=>({...item}))};
@@ -94,7 +94,7 @@ export async function planTemplateFill({command,tools,context,generate,isStopped
     slides.push({title:data.title.slice(0,120),purpose:'Communicate the requested topic',layout:'html',html:proof.html,
       templateSelection:{family:'curated-fill',layout:data.templateId,modelSelectedLayout:template==='auto',hostReflowed:false},...(overflowContent?{overflowContent}:{})});
   }
-  const plan=parseToolPlan(JSON.stringify({message:`Prepared ${slides.length} editable slides with fixed templates and the ${palette} palette.${metrics.warnings.length?' '+metrics.warnings.join(' '):''}`,calls:[{name:'savanna_create_deck',arguments:{title:slides[0].title,generationModel:modelLabel,audience:'The requested audience',objective:'Explain the requested topic',design:{...FILL_PALETTES[palette],fontFamily:'Arial'},slides}}]}),tools,{...context,slideAuthoring:'html'});
+  const plan=parseToolPlan(JSON.stringify({message:`Prepared ${slides.length} editable slides with fixed templates and the ${palette} palette.${metrics.warnings.length?' '+metrics.warnings.join(' '):''}`,calls:[{name:'desq_create_deck',arguments:{title:slides[0].title,generationModel:modelLabel,audience:'The requested audience',objective:'Explain the requested topic',design:{...FILL_PALETTES[palette],fontFamily:'Arial'},slides}}]}),tools,{...context,slideAuthoring:'html'});
   const proof=preflightDeckPlan(plan,{...context,slideAuthoring:'html'});check();onPreview?.(proof.previews);
   return {...plan,metrics};
 }
