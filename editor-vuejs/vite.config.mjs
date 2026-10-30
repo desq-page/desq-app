@@ -162,6 +162,15 @@ export default defineConfig(({ command, mode }) => ({
           minSize: 100000,
           groups: [
             {
+              // PNG decoding extends IOBuffer during module initialization.
+              // Isolate it so size-based splitting cannot create a cycle with
+              // the print/PDF chunk that uses the decoder.
+              name: 'iobuffer-runtime',
+              test: /node_modules[\\/]iobuffer[\\/]/,
+              priority: 100,
+              minSize: 0,
+            },
+            {
               // VanJS state is created at module initialization. Keep its
               // runtime out of cyclic editor chunks, even though it is small.
               name: 'van-runtime',
