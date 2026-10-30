@@ -26,7 +26,7 @@ onMounted(() => { document.title = "Support — DESQ"; });
         <p>We work to reproduce your documents as accurately as they appear in Microsoft Office. Office files can contain complex features, so some content may not look exactly the same in DESQ.</p>
         <p>If you find an inaccurate representation, contact our support team. We’ll investigate and try to fix it.</p>
         <div class="contact-links">
-          <a href="https://github.com/desq-page/desq-app" target="_blank" rel="noopener noreferrer">Report a bug on GitHub <span aria-hidden="true">↗</span></a>
+          <a href="https://github.com/desq-page/desq-app/issues" target="_blank" rel="noopener noreferrer">Report a bug on GitHub <span aria-hidden="true">↗</span></a>
         </div>
       </article>
       <!-- <article class="support-card">
