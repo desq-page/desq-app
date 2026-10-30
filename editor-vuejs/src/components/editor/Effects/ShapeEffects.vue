@@ -34,6 +34,7 @@
         :step="ef.step ?? 10"
       />
     </template>
+    <ThreeDEffects />
   </DialogBase>
 </template>
 <script setup lang="ts">
@@ -56,6 +57,7 @@ import { EMU } from "shared-vuejs/api/globalUtility";
 import ShadowComp from "./ShadowComp.vue";
 import GlowComp from "./GlowComp.vue";
 import ReflectionComp from "./ReflectionComp.vue";
+import ThreeDEffects from "./ThreeDEffects.vue";
 
 
 const effects: any = [
