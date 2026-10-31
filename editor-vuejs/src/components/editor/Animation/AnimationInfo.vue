@@ -280,6 +280,15 @@
           "
         />
       </div>
+      <div v-if="effData?.eff?.bh?.some((behavior) => behavior.ty === 'play')" class="anim-field">
+        <span>Stop media</span>
+        <select :value="effData?.eff?.mediaStop ?? ((Number(effData?.eff?.bh?.find((behavior) => behavior.ty === 'play')?.rp) > 1) ? 'span' : 'slide')"
+          @change="(e) => updateEff?.({ mediaStop: (e.target as HTMLSelectElement).value })">
+          <option value="click">On click</option>
+          <option value="slide">End of slide</option>
+          <option value="span" :disabled="isVideoMedia">Span across slides</option>
+        </select>
+      </div>
     </template>
   </div>
 </template>
@@ -325,6 +334,7 @@ const props = defineProps({
 });
 
 const isSmartArt = computed(() => getShapeDeep(props.effData?.eff?.sh)?.type === "diagram");
+const isVideoMedia = computed(() => !!getShapeDeep(props.effData?.eff?.sh)?.video);
 
 const hasParagraphs = computed(() => {
   const id = props.effData?.eff?.sh;
@@ -417,7 +427,8 @@ function updateTrigger(val) {
 .eff-info {
   margin-top: 5px;
   margin-left: -15px;
-  height: 160px;
+  max-height: min(70vh, 420px);
+  overflow-y: auto;
   width: calc(100% - 32px);
   bottom: 5px;
   position: absolute;
