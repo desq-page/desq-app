@@ -23,7 +23,7 @@ build script detects files above 25 MiB and generates `.assetsignore` plus
 `wrangler.generated.json` to keep them outside the Workers static-asset upload.
 See [Workers Static Assets configuration](https://developers.cloudflare.com/workers/static-assets/binding/).
 
-The Cloudflare build also builds the sibling `desq-officejs` project and copies its output into `editor-vuejs/dist/powerpoint-addin/` before asset scanning and deployment. Install dependencies in that project first. Set `DESQ_OFFICEJS_DIR` to its path if it is not next to `desq-app`; the build fails if it is unavailable. The `powerpoint-addin` namespace is reserved for this application, so it cannot also be a published-content username.
+The Cloudflare build first rebuilds the sibling `desq-core` project and stages its compiled shared library and player into the installed packages for both the app and add-in. It then builds the app and the sibling `desq-officejs` project, copying the add-in output into `editor-vuejs/dist/powerpoint-addin/` before asset scanning and deployment. Install dependencies in all three projects first. Set `DESQ_CORE_DIR` or `DESQ_OFFICEJS_DIR` if the checkouts are elsewhere; the build fails if either is unavailable. Staging replaces the installed package outputs without changing release archives or lockfiles; run `npm ci` in a consumer to restore its packaged versions. The `powerpoint-addin` namespace is reserved for this application, so it cannot also be a published-content username.
 
 Cloudflare publishing does not require the Node server or a socket connection.
 The Cloudflare build skips the legacy Docker login/sync requests. Editing files

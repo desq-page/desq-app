@@ -14,7 +14,7 @@
     "wrangler": "^4.0.0"
   },
   "dependencies": {
-    "shared-vuejs": "file:../packages/shared-vuejs-0.2.2.tgz",
+    "shared-vuejs": "file:../packages/shared-vuejs-0.2.3.tgz",
     "jsonwebtoken": "^9.0.2"
   },
   "license": "AGPL-3.0-only"

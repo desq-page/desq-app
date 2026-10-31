@@ -28,12 +28,14 @@ export async function confirmCloseFile(
     positiveButtonProps: { type: "success" },
     negativeButtonProps: { type: "error" },
     onPositiveClick: async () => {
-      if (dirty) {
-        d.loading = true;
+      d.loading = true;
+      try {
         const saved = await saveDocument(fileId, true);
-        if (!saved) return;
+        if (!saved) return false;
+        await closeFile(fileId, onClosed);
+      } finally {
+        d.loading = false;
       }
-      await closeFile(fileId, onClosed);
     },
     onNegativeClick: async () => {
       await closeFile(fileId, onClosed);

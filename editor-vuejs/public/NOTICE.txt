@@ -19,7 +19,7 @@ PROJECT INVENTORY
 @chenglou/pretext | 0.0.8 | MIT | git+https://github.com/chenglou/pretext.git
 @css-render/plugin-bem | 0.15.14 | MIT | https://github.com/07akioni/css-render
 @css-render/vue3-ssr | 0.15.14 | MIT | node_modules/@css-render/vue3-ssr
-@desq/player | 1.0.3 | Not specified | node_modules/@desq/player
+@desq/player | 1.0.4 | Not specified | node_modules/@desq/player
 @dmsnell/diff-match-patch | 1.1.0 | Apache-2.0 | git+https://github.com/dmsnell/diff-match-patch.git
 @emnapi/runtime | 1.11.3 | MIT | node_modules/@img/sharp-wasm32/node_modules/@emnapi/runtime
 @emotion/hash | 0.8.0 | MIT | https://github.com/emotion-js/emotion/tree/master/packages/hash
@@ -561,7 +561,7 @@ serve-index | 1.9.1 | MIT | expressjs/serve-index
 serve-static | 1.16.2 | MIT | expressjs/serve-static
 setprototypeof | 1.1.0 | ISC | https://github.com/wesleytodd/setprototypeof.git
 setprototypeof | 1.2.0 | ISC | https://github.com/wesleytodd/setprototypeof.git
-shared-vuejs | 0.2.2 | ISC | node_modules/shared-vuejs
+shared-vuejs | 0.2.3 | ISC | node_modules/shared-vuejs
 sharp | 0.35.5 | Apache-2.0 | git+https://github.com/lovell/sharp.git
 shell-quote | 1.12.0 | MIT | http://github.com/ljharb/shell-quote.git
 side-channel-list | 1.0.1 | MIT | git+https://github.com/ljharb/side-channel-list.git
@@ -922,7 +922,7 @@ Source: node_modules/@css-render/vue3-ssr
 No standalone license text supplied in the installed package; consult the project source.
 
 ==============================================================================
-@desq/player (1.0.3)
+@desq/player (1.0.4)
 License: Not specified
 Source: node_modules/@desq/player
 
@@ -88432,7 +88432,7 @@ OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ==============================================================================
-shared-vuejs (0.2.2)
+shared-vuejs (0.2.3)
 License: ISC
 Source: node_modules/shared-vuejs
 
@@ -92015,7 +92015,7 @@ onnxruntime-node@1.30.0: no standalone license/notice file found in installed pa
 onnxruntime-web@1.31.0-dev.20260914-8d85527a0: no standalone license/notice file found in installed package
 parse-bmfont-ascii@1.0.6: no standalone license/notice file found in installed package
 select-hose@2.0.0: no standalone license/notice file found in installed package
-shared-vuejs@0.2.2: no standalone license/notice file found in installed package
+shared-vuejs@0.2.3: no standalone license/notice file found in installed package
 spdy-transport@3.0.0: no standalone license/notice file found in installed package
 spdy@4.0.2: no standalone license/notice file found in installed package
 vanjs-ext@0.6.3: no standalone license/notice file found in installed package

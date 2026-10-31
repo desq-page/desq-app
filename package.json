@@ -114,8 +114,8 @@
     "webpack-dev-server": "5.2.2",
     "worker-timers": "^8.0.11",
     "yaml": "^2.8.0",
-    "shared-vuejs": "file:packages/shared-vuejs-0.2.2.tgz",
-    "@desq/player": "file:packages/desq-player-1.0.3.tgz"
+    "shared-vuejs": "file:packages/shared-vuejs-0.2.3.tgz",
+    "@desq/player": "file:packages/desq-player-1.0.4.tgz"
   },
   "devDependencies": {
     "@jridgewell/remapping": "2.3.5",

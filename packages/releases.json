@@ -5,6 +5,12 @@
     },
     "shared-vuejs-0.2.2.tgz": {
       "sha256": "5821ba99945fe7d43a3343857319a78e8562b062768095e982c2da4a6520b8c6"
+    },
+    "shared-vuejs-0.2.3.tgz": {
+      "sha256": "b3efdb5e99249bd8be6d72f81f459109635fd7613911a5e2cbfa52fb4cd73497"
+    },
+    "desq-player-1.0.4.tgz": {
+      "sha256": "92f41eb486ea2119b404469341dc65d634502965476611de5a39ed82f1354dbd"
     }
   }
 }

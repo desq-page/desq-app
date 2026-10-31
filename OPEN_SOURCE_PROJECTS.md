@@ -17,7 +17,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | @chenglou/pretext | 0.0.8 | MIT | git+https://github.com/chenglou/pretext.git |
 | @css-render/plugin-bem | 0.15.14 | MIT | https://github.com/07akioni/css-render |
 | @css-render/vue3-ssr | 0.15.14 | MIT | node_modules/@css-render/vue3-ssr |
-| @desq/player | 1.0.3 | Not specified | node_modules/@desq/player |
+| @desq/player | 1.0.4 | Not specified | node_modules/@desq/player |
 | @dmsnell/diff-match-patch | 1.1.0 | Apache-2.0 | git+https://github.com/dmsnell/diff-match-patch.git |
 | @emnapi/runtime | 1.11.3 | MIT | node_modules/@img/sharp-wasm32/node_modules/@emnapi/runtime |
 | @emotion/hash | 0.8.0 | MIT | https://github.com/emotion-js/emotion/tree/master/packages/hash |
@@ -559,7 +559,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | serve-static | 1.16.2 | MIT | expressjs/serve-static |
 | setprototypeof | 1.1.0 | ISC | https://github.com/wesleytodd/setprototypeof.git |
 | setprototypeof | 1.2.0 | ISC | https://github.com/wesleytodd/setprototypeof.git |
-| shared-vuejs | 0.2.2 | ISC | node_modules/shared-vuejs |
+| shared-vuejs | 0.2.3 | ISC | node_modules/shared-vuejs |
 | sharp | 0.35.5 | Apache-2.0 | git+https://github.com/lovell/sharp.git |
 | shell-quote | 1.12.0 | MIT | http://github.com/ljharb/shell-quote.git |
 | side-channel-list | 1.0.1 | MIT | git+https://github.com/ljharb/side-channel-list.git |
