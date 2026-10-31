@@ -3,7 +3,7 @@
     <div class="workspace-header-landscape">
     <header class="workspace-header page-width">
       <RouterLink
-        :to="{ name: 'root', query: { home: '1' } }"
+        to="/"
         class="wordmark"
         aria-label="DESQ home"
       >
@@ -12,7 +12,7 @@
       </RouterLink>
       <nav aria-label="Workspace navigation">
         <RouterLink
-          :to="{ name: 'root', query: { home: '1' } }"
+          to="/"
           class="home-link"
           >Back to home <span aria-hidden="true">↗</span></RouterLink
         >
@@ -132,12 +132,12 @@
       </aside>
     </main>
     <footer class="workspace-footer page-width">
-      <span>DESQ — Office documents, with a life on the web.</span
-      ><RouterLink to="/support">Support</RouterLink>
-      <RouterLink to="/terms">Terms &amp; Privacy</RouterLink>
-      <RouterLink to="/?home=1"
-        >Explore DESQ <span aria-hidden="true">↗</span></RouterLink
-      >
+      <span>DESQ — Office documents, with a life on the web.</span>
+      <nav aria-label="Footer navigation">
+        <RouterLink to="/terms">Terms &amp; Privacy</RouterLink>
+        <RouterLink to="/support">Support</RouterLink>
+        <a href="https://github.com/desq-page/desq-app" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </nav>
     </footer>
   </div>
 </template>
@@ -652,6 +652,13 @@ h2 {
 .workspace-footer a {
   color: #526740;
   font-weight: 600;
+}
+.workspace-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 20px;
+  margin-left: auto;
 }
 .workspace-footer a span {
   margin-left: 8px;

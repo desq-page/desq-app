@@ -15,7 +15,7 @@ function loadWorker(readFile = async () => new Blob(['cached content'])) {
   return handleFetch;
 }
 
-for (const path of ['/', '/?home=1', '/work', '/dashboard', '/edit/deck', '/index.html', '/src/main.js', '/images/loading.svg', '/api/agent/chatgpt/status', '/alice/presentation/', '/alice/res/page']) {
+for (const path of ['/', '/work', '/dashboard', '/edit/deck', '/index.html', '/src/main.js', '/images/loading.svg', '/api/agent/chatgpt/status', '/alice/presentation/', '/alice/res/page']) {
   test(`server unavailable: ${path} bypasses the worker without a binary fallback`, () => {
     const handleFetch = loadWorker();
     handleFetch({request:new Request(origin+path),respondWith() {assert.fail('Network requests must keep their native failure instead of becoming downloads');}});

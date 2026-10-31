@@ -137,7 +137,7 @@ const questions = [
       <section class="cta-section" aria-labelledby="cta-title"><div class="page-width cta-inner"><div><p class="eyebrow">EVERY FEATURE. ONE HTML FILE.</p><h2 id="cta-title">Your next great presentation<br />starts in your browser.</h2></div><div class="cta-actions"><a href="/work" class="button button-lime">Create a presentation <span aria-hidden="true">↗</span></a><span>No installation. No account required to edit.</span></div></div></section>
     </main>
 
-    <footer class="site-footer page-width"><a href="/" class="wordmark">DESQ</a><p>Office documents, with a life on the web.</p><nav aria-label="Footer navigation"><a href="/work">Workspace</a><a href="/terms">Terms</a><a href="/support">Support</a></nav></footer>
+    <footer class="site-footer page-width"><a href="/" class="wordmark">DESQ</a><p>Office documents, with a life on the web.</p><nav aria-label="Footer navigation"><a href="/work">Workspace</a><a href="/terms">Terms</a><a href="/support">Support</a><a href="https://github.com/desq-page/desq-app" target="_blank" rel="noopener noreferrer">GitHub</a></nav></footer>
   </div>
 </template>
 
@@ -279,7 +279,7 @@ h1 em { font-style: normal; color: var(--lime); }
 .site-footer { display: flex; align-items: center; flex-wrap: wrap; gap: 24px; padding-block: 30px; }
 .site-footer .wordmark { font-size: 23px; }
 .site-footer p { flex: 1; margin: 0; font-size: 11px; color: var(--muted); }
-.site-footer nav { display: flex; gap: 22px; font-size: 12px; }
+.site-footer nav { display: flex; flex-wrap: wrap; gap: 22px; font-size: 12px; }
 @keyframes slide-morph { 0%, 15%, 85%, 100% { border-radius: 0; transform: translateX(0); } 40%, 60% { border-radius: 45% 0 0 45%; transform: translateX(5%); } }
 @keyframes orbit-drift { 0%, 15%, 85%, 100% { transform: translateY(0) scale(1); } 40%, 60% { transform: translateY(24%) scale(.8); } }
 @keyframes word-reveal { 0%, 100% { opacity: 0; transform: translateY(10px); } 5%, 90% { opacity: 1; transform: translateY(0); } 95% { opacity: 0; transform: translateY(-6px); } }

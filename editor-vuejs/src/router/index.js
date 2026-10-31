@@ -3,7 +3,6 @@ import HomePage from "../pages/HomePage.vue";
 import RawSSG from "../pages/RawSSG.vue";
 import LoginView from "../pages/LoginView.vue";
 import { logEditorOpen } from "../lib/editor-telemetry";
-import { hasCreatedFile } from "shared-vuejs/api/homeNavigation";
 
 const Player = () => import("../Player.vue");
 const EditorPage = () => import("../pages/EditorPage.vue");
@@ -83,11 +82,6 @@ const router = createRouter({
       },
     ],
   });
-router.beforeEach(to => {
-  if (to.name === "root" && to.query.home !== "1" && hasCreatedFile()) {
-    return { name: "work", replace: true };
-  }
-});
 router.afterEach((to, from, failure) => {
   // Report initial navigation too, even when the editor shell was served locally.
   if (!failure && to.name === "edit") logEditorOpen(to.path);

@@ -7,7 +7,7 @@
         DESQ
       </RouterLink>
       <nav aria-label="Main navigation">
-        <RouterLink to="/?home=1">Back to home</RouterLink>
+        <RouterLink to="/">Back to home</RouterLink>
         <RouterLink to="/work" class="start-button">Workspace <span aria-hidden="true">↗</span></RouterLink>
       </nav>
     </header>

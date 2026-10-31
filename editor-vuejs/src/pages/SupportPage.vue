@@ -11,7 +11,7 @@ onMounted(() => { document.title = "Support — DESQ"; });
     <header class="site-header page-width">
       <RouterLink to="/" class="wordmark" aria-label="DESQ home"><img src="/favicon.svg?v=desq-color" alt="" />DESQ</RouterLink>
       <nav aria-label="Main navigation">
-        <RouterLink to="/?home=1">Back to home</RouterLink>
+        <RouterLink to="/">Back to home</RouterLink>
         <RouterLink to="/work" class="start-button">Workspace <span aria-hidden="true">↗</span></RouterLink>
       </nav>
     </header>
