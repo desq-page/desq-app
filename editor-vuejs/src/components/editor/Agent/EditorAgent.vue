@@ -1,11 +1,11 @@
 <template>
   <div class="editor-agent" @pointerdown.stop="editorAdapter.rememberTextCursor()" @pointerup.stop @contextmenu.stop>
     <section id="agent-taskpane" class="agent-panel" role="complementary" aria-label="Editor agent task pane">
-      <header><strong>Editor agent</strong><button aria-label="Close agent panel" @click="open = false">×</button></header>
+      <header><strong>Create slides with AI agent</strong><button aria-label="Close agent panel" @click="open = false">×</button></header>
       <section class="external-brief">
-        <p>Choose a layout and copy the prompt to your preferred AI (ChatGPT, Claude, Gemini, Grok, Deepseek, ...). Then paste its response below to generate slides.</p>
+        <p>Having a paid AI account? Most can produce good pptx directly. Or use prompt below with free accounts (ChatGPT, Claude, Gemini, Grok, Deepseek, ...), the response might be sufficient.</p>
         <fieldset class="layout-options" :disabled="busy">
-          <legend>Layout</legend>
+          <legend>Choose layout</legend>
           <label class="layout-option">
             <input v-model="externalLayoutStyle" type="radio" name="external-layout" value="frontend-slides" />
             <span><strong>Frontend Slides</strong><small>Use Frontend Slides design guidance for editable HTML slides.</small></span>
@@ -17,7 +17,7 @@
 
         </fieldset>
         <div class="prompt-heading">
-          <label for="external-prompt">Prompt</label>
+          <label for="external-prompt">Prompt to copy to external  AI chat</label>
           <button class="copy-button" type="button" aria-label="Copy prompt" title="Copy prompt" @click="copyPrompt"><DocumentCopy24Regular aria-hidden="true" /></button>
         </div>
         <textarea id="external-prompt" readonly :rows="externalLayoutStyle === 'templates' ? 3 : 3" :value="externalFullPrompt" @keydown.stop @keyup.stop />
@@ -36,7 +36,7 @@
           <ol><li v-for="(slide, index) in externalBriefDeck.slides" :key="index">{{ slide.title }} · {{ slide.layout }}</li></ol>
           <p>Review the slide list and source before creating slides.</p>
         </div>
-        <button class="primary-button create-button" type="button" :disabled="busy || !externalBriefDeck" @click="createExternalBrief">{{ busy ? 'Creating slides…' : 'Create slides from output' }}</button>
+        <button class="primary-button create-button" type="button" :disabled="busy || !externalBriefDeck" @click="createExternalBrief">{{ busy ? 'Creating slides…' : 'Create slides from response' }}</button>
       </section>
       <section v-if="currentTemplateUsage" class="agent-template-usage" aria-label="Current slide design">
         <strong>Current slide design</strong>
@@ -76,7 +76,7 @@ delete nativeSlideProperties.html;
 const nativeBriefSchemaText = JSON.stringify(nativeBriefSchema, null, 2);
 const externalInstructions = `${externalPrompt}\n${nativeBriefSchemaText}\n\nLayout preference: Use the Desq native layouts; do not use SVG or HTML layouts.\n\nMy request: `;
 const externalFullPrompt = computed(() => externalLayoutStyle.value === 'frontend-slides'
-  ? 'Use skill https://github.com/zarazhangrui/frontend-slides, generate a presentation and make it downloadable HTML, title: '
+  ? 'Generate a presentation using skill https://github.com/zarazhangrui/frontend-slides. Output downloadable HTML. Presentation topic: '
   : externalInstructions);
 const externalBriefResult = computed(() => {
   if (!externalBriefText.value.trim()) return { deck: null, repaired: false, repairedJson: undefined, error: '' };

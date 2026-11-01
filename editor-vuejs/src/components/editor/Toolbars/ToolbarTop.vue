@@ -427,6 +427,16 @@
           "
         />
         <ToolbarItem type="spacing" />
+        <ToolbarItem
+          v-if="!piniaSlides().masterView"
+          :icon="SlideshowFilled"
+          :size="28"
+          :onClick="openPreviewModal"
+          :disabled="!!piniaInfo().useGrid"
+          button-type="primary"
+          quaternary
+          tooltip="Play"
+        />
       </template>
     </NTabs>
   </div>

@@ -4,10 +4,6 @@ import ZoomToolbar from "./ZoomToolbar.vue";
 import StatusBar from "./StatusBar.vue";
 // import { piniaResize } from "@/lib/common/store.js";
 import NaviToolbar from "../NaviBar/NaviToolbar.vue";
-import ToolbarItem from "./ToolbarItem.vue";
-import { SlideshowFilled } from "@vicons/material";
-import { piniaInfo, piniaSlides } from "@/lib/common/store";
-import { openPreviewModal } from "@/lib/main/previewPresentation";
 </script>
 
 <template>
@@ -17,16 +13,6 @@ import { openPreviewModal } from "@/lib/main/previewPresentation";
       <StatusBar />
     </div>
     <div class="right">
-      <ToolbarItem
-        v-if="!piniaSlides().masterView"
-        :icon="SlideshowFilled"
-        :size="28"
-        :onClick="openPreviewModal"
-        :disabled="!!piniaInfo().useGrid"
-        button-type="primary"
-        quaternary
-        tooltip="Play"
-      />
       <ZoomToolbar />
     </div>
   </div>
