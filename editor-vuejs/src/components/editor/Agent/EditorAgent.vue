@@ -45,12 +45,8 @@
           </select>
 
       </div>
-      <div class="agent-tabs" role="tablist" aria-label="Slide task">
-        <button id="agent-create-tab" type="button" role="tab" :aria-selected="taskMode === 'create'" aria-controls="agent-task-form" :tabindex="taskMode === 'create' ? 0 : -1" :disabled="busy" @click="taskMode = 'create'" @keydown.right.prevent.stop="selectTaskTab('edit')" @keydown.left.prevent.stop="selectTaskTab('edit')">Create slide</button>
-        <button id="agent-edit-tab" type="button" role="tab" :aria-selected="taskMode === 'edit'" aria-controls="agent-task-form" :tabindex="taskMode === 'edit' ? 0 : -1" :disabled="busy" @click="taskMode = 'edit'" @keydown.right.prevent.stop="selectTaskTab('create')" @keydown.left.prevent.stop="selectTaskTab('create')">Edit current slide</button>
-      </div>
-      <form id="agent-task-form" role="tabpanel" :aria-labelledby="taskMode === 'create' ? 'agent-create-tab' : 'agent-edit-tab'" @submit.prevent="sendCommand">
-        <div v-if="taskMode === 'create'" class="create-options">
+      <form id="agent-task-form" @submit.prevent="sendCommand">
+        <div class="create-options">
           <label for="agent-slide-count">Number of slides
             <select id="agent-slide-count" v-model="slideCount" :disabled="busy" @keydown.stop @keyup.stop @keypress.stop>
               <option value="auto">Auto</option>
@@ -63,10 +59,9 @@
             </select>
           </label>
         </div>
-        <p v-else class="model-note">Updates replace the current slide in place. You can undo the change.</p>
-        <label for="agent-command">{{ taskMode === 'create' ? 'Topic' : 'Command' }}</label>
+        <label for="agent-command">Topic</label>
         <textarea id="agent-command" v-model="activeCommand" maxlength="3200" rows="3" required :disabled="busy"
-          :placeholder="taskMode === 'create' ? 'e.g. Solar energy for business leaders' : 'e.g. Simplify the explanation and use a darker background'"
+          placeholder="e.g. Solar energy for business leaders"
           @keydown.stop @keyup.stop @keypress.stop
           @pointerdown.stop @pointerup.stop @mousedown.stop @mouseup.stop @click.stop @dblclick.stop
           @touchstart.stop @touchend.stop @wheel.stop @contextmenu.stop
@@ -85,7 +80,7 @@
           </li>
         </ul>
         <div class="agent-actions">
-          <button type="submit" :disabled="!ready || busy || !activeCommand.trim() || (taskMode === 'create' && !validSlideCount)">{{ busy && ready ? 'Working…' : taskMode === 'create' ? 'Create slides' : 'Update slide' }}</button>
+          <button type="submit" :disabled="!ready || busy || !activeCommand.trim() || !validSlideCount">{{ busy && ready ? 'Working…' : 'Create slides' }}</button>
         </div>
       </form>
       <section v-if="currentTemplateUsage" class="agent-template-usage" aria-label="Current slide design">
@@ -110,7 +105,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
+import { computed, ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { piniaInfo, piniaSlides } from '@/lib/common/store';
 import { useRoute } from 'vue-router';
 import { getFileInfo, getSlideInfo, getSlidesSlideId } from 'shared-vuejs/editor';
@@ -133,22 +128,15 @@ import { readAgentProvider, saveAgentProvider } from '@/lib/agent/provider-prefe
 const route = useRoute();
 const open = computed({ get: () => piniaInfo().currentTaskPane === 'agent', set: value => piniaInfo().setCurTaskPane(value ? 'agent' : '') });
 const busy = ref(false), ready = ref(false);
-const command = ref(''), status = ref(''), bridgeStatus = ref('Starting editor tools…');
-const taskMode = ref<'create' | 'edit'>('create');
+const status = ref(''), bridgeStatus = ref('Starting editor tools…');
 const sourceBundles = ref<any[]>([]);
 const sourceUrl = ref('');
 const topic = ref(''), slideCount = ref<number | 'auto'>('auto'), effort = ref('quick');
 
 const htmlTemplate = ref('builtin-ocean');
-const activeCommand = computed({ get: () => taskMode.value === 'create' ? (topic.value || (sourceBundles.value.length ? 'Create a presentation from the attached sources' : '')) : command.value,
-  set: value => { if (taskMode.value === 'create') topic.value = value; else command.value = value; } });
+const activeCommand = computed({ get: () => topic.value || (sourceBundles.value.length ? 'Create a presentation from the attached sources' : ''),
+  set: value => { topic.value = value; } });
 const validSlideCount = computed(() => slideCount.value === 'auto' || (typeof slideCount.value === 'number' && Number.isInteger(slideCount.value) && slideCount.value >= 1 && slideCount.value <= 10));
-async function selectTaskTab(mode: 'create' | 'edit') {
-  if (busy.value) return;
-  taskMode.value = mode;
-  await nextTick();
-  document.getElementById(`agent-${mode}-tab`)?.focus();
-}
 const runtimeStatus = ref('');
 const initialProvider = readAgentProvider();
 const modelKey = ref(initialProvider === 'local' ? LOCAL_MODELS[0].key : initialProvider);
@@ -397,11 +385,10 @@ async function addSourceFiles(event: Event) {
 
 async function sendCommand() {
   if (!ready.value || busy.value || !activeCommand.value.trim()) return;
-  const mode = taskMode.value, count = slideCount.value;
-  const nativeTemplateMode = mode === 'create' && ['html','markdown'].includes(authoring.value) && htmlTemplate.value !== 'freeform';
-  const submittedTarget = { fileId: getFileInfo()?.id, pageId: getSlidesSlideId() };
+  const mode = 'create', count = slideCount.value;
+  const nativeTemplateMode = ['html','markdown'].includes(authoring.value) && htmlTemplate.value !== 'freeform';
   let task;
-  try { task = buildAgentTask({ mode, topic: topic.value || (sourceBundles.value.length ? 'Create a presentation from the attached sources' : ''), command: command.value, count, effort: effort.value, slideAuthoring: nativeTemplateMode ? 'pptx' : authoring.value, local: provider.value === 'local' }); }
+  try { task = buildAgentTask({ mode, topic: topic.value || (sourceBundles.value.length ? 'Create a presentation from the attached sources' : ''), count, effort: effort.value, slideAuthoring: nativeTemplateMode ? 'pptx' : authoring.value, local: provider.value === 'local' }); }
   catch (error) { status.value = error instanceof Error ? error.message : String(error); return; }
   const prompt = task.prompt;
   const reply = { text: '' };
@@ -416,25 +403,21 @@ async function sendCommand() {
     const documentResult = await registry.executeTool('desq_get_document');
     const pageResult = await registry.executeTool('desq_get_page', { limit: 100 });
     if (!documentResult.ok || !pageResult.ok) throw new Error(documentResult.error || pageResult.error);
-    if (mode === 'edit' && (documentResult.result.fileId !== submittedTarget.fileId || pageResult.result.pageId !== submittedTarget.pageId))
-      throw new Error('The slide changed before its content could be read. Submit the edit again.');
     const usesPresenton = ['html','markdown'].includes(authoring.value);
     const pptxTemplateContext = usesPresenton && provider.value !== 'local'
       ? await preparePresentonContext(htmlTemplate.value, {signal,onProgress: (message: string) => { if(active && generation === run) status.value = message; }})
       : undefined;
     signal.throwIfAborted();
-    const plan = await local.plan(prompt, registry.listTools(), { signal, pptxTemplateContext, sourceBundles: sourceBundles.value, document: documentResult.result, page: pageResult.result, slideAuthoring: authoring.value, htmlTemplate: htmlTemplate.value, ...(provider.value === 'local' ? { localDesignMode: 'freeform-html' } : {}), slideTask: { mode, count: mode === 'edit' ? 1 : count }, authoringEffort: mode === 'create' ? effort.value : 'detailed' }, { onProgress: (message: string) => {
+    const plan = await local.plan(prompt, registry.listTools(), { signal, pptxTemplateContext, sourceBundles: sourceBundles.value, document: documentResult.result, page: pageResult.result, slideAuthoring: authoring.value, htmlTemplate: htmlTemplate.value, ...(provider.value === 'local' ? { localDesignMode: 'freeform-html' } : {}), slideTask: { mode, count }, authoringEffort: effort.value }, { onProgress: (message: string) => {
       if (active && generation === run) { status.value = message; reply.text = message; }
     } });
     if (!active || generation !== run) return;
     validateAgentTaskPlan(plan, mode, count);
-    if (mode === 'edit') for (const call of plan.calls) Object.assign(call.arguments, submittedTarget);
     for (const call of plan.calls) {
       if (!active || generation !== run) break;
       status.value = call.name === 'desq_create_deck' ? 'Compiling and checking the deck…' : call.name === 'desq_create_slide' ? 'Creating slide and resolving requested images…' : 'Applying editor command…';
       reply.text = status.value;
-      const result = await registry.executeTool(call.name, call.arguments, { signal, sourceBundles: plan.sourceBundles || sourceBundles.value, replaceCurrent: mode === 'edit',
-        ...(local?.rewriteText ? { rewriteText: (field: any, options: any) => local.rewriteText(field, options) } : {}),
+      const result = await registry.executeTool(call.name, call.arguments, { signal, sourceBundles: plan.sourceBundles || sourceBundles.value, ...(local?.rewriteText ? { rewriteText: (field: any, options: any) => local.rewriteText(field, options) } : {}),
         ...(local?.imageMatches ? { imageMatches: (image: any, options: any) => local.imageMatches(image, options) } : {}),
         ...(local?.imageKeywords ? { imageKeywords: (image: any, options: any) => local.imageKeywords(image, options) } : {}),
         ...(local?.generateImage ? { generateImage: (image: any, options: any) => local.generateImage(image, options) } : {}), onProgress: (message: string) => {
@@ -448,7 +431,7 @@ async function sendCommand() {
       results.push(`${call.name.replace('desq_', '')}: ${JSON.stringify(result.result)}`);
       placeholderCount += result.result.placeholderCount || 0;
       if (result.result.warnings?.length) results.push(`Warnings: ${result.result.warnings.join('\n')}`);
-      if (call.name === 'desq_create_deck') reply.text = mode === 'edit' ? `Updated the submitted slide: ${result.result.title}.` : `Created ${result.result.slideCount} editable slides: ${result.result.title}.`;
+      if (call.name === 'desq_create_deck') reply.text = `Created ${result.result.slideCount} editable slides: ${result.result.title}.`;
     }
     if (active && generation === run) {
       const completion = plan.calls.length ? (plan.calls.every(call => registry.listTools().find(tool => tool.name === call.name)?.annotations.readOnlyHint) ? 'Read operations completed.' : 'Edits applied.') : '';
@@ -501,9 +484,6 @@ header button { border: 0; background: transparent; font-size: 24px; cursor: poi
 label { display: block; margin-top: 12px; }
 textarea { width: 100%; box-sizing: border-box; margin: 6px 0; padding: 8px; border: 1px solid #b7c9b1; border-radius: 8px; font: inherit; }
 select, input[type="password"], input[type="number"] { width: 100%; box-sizing: border-box; margin-top: 6px; padding: 8px; border: 1px solid #b7c9b1; border-radius: 8px; font: inherit; }
-.agent-tabs { display: flex; flex-shrink: 0; gap: 4px; margin-top: 8px; border-bottom: 1px solid #dbe5cc; }
-.agent-tabs button { flex: 1; border: 0; border-bottom: 3px solid transparent; background: transparent; padding: 9px 4px; font: inherit; color: #52675b; cursor: pointer; }
-.agent-tabs button[aria-selected="true"] { border-bottom-color: #527746; color: #172923; font-weight: 600; background: #f1f4ee; }
 .agent-template-usage { overflow-wrap:anywhere; font-size:12px; }
 .create-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 #agent-task-form { flex-shrink: 0; }
