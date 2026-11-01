@@ -19,7 +19,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | @css-render/vue3-ssr | 0.15.14 | MIT | node_modules/@css-render/vue3-ssr |
 | @desq/player | 1.0.4 | Not specified | node_modules/@desq/player |
 | @dmsnell/diff-match-patch | 1.1.0 | Apache-2.0 | git+https://github.com/dmsnell/diff-match-patch.git |
-| @emnapi/runtime | 1.11.3 | MIT | node_modules/@img/sharp-wasm32/node_modules/@emnapi/runtime |
+| @emnapi/runtime | 1.11.3 | MIT | git+https://github.com/toyobayashi/emnapi.git |
 | @emotion/hash | 0.8.0 | MIT | https://github.com/emotion-js/emotion/tree/master/packages/hash |
 | @firebase/ai | 2.16.0 | Apache-2.0 | git+https://github.com/firebase/firebase-js-sdk.git |
 | @firebase/analytics-compat | 0.2.31 | Apache-2.0 | git+https://github.com/firebase/firebase-js-sdk.git |
@@ -93,7 +93,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | @img/sharp-linux-x64 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-linux-x64 |
 | @img/sharp-linuxmusl-arm64 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-linuxmusl-arm64 |
 | @img/sharp-linuxmusl-x64 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-linuxmusl-x64 |
-| @img/sharp-wasm32 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later AND MIT | node_modules/@img/sharp-wasm32 |
+| @img/sharp-wasm32 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later AND MIT | git+https://github.com/lovell/sharp.git |
 | @img/sharp-webcontainers-wasm32 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-webcontainers-wasm32 |
 | @img/sharp-win32-arm64 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later | node_modules/@img/sharp-win32-arm64 |
 | @img/sharp-win32-ia32 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later | node_modules/@img/sharp-win32-ia32 |
@@ -420,8 +420,8 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | jsonrepair | 3.11.2 | ISC | https://github.com/josdejong/jsonrepair.git |
 | jsonwebtoken | 9.0.2 | MIT | https://github.com/auth0/node-jsonwebtoken |
 | jspdf | 4.2.1 | MIT | https://github.com/parallax/jsPDF.git |
-| jwa | 1.4.2 | MIT | git://github.com/brianloveswords/node-jwa.git |
-| jws | 3.2.3 | MIT | git://github.com/brianloveswords/node-jws.git |
+| jwa | 1.4.2 | MIT | node_modules/jsonwebtoken/node_modules/jwa |
+| jws | 3.2.3 | MIT | node_modules/jsonwebtoken/node_modules/jws |
 | launch-editor | 2.14.2 | MIT | git+https://github.com/vitejs/launch-editor.git |
 | lit-element | 3.3.3 | BSD-3-Clause | https://github.com/lit/lit.git |
 | lit-html | 2.8.0 | BSD-3-Clause | https://github.com/lit/lit.git |
