@@ -300,7 +300,7 @@ export const editorAdapter = {
     await saveDexie();
     return { shapeId: shape.id };
   },
-  async createDeck(args, signal?: AbortSignal, onProgress?: (message: string) => void, generateImage?: any, execution: { builtinTheme?: string; rewriteText?: any; replaceCurrent?: boolean; imageKeywords?: any; imageMatches?: any; research?: any; researchImages?: any[]; sourceBundles?: any[] } = {}) {
+  async createDeck(args, signal?: AbortSignal, onProgress?: (message: string) => void, generateImage?: any, execution: { allowTextOverflow?: boolean; builtinTheme?: string; rewriteText?: any; replaceCurrent?: boolean; imageKeywords?: any; imageMatches?: any; research?: any; researchImages?: any[]; sourceBundles?: any[] } = {}) {
     const { fileId, pageId, ...spec } = args;
     validateArguments(deckSchema, spec);
     const checkTarget = () => {
@@ -336,7 +336,7 @@ export const editorAdapter = {
     const layoutid = (execution.replaceCurrent ? file.slides.find(slide => slide.id === pageId)?.layoutid : getSlideInfo().layoutid) || file.layouts?.[0]?.id;
     if (!layoutid) throw new Error('The presentation has no usable layout.');
     const canvas = typeof document === 'undefined' ? undefined : document.createElement('canvas').getContext('2d');
-    const options = { width: file.width, height: file.height, genId, geometry: getPrstInfo,
+    const options = { width: file.width, height: file.height, genId, geometry: getPrstInfo, allowTextOverflow: execution.allowTextOverflow === true,
       ...(canvas ? { measureText: canvasTextMeasurer(canvas) } : {}) };
     const draft=compileDeck(spec,{...options,deferTextOutlines:true});
     const fontWarnings = await prepareGeneratedFonts(fileId, draft.pages, onProgress);

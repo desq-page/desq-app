@@ -12,7 +12,7 @@ import { htmlToSVG } from './html-slides.mjs';
 import {compileMotion} from './ppt-master-motion.mjs';
 
 // Authored SVG/HTML -> native Desq objects. No model code is executed.
-export function compileDeck(deck, { width, height, genId, geometry, assets = new Map(), measureText,outlineText,deferTextOutlines=false } = {}) {
+export function compileDeck(deck, { width, height, genId, geometry, assets = new Map(), measureText,outlineText,deferTextOutlines=false,allowTextOverflow=false } = {}) {
   if (![width, height].every(Number.isFinite) || width < 300 || height < 200 || width > 10000 || height > 10000)
     throw new Error('Unsupported presentation dimensions.');
   if (!deck.title.trim() || !deck.audience.trim() || !deck.objective.trim()) throw new Error('Deck title, audience and objective are required.');
@@ -89,7 +89,10 @@ export function compileDeck(deck, { width, height, genId, geometry, assets = new
       }, 0);
       let size = preferred;
       while (size > Math.min(minimum, preferred) && estimate(size) > h) size -= 1;
-      if (estimate(size) > h) throw new Error(`Slide ${pageIndex + 1}: text does not fit (${slide.title}). Shorten it or give it more space.`);
+      if (estimate(size) > h) {
+        if (!allowTextOverflow) throw new Error(`Slide ${pageIndex + 1}: text does not fit (${slide.title}). Shorten it or give it more space.`);
+        warnings.push(`Slide ${pageIndex + 1} (${slide.title}): some text may overflow its box. Resize the text box or edit the slide to make it fit.`);
+      }
       return size;
     };
     const text = (name, x, y, w, h, content, size = 22, color = design.foreground, bold = false) => {

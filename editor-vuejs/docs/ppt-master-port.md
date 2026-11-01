@@ -23,9 +23,8 @@ model reviews a scene summary; it does not yet receive rendered pixels.
 Upstream: https://github.com/hugohe3/ppt-master
 
 Pinned commit: `b113d23720260c411ee47b2b05a73615f954deeb`.
-Unmodified source references, source Python modules and compatibility SVG pages
-are in `third_party/ppt-master/`, with the complete MIT license and source/hash
-manifest. Copyright (c) 2025-2026 Hugo He.
+Unmodified source references, selected data and compatibility SVG pages are in
+`third_party/ppt-master/`, with the complete MIT license and source/hash manifest. Copyright (c) 2025-2026 Hugo He.
 
 The direct JavaScript port maps affine composition, inherited SVG paint/geometry,
 font units and traversal semantics to Desq's DrawingML-shaped JSON. The SVG

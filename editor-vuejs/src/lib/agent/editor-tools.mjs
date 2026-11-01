@@ -94,7 +94,7 @@ export function createEditorTools(adapter, isActive = () => true) {
           if (disposed || !isActive()) throw new Error('The editor is not ready. Open a document first.');
           const signal = options.signal ? AbortSignal.any([lifetime.signal, options.signal]) : lifetime.signal;
           signal.throwIfAborted();
-          return { ok: true, result: await adapter[method](input, signal, options.onProgress, options.generateImage, { replaceCurrent: options.replaceCurrent === true, imageMatches: options.imageMatches, imageKeywords: options.imageKeywords, rewriteText: options.rewriteText, sourceBundles: options.sourceBundles, builtinTheme: options.builtinTheme }) };
+          return { ok: true, result: await adapter[method](input, signal, options.onProgress, options.generateImage, { replaceCurrent: options.replaceCurrent === true, allowTextOverflow: options.allowTextOverflow === true, imageMatches: options.imageMatches, imageKeywords: options.imageKeywords, rewriteText: options.rewriteText, sourceBundles: options.sourceBundles, builtinTheme: options.builtinTheme }) };
         } catch (error) {
           return { ok: false, error: error instanceof Error ? error.message : String(error) };
         }

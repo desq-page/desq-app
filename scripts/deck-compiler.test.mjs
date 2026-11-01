@@ -181,3 +181,13 @@ test('unfittable attribution retains a placeholder and full credit metadata whil
   const footer=page.shapes.find(s=>s.name==='Image credits');
   assert.match(textOf(footer),/Wind/);assert.ok(!textOf(footer).includes('Solar'));
 });
+
+test('overflowing text can be retained as editable text with a warning', () => {
+  const deck = spec();
+  const body = 'Long explanation '.repeat(12);
+  deck.slides = [{ title: 'Detailed slide', purpose: 'Explain', layout: 'timeline', items: Array.from({length: 5}, (_, i) => ({title: `Step ${i + 1}`, body})) }];
+  assert.throws(() => compileDeck(deck, options), /text does not fit/);
+  const result = compileDeck(deck, {...options, allowTextOverflow: true});
+  assert.ok(result.pages[0].shapes.some(shape => textOf(shape) === body));
+  assert.ok(result.warnings.some(warning => /Slide 1.*text may overflow/.test(warning)));
+});

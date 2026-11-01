@@ -1,5 +1,9 @@
 # Editor agents and WebMCP
 
+The Agent panel now uses the external-brief workflow described below. Provider,
+local-model, and agent-chat sections in this document describe legacy backend
+integration and are not available as panel options.
+
 ## Shared agent host
 
 Run only `npm run dev` for development. Vite hosts both
@@ -553,3 +557,30 @@ ordinary editor previews retain their existing deadlines. A failed preview adds
 a warning and does not prevent the remaining previews from rebuilding. If deck
 insertion stops partway, committed pages still receive a thumbnail pass. Changing
 to another document stops the pass so previews cannot be written into that file.
+
+## Create slides from an external model's brief
+
+Open the Agent panel, download the Markdown instructions and attach that file
+to the external chat. Copy the short prompt, add your request, and send it with
+the file. Paste the returned JSON into the panel. Review the outline and JSON, then select
+**Create slides from brief**. Desq validates the fixed v1 format and compiles
+its content into editable native slide layouts before inserting it after the
+current slide. This route does not require an API key or local model. It does
+not rewrite or verify the facts; review them before creating the slides.
+Optional illustration descriptions are converted to search keywords for Wikimedia Commons; unavailable images may become placeholders.
+
+The reusable instructions and fixed schema are maintained in
+[`instructions-v1.md`](../src/lib/agent/external-brief/instructions-v1.md) and
+[`schema-v1.json`](../src/lib/agent/external-brief/schema-v1.json). The downloaded Markdown includes both. Incompatible changes require a new version.
+The full instructions can also be copied from the panel when attachments are
+unavailable. A file attachment still counts toward a model’s context limit.
+
+The layout approach can use Desq's native layouts or ask the external model
+to design each slide as editable SVG or structured HTML. HTML is measured in
+the editor's browser and converted into editable shapes and text. The SVG must follow the included
+instructions and pass Desq's import checks. The model-authored design may need
+correction if it uses unsupported SVG, overflows, or does not preserve content.
+
+If the pasted JSON has minor syntax errors, Desq attempts automatic repair and
+shows the repaired JSON for review. Repairs are not guaranteed to preserve the
+original meaning; malformed or incomplete SVG still fails import checks.

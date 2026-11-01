@@ -23,7 +23,7 @@ export function preflightDeckPlan(plan, context) {
   const canvas = typeof document === 'undefined' ? undefined : document.createElement('canvas').getContext('2d');
   let sequence=0;
   const compiled = compileDeck(deck, { width: context.document.width || 1280, height: context.document.height || 720,
-    genId: () => `preflight-${++sequence}`, deferTextOutlines:true,geometry: (p, w, h) => ({ d: `R0,0,${w},${h}` }),
+    genId: () => `preflight-${++sequence}`, deferTextOutlines:true, allowTextOverflow: context.allowTextOverflow === true, geometry: (p, w, h) => ({ d: `R0,0,${w},${h}` }),
     ...(canvas ? { measureText: canvasTextMeasurer(canvas) } : {}) });
   return { compiled, review: reviewDeck(deck, compiled), previews: deckLayoutPreviews(compiled, { width: context.document.width || 1280, height: context.document.height || 720 }) };
 }

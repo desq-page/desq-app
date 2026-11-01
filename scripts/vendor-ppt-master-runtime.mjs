@@ -5,15 +5,7 @@ const dest = "third_party/ppt-master/";
 const manifest = JSON.parse(await readFile(dest + "FILES.json", "utf8"));
 for (const [from, to] of [
   ["svg_to_pptx/drawingml/font_metrics.json", "data/font-metrics.json"],
-  ["svg_to_pptx/drawingml/text_baseline.py", "python/text_baseline.py"],
   ["pptx_animation_presets.json", "data/animation-presets.json"],
-  ["svg_to_pptx/shape_boolean.py", "python/shape_boolean.py"],
-  ["svg_to_pptx/animation_config.py", "python/animation_config.py"],
-  [
-    "svg_to_pptx/native_objects/formula_profile.py",
-    "python/formula_profile.py",
-  ],
-  ["pptx_transitions.py", "python/pptx_transitions.py"],
 ]) {
   await copyFile(source + from, dest + to);
   const content = await readFile(dest + to, "utf8");

@@ -14,7 +14,7 @@ const escape = (value) =>
   );
 const n = (value) => Math.round(value * 1000) / 1000;
 const htmlTags = new Set(
-  "section div article header footer main aside h1 h2 h3 h4 h5 h6 p span strong b em i u s small br ul ol li table thead tbody tfoot tr th td img style".split(
+  "section div article header footer main aside blockquote pre code kbd samp mark sub sup figure figcaption dl dt dd h1 h2 h3 h4 h5 h6 p span strong b em i u s small br ul ol li table thead tbody tfoot tr th td img style".split(
     " ",
   ),
 );
@@ -330,6 +330,9 @@ export function htmlToSVG(
   { document = globalThis.document, onWarning = () => {}, prepareLayout, inspectLayout } = {},
 ) {
   const root = parseSlideHTML(html, document);
+  const stageWidth = Number(root.getAttribute('data-desq-stage-width') || 1280);
+  if (![1280, 1920].includes(stageWidth)) throw Error('Unsupported HTML slide size.');
+  const stageHeight = stageWidth * 9 / 16;
   const seenWarnings = new Set();
   const warn = (message) => {
     if (!seenWarnings.has(message)) {
@@ -341,7 +344,7 @@ export function htmlToSVG(
   frame.setAttribute("sandbox", "allow-same-origin");
   frame.setAttribute("aria-hidden", "true");
   frame.style.cssText =
-    "position:fixed;left:-20000px;top:0;width:1280px;height:720px;border:0;visibility:hidden;pointer-events:none";
+    `position:fixed;left:-20000px;top:0;width:${stageWidth}px;height:${stageHeight}px;border:0;visibility:hidden;pointer-events:none`;
   document.body.append(frame);
   try {
     const doc = frame.contentDocument;
@@ -354,7 +357,7 @@ export function htmlToSVG(
     doc.close();
     const reset = doc.createElement("style");
     reset.textContent =
-      "html,body{margin:0;padding:0;width:1280px;height:720px}*{box-sizing:border-box}h1,h2,h3,h4,h5,h6,p{margin:0}section{position:relative}img{display:block}";
+      `html,body{margin:0;padding:0;width:${stageWidth}px;height:${stageHeight}px}*{box-sizing:border-box}h1,h2,h3,h4,h5,h6,p{margin:0}section{position:relative}img{display:block}`;
     doc.head.append(reset);
     // Reuse already loaded host FontFaces so browser measurement and native text agree.
     document.fonts?.forEach((face) => {
@@ -362,6 +365,11 @@ export function htmlToSVG(
     });
     const page = doc.importNode(root, true);
     doc.body.append(page);
+    if (page.hasAttribute('data-desq-imported')) {
+      const isolation = doc.createElement('style');
+      isolation.textContent = 'html,body{display:block!important;margin:0!important;padding:0!important;overflow:hidden!important;position:static!important;transform:none!important}';
+      doc.head.append(isolation);
+    }
     prepareLayout?.(page, doc);
     materializePseudoElements(page, doc, warn);
     approximatePresentationStyles(page, doc, warn);
@@ -369,8 +377,8 @@ export function htmlToSVG(
     const view = doc.defaultView,
       origin = page.getBoundingClientRect();
     if (
-      Math.abs(origin.width - 1280) > 1 ||
-      Math.abs(origin.height - 720) > 1 ||
+      Math.abs(origin.width - stageWidth) > 1 ||
+      Math.abs(origin.height - stageHeight) > 1 ||
       origin.x !== 0 ||
       origin.y !== 0
     )
@@ -387,10 +395,12 @@ export function htmlToSVG(
         rect.top < origin.top - 1 ||
         rect.right > origin.right + 1 ||
         rect.bottom > origin.bottom + 1
-      )
+      ) {
+        if (page.hasAttribute('data-desq-imported')) { warn('An element extends beyond the slide; content outside the canvas may be clipped.'); return; }
         throw Object.assign(new Error(
-          `HTML ${label} overflows the 1280×720 canvas. Shorten it or adjust its box.`,
+          `HTML ${label} overflows the slide canvas (${Math.round(rect.left-origin.left)}, ${Math.round(rect.top-origin.top)}, ${Math.round(rect.width)}×${Math.round(rect.height)}). Shorten it or adjust its box.`,
         ), { code: "HTML_SLIDE_OVERFLOW" });
+      }
     };
     const rectAttrs = (rect) =>
       `x="${n(rect.left - origin.left)}" y="${n(rect.top - origin.top)}" width="${n(rect.width)}" height="${n(rect.height)}"`;
@@ -454,6 +464,7 @@ export function htmlToSVG(
       const r = el.getBoundingClientRect();
       if (
         el.localName !== "img" &&
+        !(el === page && page.hasAttribute("data-desq-imported")) &&
         el.clientWidth &&
         el.clientHeight &&
         ((cs.overflowX !== "visible" && el.scrollWidth > el.clientWidth + 1) ||
@@ -462,7 +473,15 @@ export function htmlToSVG(
         throw Object.assign(new Error(
           `HTML ${el.localName} content overflows its clipped box (${el.scrollWidth}×${el.scrollHeight} inside ${el.clientWidth}×${el.clientHeight}). ${el === page ? "Keep the section exactly 1280×720; reduce content or vertical spacing rather than enlarging the canvas." : "Enlarge the inner box within the canvas or shorten its text."}`,
         ), { code: "HTML_SLIDE_OVERFLOW" });
-      if (r.width && r.height) bounds(r, el.localName);
+      if (r.width && r.height) {
+        if (page.hasAttribute('data-desq-imported') && !el.textContent.trim() && el.localName !== 'img' && (r.left < origin.left - 1 || r.top < origin.top - 1 || r.right > origin.right + 1 || r.bottom > origin.bottom + 1)) {
+          warn('A decorative element extending beyond the slide was omitted.');
+          return;
+        }
+        if (page.hasAttribute('data-desq-imported') && (r.left < origin.left - 1 || r.top < origin.top - 1 || r.right > origin.right + 1 || r.bottom > origin.bottom + 1))
+          warn('An element extends beyond the slide; content outside the canvas may be clipped.');
+        else bounds(r, el.localName);
+      }
       let shadowFilter = "";
       if (cs.boxShadow !== "none") {
         let shadows = [];
@@ -656,7 +675,7 @@ export function htmlToSVG(
         `<text id="${block.id.startsWith("!!") ? escape(block.id) + ":text" : "html-text-" + group.id}" xml:space="preserve" text-anchor="${anchor}" data-paragraph-line-height="${n(lineHeight)}">${lines.map((line) => `<tspan x="${n(xFor(line))}" y="${n(line.y)}">${line.runs.map((run) => `<tspan ${run.attrs}>${escape(run.value)}</tspan>`).join("")}</tspan>`).join("")}</text>`;
     }
     if (!parts.length) throw Error("HTML slide is empty.");
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">${parts.join("")}</svg>`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">${stageWidth === 1280 ? parts.join("") : `<g transform="scale(${1280 / stageWidth})">${parts.join("")}</g>`}</svg>`;
     if (svg.length > 80000)
       throw Error(
         "HTML slide produces too many native objects. Simplify its text and geometry.",
