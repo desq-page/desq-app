@@ -21,9 +21,9 @@
           <button class="copy-button" type="button" aria-label="Copy prompt" title="Copy prompt" @click="copyPrompt"><DocumentCopy24Regular aria-hidden="true" /></button>
         </div>
         <textarea id="external-prompt" readonly :rows="externalLayoutStyle === 'templates' ? 3 : 3" :value="externalFullPrompt" @keydown.stop @keyup.stop />
-        <label for="external-brief-json">Presentation output (JSON or HTML)</label>
+        <label for="external-brief-json">Response (JSON or HTML)</label>
         <textarea id="external-brief-json" v-model="externalBriefText" rows="4" :disabled="busy" placeholder="Paste the JSON or full HTML response here" @keydown.stop @keyup.stop @keypress.stop @paste.stop />
-        <label>Or open the HTML output file <input type="file" accept=".html,.htm,text/html" :disabled="busy" @change="loadExternalHtml" /></label>
+        <label>Or open the HTML response file <input type="file" accept=".html,.htm,text/html" :disabled="busy" @change="loadExternalHtml" /></label>
         <p v-if="externalBriefError" role="alert">{{ externalBriefError }}</p>
         <div v-if="externalBriefResult.repaired">
           <p role="status">The JSON was repaired automatically. Review the repaired content carefully before creating slides; repair can change or omit content.</p>
