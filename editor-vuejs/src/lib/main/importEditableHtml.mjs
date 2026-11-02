@@ -1,6 +1,5 @@
 import { readDocument } from '../../../../editor-vanjs/src/document.mjs';
 import { genId } from 'shared-vuejs/api/utility';
-import { putAssetsToDexie, putFileInfoToDexie } from 'shared-vuejs/api/dbutils';
 import { saveMediaRecordToOPFS, saveToOPFS } from 'shared-vuejs/api/opfs';
 
 const descriptor = record => {
@@ -68,7 +67,6 @@ export async function importEditableHtml(file) {
       await saveMediaRecordToOPFS({ fileId, name: asset.name, data: asset.data, w: asset.metadata.w, h: asset.metadata.h });
     }
   }
-  for (const record of plan.records) await putAssetsToDexie(record);
-  await putFileInfoToDexie(plan.fileInfo);
-  return fileId;
+  const { submitHtmlDocument } = await import('shared-vuejs/api/submitHtml');
+  return submitHtmlDocument({ ...doc, file: plan.fileInfo }, media, { fileId, fileName: doc.file.name || file.name });
 }
