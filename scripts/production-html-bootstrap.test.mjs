@@ -3,16 +3,14 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import { createRequire } from 'node:module';
 import { build } from 'esbuild';
-import JavaScriptObfuscator from 'javascript-obfuscator';
 
-test('obfuscated production exporter produces standalone player bootstrap scripts', async () => {
+test('minified production exporter produces standalone player bootstrap scripts', async () => {
   const bundle = await build({
     entryPoints: [createRequire(import.meta.url).resolve('shared-vuejs/api/presentation-document')],
-    bundle: true, format: 'iife', globalName: 'exporter', write: false,
+    bundle: true, minify: true, format: 'iife', globalName: 'exporter', write: false,
   });
-  const obfuscated = JavaScriptObfuscator.obfuscate(bundle.outputFiles[0].text).getObfuscatedCode();
   const context = { btoa: value => Buffer.from(value, 'binary').toString('base64') };
-  vm.runInNewContext(obfuscated, context);
+  vm.runInNewContext(bundle.outputFiles[0].text, context);
   const resources = {
     player: 'window.player=true;',
     playerStyles: '@font-face{src:url(/fonts/test.woff2)}',

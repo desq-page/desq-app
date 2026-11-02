@@ -8,8 +8,6 @@ import { createLogger, defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 // import { optimizeCssModules } from "vite-plugin-optimize-css-modules";
 import { visualizer } from "rollup-plugin-visualizer";
-// import obfuscatorPlugin from "vite-plugin-javascript-obfuscator";
-import vitePluginBundleObfuscator from 'vite-plugin-bundle-obfuscator';
 import mkcert from "vite-plugin-mkcert";
 import { staticHomePagePlugin } from "../scripts/render-homepage.mjs";
 import { localCorePlugin } from "../scripts/local-core-vite.mjs";
@@ -17,47 +15,6 @@ import { vanEditorDevPlugin } from "../scripts/van-editor-dev.mjs";
 import { vanRuntimeGuard } from "../scripts/van-runtime-guard.mjs";
 import { suppressPackagedSourcemapWarnings } from "../scripts/packaged-sourcemap-logger.mjs";
 /* note: for device to trust, install rootCA from ~/.vite-plugin-mkcert to device */
-
-// All configurations
-const allObfuscatorConfig = {
-  // excludes: [/tiff2png/],
-  // enable: true,
-  // log: true,
-  autoExcludeNodeModules: true,
-  // autoExcludeNodeModules: { enable: true, manualChunks: ['vue'] }
-  threadPool: true,
-  // threadPool: { enable: true, size: 4 }
-  options: {
-    // compact: true,
-    // controlFlowFlattening: true,
-    // controlFlowFlatteningThreshold: 1,
-    // deadCodeInjection: false,
-    // debugProtection: false,
-    // debugProtectionInterval: 0,
-    // disableConsoleOutput: false,
-    // identifierNamesGenerator: 'hexadecimal',
-    // log: false,
-    // numbersToExpressions: false,
-    // renameGlobals: false,
-    // selfDefending: true,
-    // simplify: true,
-    // splitStrings: false,
-    // ignoreImports: true,
-    // stringArray: true,
-    // stringArrayCallsTransform: true,
-    // stringArrayCallsTransformThreshold: 0.5,
-    // stringArrayEncoding: [],
-    // stringArrayIndexShift: true,
-    // stringArrayRotate: true,
-    // stringArrayShuffle: true,
-    // stringArrayWrappersCount: 1,
-    // stringArrayWrappersChainedCalls: true,
-    // stringArrayWrappersParametersMaxCount: 2,
-    // stringArrayWrappersType: 'variable',
-    // stringArrayThreshold: 0.75,
-    // unicodeEscapeSequence: false,
-  }
-};
 
 // Vite 8 minifies with Rolldown/Oxc; esbuild.drop does not cover its
 // dependency chunks or worker builds.
@@ -107,7 +64,6 @@ export default defineConfig(({ command, mode }) => ({
     mkcert(),
     vue(),
     visualizer(),
-    vitePluginBundleObfuscator(allObfuscatorConfig),
     {
       enforce: "post",
       transformIndexHtml() {
@@ -235,7 +191,7 @@ export default defineConfig(({ command, mode }) => ({
               name: 'shared',
               test: /shared-vuejs/,
               // Keep lazy features separate and bound each library chunk
-              // before minification/obfuscation changes its final size.
+              // before minification changes its final size.
               entriesAware: true,
               minSize: 50000,
               maxSize: 300000,

@@ -1,3 +1,4 @@
+import {preparePlayerScript} from '../../scripts/player-production.mjs';
 import { build, context } from 'esbuild';
 import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -30,6 +31,7 @@ function options(entry, filename, globalName, wrapper, kind) {
   return {
     absWorkingDir: root, entryPoints: [entry], outfile: `dist/${filename}`, bundle: true,
     banner: { js: `function ${wrapper}() {` }, footer: { js: `return ${globalName}; }\nwindow.${globalName} = ${wrapper}();` },
+    drop: process.env.PROD === '1' ? ['console', 'debugger'] : undefined,
     minify, format: 'iife', globalName, target: ['es2022'], charset: 'utf8',
     jsx: 'automatic', jsxImportSource: 'shared-vuejs/jsx', tsconfigRaw: { compilerOptions: { jsx: 'react-jsx', jsxImportSource: 'shared-vuejs/jsx' } },
     resolveExtensions: ['.tsx', '.ts', '.jsx', '.mjs', '.js', '.json'],
@@ -129,7 +131,7 @@ await mkdir(outdir, { recursive: true });
 await Promise.all(['video-worker.txt', 'video-worker.meta.json', 'charts.html', 'charts.meta.json', 'renderer.html', 'renderer.meta.json'].map(name => rm(resolve(statsDir, name), { force: true })));
 await Promise.all(['charts.js', 'renderer.js'].map(name => rm(resolve(outdir, name), { force: true })));
 // Use released standalone assets without rebuilding the player source.
-const playerBundle = await readFile(resolvePackage('@desq/player/vanjs.js'));
+const playerBundle = Buffer.from(await preparePlayerScript(await readFile(resolvePackage('@desq/player/vanjs.js'))));
 const playerStyles = await readFile(resolvePackage('@desq/player/player.css'));
 await writeFile(resolve(outdir, 'player.js'), playerBundle);
 await writeFile(resolve(outdir, 'player.css'), playerStyles);
@@ -141,7 +143,7 @@ for (const [name, output, data] of [['player', 'dist/player.js', playerBundle], 
 if (published) {
   if (!localCore) await rm(resolve(root, '../editor-vuejs/public/player'), {recursive:true,force:true});
   await mkdir(resolve(root, '../editor-vuejs/public/player'), { recursive: true });
-  await writeFile(resolve(root, '../editor-vuejs/public/player/player.js'), await readFile(resolvePackage('@desq/player/player.js')));
+  await writeFile(resolve(root, '../editor-vuejs/public/player/player.js'), await preparePlayerScript(await readFile(resolvePackage('@desq/player/player.js'))));
   await writeFile(resolve(root, '../editor-vuejs/public/player/player.css'), playerStyles);
   await mkdir(resolve(root, '../editor-vuejs/public/player/css'), { recursive: true });
   await writeFile(resolve(root, '../editor-vuejs/public/player/css/player.css'), playerStyles);

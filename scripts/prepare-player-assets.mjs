@@ -1,5 +1,6 @@
+import {preparePlayerScript} from './player-production.mjs';
 import {createRequire} from 'node:module';
-import {mkdir,copyFile,access,rm} from 'node:fs/promises';
+import {mkdir,copyFile,access,rm,readFile,writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {resolve} from 'node:path';
 import {localCoreDirectory, resolveCorePackage} from './local-core.mjs';
@@ -14,8 +15,9 @@ export async function preparePlayerAssets(core = localCoreDirectory()) {
   for (const [name,destinations] of [['anime-player.js',['anime-player.js']],['player.js',['player.js']],['player.css',['css/player.css','player.css']]]) {
     const source=resolvePackage('@desq/player/'+name);
     for (const destination of destinations) {
-      await copyFile(source,new URL(destination,target));
-      if (core) {
+      if (name.endsWith('.js')) await writeFile(new URL(destination,target), await preparePlayerScript(await readFile(source)));
+      else await copyFile(source,new URL(destination,target));
+      if (core && process.env.PROD !== '1') {
         try {await access(source+'.map');} catch {continue;}
         await copyFile(source+'.map',new URL(destination+'.map',target));
       }
@@ -33,7 +35,9 @@ export async function preparePlayerAssets(core = localCoreDirectory()) {
   for (const [name, destination] of sharedAssets) {
     const dest = new URL(destination, publicRoot);
     await mkdir(new URL('.', dest), { recursive: true });
-    await copyFile(resolvePackage(`shared-vuejs/assets/single-html/${name}`), dest);
+    const source = resolvePackage(`shared-vuejs/assets/single-html/${name}`);
+    if (destination.endsWith('.js')) await writeFile(dest, await preparePlayerScript(await readFile(source)));
+    else await copyFile(source, dest);
   }
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) await preparePlayerAssets();
