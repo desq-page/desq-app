@@ -25,7 +25,7 @@
         <textarea id="external-brief-json" v-model="externalBriefText" rows="4" :disabled="busy" placeholder="Paste the JSON or full HTML response here" @keydown.stop @keyup.stop @keypress.stop @paste.stop />
         <label>Or open the HTML response file <input type="file" accept=".html,.htm,text/html" :disabled="busy" @change="loadExternalHtml" /></label>
         <p v-if="externalBriefError" role="alert">{{ externalBriefError }}</p>
-        <div v-if="externalBriefResult.repaired">
+        <!-- <div v-if="externalBriefResult.repaired">
           <p role="status">The JSON was repaired automatically. Review the repaired content carefully before creating slides; repair can change or omit content.</p>
           <details><summary>Review repaired JSON</summary>
             <textarea readonly rows="8" :value="externalBriefResult.repairedJson" aria-label="Repaired JSON" @keydown.stop @keyup.stop />
@@ -35,7 +35,7 @@
           <strong>{{ externalBriefDeck.title }} · {{ externalBriefDeck.slides.length }} slides</strong>
           <ol><li v-for="(slide, index) in externalBriefDeck.slides" :key="index">{{ slide.title }} · {{ slide.layout }}</li></ol>
           <p>Review the slide list and source before creating slides.</p>
-        </div>
+        </div> -->
         <button class="primary-button create-button" type="button" :disabled="busy || !externalBriefDeck" @click="createExternalBrief">{{ busy ? 'Creating slides…' : 'Create slides from response' }}</button>
       </section>
       <section v-if="currentTemplateUsage" class="agent-template-usage" aria-label="Current slide design">
@@ -138,7 +138,7 @@ async function createExternalBrief() {
     let renderedDeck = deck;
     const importFontWarnings: string[] = [];
     if (isHtmlDocument) {
-      status.value = 'Rendering the HTML in an isolated sandbox…';
+      status.value = 'Rendering the HTML…';
       renderedDeck = await renderScriptedFrontendSlides(externalBriefText.value, deck, { signal });
       signal.throwIfAborted();
       const { googleFonts } = await import('shared-vuejs/api/googleFonts');

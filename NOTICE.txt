@@ -422,8 +422,8 @@ jsondiffpatch | 0.7.6 | MIT | https://github.com/benjamine/jsondiffpatch.git
 jsonrepair | 3.11.2 | ISC | https://github.com/josdejong/jsonrepair.git
 jsonwebtoken | 9.0.2 | MIT | https://github.com/auth0/node-jsonwebtoken
 jspdf | 4.2.1 | MIT | https://github.com/parallax/jsPDF.git
-jwa | 1.4.2 | MIT | node_modules/jsonwebtoken/node_modules/jwa
-jws | 3.2.3 | MIT | node_modules/jsonwebtoken/node_modules/jws
+jwa | 1.4.2 | MIT | git://github.com/brianloveswords/node-jwa.git
+jws | 3.2.3 | MIT | git://github.com/brianloveswords/node-jws.git
 launch-editor | 2.14.2 | MIT | git+https://github.com/vitejs/launch-editor.git
 lit-element | 3.3.3 | BSD-3-Clause | https://github.com/lit/lit.git
 lit-html | 2.8.0 | BSD-3-Clause | https://github.com/lit/lit.git
@@ -561,7 +561,7 @@ serve-index | 1.9.1 | MIT | expressjs/serve-index
 serve-static | 1.16.2 | MIT | expressjs/serve-static
 setprototypeof | 1.1.0 | ISC | https://github.com/wesleytodd/setprototypeof.git
 setprototypeof | 1.2.0 | ISC | https://github.com/wesleytodd/setprototypeof.git
-shared-vuejs | 0.2.4 | ISC | node_modules/shared-vuejs
+shared-vuejs | 0.2.6 | ISC | node_modules/shared-vuejs
 sharp | 0.35.5 | Apache-2.0 | git+https://github.com/lovell/sharp.git
 shell-quote | 1.12.0 | MIT | http://github.com/ljharb/shell-quote.git
 side-channel-list | 1.0.1 | MIT | git+https://github.com/ljharb/side-channel-list.git
@@ -83244,7 +83244,7 @@ Project: https://github.com/josdejong/jsonrepair.git
 --- LICENSE.md ---
 The ISC License
 
-Copyright (c) 2020-2026 by Jos de Jong
+Copyright (c) 2020-2024 by Jos de Jong
 
 Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 
@@ -83313,15 +83313,51 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 jwa (1.4.2)
 License: MIT
 Source: node_modules/jsonwebtoken/node_modules/jwa
+Project: git://github.com/brianloveswords/node-jwa.git
 
-No standalone license text supplied in the installed package; consult the project source.
+--- LICENSE ---
+Copyright (c) 2013 Brian J. Brennan
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
+Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==============================================================================
 jws (3.2.3)
 License: MIT
 Source: node_modules/jsonwebtoken/node_modules/jws
+Project: git://github.com/brianloveswords/node-jws.git
 
-No standalone license text supplied in the installed package; consult the project source.
+--- LICENSE ---
+Copyright (c) 2013 Brian J. Brennan
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
+Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ==============================================================================
 launch-editor (2.14.2)
@@ -88610,7 +88646,7 @@ OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ==============================================================================
-shared-vuejs (0.2.4)
+shared-vuejs (0.2.6)
 License: ISC
 Source: node_modules/shared-vuejs
 
@@ -92184,8 +92220,6 @@ hpack.js@2.1.6: no standalone license/notice file found in installed package
 http-deceiver@1.2.7: no standalone license/notice file found in installed package
 isarray@1.0.0: no standalone license/notice file found in installed package
 jsondiffpatch@0.7.6: no standalone license/notice file found in installed package
-jwa@1.4.2: no standalone license/notice file found in installed package
-jws@3.2.3: no standalone license/notice file found in installed package
 omggif@1.0.10: no standalone license/notice file found in installed package
 onnxruntime-common@1.30.0: no standalone license/notice file found in installed package
 onnxruntime-common@1.31.0-dev.20260911-2a43ec07e: no standalone license/notice file found in installed package
@@ -92193,7 +92227,7 @@ onnxruntime-node@1.30.0: no standalone license/notice file found in installed pa
 onnxruntime-web@1.31.0-dev.20260914-8d85527a0: no standalone license/notice file found in installed package
 parse-bmfont-ascii@1.0.6: no standalone license/notice file found in installed package
 select-hose@2.0.0: no standalone license/notice file found in installed package
-shared-vuejs@0.2.4: no standalone license/notice file found in installed package
+shared-vuejs@0.2.6: no standalone license/notice file found in installed package
 spdy-transport@3.0.0: no standalone license/notice file found in installed package
 spdy@4.0.2: no standalone license/notice file found in installed package
 vanjs-ext@0.6.3: no standalone license/notice file found in installed package

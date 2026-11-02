@@ -25,7 +25,7 @@
           </span>
         </span>
         <span class="template-label">{{ option.label }}</span>
-        <span class="app-label">{{ option.appName }}</span>
+        <!-- <span class="app-label">{{ option.appName }}</span> -->
       </button>
     </div>
     <div class="action">
