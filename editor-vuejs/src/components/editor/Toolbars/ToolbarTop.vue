@@ -254,6 +254,13 @@
             :active="!!piniaInfo().showGuide"
           />
           <ToolbarItem
+            caption="Play Anime.js"
+            tooltip="Play with Anime.js"
+            :icon="SlideshowFilled"
+            :onClick="openAnimePreview"
+            :disabled="piniaSlides().masterView || !!piniaInfo().useGrid"
+          />
+          <ToolbarItem
             caption="Play"
             tooltip="Play"
             :icon="SlideshowFilled"
@@ -445,7 +452,7 @@
 <script setup lang="ts">
 import { resolveToolbarTab } from "@/lib/main/toolbarSelection.mjs";
 import { editorAdapter } from '@/lib/agent/editor-adapter';
-import { openPreviewModal } from "@/lib/main/previewPresentation";
+import { openPreviewModal, openAnimePreview } from "@/lib/main/previewPresentation";
 import { getShapeDeep, updateShape, getInfoShowGuide, getRulerWidth, getSelectCropShp, getUndoHistory, setInfoShowGuide, setRulerWidth } from "shared-vuejs/editor";
 
 import {

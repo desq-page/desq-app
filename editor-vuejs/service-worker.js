@@ -46,7 +46,14 @@ self.addEventListener("fetch", function (e) {
       let data;
       const decodedFileId = decodeURIComponent(fileId);
       const decodedName = decodeURIComponent(name);
-      if (decodedName === "webfont.css") {
+      if (decodedName === "player-config.js") {
+        try {
+          const file = await getFileFromOPFS(`pptx/${encodeURIComponent(decodedFileId)}/_internal/player-config.js`);
+          return responseWithFile(e.request, url, file);
+        } catch {
+          return new Response("Player configuration not found", { status: 404 });
+        }
+      } else if (decodedName === "webfont.css") {
         try {
           const file = await getFileFromOPFS(`pptx/${encodeURIComponent(decodedFileId)}/_internal/webfont.css`);
           return responseWithFile(e.request, url, file);
@@ -173,6 +180,8 @@ function responseWithHeaders(url, data, extraHeaders = null) {
     headers["Content-Type"] = "image/x-emf";
   } else if (url.endsWith(".wmf")) {
     headers["Content-Type"] = "image/x-wmf";
+  } else if (url.endsWith(".js")) {
+    headers["Content-Type"] = "text/javascript";
   } else if (url.endsWith(".css")) {
     headers["Content-Type"] = "text/css";
   } else if (url.endsWith(".woff")) {
