@@ -254,15 +254,15 @@
             :active="!!piniaInfo().showGuide"
           />
           <ToolbarItem
-            caption="Play Anime.js"
-            tooltip="Play with Anime.js"
+            caption="Play FrameAnimation"
+            tooltip="Compare with FrameAnimation"
             :icon="SlideshowFilled"
-            :onClick="openAnimePreview"
+            :onClick="openFramePreview"
             :disabled="piniaSlides().masterView || !!piniaInfo().useGrid"
           />
           <ToolbarItem
             caption="Play"
-            tooltip="Play"
+            tooltip="Play (Anime.js)"
             :icon="SlideshowFilled"
             :onClick="openPreviewModal"
             :disabled="piniaSlides().masterView || !!piniaInfo().useGrid"
@@ -436,13 +436,21 @@
         <ToolbarItem type="spacing" />
         <ToolbarItem
           v-if="!piniaSlides().masterView"
+          caption="FrameAnimation"
+          tooltip="Compare with FrameAnimation"
+          :icon="SlideshowFilled"
+          :onClick="openFramePreview"
+          :disabled="!!piniaInfo().useGrid"
+        />
+        <ToolbarItem
+          v-if="!piniaSlides().masterView"
           :icon="SlideshowFilled"
           :size="28"
           :onClick="openPreviewModal"
           :disabled="!!piniaInfo().useGrid"
           button-type="primary"
           quaternary
-          tooltip="Play"
+          tooltip="Play (Anime.js)"
         />
       </template>
     </NTabs>
@@ -452,7 +460,7 @@
 <script setup lang="ts">
 import { resolveToolbarTab } from "@/lib/main/toolbarSelection.mjs";
 import { editorAdapter } from '@/lib/agent/editor-adapter';
-import { openPreviewModal, openAnimePreview } from "@/lib/main/previewPresentation";
+import { openPreviewModal, openFramePreview } from "@/lib/main/previewPresentation";
 import { getShapeDeep, updateShape, getInfoShowGuide, getRulerWidth, getSelectCropShp, getUndoHistory, setInfoShowGuide, setRulerWidth } from "shared-vuejs/editor";
 
 import {

@@ -12,10 +12,10 @@ export async function openPreviewModal() {
 }
 
 /** Open the editor's generated playback HTML with the comparison runtime. */
-export async function openAnimePreview() {
+export async function openFramePreview() {
   const win = window.open('', '_blank');
-  if (!win) throw new Error('Allow popups to open the Anime.js player.');
-  win.document.body.textContent = 'Preparing Anime.js playback…';
+  if (!win) throw new Error('Allow popups to open the FrameAnimation player.');
+  win.document.body.textContent = 'Preparing FrameAnimation playback…';
   let url: string | undefined;
   try {
     const { flushPendingTextSave } = await import('shared-vuejs/api/updateText');
@@ -29,12 +29,12 @@ export async function openAnimePreview() {
     const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
     const script = doc.querySelector('script[src="player.js"]');
     if (!script) throw new Error('Generated HTML has no player script.');
-    const runtime = new URL(`${import.meta.env.BASE_URL}player/anime-player.js`, location.origin).href;
+    const runtime = new URL(`${import.meta.env.BASE_URL}player/frame-player.js`, location.origin).href;
     const check = await fetch(runtime, { cache: 'no-store' });
-    if (!check.ok) throw new Error(`Anime.js player asset failed to load (${check.status}): ${runtime}`);
+    if (!check.ok) throw new Error(`FrameAnimation player asset failed to load (${check.status}): ${runtime}`);
     const runtimeSource = await check.text();
     if (!/\bvar\s+player\s*=/.test(runtimeSource) || !runtimeSource.includes('initSlides')) {
-      throw new Error(`Invalid Anime.js player response: ${runtime}. Rebuild player assets.`);
+      throw new Error(`Invalid FrameAnimation player response: ${runtime}. Rebuild player assets.`);
     }
     script.setAttribute('src', runtime);
     // Inline the generated config so preview works with an older active worker.
@@ -55,7 +55,7 @@ export async function openAnimePreview() {
     const baseTag = doc.createElement('base');
     baseTag.href = base;
     doc.head.prepend(baseTag);
-    doc.title += ' — Anime.js';
+    doc.title += ' — FrameAnimation';
     url = URL.createObjectURL(new Blob(['<!doctype html>\n' + doc.documentElement.outerHTML], { type: 'text/html' }));
     win.location.replace(url);
     const cleanup = window.setInterval(() => {
