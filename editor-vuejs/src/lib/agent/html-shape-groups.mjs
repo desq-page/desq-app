@@ -32,7 +32,8 @@ export function groupImportedHtmlShapes(shapes, genId, { width = 1280, height = 
         groupX += px + Math.cos(radians) * (cx - px) - Math.sin(radians) * (cy - py) - cx;
         groupY += py + Math.sin(radians) * (cx - px) + Math.cos(radians) * (cy - py) - cy;
       }
-      return [{ id: genId(), name: 'HTML group', type: 'group', x: groupX, y: groupY, ...(rot ? { rot } : {}), w: right - x, h: bottom - y,
+      const sourceIds = (children[0].sourceIds || []).filter(id => children.every(child => child.sourceIds?.includes(id)));
+      return [{ id: genId(), sourceIds, name: 'HTML group', type: 'group', x: groupX, y: groupY, ...(rot ? { rot } : {}), w: right - x, h: bottom - y,
         children: children.map(child => ({ ...child, x: child.x - x, y: child.y - y })) }];
     });
   }
@@ -45,4 +46,35 @@ export function flattenShapeGroups(shapes, x = 0, y = 0) {
   return shapes.flatMap(shape => shape.type === 'group' && shape.children
     ? flattenShapeGroups(shape.children, x + shape.x, y + shape.y)
     : [{ ...shape, x: x + shape.x, y: y + shape.y }]);
+}
+
+// A compound SVG animates as one drawing rather than one effect per path.
+export function retargetGroupedAnimations(page) {
+  const replacements = new Map();
+  function visit(shapes) {
+    for (const group of shapes) {
+      if (!group.children) continue;
+      visit(group.children);
+      if (!group.sourceIds?.some(id => /^html-reveal-\d+$/.test(id))) continue;
+      const collect = children => children.forEach(child => { replacements.set(child.id, group.id); if (child.children) collect(child.children); });
+      collect(group.children);
+    }
+  }
+  visit(page.shapes);
+  const remap = effects => {
+    const seen = new Set();
+    return (effects || []).filter(effect => {
+      if (replacements.has(effect.sh)) effect.sh = replacements.get(effect.sh);
+      const signature = effect.nativeTiming ? JSON.stringify({
+        sh: effect.sh, row: effect.nativeTiming.rowXml, du: effect.du, dl: effect.dl,
+        tr: effect.tr, rp: effect.rp, rv: effect.rv, trs: effect.trs,
+      }) : JSON.stringify(effect);
+      if (seen.has(signature)) return false;
+      seen.add(signature); return true;
+    });
+  };
+  if (page.timing) {
+    page.timing.m = remap(page.timing.m);
+    for (const group of page.timing.i || []) group.ef = remap(group.ef);
+  }
 }

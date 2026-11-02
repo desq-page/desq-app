@@ -75,7 +75,7 @@ async function snapshotSlides(token, width, count) {
           if (effects.length) {
             addReveal(element, Number(timing.duration) / 2000, Math.max(0, Number(effect.getTiming().delay) / 1000));
             const record = reveals.get(element);
-            if (record) record.repeating = effects.map(entry => ({ ...entry, duration: record.duration, delay: record.delay, trigger: 'with-previous', auto_reverse: true, ...(Number.isFinite(iterations) ? { repeat_count: Math.min(10000, iterations) } : { repeat_indefinitely: true }) }));
+            if (record) record.repeating = effects.map(entry => ({ ...entry, duration: record.duration, delay: record.delay, trigger: 'with-previous', auto_reverse: true, ...(entry.rotation_from !== undefined ? { duration: record.duration * 2, auto_reverse: false } : {}), ...(Number.isFinite(iterations) ? { repeat_count: Math.min(10000, iterations) } : { repeat_indefinitely: true }) }));
             try { animation.pause(); animation.currentTime = 0; } catch {}
           }
           continue;
@@ -137,6 +137,8 @@ async function snapshotSlides(token, width, count) {
         const computed = getComputedStyle(source);
         if (computed.transform !== 'none' || computed.isolation === 'isolate' || Number(computed.opacity) < 1)
           target.setAttribute('data-desq-stacking-context', '1');
+        if (source.namespaceURI === 'http://www.w3.org/2000/svg' && /^drop-shadow\(/.test(computed.filter))
+          target.setAttribute('data-desq-drop-shadow', computed.filter);
         const reveal = reveals.get(source);
         if (reveal) {
           target.setAttribute('data-desq-reveal', reveal.id);

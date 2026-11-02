@@ -589,9 +589,10 @@ export function htmlToSVG(
     function walk(el, opacity = 1) {
       const reveal = el.nodeType === 1 && el.getAttribute('data-desq-reveal');
       if (reveal && /^html-reveal-\d+$/.test(reveal)) {
-        parts.push(`<g id="${reveal}">`);
+        const animatedSvg = el.localName === 'svg';
+        parts.push(`<g id="${reveal}">${animatedSvg ? `<g id="desq-html-group-${++id}">` : ''}`);
         walkElement(el, opacity);
-        parts.push('</g>');
+        parts.push(animatedSvg ? '</g></g>' : '</g>');
       } else walkElement(el, opacity);
     }
     function walkElement(el, opacity = 1) {
@@ -677,8 +678,29 @@ export function htmlToSVG(
           vb[3] <= 0
         )
           throw Error("Inline SVG needs a valid viewBox.");
+        const svgClone = el.cloneNode(true);
+        for (const node of [svgClone, ...svgClone.querySelectorAll('[data-desq-drop-shadow]')]) {
+          const value = node.getAttribute('data-desq-drop-shadow');
+          if (!value) continue;
+          node.removeAttribute('data-desq-drop-shadow');
+          const match = /^drop-shadow\((.*)\)$/.exec(value);
+          if (!match) { warn('Layered SVG drop shadows could not be converted.'); continue; }
+          try {
+            const shadow = parseHTMLBoxShadows(match[1])[0];
+            if (!shadow) continue;
+            const filterId = `html-svg-shadow-${++id}`;
+            // CSS Gaussian blur distributes the source alpha over a wider
+            // area; the native glow keeps more of its peak color. Approximate
+            // that softening by attenuating opacity as the blur grows. Color
+            // alpha remains in flood-color and is multiplied by this factor.
+            const softnessAlpha = 1 / (1 + Math.max(0, shadow.blur) / 8);
+            parts.push(`<defs><filter id="${filterId}"><feDropShadow dx="${shadow.dx}" dy="${shadow.dy}" stdDeviation="${shadow.blur}" flood-color="${escape(shadow.color)}" flood-opacity="${n(softnessAlpha)}"/></filter></defs>`);
+            if (node === svgClone) shadowFilter = ` filter="url(#${filterId})"`;
+            else node.setAttribute('filter', `url(#${filterId})`);
+          } catch { warn('An SVG drop shadow could not be converted.'); }
+        }
         const content = new view.XMLSerializer()
-          .serializeToString(el)
+          .serializeToString(svgClone)
           .replace(/^<svg\b[^>]*>/, "")
           .replace(/<\/svg>$/, "");
         parts.push(

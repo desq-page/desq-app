@@ -198,7 +198,7 @@ export function compileMotion(config, shapes, { width, height } = {}) {
       let xml = optionRow(preset, options.effect_options);
       if (preset.key === 'emphasis_spin' && Number.isFinite(options.rotation_from) && Number.isFinite(options.rotation_to)) {
         xml = xml.replace(/<p:childTnLst>[\s\S]*<\/p:childTnLst>/,
-          `<p:childTnLst><p:anim calcmode="lin" valueType="num" from="${options.rotation_from}" to="${options.rotation_to}"><p:cBhvr><p:cTn id="6" dur="${Math.round(seconds(options.duration, .5) * 1000)}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>style.rotation</p:attrName></p:attrNameLst></p:cBhvr></p:anim></p:childTnLst>`);
+          `<p:childTnLst><p:anim calcmode="lin" valueType="num"><p:cBhvr><p:cTn id="6" dur="${Math.round(seconds(options.duration, .5) * 1000)}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>style.rotation</p:attrName></p:attrNameLst></p:cBhvr><p:tavLst><p:tav tm="0"><p:val><p:fltVal val="${options.rotation_from}"/></p:val></p:tav><p:tav tm="50000"><p:val><p:fltVal val="${options.rotation_to}"/></p:val></p:tav><p:tav tm="100000"><p:val><p:fltVal val="${options.rotation_from}"/></p:val></p:tav></p:tavLst></p:anim></p:childTnLst>`);
       }
       if (preset.key === 'emphasis_transparency') {
         const minimumOpacity = 1 - (options.effect_options?.amount ?? .5);
