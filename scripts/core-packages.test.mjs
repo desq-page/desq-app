@@ -31,3 +31,14 @@ test('the installed importer retains presentation text defaults for rendering', 
  assert.match(importer,/fileInfo\.defaultTextStyle\s*=\s*g\.defaultTextStyle/);
  assert.doesNotMatch(loader,/delete\s+fileInfoWithoutStyles\.defaultTextStyle/);
 });
+
+test('installed text renderer uses the exact imported font weight', async () => {
+ const root=dirname(require.resolve('shared-vuejs/package.json'));
+ const {pathToFileURL}=await import('node:url');
+ const {getRunFont}=await import(pathToFileURL(resolve(root,'dist/lib/text/textUtil.js')).href);
+ const {mapRPrStyle}=await import(pathToFileURL(resolve(root,'dist/lib/grid/sharedMaster.js')).href);
+ const rPr={$_sz:1800,$_b:1,desqFontWeight:600,latin:{$_typeface:'Plus Jakarta Sans'}};
+ assert.match(getRunFont(rPr),/^600 24px "Plus Jakarta Sans"/);
+ assert.equal(mapRPrStyle(rPr,{},{}).fontWeight,'600');
+ assert.equal(mapRPrStyle({$_spc:53},{},{}).letterSpacing,'0.71rem');
+});

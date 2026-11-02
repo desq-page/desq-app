@@ -98,7 +98,7 @@ test("HTML slides use the existing deck schema and bounded transport", () => {
     () =>
       validateArguments(deckSchema, {
         ...deck,
-        slides: [{ ...deck.slides[0], html: "x".repeat(80001) }],
+        slides: [{ ...deck.slides[0], html: "x".repeat(2000001) }],
       }),
     /allowed length/,
   );

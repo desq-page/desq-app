@@ -24,9 +24,25 @@ export async function loadGeneratedGoogleFonts(families) {
     const finish = () => { if (!settled) { settled = true; clearTimeout(timer); resolve([...failed]); } };
     const timer = setTimeout(() => { families.forEach(family => failed.add(family)); finish(); }, 20000);
     try {
-      WebFont.load({ google: { families: families.map(family => `${family}:400,400i,500,600,700,700i`) },
+      WebFont.load({ google: { families: families.map(family => `${family}:100,200,300,400,400i,500,600,700,700i,800,900`) },
         timeout: 15000, fontinactive: family => failed.add(family), active: finish,
         inactive: () => { families.forEach(family => failed.add(family)); finish(); } });
     } catch { families.forEach(family => failed.add(family)); finish(); }
   });
+}
+
+// The sandbox supplies only CSS family names; URLs and scripts are never used.
+export function renderedHtmlFontFamilies(deck, document = globalThis.document) {
+  if (!document?.createElement) return [];
+  const families = new Set();
+  for (const slide of deck.slides || []) {
+    if (slide.layout !== 'html') continue;
+    const template = document.createElement('template');
+    template.innerHTML = slide.html;
+    for (const el of template.content.querySelectorAll('[style]')) {
+      const family = el.style.fontFamily?.split(',')[0].trim().replace(/^[\"']|[\"']$/g, '');
+      if (family && /^[\w -]{1,80}$/.test(family)) families.add(family);
+    }
+  }
+  return [...families];
 }

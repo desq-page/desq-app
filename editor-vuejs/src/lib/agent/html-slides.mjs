@@ -14,7 +14,7 @@ const escape = (value) =>
   );
 const n = (value) => Math.round(value * 1000) / 1000;
 const htmlTags = new Set(
-  "section div article header footer main aside blockquote pre code kbd samp mark sub sup figure figcaption dl dt dd h1 h2 h3 h4 h5 h6 p span strong b em i u s small br ul ol li table thead tbody tfoot tr th td img style".split(
+  "section div article header footer main aside button blockquote pre code kbd samp mark sub sup figure figcaption dl dt dd h1 h2 h3 h4 h5 h6 p span strong b em i u s small br ul ol li table thead tbody tfoot tr th td img style".split(
     " ",
   ),
 );
@@ -32,8 +32,8 @@ const cssCheck = (value) => {
     throw Error("HTML slides cannot load resources or use CSS imports.");
 };
 export function parseSlideHTML(html, document = globalThis.document) {
-  if (typeof html !== "string" || !html.trim() || html.length > 80000)
-    throw Error("Return one complete HTML section, at most 80,000 characters.");
+  if (typeof html !== "string" || !html.trim() || html.length > 2000000)
+    throw Error("Return one complete HTML section, at most 2,000,000 characters.");
   if (!document?.defaultView?.DOMParser)
     throw Error(
       "HTML slides require browser layout. Open the presentation in the editor.",
@@ -195,7 +195,7 @@ function materializePseudoElements(page, doc, onWarning) {
 // resulting editable geometry matches the chosen approximation, not rotated bounds.
 function approximatePresentationStyles(page, doc, warn) {
   const snapshots = [page, ...page.querySelectorAll("*")]
-    .filter((el) => el.localName !== "style")
+    .filter((el) => el.localName !== "style" && el.namespaceURI !== "http://www.w3.org/2000/svg")
     .map((el) => ({
       el,
       cs: doc.defaultView.getComputedStyle(el),
@@ -246,9 +246,14 @@ function approximatePresentationStyles(page, doc, warn) {
     ]) {
       if (cs[key] && cs[key] !== "none") {
         const value = cs[key];
+        const textGradient = key === "backgroundImage" && /(?:^|,)\s*text(?:\s*,|$)/.test(cs.backgroundClip) && /gradient\(/.test(value);
+        const slideGradients = key === "backgroundImage" && el === page && /gradient\(/.test(value);
+        if (slideGradients) el.setAttribute("data-desq-background-gradients", value);
+        if (textGradient) el.setAttribute("data-desq-text-gradient", value);
         el.style.setProperty(css, "none", "important");
         if (
           key === "backgroundImage" &&
+          !textGradient && !slideGradients &&
           /gradient\(/.test(value) &&
           transparent(cs.backgroundColor)
         ) {
@@ -256,7 +261,7 @@ function approximatePresentationStyles(page, doc, warn) {
           if (color)
             el.style.setProperty("background-color", color, "important");
         }
-        warn(
+        if (!textGradient && !slideGradients) warn(
           `HTML ${key} was approximated or omitted; native content remains editable.`,
         );
       }
@@ -292,6 +297,94 @@ function approximatePresentationStyles(page, doc, warn) {
       warn("HTML list markers were converted into editable literal text.");
     }
   }
+}
+
+// Convert computed linear gradients into native SVG gradient definitions.
+// CSS supplies the direction clockwise from up; SVG uses clockwise from right.
+export function cssTextGradient(value, doc = globalThis.document) {
+  const match = /^linear-gradient\((.*)\)$/i.exec(value || '');
+  if (!match) return null;
+  const tokens = match[1].match(/(?:[^,()]|\([^()]*\))+/g)?.map(v => v.trim()) || [];
+  let angle = 90;
+  const direction = tokens[0];
+  if (/^to\s+/i.test(direction)) {
+    const dirs = direction.toLowerCase().split(/\s+/).slice(1);
+    if (dirs.some(d => !['left','right','top','bottom'].includes(d))) return null;
+    const x = (dirs.includes('right') ? 1 : 0) - (dirs.includes('left') ? 1 : 0);
+    const y = (dirs.includes('bottom') ? 1 : 0) - (dirs.includes('top') ? 1 : 0);
+    if (!x && !y) return null;
+    angle = Math.atan2(y, x) * 180 / Math.PI;
+    tokens.shift();
+  } else if (/^-?[\d.]+deg$/i.test(direction)) {
+    angle = parseFloat(direction) - 90;
+    tokens.shift();
+  }
+  if (tokens.length < 2 || tokens.length > 16) return null;
+  const stops = [];
+  for (const token of tokens) {
+    const stop = /^(rgba?\([^)]*\)|#[\da-f]{3,8}|[a-z]+)(?:\s+(-?[\d.]+)%)?$/i.exec(token);
+    if (!stop) return null;
+    const probe = doc.createElement('span').style;
+    probe.color = stop[1];
+    if (!probe.color) return null;
+    stops.push({ color: probe.color, offset: stop[2] === undefined ? null : Math.max(0, Math.min(1, Number(stop[2]) / 100)) });
+  }
+  if (stops[0].offset === null) stops[0].offset = 0;
+  if (stops.at(-1).offset === null) stops.at(-1).offset = 1;
+  let previous = 0;
+  while (previous < stops.length - 1) {
+    let next = previous + 1;
+    while (stops[next].offset === null) next++;
+    stops[next].offset = Math.max(stops[previous].offset, stops[next].offset);
+    for (let i = previous + 1; i < next; i++) stops[i].offset = stops[previous].offset + (stops[next].offset - stops[previous].offset) * (i - previous) / (next - previous);
+    previous = next;
+  }
+  return { angle, stops };
+}
+
+// Split CSS layers without splitting commas inside color/gradient functions.
+function splitCssLayers(value) {
+  const result = [];
+  let depth = 0, start = 0;
+  for (let i = 0; i < value.length; i++) {
+    if (value[i] === '(') depth++;
+    else if (value[i] === ')') depth--;
+    else if (value[i] === ',' && depth === 0) { result.push(value.slice(start, i).trim()); start = i + 1; }
+    if (depth < 0) return [];
+  }
+  if (depth) return [];
+  result.push(value.slice(start).trim());
+  return result;
+}
+
+function slideBackgroundLayers(value, doc) {
+  const layers = [];
+  for (const layer of splitCssLayers(value)) {
+    if (/^linear-gradient\(/i.test(layer)) {
+      const gradient = cssTextGradient(layer, doc);
+      if (!gradient) return null;
+      layers.push({ ...gradient, type: 'linear' });
+      continue;
+    }
+    const radial = /^radial-gradient\((.*)\)$/i.exec(layer);
+    if (!radial) return null;
+    const tokens = splitCssLayers(radial[1]);
+    let cx = .5, cy = .5, circle = false;
+    if (/^(?:circle|ellipse|at\s)/i.test(tokens[0])) {
+      const header = tokens.shift();
+      circle = /^circle\b/i.test(header);
+      const match = /\bat\s+([\d.]+)%\s+([\d.]+)%$/i.exec(header);
+      if (header.includes(' at ') || header.startsWith('at ')) {
+        if (!match) return null;
+        cx = Number(match[1]) / 100; cy = Number(match[2]) / 100;
+        if (cx < 0 || cx > 1 || cy < 0 || cy > 1) return null;
+      } else if (!/^(?:circle|ellipse)$/i.test(header)) return null;
+    }
+    const gradient = cssTextGradient(`linear-gradient(to right, ${tokens.join(', ')})`, doc);
+    if (!gradient) return null;
+    layers.push({ type: 'radial', cx, cy, circle, stops: gradient.stops });
+  }
+  return layers.reverse();
 }
 
 // Computed CSS serializes colors as rgb()/rgba() and lengths as pixels.
@@ -383,10 +476,10 @@ export function htmlToSVG(
       origin.y !== 0
     )
       throw Error(
-        "HTML section must be positioned at 0,0 and measure exactly 1280×720 pixels.",
+        `HTML section must be positioned at 0,0 and measure exactly ${stageWidth}×${stageHeight} pixels (got ${n(origin.x)},${n(origin.y)} ${n(origin.width)}×${n(origin.height)}).`,
       );
     const parts = [],
-      textGroups = new Map();
+      textGroups = new Map(), textGradients = new Map();
     let imageIndex = 0,
       id = 0;
     const bounds = (rect, label) => {
@@ -404,6 +497,24 @@ export function htmlToSVG(
     };
     const rectAttrs = (rect) =>
       `x="${n(rect.left - origin.left)}" y="${n(rect.top - origin.top)}" width="${n(rect.width)}" height="${n(rect.height)}"`;
+    function gradientFor(element) {
+      const owner = element.closest('[data-desq-text-gradient]');
+      if (!owner || !page.contains(owner)) return null;
+      if (textGradients.has(owner)) return textGradients.get(owner);
+      const gradient = cssTextGradient(owner.getAttribute('data-desq-text-gradient'), doc);
+      if (!gradient) {
+        warn('Unsupported CSS text gradient was approximated with a solid color.');
+        const fallback = owner.getAttribute('data-desq-text-gradient').match(/rgba?\([^)]*\)|#[\da-f]{3,8}\b/i)?.[0] || '#000000';
+        textGradients.set(owner, { fallback });
+        return { fallback };
+      }
+      const gradientId = `html-text-gradient-${++id}`;
+      const radians = gradient.angle * Math.PI / 180;
+      const dx = Math.cos(radians) / 2, dy = Math.sin(radians) / 2;
+      parts.push(`<defs><linearGradient id="${gradientId}" x1="${n(.5-dx)}" y1="${n(.5-dy)}" x2="${n(.5+dx)}" y2="${n(.5+dy)}">${gradient.stops.map(stop => `<stop offset="${n(stop.offset)}" stop-color="${escape(stop.color)}"/>`).join('')}</linearGradient></defs>`);
+      textGradients.set(owner, gradientId);
+      return gradientId;
+    }
     function text(node, owner, opacity) {
       if (!node.textContent.trim()) return;
       const parent = node.parentElement,
@@ -431,7 +542,12 @@ export function htmlToSVG(
         if (!/\s/.test(char)) bounds(r, "text");
         const size = parseFloat(cs.fontSize),
           baseline = r.top - origin.top + (r.height - size) / 2 + size * 0.8;
-        const attrs = `font-family="${escape(cs.fontFamily)}" font-size="${n(size)}" font-weight="${cs.fontWeight}" font-style="${cs.fontStyle}" fill="${escape(cs.color)}" opacity="${opacity}"${cs.textDecorationLine !== "none" ? ` text-decoration="${escape(cs.textDecorationLine)}"` : ""}`;
+        // Imported standalone slides retain the authored CSS number in the
+        // editor's point-size control, even when the slide canvas is scaled.
+        const editorSize = page.hasAttribute('data-desq-imported') ? size * (4 / 3) * (stageWidth / 1280) : size;
+        const letterSpacing = parseFloat(cs.letterSpacing);
+        const gradientId = gradientFor(parent);
+        const attrs = `font-family="${escape(cs.fontFamily)}" font-size="${n(editorSize)}" font-weight="${cs.fontWeight}" font-style="${cs.fontStyle}"${Number.isFinite(letterSpacing) && letterSpacing !== 0 ? ` letter-spacing="${n(letterSpacing)}"` : ""} fill="${typeof gradientId === 'string' ? `url(#${gradientId})` : escape(gradientId?.fallback || cs.color)}" opacity="${opacity}"${cs.textDecorationLine !== "none" ? ` text-decoration="${escape(cs.textDecorationLine)}"` : ""}`;
         const last = group.rows.at(-1);
         if (
           last &&
@@ -482,6 +598,14 @@ export function htmlToSVG(
           warn('An element extends beyond the slide; content outside the canvas may be clipped.');
         else bounds(r, el.localName);
       }
+      // Group only semantic list rows and visibly painted text containers from
+      // rendered HTML. Layout-only wrappers should not become editor groups.
+      const isGroup = page.hasAttribute('data-desq-imported') && el !== page &&
+        !['svg', 'img'].includes(el.localName) && !['inline', 'contents'].includes(cs.display) &&
+        (el.localName === 'li' || (el.textContent.trim() &&
+          (!transparent(cs.backgroundColor) || ['Top','Right','Bottom','Left'].some(side =>
+            parseFloat(cs[`border${side}Width`]) > 0 && !['none','hidden'].includes(cs[`border${side}Style`])))));
+      if (isGroup) parts.push(`<g id="desq-html-group-${++id}">`);
       let shadowFilter = "";
       if (cs.boxShadow !== "none") {
         let shadows = [];
@@ -610,10 +734,31 @@ export function htmlToSVG(
       const radius = parseFloat(radii[0]) || 0;
       const rx = radius * (radii[0].includes("%") ? r.width / 100 : 1);
       const ry = radius * (radii[0].includes("%") ? r.height / 100 : 1);
-      if (!transparent(cs.backgroundColor) || (uniformBorder && stroke.width)) {
+      if (n(r.width) > 0 && n(r.height) > 0 && (!transparent(cs.backgroundColor) || (uniformBorder && stroke.width))) {
         parts.push(
           `<rect${el.id.startsWith("!!") ? ` id="${escape(el.id)}:box"` : ""}${shadowFilter} ${rectAttrs(r)} rx="${rx}" ry="${ry}" fill="${transparent(cs.backgroundColor) ? "none" : escape(cs.backgroundColor)}" stroke="${uniformBorder && stroke.width ? escape(stroke.color) : "none"}" stroke-width="${uniformBorder ? stroke.width : 0}"${dash(stroke.style)} opacity="${opacity}"/>`,
         );
+      }
+      if (el === page && el.hasAttribute('data-desq-background-gradients')) {
+        const layers = slideBackgroundLayers(el.getAttribute('data-desq-background-gradients'), doc);
+        if (!layers) warn('Some slide background gradients could not be converted.');
+        else for (const layer of layers) {
+          const gradientId = `html-background-gradient-${++id}`;
+          const stops = layer.stops.map(stop => `<stop offset="${n(stop.offset)}" stop-color="${escape(stop.color)}"/>`).join('');
+          let x = 0, y = 0, width = r.width, height = r.height, definition;
+          if (layer.type === 'linear') {
+            const angle = layer.angle * Math.PI / 180, dx = Math.cos(angle) / 2, dy = Math.sin(angle) / 2;
+            definition = `<linearGradient id="${gradientId}" x1="${n(.5-dx)}" y1="${n(.5-dy)}" x2="${n(.5+dx)}" y2="${n(.5+dy)}">${stops}</linearGradient>`;
+          } else {
+            const cx = layer.cx * r.width, cy = layer.cy * r.height;
+            let rx = Math.max(cx, r.width - cx), ry = Math.max(cy, r.height - cy);
+            if (layer.circle) rx = ry = Math.hypot(rx, ry);
+            else { rx *= Math.SQRT2; ry *= Math.SQRT2; }
+            x = cx - rx; y = cy - ry; width = rx * 2; height = ry * 2;
+            definition = `<radialGradient id="${gradientId}" cx=".5" cy=".5" fx=".5" fy=".5" r=".5">${stops}</radialGradient>`;
+          }
+          parts.push(`<defs>${definition}</defs><rect x="${n(x)}" y="${n(y)}" width="${n(width)}" height="${n(height)}" fill="url(#${gradientId})"/>`);
+        }
       }
       if (!uniformBorder) {
         const x = r.left - origin.left,
@@ -638,11 +783,12 @@ export function htmlToSVG(
           if (b.width && !["none", "hidden"].includes(b.style)) {
             const [x1, y1, x2, y2] = edges[i];
             parts.push(
-              `<line x1="${n(x1)}" y1="${n(y1)}" x2="${n(x2)}" y2="${n(y2)}" stroke="${escape(b.color)}" stroke-width="${b.width}"${dash(b.style)} opacity="${opacity}"/>`,
+              `<line x1="${n(x1)}" y1="${n(y1)}" x2="${n(x2)}" y2="${n(y2)}" fill="none" stroke="${escape(b.color)}" stroke-width="${b.width}"${dash(b.style)} opacity="${opacity}"/>`,
             );
           }
       }
       for (const child of el.childNodes) walk(child, opacity);
+      if (isGroup) parts.push("</g>");
     }
     walk(page);
     for (const [block, group] of textGroups) {

@@ -30,7 +30,7 @@ export const deckSlideSchema = obj({
   templateFields: array(obj({id:str(30,1),text:str(20000),query:str(160),alt:str(200),rows:array(array(str(200),12),20),categories:array(str(100),30),series:array(obj({name:str(100),values:array(num(-1e12,1e12),30)},['name','values']),8)},['id']),100),
   templateSelection: obj({ family: str(80,1), layout: str(200,1), modelSelectedLayout: {type:'boolean'}, hostReflowed: {type:'boolean'} }, ['family','layout']),
   overflowContent: obj({ text: str(80000, 1), html: str(80000, 1) }, ['text', 'html']),
-  markdown: str(80000, 1), visualSVG: str(40000, 1), svg: str(80000, 1), html: str(80000, 1),
+  markdown: str(80000, 1), visualSVG: str(40000, 1), svg: str(80000, 1), html: str(2000000, 1),
   booleans:array(obj({operation:{...str(12),enum:['union','intersect','subtract','combine','fragment']},source_ids:array(str(100,1),32,2),output_id:str(100,1)},['operation','source_ids','output_id']),20),
   motion:obj({transition:obj({effect:str(40,1),duration:num(0,86400),advance_after:num(0,86400),advance_click:{type:'boolean'},effect_options:obj({direction:str(40),orientation:str(16),morph_by:str(16),spokes:num(1,8),through_black:{type:'boolean'}})}),animation:motionEffect,groups:{type:'object',maxProperties:100,additionalProperties:groupMotion}}),
   relationship: { ...str(16), enum: ['none', 'sequence', 'contrast', 'membership', 'hierarchy'] },

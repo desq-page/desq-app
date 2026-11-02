@@ -11,6 +11,12 @@
     },
     "desq-player-1.0.4.tgz": {
       "sha256": "92f41eb486ea2119b404469341dc65d634502965476611de5a39ed82f1354dbd"
+    },
+    "shared-vuejs-0.2.4.tgz": {
+      "sha256": "db9f23ad8c2f0a4556b5d4a94c3d10ca19dee8d5ab57d84522d67d39a1ff6ee3"
+    },
+    "desq-player-1.0.5.tgz": {
+      "sha256": "398289cab5f8371a9e04f3953d7aeac8f794a851b55f889f91355e8ce9a63fa5"
     }
   }
 }

@@ -13,7 +13,7 @@
         :key="option.tpl"
         type="button"
         class="template-card"
-        :class="{ selected: tpl === option.tpl, word: option.app === 'D', publisher: option.app === '▤' }"
+        :class="{ selected: tpl === option.tpl, publisher: option.app === '▤', ai: option.tpl === 'ai' }"
         :aria-pressed="tpl === option.tpl"
         @click="tpl = option.tpl"
         @dblclick="openTemplate(option.tpl)"
@@ -30,7 +30,7 @@
     </div>
     <div class="action">
       <NButton type="primary" :disabled="!tpl" @click="openTemplate(tpl)">
-        Create {{ templates.find(option => option.tpl === tpl)?.label || 'File' }}
+        {{ tpl === 'ai' ? 'Create with AI' : `Create ${templates.find(option => option.tpl === tpl)?.label || 'File'}` }}
       </NButton>
     </div>
   </NModal>
@@ -46,7 +46,7 @@ import { showError } from "@/lib/main/utils";
 const templates = [
   { tpl: "blank", label: "Presentation", app: "P", appName: "PPTX", orientation: "landscape" },
   { tpl: "portrait", label: "Publication", app: "▤", appName: "PPTX", orientation: "portrait" },
-  { tpl: "blank.docx", label: "Document", app: "D", appName: "DOCX", orientation: "portrait" },
+  { tpl: "ai", label: "Create with AI", app: "✦", appName: "Presentation", orientation: "landscape" },
 ];
 const tpl = ref("");
 
@@ -54,8 +54,12 @@ async function openTemplate(tplValue: string) {
   piniaInfo().openNewFileModal = false;
   piniaInfo().loadingBar = "Please wait...";
   try {
-    await createNewFile(tplValue || "blank");
+    // File creation navigates to the editor with a full page reload.
+    if (tplValue === "ai") sessionStorage.setItem("desq-open-agent-on-new-file", String(Date.now()));
+    else sessionStorage.removeItem("desq-open-agent-on-new-file");
+    await createNewFile(tplValue === "ai" ? "blank" : tplValue || "blank");
   } catch (error) {
+    sessionStorage.removeItem("desq-open-agent-on-new-file");
     piniaInfo().loadingBar = "";
     showError(error instanceof Error ? error.message : "Unable to create file");
   }
@@ -81,7 +85,7 @@ async function openTemplate(tplValue: string) {
   font: inherit;
   cursor: pointer;
 }
-.template-card.word { --app-color: #2b579a; }
+.template-card.ai { --app-color: #6652a3; }
 .template-card.publisher { --app-color: #4b8c72; }
 .template-card:hover { background: rgba(128, 128, 128, 0.13); }
 .template-card.selected { border-color: var(--app-color); }

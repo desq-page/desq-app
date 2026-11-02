@@ -1,3 +1,4 @@
+import { flattenShapeGroups } from './html-shape-groups.mjs';
 import { editorColor } from './colors.mjs';
 
 export const DECK_PALETTES = Object.freeze({
@@ -49,7 +50,7 @@ export function reviewDeck(deck, compiled) {
   const findings = [], storyboard = [], compositionErrors = [];
   const signatures = [];
   for (const [index, page] of compiled.pages.entries()) {
-    const slide = deck.slides[index], shapes = page.shapes;
+    const slide = deck.slides[index], shapes = flattenShapeGroups(page.shapes);
     const text = shapes.filter(s => s.txBody && !['Page number', 'Sources', 'Image description'].includes(s.name));
     const signature = text.map(s => [Math.round(s.x / 40), Math.round(s.y / 40), Math.round(s.w / 40), Math.round(s.h / 40)].join(':')).join('|');
     signatures.push(signature);

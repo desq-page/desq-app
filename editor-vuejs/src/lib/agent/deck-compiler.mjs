@@ -1,3 +1,4 @@
+import { groupImportedHtmlShapes } from './html-shape-groups.mjs';
 import { validateMorphPairs } from "./morph-pairs.mjs";
 import { imagePlaceholderCaption } from './image-search-caption.mjs';
 import { promoteSlideBackground } from './slide-background.mjs';
@@ -8,7 +9,7 @@ import { deckDesign, slideDesign, legibleInk, tint } from './deck-design.mjs';
 import { wrapDeckText } from './deck-text.mjs';
 import { compilePageSVG, svgImageRequests } from './ppt-master-svg.mjs';
 import { markdownPageSVG } from './markdown-slides.mjs';
-import { htmlToSVG } from './html-slides.mjs';
+import { htmlToSVG, parseSlideHTML } from './html-slides.mjs';
 import {compileMotion} from './ppt-master-motion.mjs';
 
 // Authored SVG/HTML -> native Desq objects. No model code is executed.
@@ -30,8 +31,19 @@ export function compileDeck(deck, { width, height, genId, geometry, assets = new
       let page = compilePageSVG(svg,{width,height,genId,geometry,assets,pageIndex,measureText,booleans:slide.booleans,language:deck.language,outlineText,deferTextOutlines});
       // HTML rows already use browser wrapping. Keep their explicit line breaks and
       // rich runs rather than asking the preview/PowerPoint to re-wrap estimated widths.
-      if (slide.layout === 'html') for (const shape of page.shapes) if (shape.txBody)
-        shape.txBody.bodyPr.$_wrap = 'none';
+      const applyHtmlTextSettings = () => {
+        if (slide.layout !== 'html') return;
+        const root = parseSlideHTML(slide.html);
+        const imported = root.hasAttribute('data-desq-imported');
+        const stageWidth = Number(root.getAttribute('data-desq-stage-width') || 1280);
+        for (const shape of page.shapes) if (shape.txBody) {
+          shape.txBody.bodyPr.$_wrap = 'none';
+          // CSS pixels and Office points use different units. Keep the numeric
+          // size in the editor while rendering the original visual size.
+          if (imported && !shape.imagePlaceholder) shape.txBody.bodyPr.normAutofit = { $_fontScale: Math.round(75000 * 1280 / stageWidth) };
+        }
+      };
+      applyHtmlTextSettings();
       const imageEntries=[...assets.entries()].filter(([key,a])=>key.startsWith(`${pageIndex}:svg:`)&&!a.placeholder&&page.usedImageKeys.includes(key));
       const imageCredits=imageEntries.map(([key,a])=>({key,title:a.title,author:a.author,license:a.license,url:a.sourceUrl}));
       const creditLabel=a=>[a.title,a.author,a.license].filter(Boolean).join(' / ')+(a.sourceUrl?' / Source':'');
@@ -51,7 +63,7 @@ export function compileDeck(deck, { width, height, genId, geometry, assets = new
         seen.add(signature);
       }
       if(replaced)page=compilePageSVG(svg,{width,height,genId,geometry,assets:fallbackAssets,pageIndex,measureText,booleans:slide.booleans,language:deck.language,outlineText,deferTextOutlines});
-      if (slide.layout === 'html') for (const shape of page.shapes) if (shape.txBody)shape.txBody.bodyPr.$_wrap='none';
+      if (replaced) applyHtmlTextSettings();
       if(credited.length){
         const rPr={$_sz:Math.round(7*scale*100),latin:{$_typeface:'Arial'},solidFill:editorColor('#334455')};
         const runs=[];
@@ -318,7 +330,12 @@ export function compileDeck(deck, { width, height, genId, geometry, assets = new
         takeaway: slide.takeaway, visualConcept: slide.visualConcept, strategy: deck.strategy, tone: design.tone, variant: design.variant, palette: deck.design?.palette || 'ocean' } });
   }
   validateMorphPairs(pages);
-  for (const page of pages) promoteSlideBackground(page, { width, height });
+  for (const [index, page] of pages.entries()) {
+    promoteSlideBackground(page, { width, height });
+    if (deck.slides[index].layout === 'html' && parseSlideHTML(deck.slides[index].html).hasAttribute('data-desq-imported'))
+      page.shapes = groupImportedHtmlShapes(page.shapes, genId);
+  }
+  if (pages.some(page => JSON.stringify(page.shapes).includes('\"desqFontWeight\"'))) warnings.push('Intermediate font weights are preserved in Desq; PPTX export approximates them with normal or bold.');
   if (deck.slides.every(slide => slide.layout === deck.slides[0].layout)) warnings.push('All slides use the same composition; consider varying layouts.');
   return { pages, warnings, design: sharedDesign, scale, imageCount };
 }

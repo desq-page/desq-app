@@ -937,10 +937,14 @@ export function compilePageSVG(
                 $_sz: Math.round(
                   number(r.style["font-size"], font) * fontScale * 75,
                 ),
-                ...(r.style["font-weight"] === "bold" ||
-                Number(r.style["font-weight"]) >= 600
+                ...(r.style["font-weight"] === "bold" || Number(r.style["font-weight"]) >= 600
                   ? { $_b: 1 }
-                  : {}),
+                  : Number(r.style["font-weight"]) >= 100 ? { $_b: 0 } : {}),
+                ...(() => {
+                  const weight = Number(r.style["font-weight"]);
+                  return Number.isInteger(weight) && weight >= 100 && weight <= 900 && weight !== 400 && weight !== 700
+                    ? { desqFontWeight: weight } : {};
+                })(),
                 ...(r.style["font-style"] === "italic" ? { $_i: 1 } : {}),
                 ...(r.style["text-decoration"]
                   ? {
@@ -1318,13 +1322,18 @@ export function compilePageSVG(
         .aToC()
         .matrix(...m),
       bounds = path.getBounds();
-    const bw = Math.max(0.01, bounds.maxX - bounds.minX),
-      bh = Math.max(0.01, bounds.maxY - bounds.minY);
     const strokeWidth =
       number(a["stroke-width"], 1) *
       (a["vector-effect"] === "non-scaling-stroke"
         ? 1
         : Math.sqrt(Math.abs(m[0] * m[3] - m[1] * m[2])));
+    // A zero-height SVG viewport can round to zero CSS pixels in the editor.
+    // Give axis-aligned lines a real box centered on their original stroke.
+    const linePadX = tag === "line" && bounds.maxX === bounds.minX ? Math.max(strokeWidth, 1) / 2 : 0;
+    const linePadY = tag === "line" && bounds.maxY === bounds.minY ? Math.max(strokeWidth, 1) / 2 : 0;
+    const shapeX = bounds.minX - linePadX, shapeY = bounds.minY - linePadY;
+    const bw = Math.max(0.01, bounds.maxX - bounds.minX + 2 * linePadX),
+      bh = Math.max(0.01, bounds.maxY - bounds.minY + 2 * linePadY);
     if (
       a["vector-effect"] &&
       !["none", "non-scaling-stroke"].includes(a["vector-effect"])
@@ -1337,11 +1346,11 @@ export function compilePageSVG(
       name: a.id || tag,
       type: "path",
       $_otag: "sp",
-      x: bounds.minX,
-      y: bounds.minY,
+      x: shapeX,
+      y: shapeY,
       w: bw,
       h: bh,
-      d: path.translate(-bounds.minX, -bounds.minY).encode(),
+      d: path.translate(-shapeX, -shapeY).encode(),
       ...paint(a.fill || "#000000", alpha * opacity(a["fill-opacity"])),
       ...(a["data-pptx-shape-style"]
         ? { style: nativeShapeStyle(a["data-pptx-shape-style"]) }

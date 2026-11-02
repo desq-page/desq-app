@@ -1,3 +1,5 @@
+import { readUtilityTheme, applyUtilityStyles } from './frontend-utility-styles.mjs';
+
 // Keep ordinary self-contained CSS rules when a stylesheet also has @media,
 // @font-face or other at-rules. Drop unsafe rules before browser layout.
 export function safeStylesheet(source) {
@@ -36,15 +38,20 @@ export function parseFrontendSlides(input, document = globalThis.document) {
   template.innerHTML = source;
   const fragment = template.content;
   const candidates = [...fragment.querySelectorAll('.slide-container, .slide')];
-  const slides = candidates.filter(node => !candidates.some(other => other !== node && other.contains(node)));
+  const slides = candidates.filter(node => !candidates.some(other => other !== node && node.contains(other)));
   if (!slides.length) throw Error('No slides found. Expected elements with class slide or slide-container.');
   if (slides.length > 20) throw Error('HTML import supports at most 20 slides.');
   // Retain only self-contained style blocks. Imported markup is never mounted until
   // the existing strict HTML validator has checked every element and declaration.
   const styles = [...fragment.querySelectorAll('style')].map(el => safeStylesheet(el.textContent)).join('\n');
+  const theme = readUtilityTheme(fragment);
+  const usesTailwind = [...fragment.querySelectorAll('script[src]')].some(node => /^https:\/\/cdn\.tailwindcss\.com(?:[/?#]|$)/i.test(node.getAttribute('src') || '')) ||
+    [...fragment.querySelectorAll('script:not([src])')].some(node => /\btailwind\s*\.\s*config\s*=/.test(node.textContent));
+  const bodyClass = source.match(/<body\b[^>]*\bclass\s*=\s*([\"'])(.*?)\1/i)?.[2] || ''; 
+  const fixedStage = /(?:width\s*:\s*1920px)/i.test(styles) && /(?:height\s*:\s*1080px)/i.test(styles);
   const title = fragment.querySelector('title')?.textContent?.trim() || slides[0].querySelector('h1,h2,h3')?.textContent?.trim() || 'Imported presentation';
   return {title: title.slice(0,160), audience:'Audience', objective:'Present the imported slides', design:{palette:'graphite'}, slides: slides.map((original,index) => {
-    const stage = original.classList.contains('slide-container') ? 1280 : 1920;
+    const stage = fixedStage ? 1920 : 1280;
     const section = document.createElement('section');
     for (const attr of original.attributes) if (!/^on/i.test(attr.name) && !['contenteditable','style'].includes(attr.name.toLowerCase())) section.setAttribute(attr.name, attr.value);
     section.innerHTML = original.innerHTML;
@@ -57,6 +64,16 @@ export function parseFrontendSlides(input, document = globalThis.document) {
       for (const attr of [...el.attributes]) if (/^on/i.test(attr.name) || ['contenteditable','href','xlink:href','srcset'].includes(attr.name.toLowerCase())) el.removeAttribute(attr.name);
       if (el.localName === 'a') el.replaceWith(...el.childNodes);
     }
+    // Body classes often define the slide's inherited theme; the body itself is not imported.
+    if (usesTailwind && bodyClass) {
+      const inherited = document.createElement('div');
+      inherited.className = bodyClass;
+      applyUtilityStyles(inherited, theme, stage);
+      for (const property of ['font-family', 'color', 'background-color'])
+        if (inherited.style.getPropertyValue(property) && !section.style.getPropertyValue(property))
+          section.style.setProperty(property, inherited.style.getPropertyValue(property));
+    }
+    if (usesTailwind) for (const element of [section, ...section.querySelectorAll('*')]) applyUtilityStyles(element, theme, stage);
     const sheet = document.createElement('style');
     sheet.textContent = styles;
     section.prepend(sheet);

@@ -52,7 +52,7 @@ const questions = [
               <h1 id="hero-title">Presentations,<br />in plain <em>HTML.</em></h1>
               <p class="hero-description">All the power of PowerPoint. All the freedom of the web. Create, edit, and present in HTML. Convert PPTX privately on your device. And save as single HTML with your editor and viewer built in.</p>
               <div class="hero-actions">
-                <a href="/work" class="button button-lime">Create a presentation <span aria-hidden="true">↗</span></a>
+                <a href="/work" class="button button-lime">Create in browser <span aria-hidden="true">↗</span></a>
                 <a href="#features" class="text-link">Explore the features <span aria-hidden="true">↓</span></a>
               </div>
               <p class="hero-note"><span aria-hidden="true">✓</span> Free to edit. Just a browser. Works offline. Your files stay private.</p>
@@ -134,7 +134,7 @@ const questions = [
         <div class="faq-list"><details v-for="question in questions" :key="question.title"><summary>{{ question.title }}<span aria-hidden="true">+</span></summary><p>{{ question.answer }}</p></details></div>
       </section>
 
-      <section class="cta-section" aria-labelledby="cta-title"><div class="page-width cta-inner"><div><p class="eyebrow">EVERY FEATURE. ONE HTML FILE.</p><h2 id="cta-title">Your next great presentation<br />starts in your browser.</h2></div><div class="cta-actions"><a href="/work" class="button button-lime">Create a presentation <span aria-hidden="true">↗</span></a><span>No installation. No account required to edit.</span></div></div></section>
+      <section class="cta-section" aria-labelledby="cta-title"><div class="page-width cta-inner"><div><p class="eyebrow">EVERY FEATURE. ONE HTML FILE.</p><h2 id="cta-title">Your next great presentation<br />starts in your browser.</h2></div><div class="cta-actions"><a href="/work" class="button button-lime">Create in browser <span aria-hidden="true">↗</span></a><span>No installation. No account required to edit.</span></div></div></section>
     </main>
 
     <footer class="site-footer page-width"><a href="/" class="wordmark">DESQ</a><p>Office documents, with a life on the web.</p><nav aria-label="Footer navigation"><a href="/work">Workspace</a><a href="/terms">Terms</a><a href="/support">Support</a><a href="https://github.com/desq-page/desq-app" target="_blank" rel="noopener noreferrer">GitHub</a></nav></footer>

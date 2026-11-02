@@ -27,6 +27,7 @@ onMounted(() => { document.title = "Support — DESQ"; });
         <p>If you find an inaccurate representation, contact our support team. We’ll investigate and try to fix it.</p>
         <div class="contact-links">
           <a href="https://github.com/desq-page/desq-app/issues" target="_blank" rel="noopener noreferrer">Report a bug on GitHub <span aria-hidden="true">↗</span></a>
+          <span>or contact us at <a href="mailto:contact@desq.page">contact@desq.page</a></span>
         </div>
       </article>
       <!-- <article class="support-card">

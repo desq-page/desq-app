@@ -486,3 +486,13 @@ test('image search descriptions take precedence over redundant model-authored hr
     assert.equal(result.warnings.some(message=>message.includes('URLs are not accepted')),false);
   }
 });
+
+test('SVG text keeps intermediate font weights alongside the PPTX bold fallback', () => {
+  for (const [weight, bold] of [[300, false], [600, true]]) {
+    const shape = compilePageSVG(wrap(`<text x="10" y="50" font-family="Plus Jakarta Sans" font-size="24" font-weight="${weight}">Sample</text>`), options).shapes.find(s => s.txBody);
+    const props = shape.txBody.p[0].r[0].rPr;
+    assert.equal(props.desqFontWeight, weight);
+    assert.equal(Boolean(props.$_b), bold);
+    assert.equal(props.latin.$_typeface, 'Plus Jakarta Sans');
+  }
+});

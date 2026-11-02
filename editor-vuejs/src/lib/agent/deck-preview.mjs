@@ -1,3 +1,4 @@
+import { flattenShapeGroups } from './html-shape-groups.mjs';
 // Bounded, inert layout proofs from compiled native objects. No model-authored SVG/HTML.
 import { wrapDeckText } from "./deck-text.mjs";
 const escape = (value) =>
@@ -84,7 +85,7 @@ export function deckLayoutPreviews(
     const background = page.bg?.bgPr;
     if (background?.blipFill) elements.push(`<rect width="${width}" height="${height}" fill="#E6EDF2"/><text x="16" y="28" font-size="18" fill="#334455">Background image</text>`);
     else if (background) elements.push(`<rect width="${width}" height="${height}" fill="${paint(background)}"/>`);
-    for (const shape of page.shapes) {
+    for (const shape of flattenShapeGroups(page.shapes)) {
       const start = elements.length;
       const { x, y, w, h } = shape,
         preset = shape.prstGeom?.$_prst;

@@ -1,3 +1,4 @@
+import { flattenShapeGroups } from './html-shape-groups.mjs';
 import { SVGPathData } from 'svg-pathdata';
 
 const opaque = color => color?.uniClr && (color.uniClr.alpha?.$_val ?? 100000) === 100000;
@@ -64,4 +65,4 @@ export function promoteSlideBackground(page, { width, height }) {
   return page;
 }
 
-export const pageImageCount = page => page.shapes.filter(shape => shape.type === 'image').length + (page.bg?.bgPr?.blipFill ? 1 : 0);
+export const pageImageCount = page => flattenShapeGroups(page.shapes).filter(shape => shape.type === 'image').length + (page.bg?.bgPr?.blipFill ? 1 : 0);

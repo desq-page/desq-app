@@ -3,7 +3,7 @@
     <section id="agent-taskpane" class="agent-panel" role="complementary" aria-label="Editor agent task pane">
       <header><strong>Create slides with AI agent</strong><button aria-label="Close agent panel" @click="open = false">×</button></header>
       <section class="external-brief">
-        <p>Having a paid AI account? Most can produce good pptx directly. Or use prompt below with free accounts (ChatGPT, Claude, Gemini, Grok, Deepseek, ...), the response might be sufficient.</p>
+        <p>Having a paid AI account? Just ask it to produce pptx directly. Or use prompt below, even with free accounts the response might be sufficient.</p>
         <fieldset class="layout-options" :disabled="busy">
           <legend>Choose layout</legend>
           <label class="layout-option">
@@ -60,6 +60,8 @@ import { createEditorTools } from '@/lib/agent/editor-tools.mjs';
 import { installEditorAgent, parseAgentOrigins } from '@/lib/agent/webmcp.mjs';
 import { templateUsage } from '@/lib/agent/template-report.mjs';
 import { parseExternalBriefResult } from '@/lib/agent/external-brief.mjs';
+import { renderScriptedFrontendSlides } from '@/lib/agent/scripted-html-render.mjs';
+import { loadGeneratedGoogleFonts, renderedHtmlFontFamilies } from '@/lib/agent/generated-fonts.mjs';
 import { preflightDeckPlan } from '@/lib/agent/deck-preflight.mjs';
 import externalPrompt from '@/lib/agent/external-brief/instructions-v1.md?raw';
 import externalSchema from '@/lib/agent/external-brief/schema-v1.json?raw';
@@ -132,14 +134,32 @@ async function createExternalBrief() {
     status.value = 'Checking the slide content and layouts…';
     const documentResult = await registry.executeTool('desq_get_document');
     if (!documentResult.ok) throw Error(documentResult.error);
-    const args = { ...deck, fileId, pageId };
+    const isHtmlDocument = /^(?:\`\`\`(?:html)?\s*)?(?:<!doctype\s+html|<html\b)/i.test(externalBriefText.value.trim());
+    let renderedDeck = deck;
+    const importFontWarnings: string[] = [];
+    if (isHtmlDocument) {
+      status.value = 'Rendering the HTML in an isolated sandbox…';
+      renderedDeck = await renderScriptedFrontendSlides(externalBriefText.value, deck, { signal });
+      signal.throwIfAborted();
+      const { googleFonts } = await import('shared-vuejs/api/googleFonts');
+      const catalog = new Map(googleFonts.map((font: string[]) => [font[0].toLowerCase(), font[0]]));
+      const families = renderedHtmlFontFamilies(renderedDeck).map((name: string) => catalog.get(name.toLowerCase())).filter(Boolean) as string[];
+      if (families.length) {
+        status.value = `Loading fonts: ${families.join(', ')}…`;
+        const failed = await loadGeneratedGoogleFonts([...new Set(families)]);
+        if (failed.length) importFontWarnings.push(`Could not load Google Fonts: ${failed.join(', ')}. Fallback fonts may change the layout.`);
+        await document.fonts?.ready;
+      }
+      signal.throwIfAborted();
+    }
+    const args = { ...renderedDeck, fileId, pageId };
     preflightDeckPlan({ calls: [{ name: 'desq_create_deck', arguments: args }] }, { document: documentResult.result, allowTextOverflow: true });
     signal.throwIfAborted();
     if (getFileInfo()?.id !== fileId || getSlidesSlideId() !== pageId) throw Error('The selected slide changed. Please try again.');
     status.value = 'Creating editable slides…';
     const result = await registry.executeTool('desq_create_deck', args, { signal, allowTextOverflow: true, onProgress: (message: string) => { if (active && generation === run) status.value = message; } });
     if (!result.ok) throw Error(result.error);
-    if (active && generation === run) status.value = [`Created ${result.result.slideCount} editable slides.`, ...(result.result.warnings || [])].join('\n');
+    if (active && generation === run) status.value = [`Created ${result.result.slideCount} editable slides.`, ...importFontWarnings, ...(result.result.warnings || [])].join('\n');
   } catch (error) {
     if (active && generation === run) status.value = error instanceof Error ? error.message : String(error);
   } finally { if (active && generation === run) busy.value = false; }
