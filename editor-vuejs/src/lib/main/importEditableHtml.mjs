@@ -39,7 +39,13 @@ function safeAssetName(name) {
 }
 
 export async function importEditableHtml(file) {
-  const doc = readDocument(await file.text(), 'text/html');
+  const source = await file.text();
+  const parsed = new DOMParser().parseFromString(source, 'text/html');
+  // A DESQ payload that is present but malformed must report its own error,
+  // rather than falling back to running the document as an agent presentation.
+  const doc = parsed.getElementById('desq-document')
+    ? readDocument(source, 'text/html')
+    : await (await import('./importAgentHtml.mjs')).agentHtmlDocument(source, file.name);
   const fileId = genId(10);
   const plan = planEditableImport(doc, fileId);
   // Validate and decode every asset before writing any records.
