@@ -1,7 +1,7 @@
 <template>
   <div class="editor-agent" @pointerdown.stop="editorAdapter.rememberTextCursor()" @pointerup.stop @contextmenu.stop>
     <section id="agent-taskpane" class="agent-panel" role="complementary" aria-label="Editor agent task pane">
-      <header><strong>Create slides with AI agent</strong><button aria-label="Close agent panel" @click="open = false">×</button></header>
+      <header><strong>✨ Create slides with external AI ✨</strong><button aria-label="Close agent panel" @click="open = false">×</button></header>
       <section class="external-brief">
         <p>Having a paid AI account? Just ask it to produce pptx directly. Or use prompt below, even with free accounts the response might be sufficient.</p>
         <fieldset class="layout-options" :disabled="busy">
