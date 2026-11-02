@@ -1,3 +1,4 @@
+import { desqLogoURL } from './branding.mjs';
 import { createEditorStore } from './store.mjs';
 import { createSlideList } from './thumbnails.jsx';
 import { createEditorCanvas } from 'shared-vuejs/canvas';
@@ -199,7 +200,7 @@ export function mountEditor(host, options = {}) {
       else return;
     } else if (mod && key === 'z') e.shiftKey ? redo() : undo();
     else if (mod && key === 'y') redo();
-    else if (mod && key === 's') save(true);
+    else if (mod && key === 's') save(false);
     else if (mod && key === 'd') duplicateSelected();
     else if (mod && key === 'a') selectShapes((getSlide()?.shapes || []).filter(s => !s.hidden).map(s => s.id));
     else if (key === 'delete' || key === 'backspace') deleteSelected();
@@ -302,9 +303,8 @@ export function mountEditor(host, options = {}) {
   }
   const slideList = createSlideList(store, ui, chooseSlide);
   const root = <div class="ve-editor" tabindex="-1" onkeydown={keydown}>
-    <header><strong>Desq · VanJS</strong><Toolbar label="File">
-      <Button label="Save editable ZIP" icon="↓" disabled={() => ui.busy} action={() => save(true)}/>
-      <Button label="Single Editable HTML" disabled={() => ui.busy} action={() => save(false)}/>
+    <header><strong class="ve-brand"><img src={desqLogoURL} width="30" height="30" alt=""/><span>DESQ</span></strong><Toolbar label="File">
+      <Button label="Save Single HTML" icon="↓" disabled={() => ui.busy} action={() => save(false)}/>
       <Button label="Undo" icon="↶" disabled={() => !ui.canUndo} action={undo}/><Button label="Redo" icon="↷" disabled={() => !ui.canRedo} action={redo}/>
       <Button label="Present" icon="▶" action={present}/>
     </Toolbar></header>

@@ -269,11 +269,13 @@ test('rendered background-clipped gradients become editable gradient text', { sk
       import {preflightDeckPlan} from './editor-vuejs/src/lib/agent/deck-preflight.mjs';
       import {flattenShapeGroups} from './editor-vuejs/src/lib/agent/html-shape-groups.mjs';
       (async()=>{try {
-        const source=\`<!doctype html><html><head><style>h1{font-size:48px}span{background:linear-gradient(to right,rgb(176,94,67),rgb(212,175,55),rgb(235,190,85));background-clip:text;-webkit-text-fill-color:transparent}</style></head><body><section class="slide"><h1>CÀ PHÊ <span>VIỆT NAM</span></h1></section></body></html>\`;
+        const source=\`<!doctype html><html><head><style>h1{font-size:48px}span{background:linear-gradient(to right,rgb(176,94,67),rgb(212,175,55),rgb(235,190,85));background-clip:text;-webkit-text-fill-color:transparent;text-shadow:2px 3px 4px rgba(12,34,56,.5)}</style></head><body><section class="slide"><h1>CÀ PHÊ <span>VIỆT NAM</span></h1></section></body></html>\`;
         const rendered=await renderScriptedFrontendSlides(source,parseExternalBrief(source));
         const proof=preflightDeckPlan({calls:[{name:'desq_create_deck',arguments:{...rendered,fileId:'f',pageId:'p'}}]},{document:{width:1280,height:720},allowTextOverflow:true});
         const shapes=flattenShapeGroups(proof.compiled.pages[0].shapes);
         const run=shapes.flatMap(s=>s.txBody?.p||[]).flatMap(p=>p.r||[]).find(r=>r.t?.includes('VIỆT NAM'));
+        const shadow=run?.rPr?.effectLst?.outerShdw;
+        if(!shadow || shadow.uniClr?.$_val!=='0C2238' || shadow.uniClr?.alpha?.$_val!==50000) throw Error('Text shadow missing');
         const stops=run?.rPr?.gradFill?.gsLst?.gs;
         if(!stops || stops.length!==3 || stops.map(s=>s.uniClr.$_val).join(',')!=='B05E43,D4AF37,EBBE55') throw Error('Gradient text missing');
         if(shapes.some(s=>s.type==='path' && s.solidFill?.uniClr?.$_val==='B05E43')) throw Error('Gradient became a filled rectangle');
@@ -295,11 +297,12 @@ test('large rendered slides retain local SVG symbols and remain bounded', { skip
       import {preflightDeckPlan} from './editor-vuejs/src/lib/agent/deck-preflight.mjs';
       import {flattenShapeGroups} from './editor-vuejs/src/lib/agent/html-shape-groups.mjs';
       (async()=>{try {
-        const source=\`<!doctype html><html><body><svg width="0" height="0"><defs><symbol id="icon" viewBox="0 0 10 10"><path transform="translate(1 1)" d="M0 0H8V8H0Z" fill="var(--icon-color,#123456)"/></symbol></defs></svg><section class="slide"><div>\${'<span>x</span>'.repeat(110)}</div><svg width="30" height="30" style="--icon-color:#e63a4e"><use href="#icon"/></svg></section></body></html>\`;
+        const source=\`<!doctype html><html><body><svg width="0" height="0"><defs><symbol id="icon" viewBox="0 0 10 10"><path transform="translate(1 1)" d="M0 0H8V8H0Z" fill="var(--icon-color,#123456)"/></symbol></defs></svg><section class="slide"><div>\${'<span>x</span>'.repeat(110)}</div><div style="position:absolute;left:120px;top:100px;width:80px;height:30px;background-color:#42dfb3;border-radius:6px"></div><svg width="30" height="30" style="--icon-color:#e63a4e"><use href="#icon"/></svg></section></body></html>\`;
         const rendered=await renderScriptedFrontendSlides(source,parseExternalBrief(source));
         if(rendered.slides[0].html.length<=80000) throw Error('Fixture did not exceed the previous size limit');
         const proof=preflightDeckPlan({calls:[{name:'desq_create_deck',arguments:{...rendered,fileId:'f',pageId:'p'}}]},{document:{width:1280,height:720},allowTextOverflow:true});
         const shapes=flattenShapeGroups(proof.compiled.pages[0].shapes);
+        if(!shapes.some(s=>s.name?.startsWith('html-decoration-') && s.solidFill?.uniClr?.$_val==='42DFB3' && Math.abs(s.w-80)<1 && Math.abs(s.h-30)<1)) throw Error('Empty background div missing');
         if(!shapes.some(s=>s.type==='path' && s.solidFill?.uniClr?.$_val==='E63A4E')) throw Error('SVG symbol missing or color lost');
         if(!shapes.some(s=>s.txBody?.p?.some(p=>p.r?.some(r=>r.t.includes('xxxxxxxx'))))) throw Error('Slide text missing');
         document.body.innerHTML='<pre id="result">OK</pre>';

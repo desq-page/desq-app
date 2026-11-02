@@ -1,3 +1,4 @@
+import { installEditorBranding } from './branding.mjs';
 import van from 'vanjs-core';
 import * as vanX from 'vanjs-ext';
 import { setRendererURLs, ensureRenderer, rendererResources } from './renderer-loader.mjs';
@@ -33,6 +34,7 @@ const mounted = new WeakMap();
 export function mount(host, options = {}) {
   if (!globalThis.DesqRenderer) throw Error('Call await DesqVanEditor.ready() before explicitly mounting the editor.');
   ensureStyles();
+  installEditorBranding();
   if (!document.getElementById('desq-shared-renderer-style') && !document.querySelector('link[data-desq-renderer-styles]')) {
     const style = document.createElement('style'); style.id = 'desq-shared-renderer-style'; style.textContent = globalThis.DesqRenderer.getStyles(); document.head.append(style);
   }

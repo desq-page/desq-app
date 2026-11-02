@@ -7,7 +7,7 @@ const num = (minimum, maximum) => ({ type: 'number', minimum, maximum });
 const array = (items, maxItems, minItems = 0) => ({ type: 'array', items, minItems, maxItems });
 const obj = (properties, required = []) => ({ type: 'object', properties, required, additionalProperties: false });
 const color = str(32, 1);
-const motionEffect=obj({effect:str(80,1),duration:num(0,86400),delay:num(0,86400),trigger:{...str(20),enum:['on-click','with-previous','after-previous']},trigger_shape:str(100),repeat_count:num(.001,10000),auto_reverse:{type:'boolean'},rewind:{type:'boolean'},accelerate:num(0,1),decelerate:num(0,1),bounce_end:num(0,1),effect_options:obj({direction:str(40),amount:num(-10000,10000),color,font_name:str(100),relative:{type:'boolean'},size:num(-10000,10000)})});
+const motionEffect=obj({effect:str(80,1),duration:num(0,86400),delay:num(0,86400),trigger:{...str(20),enum:['on-click','with-previous','after-previous']},trigger_shape:str(100),repeat_count:num(.001,10000),repeat_indefinitely:{type:'boolean'},rotation_from:num(-36000,36000),rotation_to:num(-36000,36000),auto_reverse:{type:'boolean'},rewind:{type:'boolean'},accelerate:num(0,1),decelerate:num(0,1),bounce_end:num(0,1),effect_options:obj({direction:str(40),amount:num(-10000,10000),color,font_name:str(100),relative:{type:'boolean'},size:num(-10000,10000)})});
 const groupMotion=obj({...motionEffect.properties,effects:array(motionEffect,20,1)});
 const run = obj({ text: str(600, 1), bold: { type: 'boolean' }, italic: { type: 'boolean' }, color }, ['text']);
 const paragraph = obj({ text: str(1200), runs: array(run, 12), bullet: { type: 'boolean' } });

@@ -22,7 +22,7 @@ const alpha = (raw) =>
   String(raw).endsWith("%")
     ? finite(String(raw).slice(0, -1)) / 100
     : finite(raw);
-export function drawingmlEffects(filter, opacity, makeColor) {
+export function drawingmlEffects(filter, opacity, makeColor, shadowOpacityScale = 0.75) {
   if (!filter) return undefined;
   const root = attrs(filter);
   if (root.primitiveUnits && root.primitiveUnits !== "userSpaceOnUse")
@@ -116,7 +116,7 @@ export function drawingmlEffects(filter, opacity, makeColor) {
       $_dir: Math.trunc(direction),
       $_algn: alignment,
       $_rotWithShape: 0,
-      ...makeColor(color, opacityValue * 0.75),
+      ...makeColor(color, opacityValue * shadowOpacityScale),
     },
   };
 }

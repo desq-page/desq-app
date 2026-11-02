@@ -79,7 +79,11 @@ export function compileDeck(deck, { width, height, genId, geometry, assets = new
       }
       imageCount += svgImageRequests(svg,pageIndex).length;
       if(imageCount>8)throw Error('Use at most eight images in a deck.');
-      const motion=compileMotion(slide.motion,page.shapes,{width,height});
+      const motionConfig = slide.layout === 'html' && slide.motion?.groups ? {
+        ...slide.motion, groups: Object.fromEntries(Object.entries(slide.motion.groups).filter(([target]) =>
+          !/^html-reveal-\d+$/.test(target) || page.shapes.some(shape => shape.sourceIds?.includes(target) || shape.name === target)))
+      } : slide.motion;
+      const motion=compileMotion(motionConfig,page.shapes,{width,height});
       pages.push({name:slide.title,shapes:page.shapes,showMaster:'0',transition:{advClick:1},...motion,agentMetadata:{version:3,engine:slide.layout === 'markdown' ? 'markdown-native' : slide.layout === 'html' ? 'html-native' : 'ppt-master-svg',deckTitle:deck.title,purpose:slide.purpose,layout:slide.layout,strategy:deck.strategy,...(slide.templateSelection?{templateSelection:slide.templateSelection}:{}),...(slide.overflowContent?{overflowContent:slide.overflowContent}:{}),...(slide.layout==='markdown'?{markdown:slide.markdown,generationModel:deck.generationModel}:{}),...(imageCredits.length?{imageCredits}:{}),sourceCommit:'b113d23720260c411ee47b2b05a73615f954deeb'}});
       warnings.push(...page.warnings); continue;
     }
@@ -333,7 +337,7 @@ export function compileDeck(deck, { width, height, genId, geometry, assets = new
   for (const [index, page] of pages.entries()) {
     promoteSlideBackground(page, { width, height });
     if (deck.slides[index].layout === 'html' && parseSlideHTML(deck.slides[index].html).hasAttribute('data-desq-imported'))
-      page.shapes = groupImportedHtmlShapes(page.shapes, genId);
+      page.shapes = groupImportedHtmlShapes(page.shapes, genId, { width, height });
   }
   if (pages.some(page => JSON.stringify(page.shapes).includes('\"desqFontWeight\"'))) warnings.push('Intermediate font weights are preserved in Desq; PPTX export approximates them with normal or bold.');
   if (deck.slides.every(slide => slide.layout === deck.slides[0].layout)) warnings.push('All slides use the same composition; consider varying layouts.');

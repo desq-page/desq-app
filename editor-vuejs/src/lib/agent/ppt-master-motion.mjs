@@ -196,12 +196,23 @@ export function compileMotion(config, shapes, { width, height } = {}) {
       const preset = registry.get(aliases[effect] || effect);
       if (!preset) throw Error(`Unknown PPT Master animation: ${effect}`);
       let xml = optionRow(preset, options.effect_options);
+      if (preset.key === 'emphasis_spin' && Number.isFinite(options.rotation_from) && Number.isFinite(options.rotation_to)) {
+        xml = xml.replace(/<p:childTnLst>[\s\S]*<\/p:childTnLst>/,
+          `<p:childTnLst><p:anim calcmode="lin" valueType="num" from="${options.rotation_from}" to="${options.rotation_to}"><p:cBhvr><p:cTn id="6" dur="${Math.round(seconds(options.duration, .5) * 1000)}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>style.rotation</p:attrName></p:attrNameLst></p:cBhvr></p:anim></p:childTnLst>`);
+      }
+      if (preset.key === 'emphasis_transparency') {
+        const minimumOpacity = 1 - (options.effect_options?.amount ?? .5);
+        // The stock image effect is a full fade in the player. Explicit
+        // numerical opacity keyframes preserve partial transparency.
+        xml = xml.replace(/<p:childTnLst>[\s\S]*<\/p:childTnLst>/,
+          `<p:childTnLst><p:anim calcmode="lin" valueType="num" from="1" to="${minimumOpacity}"><p:cBhvr><p:cTn id="6" dur="${Math.round(seconds(options.duration, .5) * 1000)}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>style.opacity</p:attrName></p:attrNameLst></p:cBhvr></p:anim></p:childTnLst>`);
+      }
       for (const [targetIndex, shape] of targets.entries()) {
         const row = object(parser.parse(xml)).cTn;
         const defaultDuration = preset.default_duration_ms || 1;
         const duration = seconds(options.duration, defaultDuration / 1000),
           delay = seconds(options.delay, 0);
-        const scale = preset.duration_scalable
+        const scale = preset.duration_scalable && preset.key !== 'emphasis_transparency' && !(preset.key === 'emphasis_spin' && Number.isFinite(options.rotation_from))
           ? (duration * 1000) / defaultDuration
           : 1;
         const patch = (n) => {
@@ -225,7 +236,8 @@ export function compileMotion(config, shapes, { width, height } = {}) {
           "with-previous": "withEffect",
           "after-previous": "afterEffect",
         }[trigger];
-        if (options.repeat_count !== undefined) {
+        if (options.repeat_indefinitely) row.$_repeatCount = "indefinite";
+        else if (options.repeat_count !== undefined) {
           if (
             options.repeat_count !== "indefinite" &&
             (!Number.isFinite(options.repeat_count) ||

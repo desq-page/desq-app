@@ -437,13 +437,13 @@ export function compilePageSVG(
     const morphName = sourceIds.at(-1);
     shapes.push({ ...s, ...(morphName?.startsWith("!!") ? { name: morphName } : {}), sourceIds: [...sourceIds] });
   };
-  const effects = (a, alpha) => {
+  const effects = (a, alpha, exactOpacity = false) => {
     if (!a.filter || a.filter === "none") return undefined;
     const ref = /^url\(#([^\s)]+)\)$/.exec(a.filter),
       definition = ref && definitions.get(ref[1]);
     if (!definition || tagOf(definition) !== "filter")
       throw Error("Missing local SVG filter definition.");
-    return drawingmlEffects(definition, alpha, color);
+    return drawingmlEffects(definition, alpha, color, exactOpacity ? 1 : 0.75);
   };
   const frame = (m, x, y, w, h) => {
     const sx = Math.hypot(m[0], m[1]),
@@ -990,7 +990,7 @@ export function compilePageSVG(
                   r.style.fill || "#000000",
                   alpha * opacity(r.style["fill-opacity"]),
                 ),
-                ...(effects(a, alpha) ? { effectLst: effects(a, alpha) } : {}),
+                ...(effects(r.style, alpha, true) ? { effectLst: effects(r.style, alpha, true) } : {}),
                 ...(a["data-desq-hyperlink"]
                   ? {
                       hlinkClick: {

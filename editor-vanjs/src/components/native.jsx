@@ -1,7 +1,7 @@
 // Native controls shared by all panes. No icon pack, widget library or runtime CSS framework.
 export function Button({ label, icon, action, disabled, pressed, ...props }) {
   return <button type="button" title={label} aria-label={label} disabled={disabled}
-    aria-pressed={pressed} onclick={action} {...props}>{icon ? <span aria-hidden="true">{icon}</span> : null}{label}</button>;
+    aria-pressed={pressed} onclick={action} {...props}>{icon ? <span class="ve-button-icon" aria-hidden="true">{icon}</span> : null}{label}</button>;
 }
 export function Field({ label, children }) {
   return <label class="ve-field"><span>{label}</span>{children}</label>;

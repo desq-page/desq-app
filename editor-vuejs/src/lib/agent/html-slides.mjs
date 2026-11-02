@@ -223,6 +223,8 @@ function approximatePresentationStyles(page, doc, warn) {
       );
   }
   for (const { el, cs, transform } of snapshots) {
+    if (cs.transform !== 'none' || cs.isolation === 'isolate' || Number(cs.opacity) < 1)
+      el.setAttribute('data-desq-stacking-context', '1');
     if (transform !== "none") {
       el.style.setProperty("text-transform", "none", "important");
       warn("CSS text-transform was frozen into editable literal text.");
@@ -239,13 +241,20 @@ function approximatePresentationStyles(page, doc, warn) {
       ["transform", "transform"],
       ["filter", "filter"],
       ["backdropFilter", "backdrop-filter"],
-      ["textShadow", "text-shadow"],
       ["clipPath", "clip-path"],
       ["maskImage", "mask-image"],
       ["backgroundImage", "background-image"],
     ]) {
       if (cs[key] && cs[key] !== "none") {
         const value = cs[key];
+        if (key === 'transform' && page.hasAttribute('data-desq-imported') && el !== page) {
+          try {
+            const matrix = new doc.defaultView.DOMMatrix(value);
+            const angle = Math.atan2(matrix.b, matrix.a) * 180 / Math.PI;
+            if (Math.abs(angle) > .01 && Math.abs(matrix.a * matrix.c + matrix.b * matrix.d) < .001)
+              el.setAttribute('data-desq-rotation', String(angle));
+          } catch {}
+        }
         const textGradient = key === "backgroundImage" && /(?:^|,)\s*text(?:\s*,|$)/.test(cs.backgroundClip) && /gradient\(/.test(value);
         const slideGradients = key === "backgroundImage" && el === page && /gradient\(/.test(value);
         if (slideGradients) el.setAttribute("data-desq-background-gradients", value);
@@ -268,10 +277,6 @@ function approximatePresentationStyles(page, doc, warn) {
     }
     if (cs.mixBlendMode !== "normal" || cs.isolation === "isolate")
       warn("HTML blend/isolation effects were omitted.");
-    if (cs.zIndex !== "auto" || cs.order !== "0")
-      warn(
-        "HTML stacking uses document paint order; positions retain browser layout.",
-      );
     if (cs.position === "fixed" || cs.position === "sticky") {
       el.style.setProperty("position", "absolute", "important");
       warn(
@@ -479,7 +484,7 @@ export function htmlToSVG(
         `HTML section must be positioned at 0,0 and measure exactly ${stageWidth}×${stageHeight} pixels (got ${n(origin.x)},${n(origin.y)} ${n(origin.width)}×${n(origin.height)}).`,
       );
     const parts = [],
-      textGroups = new Map(), textGradients = new Map();
+      textGroups = new Map(), textGradients = new Map(), textShadows = new Map();
     let imageIndex = 0,
       id = 0;
     const bounds = (rect, label) => {
@@ -515,6 +520,19 @@ export function htmlToSVG(
       textGradients.set(owner, gradientId);
       return gradientId;
     }
+    function textShadowFor(value) {
+      if (!value || value === 'none') return '';
+      if (textShadows.has(value)) return textShadows.get(value);
+      const shadows = parseHTMLBoxShadows(value);
+      if (shadows.length > 1) warn('Layered HTML text shadows use the first shadow in native text.');
+      const shadow = shadows[0];
+      if (!shadow) return '';
+      const filterId = `html-text-shadow-${++id}`;
+      parts.push(`<defs><filter id="${filterId}"><feDropShadow dx="${shadow.dx}" dy="${shadow.dy}" stdDeviation="${shadow.blur / 2}" flood-color="${escape(shadow.color)}" flood-opacity="1"/></filter></defs>`);
+      const attr = ` filter="url(#${filterId})"`;
+      textShadows.set(value, attr);
+      return attr;
+    }
     function text(node, owner, opacity) {
       if (!node.textContent.trim()) return;
       const parent = node.parentElement,
@@ -547,7 +565,8 @@ export function htmlToSVG(
         const editorSize = page.hasAttribute('data-desq-imported') ? size * (4 / 3) * (stageWidth / 1280) : size;
         const letterSpacing = parseFloat(cs.letterSpacing);
         const gradientId = gradientFor(parent);
-        const attrs = `font-family="${escape(cs.fontFamily)}" font-size="${n(editorSize)}" font-weight="${cs.fontWeight}" font-style="${cs.fontStyle}"${Number.isFinite(letterSpacing) && letterSpacing !== 0 ? ` letter-spacing="${n(letterSpacing)}"` : ""} fill="${typeof gradientId === 'string' ? `url(#${gradientId})` : escape(gradientId?.fallback || cs.color)}" opacity="${opacity}"${cs.textDecorationLine !== "none" ? ` text-decoration="${escape(cs.textDecorationLine)}"` : ""}`;
+        const shadowAttr = textShadowFor(cs.textShadow);
+        const attrs = `font-family="${escape(cs.fontFamily)}" font-size="${n(editorSize)}" font-weight="${cs.fontWeight}" font-style="${cs.fontStyle}"${Number.isFinite(letterSpacing) && letterSpacing !== 0 ? ` letter-spacing="${n(letterSpacing)}"` : ""} fill="${typeof gradientId === 'string' ? `url(#${gradientId})` : escape(gradientId?.fallback || cs.color)}" opacity="${opacity}"${shadowAttr}${cs.textDecorationLine !== "none" ? ` text-decoration="${escape(cs.textDecorationLine)}"` : ""}`;
         const last = group.rows.at(-1);
         if (
           last &&
@@ -568,6 +587,14 @@ export function htmlToSVG(
       }
     }
     function walk(el, opacity = 1) {
+      const reveal = el.nodeType === 1 && el.getAttribute('data-desq-reveal');
+      if (reveal && /^html-reveal-\d+$/.test(reveal)) {
+        parts.push(`<g id="${reveal}">`);
+        walkElement(el, opacity);
+        parts.push('</g>');
+      } else walkElement(el, opacity);
+    }
+    function walkElement(el, opacity = 1) {
       if (el.nodeType === 3) {
         text(el, page, opacity);
         return;
@@ -581,6 +608,7 @@ export function htmlToSVG(
       if (
         el.localName !== "img" &&
         !(el === page && page.hasAttribute("data-desq-imported")) &&
+        !page.hasAttribute('data-desq-imported') &&
         el.clientWidth &&
         el.clientHeight &&
         ((cs.overflowX !== "visible" && el.scrollWidth > el.clientWidth + 1) ||
@@ -590,10 +618,6 @@ export function htmlToSVG(
           `HTML ${el.localName} content overflows its clipped box (${el.scrollWidth}×${el.scrollHeight} inside ${el.clientWidth}×${el.clientHeight}). ${el === page ? "Keep the section exactly 1280×720; reduce content or vertical spacing rather than enlarging the canvas." : "Enlarge the inner box within the canvas or shorten its text."}`,
         ), { code: "HTML_SLIDE_OVERFLOW" });
       if (r.width && r.height) {
-        if (page.hasAttribute('data-desq-imported') && !el.textContent.trim() && el.localName !== 'img' && (r.left < origin.left - 1 || r.top < origin.top - 1 || r.right > origin.right + 1 || r.bottom > origin.bottom + 1)) {
-          warn('A decorative element extending beyond the slide was omitted.');
-          return;
-        }
         if (page.hasAttribute('data-desq-imported') && (r.left < origin.left - 1 || r.top < origin.top - 1 || r.right > origin.right + 1 || r.bottom > origin.bottom + 1))
           warn('An element extends beyond the slide; content outside the canvas may be clipped.');
         else bounds(r, el.localName);
@@ -602,10 +626,15 @@ export function htmlToSVG(
       // rendered HTML. Layout-only wrappers should not become editor groups.
       const isGroup = page.hasAttribute('data-desq-imported') && el !== page &&
         !['svg', 'img'].includes(el.localName) && !['inline', 'contents'].includes(cs.display) &&
-        (el.localName === 'li' || (el.textContent.trim() &&
+        (el.hasAttribute('data-desq-rotation') || el.localName === 'li' || (el.textContent.trim() &&
           (!transparent(cs.backgroundColor) || ['Top','Right','Bottom','Left'].some(side =>
             parseFloat(cs[`border${side}Width`]) > 0 && !['none','hidden'].includes(cs[`border${side}Style`])))));
-      if (isGroup) parts.push(`<g id="desq-html-group-${++id}">`);
+      if (isGroup) {
+        const angle = Number(el.getAttribute('data-desq-rotation'));
+        const pivot = cs.transformOrigin.split(' ').map(parseFloat);
+        const rotation = angle ? `-rot-${n(angle)}-${n((r.left - origin.left + (pivot[0] || 0)) * 1280 / stageWidth)}-${n((r.top - origin.top + (pivot[1] || 0)) * 1280 / stageWidth)}` : '';
+        parts.push(`<g id="desq-html-group-${++id}${rotation}">`);
+      }
       let shadowFilter = "";
       if (cs.boxShadow !== "none") {
         let shadows = [];
@@ -735,9 +764,9 @@ export function htmlToSVG(
       const rx = radius * (radii[0].includes("%") ? r.width / 100 : 1);
       const ry = radius * (radii[0].includes("%") ? r.height / 100 : 1);
       if (n(r.width) > 0 && n(r.height) > 0 && (!transparent(cs.backgroundColor) || (uniformBorder && stroke.width))) {
-        parts.push(
-          `<rect${el.id.startsWith("!!") ? ` id="${escape(el.id)}:box"` : ""}${shadowFilter} ${rectAttrs(r)} rx="${rx}" ry="${ry}" fill="${transparent(cs.backgroundColor) ? "none" : escape(cs.backgroundColor)}" stroke="${uniformBorder && stroke.width ? escape(stroke.color) : "none"}" stroke-width="${uniformBorder ? stroke.width : 0}"${dash(stroke.style)} opacity="${opacity}"/>`,
-        );
+        const shapeId = el.id.startsWith('!!') ? ` id="${escape(el.id)}:box"` : el.localName === 'div' && !el.textContent.trim() && !transparent(cs.backgroundColor) ? ` id="html-decoration-${++id}"` : '';
+        const geometry = `rect ${rectAttrs(r)} rx="${rx}" ry="${ry}"`;
+        parts.push(`<${geometry}${shapeId}${shadowFilter} fill="${transparent(cs.backgroundColor) ? 'none' : escape(cs.backgroundColor)}" stroke="${uniformBorder && stroke.width ? escape(stroke.color) : 'none'}" stroke-width="${uniformBorder ? stroke.width : 0}"${dash(stroke.style)} opacity="${opacity}"/>`);
       }
       if (el === page && el.hasAttribute('data-desq-background-gradients')) {
         const layers = slideBackgroundLayers(el.getAttribute('data-desq-background-gradients'), doc);
@@ -787,7 +816,23 @@ export function htmlToSVG(
             );
           }
       }
-      for (const child of el.childNodes) walk(child, opacity);
+      // CSS paints positioned decorations after normal-flow content, even
+      // when those decorations appear earlier in the DOM (e.g. calendar holes).
+      const paintOrder = node => {
+        if (node.nodeType !== 1) return [1, 0];
+        const style = view.getComputedStyle(node);
+        const positioned = style.position !== 'static';
+        const stackingContext = node.hasAttribute('data-desq-stacking-context');
+        const parentDisplay = view.getComputedStyle(node.parentElement).display;
+        const canStack = positioned || /flex|grid/.test(parentDisplay);
+        const z = canStack && style.zIndex !== 'auto' ? Number(style.zIndex) : 0;
+        if (Number.isFinite(z) && z < 0) return [0, z];
+        if (Number.isFinite(z) && z > 0) return [3, z];
+        return [positioned || stackingContext || (canStack && style.zIndex !== 'auto') ? 2 : 1, 0];
+      };
+      const children = [...el.childNodes].map((node, index) => ({ node, index, order: paintOrder(node) }));
+      children.sort((a, b) => a.order[0] - b.order[0] || a.order[1] - b.order[1] || a.index - b.index);
+      for (const { node } of children) walk(node, opacity);
       if (isGroup) parts.push("</g>");
     }
     walk(page);
