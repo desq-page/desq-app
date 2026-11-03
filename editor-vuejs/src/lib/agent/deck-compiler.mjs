@@ -216,7 +216,7 @@ export function compileDeck(deck, { width, height, genId, geometry, assets = new
             const frame = preset('Content column', x, top, w, h, fill, 'roundRect');
             const content = [{ text: item.title }, ...(item.body ? [{ text: item.body }] : [])];
             const size = fit(content, w - 48, h - 64, 22, 17);
-            frame.txBody = { bodyPr: { $_wrap: 'square', $_anchor: 't', $_lIns: 24 * sx * 9525, $_rIns: 24 * sx * 9525, $_tIns: 32 * sy * 9525, $_bIns: 32 * sy * 9525 },
+            frame.txBody = { bodyPr: { $_wrap: 'square', $_anchor: 't', $_lIns: Math.round(24 * sx * 9525), $_rIns: Math.round(24 * sx * 9525), $_tIns: Math.round(32 * sy * 9525), $_bIns: Math.round(32 * sy * 9525) },
               p: content.map((p, n) => paragraph(p, size, legibleInk(fill), n === 0)) };
             textRegions.push(frame);
             preset('Column accent', x + 24, top + 14, 48, 4, i === 1 ? sharedDesign.secondary : sharedDesign.accent);
@@ -279,7 +279,7 @@ export function compileDeck(deck, { width, height, genId, geometry, assets = new
         const content = element.paragraphs?.length ? element.paragraphs : element.text ? [{ text: element.text }] : undefined;
         if (content) {
           const size = fit(content, w - 32, h - 32, element.fontSize || 22, 12);
-          shape.txBody = { bodyPr: { $_anchor: 'ctr', $_lIns: 16 * sx * 9525, $_rIns: 16 * sx * 9525, $_tIns: 16 * sy * 9525, $_bIns: 16 * sy * 9525 },
+          shape.txBody = { bodyPr: { $_anchor: 'ctr', $_lIns: Math.round(16 * sx * 9525), $_rIns: Math.round(16 * sx * 9525), $_tIns: Math.round(16 * sy * 9525), $_bIns: Math.round(16 * sy * 9525) },
             p: content.map(p => paragraph(p, size, element.color || legibleInk(element.fill || design.accent), element.bold)) };
           textRegions.push(shape);
         }

@@ -383,6 +383,7 @@ function findEffectInfo(effData) {
   // console.log(list);
   return {
     ...list?.[effData?.eff?.presetID],
+    ...(effData.eff?.customName ? { l: effData.eff.customName } : {}),
     type: effData.type,
   };
 }

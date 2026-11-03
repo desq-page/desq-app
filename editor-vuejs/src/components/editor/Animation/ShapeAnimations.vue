@@ -370,7 +370,7 @@ function shapeSelected() {
 
 function getEffName(row) {
   const list = defAnimList[row.type - 1];
-  return list?.[row.eff?.presetID]?.l;
+  return row.eff?.customName || list?.[row.eff?.presetID]?.l;
 }
 
 function selectTrs(shpId) {

@@ -193,12 +193,47 @@ export function compileMotion(config, shapes, { width, height } = {}) {
       const options = { ...defaults, ...spec },
         effect = options.effect || "none";
       if (effect === "none") continue;
-      const preset = registry.get(aliases[effect] || effect);
+      const preset = ['custom_emphasis', 'custom_entrance'].includes(effect)
+        ? { key: effect, default_duration_ms: 3000, duration_scalable: false }
+        : registry.get(aliases[effect] || effect);
       if (!preset) throw Error(`Unknown PPT Master animation: ${effect}`);
-      let xml = optionRow(preset, options.effect_options);
+      let xml = ['custom_emphasis', 'custom_entrance'].includes(preset.key)
+        ? `<p:cTn id="5" presetClass="${effect === 'custom_entrance' ? 'entr' : 'emph'}" fill="hold"><p:childTnLst></p:childTnLst></p:cTn>`
+        : optionRow(preset, options.effect_options);
+      if (preset.key === 'custom_emphasis' && !options.translation_frames) throw Error('Custom Emphasis requires translation keyframes.');
       if (preset.key === 'emphasis_spin' && Number.isFinite(options.rotation_from) && Number.isFinite(options.rotation_to)) {
         xml = xml.replace(/<p:childTnLst>[\s\S]*<\/p:childTnLst>/,
           `<p:childTnLst><p:anim calcmode="lin" valueType="num"><p:cBhvr><p:cTn id="6" dur="${Math.round(seconds(options.duration, .5) * 1000)}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>style.rotation</p:attrName></p:attrNameLst></p:cBhvr><p:tavLst><p:tav tm="0"><p:val><p:fltVal val="${options.rotation_from}"/></p:val></p:tav><p:tav tm="50000"><p:val><p:fltVal val="${options.rotation_to}"/></p:val></p:tav><p:tav tm="100000"><p:val><p:fltVal val="${options.rotation_from}"/></p:val></p:tav></p:tavLst></p:anim></p:childTnLst>`);
+      }
+      if (options.translation_frames !== undefined) {
+        const frames = options.translation_frames;
+        if (!Array.isArray(frames) || frames.length < 2 || frames.length > 100 ||
+            frames.some((frame, index) => !Number.isFinite(frame.t) || frame.t < 0 || frame.t > 1 ||
+              (index && frame.t < frames[index - 1].t) || !Number.isFinite(frame.x) || !Number.isFinite(frame.y)) ||
+            !(width > 0 && height > 0)) throw Error('Invalid imported translation keyframes.');
+        const duration = Math.round(seconds(options.duration, .5) * 1000);
+        const behaviors = [['ppt_x', 'x', width], ['ppt_y', 'y', height]].map(([property, axis, dimension]) => {
+          const values = frames.map(frame => `<p:tav tm="${Math.round(frame.t * 100000)}"><p:val><p:strVal val="#${property}+(${frame[axis] / dimension})"/></p:val></p:tav>`).join('');
+          return `<p:anim calcmode="lin" valueType="num"><p:cBhvr><p:cTn id="6" dur="${duration}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>${property}</p:attrName></p:attrNameLst></p:cBhvr><p:tavLst>${values}</p:tavLst></p:anim>`;
+        }).join('');
+        xml = xml.replace(/<p:childTnLst>[\s\S]*<\/p:childTnLst>/, `<p:childTnLst>${behaviors}</p:childTnLst>`);
+      }
+      if (effect === 'custom_entrance') {
+        const properties = options.property_frames;
+        if (!properties || typeof properties !== 'object') throw Error('Custom Entrance requires property keyframes.');
+        const duration = Math.round(seconds(options.duration, .5) * 1000);
+        const behaviors = Object.entries(properties).map(([property, frames]) => {
+          if (!['opacity', 'ppt_x', 'ppt_y', 'ppt_w', 'ppt_h'].includes(property) || !Array.isArray(frames) || frames.length < 2 || frames.length > 100 ||
+            frames.some(frame => !Number.isFinite(frame.t) || frame.t < 0 || frame.t > 1 || !Number.isFinite(frame.v))) throw Error('Invalid entrance keyframes.');
+          const name = property === 'opacity' ? 'style.opacity' : property;
+          const values = frames.map(frame => {
+            const value = property === 'opacity' ? String(frame.v) : ['ppt_w', 'ppt_h'].includes(property) ? `#${property}*(${frame.v})` : `#${property}+(${frame.v})`;
+            return `<p:tav tm="${Math.round(frame.t * 100000)}"><p:val><p:strVal val="${value}"/></p:val></p:tav>`;
+          }).join('');
+          return `<p:anim calcmode="lin" valueType="num"><p:cBhvr><p:cTn id="6" dur="${duration}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>${name}</p:attrName></p:attrNameLst></p:cBhvr><p:tavLst>${values}</p:tavLst></p:anim>`;
+        }).join('');
+        const visible = '<p:set><p:cBhvr><p:cTn id="7" dur="1" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>style.visibility</p:attrName></p:attrNameLst></p:cBhvr><p:to><p:strVal val="visible"/></p:to></p:set>';
+        xml = xml.replace(/<p:childTnLst>[\s\S]*<\/p:childTnLst>/, `<p:childTnLst>${visible}${behaviors}</p:childTnLst>`);
       }
       if (preset.key === 'emphasis_transparency') {
         const minimumOpacity = 1 - (options.effect_options?.amount ?? .5);
@@ -212,7 +247,7 @@ export function compileMotion(config, shapes, { width, height } = {}) {
         const defaultDuration = preset.default_duration_ms || 1;
         const duration = seconds(options.duration, defaultDuration / 1000),
           delay = seconds(options.delay, 0);
-        const scale = preset.duration_scalable && preset.key !== 'emphasis_transparency' && !(preset.key === 'emphasis_spin' && Number.isFinite(options.rotation_from))
+        const scale = preset.duration_scalable && !options.translation_frames && preset.key !== 'emphasis_transparency' && !(preset.key === 'emphasis_spin' && Number.isFinite(options.rotation_from))
           ? (duration * 1000) / defaultDuration
           : 1;
         const patch = (n) => {
@@ -281,6 +316,9 @@ export function compileMotion(config, shapes, { width, height } = {}) {
         if (result.m.length !== 1)
           throw Error(`Native animation ${effect} did not compile.`);
         const converted = result.m[0];
+        if (/^html-reveal-\d+$/.test(target)) converted.sourceTarget = target;
+        if (options.translation_frames) converted.customName = 'Custom Emphasis';
+        if (effect === 'custom_entrance') converted.customName = 'Custom Entrance';
         if (targetIndex) converted.tr = 2;
         converted.nativeTiming = {
           rowXml: xml,

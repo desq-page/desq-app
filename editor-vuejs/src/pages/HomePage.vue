@@ -158,6 +158,8 @@ a:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px solid
 .desq-home .button-dark { background: var(--ink); color: #fff; }
 .desq-home .button-lime { background: var(--lime); color: #173323; }
 .button-lime:hover { background: #e0f5b9; }
+.desq-home .hero-actions .button-lime { background: #245439; color: #fffdf5; }
+.desq-home .hero-actions .button-lime:hover { background: #193b2b; }
 .text-link { font-size: 13px; font-weight: 650; }
 .text-link span { margin-left: 8px; }
 .text-link:hover, .site-footer a:hover { text-decoration: underline; text-underline-offset: 4px; }

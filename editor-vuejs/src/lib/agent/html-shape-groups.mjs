@@ -61,12 +61,26 @@ export function retargetGroupedAnimations(page) {
     }
   }
   visit(page.shapes);
+  // Source IDs include ancestry: select the outermost group belonging to this
+  // exact animated element, not an enclosing element with a different animation.
+  const contains = (shape, id) => shape.id === id || shape.children?.some(child => contains(child, id));
+  function sourceGroup(shapes, source, id) {
+    for (const shape of shapes) {
+      if (!contains(shape, id)) continue;
+      if (shape.children && shape.sourceIds?.includes(source)) return shape;
+      const nested = shape.children && sourceGroup(shape.children, source, id);
+      if (nested) return nested;
+    }
+  }
   const remap = effects => {
     const seen = new Set();
     return (effects || []).filter(effect => {
-      if (replacements.has(effect.sh)) effect.sh = replacements.get(effect.sh);
+      if (effect.sourceTarget) {
+        const group = sourceGroup(page.shapes, effect.sourceTarget, effect.sh);
+        if (group) effect.sh = group.id;
+      } else if (replacements.has(effect.sh)) effect.sh = replacements.get(effect.sh);
       const signature = effect.nativeTiming ? JSON.stringify({
-        sh: effect.sh, row: effect.nativeTiming.rowXml, du: effect.du, dl: effect.dl,
+        sh: effect.sh, sourceTarget: effect.sourceTarget, row: effect.nativeTiming.rowXml, du: effect.du, dl: effect.dl,
         tr: effect.tr, rp: effect.rp, rv: effect.rv, trs: effect.trs,
       }) : JSON.stringify(effect);
       if (seen.has(signature)) return false;
