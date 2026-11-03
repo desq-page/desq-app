@@ -1,6 +1,6 @@
 import { clone, normalizeDocument } from './model.mjs';
 import { escapeHTML, scriptJSON, fileDataURL } from './document.mjs';
-import { createZip, readZip, safePath } from './zip.mjs';
+import { readZip, safePath } from './zip.mjs';
 // This packaging script also runs in Node before the shared runtime is bundled.
 const stripSourceMaps = source => source.replace(/^[\t ]*\/\/[#@][\t ]*sourceMappingURL\s*=[^\r\n]*(?:\r?\n|$)/gm, '')
   .replace(/\/\*[#@]\s*sourceMappingURL\s*=[\s\S]*?\*\//g, '');
@@ -83,7 +83,7 @@ export async function packageEntries(documentData, runtime, styles, resources) {
   entries.push({ name: 'manifest.json', data: JSON.stringify(manifest, null, 2) + '\n' });
   return entries;
 }
-export async function editableZip(doc, runtime, styles, resources) { return createZip(await packageEntries(doc, runtime, styles, resources)); }
+export async function editableZip(doc, runtime, styles, resources) { const { createCompressedZip } = await import('shared-vuejs/api/compressed-zip'); return createCompressedZip(await packageEntries(doc, runtime, styles, resources)); }
 export async function readEditableZip(blob) {
   const entries = await readZip(blob), payload = entries.get('document.js'), legacy = entries.get('document.json');
   if (!payload && !legacy) throw Error('This ZIP does not contain document.js or document.json.');

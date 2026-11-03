@@ -1,4 +1,4 @@
-import { readDocument } from '../../../../editor-vanjs/src/document.mjs';
+import { readDocumentAsync } from '../../../../editor-vanjs/src/document.mjs';
 import { genId } from 'shared-vuejs/api/utility';
 import { saveMediaRecordToOPFS, saveToOPFS } from 'shared-vuejs/api/opfs';
 
@@ -43,7 +43,7 @@ export async function importEditableHtml(file) {
   // A DESQ payload that is present but malformed must report its own error,
   // rather than falling back to running the document as an agent presentation.
   const doc = parsed.getElementById('desq-document')
-    ? readDocument(source, 'text/html')
+    ? await readDocumentAsync(source, 'text/html')
     : await (await import('./importAgentHtml.mjs')).agentHtmlDocument(source, file.name);
   const fileId = genId(10);
   const plan = planEditableImport(doc, fileId);

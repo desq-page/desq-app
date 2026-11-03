@@ -7,7 +7,7 @@ import { exportFile } from 'shared-vuejs/api/html';
 import { prepareEditableDocument, createSinglePresentationHtml } from 'shared-vuejs/api/presentation-export';
 import { downloadFile } from 'shared-vuejs/api/downloadShape';
 import { showProgress } from 'shared-vuejs/api/utils';
-import { editableHTML } from '../../../../editor-vanjs/src/document.mjs';
+import { editableHTML, compressSingleHtml } from '../../../../editor-vanjs/src/document.mjs';
 import { editableZip } from '../../../../editor-vanjs/src/package.mjs';
 
 export async function prepareHtmlExport(format: 'single' | 'zip', embedEditor: boolean): Promise<Blob> {
@@ -39,7 +39,7 @@ export async function prepareHtmlExport(format: 'single' | 'zip', embedEditor: b
   if (fontResponse && !fontResponse.ok) throw Error('Player font is unavailable: Carlito.woff2');
   const resources = { rendererStyles, player, playerStyles,
     playerAssets: fontResponse ? [{ name: 'assets/fonts/Carlito.woff2', mime: 'font/woff2', data: new Uint8Array(await fontResponse.arrayBuffer()) }] : [] };
-  if (format === 'single') return new Blob([editableHTML(doc, runtime, resources)], { type: 'text/html;charset=utf-8' });
+  if (format === 'single') return new Blob([await compressSingleHtml(editableHTML(doc, runtime, resources))], { type: 'text/html;charset=utf-8' });
   const cssResponse = await fetch(`${import.meta.env.BASE_URL}editor-vanjs.css`, { cache: 'no-store' });
   if (!cssResponse.ok) throw Error('VanJS stylesheet is unavailable. Rebuild editor-vanjs with --publish.');
   return editableZip(doc, runtime, await cssResponse.text(), resources);

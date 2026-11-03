@@ -1,5 +1,5 @@
 import * as renderer from './shared-renderer-entry.jsx';
-import { renderPlayerSlide } from './render.jsx';
+import { renderPlayerSlide, createPlayerAssetDocument } from './render.jsx';
 import { unpackDocumentAssets } from './document.mjs';
 import * as player from '@desq/player';
 
@@ -8,11 +8,15 @@ globalThis.DesqRenderer = renderer;
 export async function startPresentation() {
   const payload = document.getElementById('desq-document');
   if (!payload) throw Error('The presentation document is missing.');
-  const doc = unpackDocumentAssets(JSON.parse(payload.textContent));
+  const assets = createPlayerAssetDocument(unpackDocumentAssets(JSON.parse(payload.textContent)));
+  const doc = assets.document;
   const style = document.createElement('style');
   style.textContent = renderer.getStyles();
   document.head.append(style);
-  player.setEmbeddedSlides(index => renderPlayerSlide(doc, index));
+  player.setEmbeddedSlides(async (index, prepare) => {
+    const slideDoc = await assets.forSlide(index, prepare);
+    return renderPlayerSlide(slideDoc, index);
+  }, { assets: assets.assets });
   await player.initSlides({ ...doc.file,
     slides: doc.slides.map(({ id, title, name, transition, timing, show, layoutid, showMaster }) => ({ id, title: title || name, transition, timing, show, layoutid, showMaster })),
     layouts: [...(doc.layouts || []), ...(doc.masters || [])].map(({ id, parentid, timing }) => ({ id, parentid, timing })),

@@ -9,7 +9,7 @@ import { blankSlide, clone, createShape,
   color, colorValue, textStyle, textParagraphs, formatText, duplicateSlide, moveItem, moveEffect, effectGroups, removeShapes, id } from './model.mjs';
 import { loadDocumentFonts, renderPlayerSlide, releaseDocumentFonts } from './render.jsx';
 import { ensurePlayer, ensurePlayerStyles } from './renderer-loader.mjs';
-import { fileDataURL, download, embedAssets, editableHTML } from './document.mjs';
+import { fileDataURL, download, embedAssets, editableHTML, compressSingleHtml } from './document.mjs';
 import { editableZip } from './package.mjs';
 
 export function mountEditor(host, options = {}) {
@@ -150,7 +150,7 @@ export function mountEditor(host, options = {}) {
       if (destroyed) return;
       download(archive, `${snapshot.file.name || 'Presentation'}.zip`, 'application/zip');
     } else {
-      const html = editableHTML(await embedAssets(snapshot), runtime, resources);
+      const html = await compressSingleHtml(editableHTML(await embedAssets(snapshot), runtime, resources));
       if (destroyed) return;
       download(html, `${snapshot.file.name || 'Presentation'}.html`, 'text/html;charset=utf-8');
     }
