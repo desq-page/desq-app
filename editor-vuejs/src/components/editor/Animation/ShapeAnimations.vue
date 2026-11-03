@@ -79,7 +79,8 @@
                 piniaSelect().selShpFormat?.motionEff === idx,
               hilite:
                 piniaSelect().selShps.includes(row.shpId) ||
-                piniaSelect().selGrpShps.includes(row.shpId),
+                piniaSelect().selGrpShps.includes(row.shpId) ||
+                piniaSelect().selShpFormat?.motionSh === row.shpId,
             }"
             v-for="(row, idx) in animGrp"
             :key="idx"
@@ -861,18 +862,13 @@ td.start {
 
 .eff-row.hilite {
   color: #7f0707;
-  font-weight: bold;
-}
-
-.eff-row.motion-selected,
-.eff-row.motion-selected:hover {
-  background-color: #b1d3ff;
-  color: #173d77;
-  font-weight: bold;
-}
-
-.eff-row.hilite {
   background-color: #e1ecff;
+  font-weight: normal;
+}
+
+.eff-row.hilite.selected,
+.eff-row.motion-selected {
+  font-weight: bold;
 }
 
 .eff-row:hover {

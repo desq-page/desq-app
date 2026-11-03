@@ -213,7 +213,12 @@ export function compileMotion(config, shapes, { width, height } = {}) {
               (index && frame.t < frames[index - 1].t) || !Number.isFinite(frame.x) || !Number.isFinite(frame.y)) ||
             !(width > 0 && height > 0)) throw Error('Invalid imported translation keyframes.');
         const duration = Math.round(seconds(options.duration, .5) * 1000);
-        const behaviors = [['ppt_x', 'x', options.coordinate_width || width], ['ppt_y', 'y', options.coordinate_height || height]].map(([property, axis, dimension]) => {
+        // A zero offset on the other axis is not an animation channel. Writing
+        // it would reset a concurrent parent/child CSS movement on that axis.
+        const axes = [['ppt_x', 'x', options.coordinate_width || width], ['ppt_y', 'y', options.coordinate_height || height]]
+          .filter(([, axis, dimension]) => frames.some(frame => round3(frame[axis] / dimension) !== 0));
+        if (!axes.length) continue;
+        const behaviors = axes.map(([property, axis, dimension]) => {
           const values = frames.map(frame => `<p:tav tm="${Math.round(frame.t * 100000)}"><p:val><p:strVal val="#${property}+(${round3(frame[axis] / dimension)})"/></p:val></p:tav>`).join('');
           return `<p:anim calcmode="lin" valueType="num"><p:cBhvr><p:cTn id="6" dur="${duration}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>${property}</p:attrName></p:attrNameLst></p:cBhvr><p:tavLst>${values}</p:tavLst></p:anim>`;
         }).join('');

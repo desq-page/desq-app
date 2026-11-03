@@ -43,3 +43,28 @@ test('Custom Emphasis export omits preset identity for retained and rebuilt timi
   assert.match(xml,/presetClass="emph"/);assert.match(xml,/ppt_y/);assert.match(xml,/repeatCount="indefinite"/);
  }
 });
+
+test('nested snowfall and sway animate independent axes on the same imported shape',()=>{
+ const result=compileMotion({groups:{
+  'html-reveal-1':{effect:'custom_emphasis',duration:11.59,trigger:'with-previous',repeat_indefinitely:true,coordinate_width:1920,coordinate_height:1080,
+   translation_frames:[{t:0,x:0,y:-10},{t:1,x:0,y:1090}]},
+  'html-reveal-2':{effect:'custom_emphasis',duration:4.85,trigger:'with-previous',repeat_indefinitely:true,auto_reverse:true,coordinate_width:1920,coordinate_height:1080,
+   translation_frames:[{t:0,x:-27,y:0},{t:1,x:27,y:0}]},
+ }},[{id:'flake',name:'rect',sourceIds:['html-reveal-1','html-reveal-2'],x:100,y:100,w:10,h:10}],{width:1280,height:720});
+ assert.equal(result.timing.m.length,2);
+ const [fall,sway]=result.timing.m;
+ assert.deepEqual(fall.bh.map(behavior=>behavior.pr),['ppt_y']);
+ assert.deepEqual(sway.bh.map(behavior=>behavior.pr),['ppt_x']);
+ assert.equal(fall.sh,sway.sh);
+ assert.equal(fall.du,11.59);assert.equal(sway.du,4.85);
+ assert.equal(fall.rp,0);assert.equal(sway.rp,0);assert.equal(sway.rv,1);
+ assert.doesNotMatch(fall.nativeTiming.rowXml,/ppt_x/);
+ assert.doesNotMatch(sway.nativeTiming.rowXml,/ppt_y/);
+});
+
+test('diagonal translation retains both axes, and zero movement adds no effect',()=>{
+ const shapes=[{id:'shape',name:'shape',x:0,y:0,w:10,h:10}];
+ const compile=frames=>compileMotion({groups:{shape:{effect:'custom_emphasis',translation_frames:frames}}},shapes,{width:1280,height:720});
+ assert.deepEqual(compile([{t:0,x:0,y:0},{t:1,x:20,y:30}]).timing.m[0].bh.map(behavior=>behavior.pr),['ppt_x','ppt_y']);
+ assert.equal(compile([{t:0,x:0,y:0},{t:1,x:0,y:0}]).timing.m.length,0);
+});
