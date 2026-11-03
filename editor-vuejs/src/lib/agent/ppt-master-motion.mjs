@@ -1,5 +1,6 @@
 // PPT Master's authored native preset records -> Desq's existing timing importer.
 import { XMLParser, XMLBuilder } from "fast-xml-parser";
+import { round3 } from "shared-vuejs/api/utility";
 import presets from "./data/ppt-master-animations.mjs";
 import { processAnimation } from "shared-vuejs/api/edlib-pptx-pptx-anim-core";
 import transitions from "shared-vuejs/api/edlib-pptx-pptMasterTransitions";
@@ -203,7 +204,7 @@ export function compileMotion(config, shapes, { width, height } = {}) {
       if (preset.key === 'custom_emphasis' && !options.translation_frames) throw Error('Custom Emphasis requires translation keyframes.');
       if (preset.key === 'emphasis_spin' && Number.isFinite(options.rotation_from) && Number.isFinite(options.rotation_to)) {
         xml = xml.replace(/<p:childTnLst>[\s\S]*<\/p:childTnLst>/,
-          `<p:childTnLst><p:anim calcmode="lin" valueType="num"><p:cBhvr><p:cTn id="6" dur="${Math.round(seconds(options.duration, .5) * 1000)}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>style.rotation</p:attrName></p:attrNameLst></p:cBhvr><p:tavLst><p:tav tm="0"><p:val><p:fltVal val="${options.rotation_from}"/></p:val></p:tav><p:tav tm="50000"><p:val><p:fltVal val="${options.rotation_to}"/></p:val></p:tav><p:tav tm="100000"><p:val><p:fltVal val="${options.rotation_from}"/></p:val></p:tav></p:tavLst></p:anim></p:childTnLst>`);
+          `<p:childTnLst><p:anim calcmode="lin" valueType="num"><p:cBhvr><p:cTn id="6" dur="${Math.round(seconds(options.duration, .5) * 1000)}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>style.rotation</p:attrName></p:attrNameLst></p:cBhvr><p:tavLst><p:tav tm="0"><p:val><p:fltVal val="${round3(options.rotation_from)}"/></p:val></p:tav><p:tav tm="50000"><p:val><p:fltVal val="${round3(options.rotation_to)}"/></p:val></p:tav><p:tav tm="100000"><p:val><p:fltVal val="${round3(options.rotation_from)}"/></p:val></p:tav></p:tavLst></p:anim></p:childTnLst>`);
       }
       if (options.translation_frames !== undefined) {
         const frames = options.translation_frames;
@@ -212,8 +213,8 @@ export function compileMotion(config, shapes, { width, height } = {}) {
               (index && frame.t < frames[index - 1].t) || !Number.isFinite(frame.x) || !Number.isFinite(frame.y)) ||
             !(width > 0 && height > 0)) throw Error('Invalid imported translation keyframes.');
         const duration = Math.round(seconds(options.duration, .5) * 1000);
-        const behaviors = [['ppt_x', 'x', width], ['ppt_y', 'y', height]].map(([property, axis, dimension]) => {
-          const values = frames.map(frame => `<p:tav tm="${Math.round(frame.t * 100000)}"><p:val><p:strVal val="#${property}+(${frame[axis] / dimension})"/></p:val></p:tav>`).join('');
+        const behaviors = [['ppt_x', 'x', options.coordinate_width || width], ['ppt_y', 'y', options.coordinate_height || height]].map(([property, axis, dimension]) => {
+          const values = frames.map(frame => `<p:tav tm="${Math.round(frame.t * 100000)}"><p:val><p:strVal val="#${property}+(${round3(frame[axis] / dimension)})"/></p:val></p:tav>`).join('');
           return `<p:anim calcmode="lin" valueType="num"><p:cBhvr><p:cTn id="6" dur="${duration}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>${property}</p:attrName></p:attrNameLst></p:cBhvr><p:tavLst>${values}</p:tavLst></p:anim>`;
         }).join('');
         xml = xml.replace(/<p:childTnLst>[\s\S]*<\/p:childTnLst>/, `<p:childTnLst>${behaviors}</p:childTnLst>`);
@@ -227,7 +228,7 @@ export function compileMotion(config, shapes, { width, height } = {}) {
             frames.some(frame => !Number.isFinite(frame.t) || frame.t < 0 || frame.t > 1 || !Number.isFinite(frame.v))) throw Error('Invalid entrance keyframes.');
           const name = property === 'opacity' ? 'style.opacity' : property;
           const values = frames.map(frame => {
-            const value = property === 'opacity' ? String(frame.v) : ['ppt_w', 'ppt_h'].includes(property) ? `#${property}*(${frame.v})` : `#${property}+(${frame.v})`;
+            const value = property === 'opacity' ? String(round3(frame.v)) : ['ppt_w', 'ppt_h'].includes(property) ? `#${property}*(${round3(frame.v)})` : `#${property}+(${round3(frame.v)})`;
             return `<p:tav tm="${Math.round(frame.t * 100000)}"><p:val><p:strVal val="${value}"/></p:val></p:tav>`;
           }).join('');
           return `<p:anim calcmode="lin" valueType="num"><p:cBhvr><p:cTn id="6" dur="${duration}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>${name}</p:attrName></p:attrNameLst></p:cBhvr><p:tavLst>${values}</p:tavLst></p:anim>`;
@@ -236,7 +237,7 @@ export function compileMotion(config, shapes, { width, height } = {}) {
         xml = xml.replace(/<p:childTnLst>[\s\S]*<\/p:childTnLst>/, `<p:childTnLst>${visible}${behaviors}</p:childTnLst>`);
       }
       if (preset.key === 'emphasis_transparency') {
-        const minimumOpacity = 1 - (options.effect_options?.amount ?? .5);
+        const minimumOpacity = round3(1 - (options.effect_options?.amount ?? .5));
         // The stock image effect is a full fade in the player. Explicit
         // numerical opacity keyframes preserve partial transparency.
         xml = xml.replace(/<p:childTnLst>[\s\S]*<\/p:childTnLst>/,

@@ -14,5 +14,7 @@ test('custom reveal exports movement, scaling and fade separately without Expand
  }
  assert.ok(result.timing.m[1].bh.some(bh=>bh.pr==='ppt_y' && bh.cm.length===2));
  const xml=applyNativeTiming('<p:sld><p:cSld/></p:sld>',result.timing,new Map([['title','7']]),{width:1280,height:720});
+ assert.match(xml,/#ppt_y\+\(0\.043\)/);
+ assert.doesNotMatch(xml,/\d+\.\d{4,}/);
  assert.doesNotMatch(xml,/presetID=|presetSubtype=/);assert.match(xml,/presetClass="entr"/);
 });

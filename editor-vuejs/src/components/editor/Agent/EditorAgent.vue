@@ -78,7 +78,7 @@ delete nativeSlideProperties.html;
 const nativeBriefSchemaText = JSON.stringify(nativeBriefSchema, null, 2);
 const externalInstructions = `${externalPrompt}\n${nativeBriefSchemaText}\n\nLayout preference: Use the Desq native layouts; do not use SVG or HTML layouts.\n\nMy request: `;
 const externalFullPrompt = computed(() => externalLayoutStyle.value === 'frontend-slides'
-  ? 'Generate a presentation using skill https://github.com/zarazhangrui/frontend-slides. Output downloadable HTML. Presentation topic: '
+  ? 'Generate a presentation using skill https://github.com/zarazhangrui/frontend-slides. Use animations, SVG, morph if necessary. Avoid canvas. Output downloadable HTML. Presentation topic: '
   : externalInstructions);
 const externalBriefResult = computed(() => {
   if (!externalBriefText.value.trim()) return { deck: null, repaired: false, repairedJson: undefined, error: '' };

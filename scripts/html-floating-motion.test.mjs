@@ -12,7 +12,7 @@ test('imported Santa floating translation preserves midpoint, cycle and infinite
  const vertical=effect.bh.find(bh=>bh.pr==='ppt_y');
  assert.ok(vertical);assert.equal(vertical.du,3);
  assert.equal(vertical.cm.length,3);
- assert.ok(String(vertical.cm[1].v).includes(String(-15/720)));
+ assert.ok(String(vertical.cm[1].v).includes(String(-.021)));
 });
 
 test('snapshot recognizes translate-only CSS keyframes from floating-santa', async()=>{
@@ -22,8 +22,8 @@ test('snapshot recognizes translate-only CSS keyframes from floating-santa', asy
  assert.ok(start>0 && end>start);
  const effects=[];
  class Matrix { constructor(value){this.e=0;this.f=Number(/translateY\((-?[\d.]+)/.exec(value)?.[1]||0);} }
- new Function('frames','effects','DOMMatrix',source.slice(start,end))([
- {computedOffset:0,transform:'translateY(0px)'},{computedOffset:.5,transform:'translateY(-15px)'},{computedOffset:1,transform:'translateY(0px)'}],effects,Matrix);
+ new Function('frames','effects','DOMMatrix','width','effect',source.slice(start,end))([
+ {computedOffset:0,transform:'translateY(0px)'},{computedOffset:.5,transform:'translateY(-15px)'},{computedOffset:1,transform:'translateY(0px)'}],effects,Matrix,1280,{getTiming:()=>({direction:'normal'})});
  assert.equal(effects.length,1);
  assert.deepEqual(effects[0].translation_frames,[{t:0,x:0,y:0},{t:.5,x:0,y:-15},{t:1,x:0,y:0}]);
 });

@@ -21,6 +21,12 @@ export async function agentHtmlDocument(source, name) {
   doc.file.fonts = [...new Set(families)].map(family => ({ family, type: 'google' }));
   doc.file.name = (name || deck.title).replace(/\.html?$/i, '');
   doc.slides = compiled.pages.map(page => ({ ...page, id: genId(), fileId: doc.file.id }));
-  doc.file.slides = doc.slides.map(({ id, name, transition }) => ({ id, name, transition }));
+  if (deck.sharedLayouts?.length) {
+    const shared = compileDeck({ ...deck, slides: deck.sharedLayouts }, { width:1280,height:720,genId,allowTextOverflow:true,
+      geometry:(preset,w,h)=>({d:`R0,0,${w},${h}`}), ...(context ? {measureText:canvasTextMeasurer(context)} : {}) });
+    doc.layouts = shared.pages.map(page => ({ ...page, id:genId(), fileId:doc.file.id, name:'Shared HTML layout', sharedHtmlLayout:true }));
+    for (const slide of doc.slides) { slide.layoutid = doc.layouts[0].id; slide.showMaster = 1; }
+  }
+  doc.file.slides = doc.slides.map(({ id, name, transition, layoutid, showMaster }) => ({ id, name, transition, layoutid, showMaster }));
   return doc;
 }

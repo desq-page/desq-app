@@ -1,6 +1,9 @@
 import { clone, normalizeDocument } from './model.mjs';
 import { escapeHTML, scriptJSON, fileDataURL } from './document.mjs';
 import { createZip, readZip, safePath } from './zip.mjs';
+// This packaging script also runs in Node before the shared runtime is bundled.
+const stripSourceMaps = source => source.replace(/^[\t ]*\/\/[#@][\t ]*sourceMappingURL\s*=[^\r\n]*(?:\r?\n|$)/gm, '')
+  .replace(/\/\*[#@]\s*sourceMappingURL\s*=[\s\S]*?\*\//g, '');
 const encoder = new TextEncoder(), decoder = new TextDecoder();
 const extensions = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/gif': 'gif', 'image/webp': 'webp', 'image/svg+xml': 'svg',
   'image/avif': 'avif', 'image/bmp': 'bmp', 'video/mp4': 'mp4', 'video/webm': 'webm', 'audio/mpeg': 'mp3', 'audio/wav': 'wav', 'font/woff': 'woff', 'font/woff2': 'woff2', 'font/ttf': 'ttf', 'font/otf': 'otf' };
@@ -68,10 +71,10 @@ export async function packageEntries(documentData, runtime, styles, resources) {
   const entries = [
     { name: 'index.html', data: packageHTML(doc) },
     { name: 'document.js', data: 'window.DesqDocument = ' + scriptJSON(doc) + ';\n' },
-    { name: 'editor.js', data: runtime }, { name: 'editor.css', data: styles },
-    { name: 'renderer.css', data: resources.rendererStyles },
-    { name: 'player.js', data: resources.player },
-    { name: 'player.css', data: resources.playerStyles.replace(/url\((['"]?)\/fonts\//g, 'url($1assets/fonts/') },
+    { name: 'editor.js', data: stripSourceMaps(runtime) }, { name: 'editor.css', data: stripSourceMaps(styles) },
+    { name: 'renderer.css', data: stripSourceMaps(resources.rendererStyles) },
+    { name: 'player.js', data: stripSourceMaps(resources.player) },
+    { name: 'player.css', data: stripSourceMaps(resources.playerStyles).replace(/url\((['"]?)\/fonts\//g, 'url($1assets/fonts/') },
     ...resources.playerAssets.map(asset => ({ name: asset.name, data: asset.data, mime: asset.mime })),
     ...media,
   ];

@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import source from '../../desq-core/shared-vuejs/src/edlib/html-import/snapshot-slides-source.mjs';
+test('slide-sized shared div is captured once, excluding slide content and navigation',()=>{
+ const start=source.indexOf('    const stage = slides[0]?.parentElement;');
+ const end=source.indexOf('    const properties =',start);
+ assert.ok(start>0 && end>start);
+ const snow={localName:'div',offsetWidth:1920,offsetHeight:1080,contains:()=>false};
+ const nav={localName:'div',offsetWidth:200,offsetHeight:50,contains:()=>false};
+ const canvas={localName:'canvas',offsetWidth:1920,offsetHeight:1080,contains:()=>false};
+ const created=[];
+ const document={createElement:()=>{const node={attrs:{},style:{},setAttribute(k,v){this.attrs[k]=v;},append(value){(this.children ||= []).push(value);}};created.push(node);return node;}};
+ const stage={children:[],append(value){this.children.push(value);}};
+ const slide={localName:'section',parentElement:stage};stage.children=[snow,slide,nav,canvas];
+ const slides=[slide];
+ new Function('slides','width','document','getComputedStyle',source.slice(start,end))(slides,1920,document,()=>({position:'absolute',display:'block'}));
+ assert.equal(slides.length,2);assert.equal(created.length,1);
+ assert.equal(slides[1].attrs['data-desq-shared-layout'],'1');
+ assert.deepEqual(slides[1].children,[snow]);
+});

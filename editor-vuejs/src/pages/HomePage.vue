@@ -58,16 +58,21 @@ const questions = [
               <p class="hero-note"><span aria-hidden="true">✓</span> Free to edit. Just a browser. Works offline. Your files stay private.</p>
             </div>
 
-            <div class="presentation-preview" role="group" aria-label="Animated presentation design preview">
-              <div class="preview-toolbar"><span><span class="file-icon" aria-hidden="true">▱</span> possibilities.html</span><span class="file-badge">ONE FILE. ALL INSIDE.</span></div>
-              <div class="preview-slide">
-                <div class="slide-photo" aria-hidden="true"></div>
-                <div class="slide-content"><span class="slide-eyebrow">A LITTLE ROOM FOR BIG IDEAS</span><p><span class="slide-word">Let</span> <span class="slide-word">your</span><br /><span class="slide-word">ideas</span> <span class="slide-word"><em>move.</em></span></p><span class="slide-rule" aria-hidden="true"></span><span class="slide-footer">DESQ STUDIO <span>01 / 03</span></span></div>
-                <div class="orbit orbit-one" aria-hidden="true"></div><div class="orbit orbit-two" aria-hidden="true"></div>
-              </div>
-              <div class="preview-bottom"><span><i aria-hidden="true"></i> HTML animation study</span><label class="motion-toggle"><input type="checkbox" aria-label="Pause preview animation" /><span>Pause animation</span></label></div>
-              <div class="preview-formats"><span>Slides + media + viewer + editor</span><b>HTML <span aria-hidden="true">⇄</span> PPTX</b></div>
-            </div>
+            <figure class="presentation-preview">
+              <div class="preview-toolbar"><span><span class="file-icon" aria-hidden="true">▱</span> christmas-2026-claude.html</span><span class="file-badge">HTML SAMPLE</span></div>
+              <iframe
+                class="sample-player"
+                src="/samples/christmas-2026-claude.html"
+                title="Christmas 2026 presentation created with Claude"
+                sandbox="allow-scripts allow-downloads"
+                allow="fullscreen"
+              ></iframe>
+              <figcaption class="sample-caption">
+                This HTML file is created by AI (free version).
+                <a href="/samples/christmas-2026-claude.html" download="christmas-2026-claude.html">Download it</a>
+                and open in <a href="/work">Desq editor</a> to turn it into editable PPTX with full animation intact.
+              </figcaption>
+            </figure>
           </div>
 
           <div id="why-desq" class="hero-values" aria-label="Why DESQ">
@@ -185,34 +190,15 @@ h1 em { font-style: normal; color: #496f34; }
 .hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 20px; margin-top: 26px; }
 .hero-note { margin: 17px 0 0; font-size: 11px; color: #425e43; }
 .hero-note > span { color: #496f34; margin-right: 4px; }
-.presentation-preview { width: 100%; max-width: 480px; justify-self: end; min-width: 0; padding: 14px; border: 1px solid #f3f9e933; border-radius: 10px; background: #f4f6eb; color: #294331; box-shadow: 0 22px 50px #031c2840; transform: rotate(1deg); }
+.presentation-preview { width: 100%; max-width: 480px; justify-self: end; min-width: 0; margin: 0; padding: 14px; border: 1px solid #f3f9e933; border-radius: 10px; background: #f4f6eb; color: #294331; box-shadow: 0 22px 50px #031c2840; transform: none; }
 .preview-toolbar, .preview-bottom, .preview-formats { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 10px; }
 .preview-toolbar { margin-bottom: 12px; font-size: 11px; font-weight: 600; }
 .file-icon { margin-right: 6px; font-size: 18px; vertical-align: middle; }
 .file-badge { font-size: 8px; letter-spacing: .06em; color: #5c7052; }
-.preview-slide { position: relative; aspect-ratio: 16 / 9; isolation: isolate; overflow: hidden; border-radius: 4px; background: #dfebc9; }
-.slide-photo { position: absolute; z-index: -1; inset: 0 0 0 54%; background: linear-gradient(0deg,#163b2744,#163b2711), url('/images/desq-hero.svg') right center / cover; animation: slide-morph 12s ease-in-out infinite; }
-.slide-content { padding: 6%; position: relative; z-index: 2; height: 100%; }
-.slide-eyebrow { display: block; font-size: clamp(6px,.6vw,9px); letter-spacing: .12em; font-weight: 700; }
-.slide-content > p { margin: 9% 0 0; font: 500 clamp(26px,3.5vw,46px)/1.03 Georgia, serif; letter-spacing: -.055em; }
-.slide-content em { color: #477042; }
-.slide-word { display: inline-block; animation: word-reveal 12s ease-in-out .6s infinite both; }
-.slide-word:nth-child(2) { animation-delay: .85s; }
-.slide-word:nth-child(4) { animation-delay: 1.1s; }
-.slide-word:nth-child(5) { animation-delay: 1.35s; }
-.slide-rule { display: block; width: 35px; height: 2px; background: #527b43; margin-top: 6%; }
-.slide-footer { position: absolute; left: 6%; right: 6%; bottom: 6%; display: flex; justify-content: space-between; font-size: 7px; letter-spacing: .08em; font-weight: 700; }
-.slide-footer > span { color: white; }
-.orbit { position: absolute; z-index: 1; width: 25%; aspect-ratio: 1; right: 10%; top: 20%; border: 1px solid #e6f6c5aa; border-radius: 50%; animation: orbit-drift 12s ease-in-out infinite; }
-.orbit-two { width: 33%; right: 6%; top: 13%; animation-direction: reverse; }
-.preview-bottom { padding-top: 12px; color: #607253; font-size: 9px; }
-.preview-bottom i { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #6d9144; margin-right: 4px; }
-.motion-toggle { display: flex; align-items: center; gap: 4px; cursor: pointer; }
-.motion-toggle input { accent-color: #315e32; width: 12px; height: 12px; margin: 0; }
-.presentation-preview:has(input:checked) .preview-slide * { animation-play-state: paused; }
-.preview-formats { margin-top: 12px; padding-top: 11px; border-top: 1px solid #d8e0ce; font-size: 9px; }
-.preview-formats b { font-size: 10px; }
-.preview-formats b span { margin-inline: 5px; color: #7b9258; }
+.sample-player { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 4px; background: #0d3b36; }
+.sample-caption { margin-top: 14px; font-size: 12px; line-height: 1.65; color: #3d5641; }
+.sample-caption a { color: #245439; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.sample-caption a:hover { color: #193b2b; }
 .hero-values { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; margin-top: 38px; scroll-margin-top: 24px; }
 .hero-values article { padding: 20px 22px; border: 1px solid #b8caa7; border-radius: 6px; background: #f7faefed; }
 .value-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: #49623f; font-size: 9px; letter-spacing: .1em; font-weight: 700; }
@@ -282,12 +268,9 @@ h1 em { font-style: normal; color: #496f34; }
 .site-footer .wordmark { font-size: 23px; }
 .site-footer p { flex: 1; margin: 0; font-size: 11px; color: var(--muted); }
 .site-footer nav { display: flex; flex-wrap: wrap; gap: 22px; font-size: 12px; }
-@keyframes slide-morph { 0%, 15%, 85%, 100% { border-radius: 0; transform: translateX(0); } 40%, 60% { border-radius: 45% 0 0 45%; transform: translateX(5%); } }
-@keyframes orbit-drift { 0%, 15%, 85%, 100% { transform: translateY(0) scale(1); } 40%, 60% { transform: translateY(24%) scale(.8); } }
-@keyframes word-reveal { 0%, 100% { opacity: 0; transform: translateY(10px); } 5%, 90% { opacity: 1; transform: translateY(0); } 95% { opacity: 0; transform: translateY(-6px); } }
 @media (min-width: 1100px) and (max-height: 800px) { .hero { padding-top: 28px; } .hero-values { margin-top: 30px; } .hero-values article { padding-block: 18px; } }
 @media (max-width: 1100px) { .hero-stage { gap: 32px; } .hero-actions { gap: 14px; } .hero-values article { padding: 18px; } .hero-values h2 { font-size: 21px; } .roundtrip-inner { gap: 50px; } .faq-section { gap: 40px; } .other-formats { gap: 24px; } }
-@media (max-width: 760px) { .page-width { width: calc(100% - 40px); } .site-header { min-height: 72px; gap: 16px; } .site-header .nav-detail { display: none; } .site-header .button { font-size: 11px; padding: 11px 14px; gap: 12px; } .wordmark { font-size: 24px; } .wordmark img { width: 29px; height: 29px; } .hero { padding-block: 34px 24px; } .hero-stage { grid-template-columns: 1fr; gap: 32px; } h1 { font-size: clamp(38px,7.5vw,56px); } .hero-description { font-size: 15px; max-width: 540px; } .hero-note { font-size: 10px; } .presentation-preview { width: min(100%,520px); justify-self: center; } .slide-content > p { font-size: clamp(28px,7vw,45px); } .slide-eyebrow { font-size: 7px; } .hero-values { grid-template-columns: 1fr; margin-top: 32px; gap: 12px; } .hero-values h2 { font-size: 23px; margin-top: 10px; } .features-section, .ownership-section { padding-block: 48px; } .section-intro { flex-direction: column; align-items: start; gap: 18px; margin-bottom: 26px; } .section-intro > p { max-width: 500px; } .feature-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 24px; } .roundtrip-inner { grid-template-columns: 1fr; gap: 28px; padding-block: 40px; } .roundtrip-copy > p:not(.eyebrow) { max-width: none; } .ownership-grid { grid-template-columns: 1fr; gap: 16px; } .ownership-card { padding: 26px; } .other-formats { flex-direction: column; align-items: start; gap: 24px; } .format-links { gap: 40px; } .faq-section { grid-template-columns: 1fr; gap: 24px; padding-block: 48px; } .faq-section > div > p:not(.eyebrow) { max-width: none; } .cta-inner { flex-direction: column; align-items: start; padding-block: 40px; gap: 26px; } .cta-actions { align-items: start; } .site-footer { gap: 16px; } .site-footer p { flex-basis: 60%; } }
+@media (max-width: 760px) { .page-width { width: calc(100% - 40px); } .site-header { min-height: 72px; gap: 16px; } .site-header .nav-detail { display: none; } .site-header .button { font-size: 11px; padding: 11px 14px; gap: 12px; } .wordmark { font-size: 24px; } .wordmark img { width: 29px; height: 29px; } .hero { padding-block: 34px 24px; } .hero-stage { grid-template-columns: 1fr; gap: 32px; } h1 { font-size: clamp(38px,7.5vw,56px); } .hero-description { font-size: 15px; max-width: 540px; } .hero-note { font-size: 10px; } .presentation-preview { width: min(100%,520px); justify-self: center; } .hero-values { grid-template-columns: 1fr; margin-top: 32px; gap: 12px; } .hero-values h2 { font-size: 23px; margin-top: 10px; } .features-section, .ownership-section { padding-block: 48px; } .section-intro { flex-direction: column; align-items: start; gap: 18px; margin-bottom: 26px; } .section-intro > p { max-width: 500px; } .feature-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 24px; } .roundtrip-inner { grid-template-columns: 1fr; gap: 28px; padding-block: 40px; } .roundtrip-copy > p:not(.eyebrow) { max-width: none; } .ownership-grid { grid-template-columns: 1fr; gap: 16px; } .ownership-card { padding: 26px; } .other-formats { flex-direction: column; align-items: start; gap: 24px; } .format-links { gap: 40px; } .faq-section { grid-template-columns: 1fr; gap: 24px; padding-block: 48px; } .faq-section > div > p:not(.eyebrow) { max-width: none; } .cta-inner { flex-direction: column; align-items: start; padding-block: 40px; gap: 26px; } .cta-actions { align-items: start; } .site-footer { gap: 16px; } .site-footer p { flex-basis: 60%; } }
 @media (max-width: 420px) { .hero-actions { align-items: start; flex-direction: column; gap: 16px; } .eyebrow { font-size: 9px; } .feature-grid { grid-template-columns: 1fr; } .feature-card { padding-block: 22px; } .file-badge { font-size: 6px; } .preview-formats { font-size: 8px; } .preview-formats b { font-size: 9px; } .roundtrip-flow { padding: 22px; } .flow-step { gap: 14px; } .flow-step p { font-size: 11px; } .ownership-card { padding: 22px; } .agent-flow { gap: 6px; } .agent-flow span { padding: 8px; font-size: 10px; } }
 @media (prefers-reduced-motion: reduce) { .preview-slide *, .button { animation: none; transition: none; } .motion-toggle { display: none; } }
 </style>

@@ -26,7 +26,7 @@
         <NRadioGroup v-model:value="embedEditor" aria-labelledby="html-editable-label" :disabled="saving">
           <NSpace>
             <NRadio :value="false">View only</NRadio>
-            <NRadio :value="true">Embed editor</NRadio>
+            <NRadio :value="true">Embed editor (Experimental)</NRadio>
           </NSpace>
         </NRadioGroup>
         <p class="editor-description">{{ embedEditor ? 'Include the editor so the file can be edited offline in a browser.' : 'Save a presentation for viewing, without the editor.' }}</p>

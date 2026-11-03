@@ -14,7 +14,7 @@ export async function startPresentation() {
   document.head.append(style);
   player.setEmbeddedSlides(index => renderPlayerSlide(doc, index));
   await player.initSlides({ ...doc.file,
-    slides: doc.slides.map(({ id, title, name, transition, timing, show }) => ({ id, title: title || name, transition, timing, show })),
+    slides: doc.slides.map(({ id, title, name, transition, timing, show, layoutid, showMaster }) => ({ id, title: title || name, transition, timing, show, layoutid, showMaster })),
     layouts: [...(doc.layouts || []), ...(doc.masters || [])].map(({ id, parentid, timing }) => ({ id, parentid, timing })),
     grid: doc.file.grids, publish: doc.file.publish });
 }

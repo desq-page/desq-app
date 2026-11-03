@@ -19,8 +19,18 @@ test('HTML import seeds blank-PPTX path with inherited artwork and media', async
  assert.equal(runs[0].id,'first');assert.equal(runs[0].rPr.font,'Nunito');
  assert.equal(doc.slides[0].shapes[0].txBody.p[0].r[0].t,'\uD83C','import repair must not mutate input');
  const normalize=context.module.exports.normalizeHtmlTextTree;
+ const rounded=normalize({x:1.23456789,y:-12.987654,w:400,children:[{opacity:.123456,timing:{du:2.345678}}],text:'2026.123456',bytes:new Uint8Array([1,2])});
+ assert.equal(rounded.x,1.235);assert.equal(rounded.y,-12.988);assert.equal(rounded.w,400);
+ assert.equal(rounded.children[0].opacity,.123);assert.equal(rounded.children[0].timing.du,2.346);
+ assert.equal(rounded.text,'2026.123456');assert.equal(rounded.bytes[1],2);
  const nested=normalize({children:[{table:{tr:[{tc:[{txBody:{p:{r:[{t:'\uD83C'},{t:'\uDF84'}]}}}]}]}}]});
  assert.equal(nested.children[0].table.tr[0].tc[0].txBody.p.r[0].t,'🎄');
  assert.equal(args[0].media.length,1);assert.equal(args[1].fileId,'new-id');
  assert.equal(args[1].cbAfterProcess,true);
+ const shared={...doc,layouts:[{id:'shared',sharedHtmlLayout:true,shapes:[{id:'snow'}],timing:{m:[{sh:'snow'}]}}],
+ slides:doc.slides.map(slide=>({...slide,layoutid:'shared',showMaster:1}))};
+ await context.module.exports.submitHtmlDocument(shared,[],{fileId:'layout-deck'});
+ assert.equal(args[0].sharedLayout.shapes[0].id,'snow');
+ assert.deepEqual(Array.from(args[0].slides[0].shapes,shape=>shape.id),['content'],'shared shapes are not duplicated into the slide');
+
 });

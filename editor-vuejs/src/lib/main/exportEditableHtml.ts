@@ -34,11 +34,11 @@ export async function prepareHtmlExport(format: 'single' | 'zip', embedEditor: b
     return response.text();
   };
   const [rendererStyles, player, playerStyles, fontResponse] = await Promise.all([
-    resource('renderer.css'), resource('player.js'), resource('player.css'), fetch(`${import.meta.env.BASE_URL}fonts/Carlito.woff2`),
+    resource('renderer.css'), resource('player.js'), resource('player.css'), format === 'zip' ? fetch(`${import.meta.env.BASE_URL}fonts/Carlito.woff2`) : Promise.resolve(null),
   ]);
-  if (!fontResponse.ok) throw Error('Player font is unavailable: Carlito.woff2');
+  if (fontResponse && !fontResponse.ok) throw Error('Player font is unavailable: Carlito.woff2');
   const resources = { rendererStyles, player, playerStyles,
-    playerAssets: [{ name: 'assets/fonts/Carlito.woff2', mime: 'font/woff2', data: new Uint8Array(await fontResponse.arrayBuffer()) }] };
+    playerAssets: fontResponse ? [{ name: 'assets/fonts/Carlito.woff2', mime: 'font/woff2', data: new Uint8Array(await fontResponse.arrayBuffer()) }] : [] };
   if (format === 'single') return new Blob([editableHTML(doc, runtime, resources)], { type: 'text/html;charset=utf-8' });
   const cssResponse = await fetch(`${import.meta.env.BASE_URL}editor-vanjs.css`, { cache: 'no-store' });
   if (!cssResponse.ok) throw Error('VanJS stylesheet is unavailable. Rebuild editor-vanjs with --publish.');
