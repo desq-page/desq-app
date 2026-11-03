@@ -1,0 +1,12 @@
+[
+  {
+    "file": "references/executor-base.md",
+    "upstream": "skills/ppt-master/references/executor-base.md",
+    "sha256LF": "6a87f6dddd317478a1baedc08e59bd96cc943f148de4f09fb5a4516d3be0cf5b"
+  },
+  {
+    "file": "references/plan-core.md",
+    "upstream": "skills/ppt-master/references/plan-core.md",
+    "sha256LF": "50e623b83de90cfd3f860496e8a9a0b289f8f3aeb1546152c61df37a84d64c8a"
+  }
+]

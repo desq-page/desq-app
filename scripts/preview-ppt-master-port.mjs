@@ -13,7 +13,7 @@ for (const title of names)
     title,
     purpose: "Upstream compatibility proof",
     layout: "svg",
-    svg: await readFile(`third_party/ppt-master/fixtures/${title}.svg`, "utf8"),
+    svg: await readFile(`editor-vuejs/src/lib/agent/ppt-master-resources/fixtures/${title}.svg`, "utf8"),
   });
 const result = compileDeck(
   {

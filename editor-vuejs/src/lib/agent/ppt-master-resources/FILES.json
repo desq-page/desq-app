@@ -1,15 +1,5 @@
 [
   {
-    "file": "references/executor-base.md",
-    "upstream": "skills/ppt-master/references/executor-base.md",
-    "sha256LF": "6a87f6dddd317478a1baedc08e59bd96cc943f148de4f09fb5a4516d3be0cf5b"
-  },
-  {
-    "file": "references/plan-core.md",
-    "upstream": "skills/ppt-master/references/plan-core.md",
-    "sha256LF": "50e623b83de90cfd3f860496e8a9a0b289f8f3aeb1546152c61df37a84d64c8a"
-  },
-  {
     "file": "fixtures/editorial.svg",
     "upstream": "skills/ppt-master/scripts/confirm_ui/static/style_previews/editorial.svg",
     "sha256LF": "56cd8435d9b29688f8fba1c1b27e377318e17f38891034cc2577b5a76217bb4f"

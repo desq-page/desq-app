@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/hugohe3/ppt-master",
+  "commit": "b113d23720260c411ee47b2b05a73615f954deeb",
+  "license": "MIT",
+  "copyright": "Copyright (c) 2025-2026 Hugo He",
+  "sourceRoot": "skills/ppt-master",
+  "notes": "References are unmodified upstream files. Desq uses a JavaScript port; Python is not executed by Desq. Native output replaces upstream DrawingML XML packaging with Desq objects. See the compatibility document for unsupported branches."
+}

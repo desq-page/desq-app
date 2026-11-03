@@ -1,7 +1,7 @@
 import { readFile, writeFile, copyFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 const source = "tmp/ppt-master-upstream/skills/ppt-master/scripts/";
-const dest = "third_party/ppt-master/";
+const dest = "editor-vuejs/src/lib/agent/ppt-master-resources/";
 const manifest = JSON.parse(await readFile(dest + "FILES.json", "utf8"));
 for (const [from, to] of [
   ["svg_to_pptx/drawingml/font_metrics.json", "data/font-metrics.json"],
@@ -41,7 +41,7 @@ const metrics = JSON.parse(
 );
 await writeFile(
   "editor-vuejs/src/lib/agent/data/ppt-master-fonts.mjs",
-  "// Derived from pinned PPT Master; Hugo He, MIT. See third_party/ppt-master/FILES.json.\nexport const fontData=" +
+  "// Derived from pinned PPT Master; Hugo He, MIT. See editor-vuejs/src/lib/agent/ppt-master-resources/FILES.json.\nexport const fontData=" +
     JSON.stringify(fonts) +
     ";\nexport const fontMetrics=" +
     JSON.stringify(metrics.families) +

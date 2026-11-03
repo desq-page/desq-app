@@ -13,7 +13,6 @@ import {
 } from "../editor-vuejs/src/lib/agent/deck-compiler.mjs";
 import { deckSchema } from "../editor-vuejs/src/lib/agent/deck-schema.mjs";
 import { validateArguments } from "../editor-vuejs/src/lib/agent/editor-tools.mjs";
-import { pptMasterReferences } from "./ppt-master-reference.mjs";
 import { createHash } from "node:crypto";
 import {
   evaluateFormula,
@@ -31,7 +30,7 @@ const options = {
   geometry: (p, w, h) => ({ d: `R0,0,${w},${h}` }),
 };
 const fixture = (name) =>
-  readFileSync(`third_party/ppt-master/fixtures/${name}.svg`, "utf8");
+  readFileSync(`editor-vuejs/src/lib/agent/ppt-master-resources/fixtures/${name}.svg`, "utf8");
 const wrap = (body) => `<svg viewBox="0 0 1280 720">${body}</svg>`;
 
 test("preserved native shape-style DrawingML maps directly to Desq JSON", () => {
@@ -160,11 +159,11 @@ test("hyperlinks, non-scaling strokes and hidden objects retain upstream present
 
 test("vendored upstream references and fixtures match their pinned provenance manifest", () => {
   const files = JSON.parse(
-    readFileSync("third_party/ppt-master/FILES.json", "utf8"),
+    readFileSync("editor-vuejs/src/lib/agent/ppt-master-resources/FILES.json", "utf8"),
   );
   for (const entry of files) {
     const content = readFileSync(
-      `third_party/ppt-master/${entry.file}`,
+      `editor-vuejs/src/lib/agent/ppt-master-resources/${entry.file}`,
       "utf8",
     ).replaceAll("\r\n", "\n");
     assert.equal(
@@ -174,7 +173,7 @@ test("vendored upstream references and fixtures match their pinned provenance ma
     );
   }
   assert.match(
-    readFileSync("third_party/ppt-master/LICENSE", "utf8"),
+    readFileSync("editor-vuejs/src/lib/agent/ppt-master-resources/LICENSE", "utf8"),
     /Copyright \(c\) 2025-2026 Hugo He/,
   );
 });
@@ -307,8 +306,6 @@ test("SVG decks retain complete page authority and image descriptions through na
       (s) => s.imagePlaceholder?.description === "A sunrise",
     ),
   );
-  assert.ok(pptMasterReferences.includes("Page Expression Core"));
-  assert.ok(pptMasterReferences.includes('layout="svg"'));
 });
 
 test("upstream soft-rounded and glassmorphism effects map to native shadow/glow JSON", () => {

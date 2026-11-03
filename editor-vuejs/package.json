@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "editor:dev": "node ../scripts/prepare-player-assets.mjs && vite",
-    "build": "cross-env PROD=1 node ../scripts/prepare-player-assets.mjs && cross-env PROD=1 node ../editor-vanjs/scripts/build.mjs --publish && node ../scripts/build-agent-references.mjs && node ../scripts/generate-notices.mjs && cross-env PROD=1 NODE_OPTIONS=--max-old-space-size=4096 vite build",
-    "build:dev": "node ../scripts/prepare-player-assets.mjs && node ../editor-vanjs/scripts/build.mjs --publish && node ../scripts/build-agent-references.mjs && node ../scripts/generate-notices.mjs && cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build --debug",
+    "build": "cross-env PROD=1 node ../scripts/prepare-player-assets.mjs && cross-env PROD=1 node ../editor-vanjs/scripts/build.mjs --publish && node ../scripts/generate-notices.mjs && cross-env PROD=1 NODE_OPTIONS=--max-old-space-size=4096 vite build",
+    "build:dev": "node ../scripts/prepare-player-assets.mjs && node ../editor-vanjs/scripts/build.mjs --publish && node ../scripts/generate-notices.mjs && cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build --debug",
     "preview": "vite preview --port 4173",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "jest": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest",

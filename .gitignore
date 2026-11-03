@@ -51,7 +51,7 @@ shared-vuejs/jsconfig.json.old
 shared-vuejs/.dist-dev-*
 editor-vuejs/server/agent-host.bundle.mjs
 
-# Pinned upstream working checkout; shipped files live in third_party/.
+# Pinned upstream working checkout; shipped resources live in editor-vuejs/src/lib/agent/ppt-master-resources/.
 /tmp/ppt-master-upstream/
 shared-vuejs/src/edlib/pptx/.DS_Store
 

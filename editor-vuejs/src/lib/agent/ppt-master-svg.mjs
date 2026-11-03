@@ -5,7 +5,7 @@ import { imagePlaceholderCaption } from './image-search-caption.mjs';
 import { mergeNativeParagraphs } from './ppt-master-native-paragraphs.mjs';
 import { groupSVGParagraphs } from "./ppt-master-paragraphs.mjs";
 // JavaScript native-object port of PPT Master's SVG traversal, affine geometry and paint pipeline.
-// Upstream MIT: Hugo He. Sources pinned in third_party/ppt-master/PROVENANCE.json; license retained there.
+// Upstream MIT: Hugo He. Sources pinned in editor-vuejs/src/lib/agent/ppt-master-resources/PROVENANCE.json; license retained there.
 import { XMLParser, XMLValidator } from "fast-xml-parser";
 import { SVGPathData } from "svg-pathdata";
 import { editorColor } from "./colors.mjs";

@@ -18,3 +18,21 @@ test('custom reveal exports movement, scaling and fade separately without Expand
  assert.doesNotMatch(xml,/\d+\.\d{4,}/);
  assert.doesNotMatch(xml,/presetID=|presetSubtype=/);assert.match(xml,/presetClass="entr"/);
 });
+
+test('custom entrance exports its authored duration and scales once after editing',()=>{
+ const result=compileMotion({groups:{title:{effect:'custom_entrance',duration:.7,property_frames:{opacity:[{t:0,v:0},{t:1,v:1}]}}}},[{id:'title',name:'title',x:0,y:0,w:100,h:100}],{width:1280,height:720});
+ const effect=result.timing.m[0];
+ assert.equal(effect.du,.7);
+ assert.equal(effect.nativeTiming.defaultDurationMs,700);
+ const exportXml=()=>applyNativeTiming('<p:sld><p:cSld/></p:sld>',result.timing,new Map([['title','7']]),{width:1280,height:720});
+ assert.match(exportXml(),/dur="700"/);
+ assert.doesNotMatch(exportXml(),/dur="163"/);
+ // Previously saved HTML retains incorrect duration metadata.
+ effect.nativeTiming.defaultDurationMs=3000;
+ assert.match(exportXml(),/dur="700"/);
+ effect.du=1.4;
+ assert.match(exportXml(),/dur="1400"/);
+ // Exporting repeatedly must not mutate or progressively shorten the source.
+ assert.match(exportXml(),/dur="1400"/);
+ assert.match(effect.nativeTiming.rowXml,/dur="700"/);
+});

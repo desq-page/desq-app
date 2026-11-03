@@ -45,7 +45,7 @@ test(
       import {refineLocalHTML} from './editor-vuejs/src/lib/agent/local-html-quality.mjs';
       import {planLocalHTML} from './editor-vuejs/src/lib/agent/local-html.mjs';
       import {createLocalAgent} from './editor-vuejs/src/lib/agent/local-agent.mjs';
-      import {planLocalDeck} from './editor-vuejs/src/lib/agent/local-deck.mjs';
+      import {planLocalHTML} from './editor-vuejs/src/lib/agent/local-html.mjs';
       import {createEditorTools} from './editor-vuejs/src/lib/agent/editor-tools.mjs';
       import {deckLayoutPreviews} from './editor-vuejs/src/lib/agent/deck-preview.mjs';
       const check=(condition,message)=>{if(!condition)throw Error(message)};
@@ -179,7 +179,7 @@ test(
         }
         const context={slideAuthoring:'html',htmlTemplate:'freeform',authoringEffort:'quick',document:{fileId:'file',width:1280,height:720},page:{pageId:'page',shapes:[],shapeCount:0}};
         let attempts=0, storyAttempts=0, receivedReference=false;
-        const plan=await planLocalDeck({command:'Create one slide about HTML',tools:createEditorTools({}).listTools(),context,generate:async messages=>{const data=JSON.parse(messages[1].content);if(!data.slideNumber && ++storyAttempts===1) return {text:JSON.stringify({message:'a helpful answer explaining local mode creates new slides only',calls:[]})};if(data.slideNumber){receivedReference ||= !!data.templateReference;return {text:++attempts===1?'<section>':html};}return {text:JSON.stringify({...spec,strategy:{thesis:'Native HTML',narrative:'Explain',visualStyle:'Quiet'},design:{fontFamily:'Arial'},slides:[{title:'HTML',purpose:'Explain',takeaway:'Editable',visualConcept:{layout:'Grid',hierarchy:['Heading','Two panels']},content:'Text',templateLayout:'title_slide'}]})};}});
+        const plan=await planLocalHTML({command:'Create one slide about HTML',tools:createEditorTools({}).listTools(),context,generate:async messages=>{const data=JSON.parse(messages[1].content);if(!data.slideNumber && ++storyAttempts===1) return {text:JSON.stringify({message:'a helpful answer explaining local mode creates new slides only',calls:[]})};if(data.slideNumber){receivedReference ||= !!data.templateReference;return {text:++attempts===1?'<section>':html};}return {text:JSON.stringify({...spec,strategy:{thesis:'Native HTML',narrative:'Explain',visualStyle:'Quiet'},design:{fontFamily:'Arial'},slides:[{title:'HTML',purpose:'Explain',takeaway:'Editable',visualConcept:{layout:'Grid',hierarchy:['Heading','Two panels']},content:'Text',templateLayout:'title_slide'}]})};}});
         check(storyAttempts===2 && attempts===2 && !receivedReference && plan.metrics.repaired && plan.metrics.workflow==='html-local-quick','Freeform HTML repair path failed');
         check(plan.calls[0].arguments.slides[0].layout==='html','Local mode did not return HTML');
         check(plan.calls[0].arguments.slides[0].visualConcept==='Grid; Heading; Two panels','Structured composition metadata was not normalized');

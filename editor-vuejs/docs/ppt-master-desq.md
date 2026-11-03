@@ -1,8 +1,9 @@
 # PPT Master workflow → Desq native JSON
 
-The active cloud deck-generation path is now the pinned upstream-reference/SVG
-port described in [PPT Master port](ppt-master-port.md). The legacy authoring
-contract below remains supported for existing clients and native tables/charts.
+The former upstream-reference/SVG generation prompts and local planner are
+archived in `_inactive/ppt-master/` for later deletion. The native SVG conversion
+code described in [PPT Master port](ppt-master-port.md) remains active for imports.
+The legacy contract below documents existing native tables/charts and conversion.
 
 ## Architecture
 
@@ -11,7 +12,7 @@ declarative deck specification to that model rather than generating a temporary
 PPTX, importing it, or running Python in the browser.
 
 The legacy preset compiler is original JavaScript. The new SVG path includes
-pinned upstream references, source modules and fixtures under `third_party/`,
+pinned upstream references, source modules and fixtures under `editor-vuejs/src/lib/agent/ppt-master-resources/`,
 with the complete [MIT notice](https://github.com/hugohe3/ppt-master/blob/main/LICENSE).
 
 1. Gemini/ChatGPT plans a thesis, narrative and visual direction in `strategy`,

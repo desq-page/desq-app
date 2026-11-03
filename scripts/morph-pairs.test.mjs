@@ -2,15 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { compileDeck } from '../editor-vuejs/src/lib/agent/deck-compiler.mjs';
 import { MORPH_AUTHORING_GUIDE } from '../editor-vuejs/src/lib/agent/morph-pairs.mjs';
-import { pptMasterReferences } from '../editor-vuejs/src/lib/agent/ppt-master-references.mjs';
 import { HTML_AUTHORING_GUIDE } from '../editor-vuejs/src/lib/agent/html-authoring.mjs';
 let sequence = 0;
 const options = { width:1280, height:720, genId:()=>`m-${++sequence}`, geometry:(_p,w,h)=>({d:`R0,0,${w},${h}`}) };
 const rect = (id,x=20) => `<rect id="${id}" x="${x}" y="40" width="180" height="100" fill="#123456"/>`;
 const slide = (body,morph=false) => ({title:'Endpoint',purpose:'Continue action',layout:'svg',svg:`<svg viewBox="0 0 1280 720">${body}</svg>`,...(morph?{motion:{transition:{effect:'morph',duration:1}}}:{})});
 const compile = slides => compileDeck({title:'Morph',audience:'Readers',objective:'Show change',slides}, options);
-test('both cloud authoring guides include endpoint pairing requirements',()=>{
-  assert.ok(pptMasterReferences.includes(MORPH_AUTHORING_GUIDE));
+test('HTML authoring guide includes endpoint pairing requirements',()=>{
   assert.ok(HTML_AUTHORING_GUIDE.includes(MORPH_AUTHORING_GUIDE));
 });
 test('matching objects retain shared names and distinct native ids',()=>{

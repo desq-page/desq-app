@@ -1,5 +1,5 @@
 // Port of drawingml/text_baseline.py and utils.py font-family resolution.
-// Copyright (c) 2025-2026 Hugo He, MIT. Metrics and notices retained in third_party/.
+// Copyright (c) 2025-2026 Hugo He, MIT. Metrics and notices retained in editor-vuejs/src/lib/agent/ppt-master-resources/.
 import { fontData, fontMetrics } from "./data/ppt-master-fonts.mjs";
 const canonical = new Map(
   [...fontData.ea, ...Object.keys(fontData.fallback)].map((f) => [

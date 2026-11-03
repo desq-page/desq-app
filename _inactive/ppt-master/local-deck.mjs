@@ -1,11 +1,11 @@
-import { HTML_AUTHORING_GUIDE } from './html-authoring.mjs';
-import { PRESENTON_TEMPLATES, htmlTemplateReference } from './presenton-templates.mjs';
-import { authoringEffort, QUICK_AUTHORING_WORKFLOW } from './authoring-effort.mjs';
+import { HTML_AUTHORING_GUIDE } from '../../editor-vuejs/src/lib/agent/html-authoring.mjs';
+import { PRESENTON_TEMPLATES, htmlTemplateReference } from '../../editor-vuejs/src/lib/agent/presenton-templates.mjs';
+import { authoringEffort, QUICK_AUTHORING_WORKFLOW } from '../../editor-vuejs/src/lib/agent/authoring-effort.mjs';
 import { pptMasterReferences } from './ppt-master-references.mjs';
-import { validateArguments } from './editor-tools.mjs';
-import { deckProperties } from './deck-schema.mjs';
-import { parseToolPlan, compactModelContext } from './agent-plan.mjs';
-import { preflightDeckPlan } from './deck-preflight.mjs';
+import { validateArguments } from '../../editor-vuejs/src/lib/agent/editor-tools.mjs';
+import { deckProperties } from '../../editor-vuejs/src/lib/agent/deck-schema.mjs';
+import { parseToolPlan, compactModelContext } from '../../editor-vuejs/src/lib/agent/agent-plan.mjs';
+import { preflightDeckPlan } from '../../editor-vuejs/src/lib/agent/deck-preflight.mjs';
 
 const string = (maxLength) => ({ type: 'string', minLength: 1, maxLength });
 const outlineSlide = {

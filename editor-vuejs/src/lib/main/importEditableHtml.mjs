@@ -3,14 +3,14 @@ import { genId } from 'shared-vuejs/api/utility';
 import { saveMediaRecordToOPFS, saveToOPFS } from 'shared-vuejs/api/opfs';
 
 const descriptor = record => {
-  const { shapes, timing, bg, originalXml, xmlDirty, clrMap, txStyles, ...metadata } = record;
+  const { shapes, timing, bg, originalXml, originalXmlPath, xmlDirty, clrMap, txStyles, ...metadata } = record;
   return metadata;
 };
 
 // Import into a new local workspace: the portable ID remains in the metadata,
 // so opening a copy cannot overwrite an existing document in this browser.
 export function planEditableImport(doc, fileId) {
-  const { version, file, slides, layouts, masters, themes, assets, tableStyles, ...root } = doc;
+  const { version, file, slides, layouts, masters, themes, assets, tableStyles, __pptxArchive, ...root } = doc;
   const fileInfo = { ...file, id: fileId, sourceDocumentId: file.sourceDocumentId || file.id,
     __editableHtmlRoot: { ...root, version },
     slides: slides.map(slide => ({ ...descriptor(slide), fileId })),
@@ -20,7 +20,7 @@ export function planEditableImport(doc, fileId) {
   for (const [type, tag, list] of [['slides', 'sld', slides], ['slideLayouts', 'sldLayout', layouts || []], ['slideMasters', 'sldMaster', masters || []]]) {
     for (const item of list) records.push({ fileId, id: item.id, type, data: {
       $_title: item.title || item.name,
-      [tag]: { cSld: { ...item, fileId }, originalXml: item.originalXml, xmlDirty: item.xmlDirty,
+      [tag]: { cSld: { ...item, fileId }, originalXml: item.originalXml, originalXmlPath: item.originalXmlPath, xmlDirty: item.xmlDirty,
         $_showMasterSp: item.showMaster === 0 || item.showMaster === '0' ? '0' : '1',
         clrMap: item.clrMap, txStyles: item.txStyles, timing: item.timing, transition: item.transition },
     } });
@@ -42,7 +42,8 @@ export async function importEditableHtml(file) {
   const parsed = new DOMParser().parseFromString(source, 'text/html');
   // A DESQ payload that is present but malformed must report its own error,
   // rather than falling back to running the document as an agent presentation.
-  const doc = parsed.getElementById('desq-document')
+  const isDesqExport = !!parsed.getElementById('desq-document');
+  const doc = isDesqExport
     ? await readDocumentAsync(source, 'text/html')
     : await (await import('./importAgentHtml.mjs')).agentHtmlDocument(source, file.name);
   const fileId = genId(10);
@@ -66,6 +67,12 @@ export async function importEditableHtml(file) {
     } else {
       await saveMediaRecordToOPFS({ fileId, name: asset.name, data: asset.data, w: asset.metadata.w, h: asset.metadata.h });
     }
+  }
+  if (isDesqExport) {
+    const { putAssetsToDexie, putFileInfoToDexie } = await import('shared-vuejs/api/dbutils');
+    for (const record of plan.records) await putAssetsToDexie(record);
+    await putFileInfoToDexie({ ...plan.fileInfo, rebuildPptxFromModel: true });
+    return fileId;
   }
   const { submitHtmlDocument } = await import('shared-vuejs/api/submitHtml');
   return submitHtmlDocument({ ...doc, file: plan.fileInfo }, media, { fileId, fileName: doc.file.name || file.name });

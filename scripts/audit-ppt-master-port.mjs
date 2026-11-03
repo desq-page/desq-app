@@ -5,7 +5,7 @@ import { execFileSync } from "node:child_process";
 // Enumerate every upstream converter module, including branches not reachable from our SVG transport.
 const root = resolve(process.argv[2] || "tmp/ppt-master-upstream");
 const provenance = JSON.parse(
-  await readFile("third_party/ppt-master/PROVENANCE.json", "utf8"),
+  await readFile("editor-vuejs/src/lib/agent/ppt-master-resources/PROVENANCE.json", "utf8"),
 );
 const commit = execFileSync("git", ["-C", root, "rev-parse", "HEAD"], {
   encoding: "utf8",

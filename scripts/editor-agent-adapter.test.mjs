@@ -92,7 +92,7 @@ const target = { fileId: 'file', pageId: 'page', shapeId: 'text' };
 
 test('extended upstream effects and text transforms survive insertion as native DrawingML JSON', async () => {
   const {state,tools}=fixture();Object.assign(state.file,{width:1280,height:720,layouts:[{id:'layout'}]});
-  const slides=[];for(const title of ['soft-rounded','glassmorphism'])slides.push({title,purpose:'Verify native effects',layout:'svg',svg:await readFile(`third_party/ppt-master/fixtures/${title}.svg`,'utf8')});
+  const slides=[];for(const title of ['soft-rounded','glassmorphism'])slides.push({title,purpose:'Verify native effects',layout:'svg',svg:await readFile(`editor-vuejs/src/lib/agent/ppt-master-resources/fixtures/${title}.svg`,'utf8')});
   slides.push({title:'Native text',purpose:'Verify text paint/rotation',layout:'svg',svg:'<svg viewBox="0 0 1280 720"><defs><radialGradient id="r"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#087F8C"/></radialGradient></defs><rect width="1280" height="720" fill="#ffffff"/><text x="200" y="200" transform="rotate(30 200 200)" fill="url(#r)">A rotated gradient</text></svg>'});
   const result=await tools.executeTool('desq_create_deck',{fileId:'file',pageId:'page',title:'Native DrawingML',audience:'Reviewers',objective:'Verify preserved effects',slides});
   assert.equal(result.ok,true,result.error);assert.equal(state.saves,3);
@@ -102,7 +102,7 @@ test('extended upstream effects and text transforms survive insertion as native 
 
 test('actual upstream SVG pages insert as native freeforms/text through the editor without fixed layout objects', async () => {
   const { state, tools } = fixture();Object.assign(state.file,{width:1280,height:720,layouts:[{id:'layout'}]});
-  const slides=[];for(const title of ['editorial','memphis'])slides.push({title,purpose:'Test upstream composition',layout:'svg',svg:await readFile(`third_party/ppt-master/fixtures/${title}.svg`,'utf8')});
+  const slides=[];for(const title of ['editorial','memphis'])slides.push({title,purpose:'Test upstream composition',layout:'svg',svg:await readFile(`editor-vuejs/src/lib/agent/ppt-master-resources/fixtures/${title}.svg`,'utf8')});
   const result=await tools.executeTool('desq_create_deck',{fileId:'file',pageId:'page',title:'Upstream pages',audience:'Developers',objective:'Preserve source compositions',slides});
   assert.equal(result.ok,true,result.error);assert.equal(state.createdSlides.length,2);assert.equal(state.saves,2);
   assert.ok(state.createdSlides.every(p=>p.agentMetadata.engine==='ppt-master-svg'));

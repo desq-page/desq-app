@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import {
   planLocalDeck,
   LOCAL_DESIGN_GUIDE,
-} from '../editor-vuejs/src/lib/agent/local-deck.mjs';
-import { createEditorTools } from '../editor-vuejs/src/lib/agent/editor-tools.mjs';
-import { compileDeck } from '../editor-vuejs/src/lib/agent/deck-compiler.mjs';
-import { createLocalAgent } from '../editor-vuejs/src/lib/agent/local-agent.mjs';
+} from './local-deck.mjs';
+import { createEditorTools } from '../../editor-vuejs/src/lib/agent/editor-tools.mjs';
+import { compileDeck } from '../../editor-vuejs/src/lib/agent/deck-compiler.mjs';
+import { createLocalAgent } from '../../editor-vuejs/src/lib/agent/local-agent.mjs';
 
 const tools = createEditorTools({}).listTools();
 const context = {

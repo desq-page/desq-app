@@ -7,11 +7,13 @@ test('HTML import seeds blank-PPTX path with inherited artwork and media', async
  let args;
  const context={module:{exports:{}},exports:{},capture:(...value)=>{args=value;return 'new-id';}};
  vm.runInNewContext(output.outputFiles[0].text,context);
- const doc={file:{name:'HTML deck',width:960,height:540},masters:[{id:'m',shapes:[{id:'master'}]}],layouts:[{id:'l',parentid:'m',shapes:[{id:'layout'}]}],slides:[{id:'s',layoutid:'l',originalXml:'obsolete',shapes:[{id:'content',txBody:{bodyPr:{$_lIns:10.2,$_rIns:20.8,$_tIns:30.1,$_bIns:40.9},p:[{r:[{id:'first',t:'\uD83C',rPr:{font:'Nunito'}},{id:'second',t:'\uDF84'}]}]}}],timing:{m:[]}}]};
+ const doc={file:{name:'HTML deck',width:960,height:540},masters:[{id:'m',shapes:[{id:'master'}]}],layouts:[{id:'l',parentid:'m',shapes:[{id:'layout'}]}],slides:[{id:'s',layoutid:'l',originalXml:'obsolete',shapes:[{id:'content',effectLst:{outerShdw:{$_dist:12345.6789,$_blurRad:234.56}},txBody:{bodyPr:{$_lIns:10.2,$_rIns:20.8,$_tIns:30.1,$_bIns:40.9},p:[{r:[{id:'first',t:'\uD83C',rPr:{font:'Nunito'}},{id:'second',t:'\uDF84'}]}]}}],timing:{m:[]}}]};
  assert.equal(await context.module.exports.submitHtmlDocument(doc,[{name:'photo.png',data:[1]},{name:'fonts/font.woff',data:[2]}],{fileId:'new-id'}),'new-id');
  assert.equal(args[0].sourceFormat,'html');assert.equal(args[0].width,960);
  assert.deepEqual(Array.from(args[0].slides[0].shapes,s=>s.id),['master','layout','content']);
  assert.equal(args[0].slides[0].originalXml,undefined);
+ assert.equal(args[0].slides[0].shapes[2].effectLst.outerShdw.$_dist,12346);
+ assert.equal(args[0].slides[0].shapes[2].effectLst.outerShdw.$_blurRad,235);
  const insets=args[0].slides[0].shapes[2].txBody.bodyPr;
  assert.deepEqual([insets.$_lIns,insets.$_rIns,insets.$_tIns,insets.$_bIns],[10,21,30,41]);
  const runs=args[0].slides[0].shapes[2].txBody.p[0].r;

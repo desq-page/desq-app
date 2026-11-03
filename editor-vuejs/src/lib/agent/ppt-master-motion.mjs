@@ -323,7 +323,10 @@ export function compileMotion(config, shapes, { width, height } = {}) {
         if (targetIndex) converted.tr = 2;
         converted.nativeTiming = {
           rowXml: xml,
-          defaultDurationMs: defaultDuration,
+          // These rows are authored at the requested duration, rather than
+          // copied from the catalog's unscaled timing template.
+          defaultDurationMs: options.translation_frames || effect === 'custom_entrance' || preset.key === 'emphasis_transparency' || (preset.key === 'emphasis_spin' && Number.isFinite(options.rotation_from))
+            ? Math.round(duration * 1000) : defaultDuration,
         };
         converted.ac = options.accelerate ?? converted.ac;
         converted.dc = options.decelerate ?? converted.dc;

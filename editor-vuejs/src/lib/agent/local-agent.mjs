@@ -5,7 +5,6 @@ import { planTemplateFill } from './local-template-fill.mjs';
 import { planLocalHTML } from './local-html.mjs';
 import { planLocalMarkdown } from './local-markdown.mjs';
 import { getLocalModel } from './local-models.mjs';
-import { planLocalDeck } from './local-deck.mjs';
 export { bindPlanContext, compactModelContext, parseToolPlan } from './agent-plan.mjs';
 
 export function createLocalAgent(onProgress = () => {}, model = 'qwen-4b') {
@@ -67,7 +66,8 @@ export function createLocalAgent(onProgress = () => {}, model = 'qwen-4b') {
         if (!/^(?:[1-9]|10)$/.test(text || '')) throw Error('The local model did not return a valid Auto slide count. Choose a number or try again.');
         context = { ...context, slideTask: { ...context.slideTask, count: Number(text) } };
       }
-      const planner=context.localDesignMode === 'template-fill' ? planTemplateFill : context.slideAuthoring === 'svg' ? planLocalDeck : context.slideAuthoring === 'markdown' ? planLocalMarkdown : planLocalHTML;
+      if (context.slideAuthoring === 'svg') throw Error('Legacy SVG authoring is inactive. Choose HTML or Markdown.');
+      const planner=context.localDesignMode === 'template-fill' ? planTemplateFill : context.slideAuthoring === 'markdown' ? planLocalMarkdown : planLocalHTML;
       const plan = await planner({ command, tools, modelLabel:getLocalModel(model).label, context: { ...context, slideAuthoring: context.slideAuthoring || 'html' }, ...callbacks, generate: (messages, options) => { const brief = [context.sourceBundles?.length ? localSourceBrief(context.sourceBundles,messages) : ''].filter(Boolean).join('\n');return request('generate',brief?[messages[0],{role:'user',content:brief},...messages.slice(1)]:messages,options); }, isStopped: () => stopped });
       return plan;
     },

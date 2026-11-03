@@ -1,10 +1,10 @@
-import { MORPH_AUTHORING_GUIDE } from "../editor-vuejs/src/lib/agent/morph-pairs.mjs";
-import { TYPOGRAPHY_GUIDE } from '../editor-vuejs/src/lib/agent/typography-guide.mjs';
+import { MORPH_AUTHORING_GUIDE } from "../../editor-vuejs/src/lib/agent/morph-pairs.mjs";
+import { TYPOGRAPHY_GUIDE } from '../../editor-vuejs/src/lib/agent/typography-guide.mjs';
 import { readFileSync } from "node:fs";
 
 const read = (name) =>
   readFileSync(
-    new URL(`../third_party/ppt-master/references/${name}`, import.meta.url),
+    new URL(`./references/${name}`, import.meta.url),
     "utf8",
   );
 const executor = read("executor-base.md");
