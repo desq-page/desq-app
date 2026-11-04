@@ -275,3 +275,15 @@ test('deck image wrappers become canonical requests before strict validation',()
  assert.deepEqual(ordinary.images,[{query:'Mountain landscape',alt:'Mountain landscape'}]);
  assert.throws(()=>parse({...slide,templateFields:[{id:'1001',query:'One',image:{query:'Other'}}]}),/Conflicting image query/);
 });
+
+test('response insertion forwards media/layout assets and never requests starter replacement',async()=>{
+ let received;
+ const registry=createEditorTools({createDeck:async(...args)=>{received=args;return {slideCount:1};}});
+ const preparedAssets=new Map([['0:svg:0',{media:{name:'private.png',w:20,h:20}}]]);
+ const sharedHtmlLayouts=[{title:'Shared',purpose:'Artwork',layout:'html',html:'<section>Snow</section>'}];
+ const result=await registry.executeTool('desq_create_deck',{fileId:'file',pageId:'page',title:'Response',audience:'Readers',objective:'Explain',slides:[{layout:'cover',title:'One',purpose:'Open'}]},
+  {insertOnly:true,preparedAssets,sharedHtmlLayouts});
+ assert.equal(result.ok,true,result.error);assert.equal(received[4].insertOnly,true);assert.equal(received[4].replaceCurrent,false);
+ assert.equal(received[4].preparedAssets,preparedAssets);assert.equal(received[4].sharedHtmlLayouts,sharedHtmlLayouts);
+ registry.dispose();
+});

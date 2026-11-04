@@ -8,8 +8,7 @@
   >
     <!-- <InsertionPanel /> -->
     <div id="taskPane" :class="$style.taskPane" :style="taskPanePos">
-      <EditorAgent v-show="piniaInfo().currentTaskPane === 'agent'" />
-      <div :class="$style.insertPanel" v-if="piniaInfo().currentTaskPane && piniaInfo().currentTaskPane !== 'agent'">
+      <div :class="$style.insertPanel" v-if="piniaInfo().currentTaskPane">
         <ShapeOptions v-if="piniaInfo().currentTaskPane == 'shapeoptions'" />
         <ShapeFill v-if="piniaInfo().currentTaskPane == 'shapefill'" />
         <InsertAutoShapes v-if="piniaInfo().currentTaskPane == 'insertAutoshapes'" />
@@ -65,7 +64,7 @@
         <LocalMediaTab v-if="piniaInfo().currentTaskPane == 'localmediatab'" />
       </div>
     </div>
-    <HideTaskPaneBtn v-if="piniaInfo().currentTaskPane !== 'agent'" />
+    <HideTaskPaneBtn />
   </div>
 </template>
 
@@ -83,7 +82,7 @@ import PageSetupPanel from "@/components/editor/Dialogs/PageSetupPanel.vue";
 import AnimationList from "@/components/editor/Animation/AnimationList.vue";
 
 import ArrangePanel from "@/components/editor/Selection/ArrangePanel.vue";
-import { computed, defineAsyncComponent, onMounted, onUnmounted, useCssModule, watch } from "vue";
+import { computed, onMounted, onUnmounted, useCssModule, watch } from "vue";
 import { on, off } from "shared-vuejs/events";
 import { toggleTaskPane } from "@/lib/main/utils";
 import MediaPanel from "@/components/editor/Media/MediaPanel.vue";
@@ -115,7 +114,6 @@ import TextShapesPanel from "../AutoShapes/TextShapesPanel.vue";
 // import FillPicture from "../Selection/FillPicture.vue";
 
 const $style = useCssModule();
-const EditorAgent = defineAsyncComponent(() => import("../Agent/EditorAgent.vue"));
 const openTextboxOptions = () => toggleTaskPane("textboxoptions");
 onMounted(() => on("openTextboxOptions", openTextboxOptions));
 onUnmounted(() => off("openTextboxOptions", openTextboxOptions));

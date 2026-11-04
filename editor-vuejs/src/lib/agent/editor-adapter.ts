@@ -300,7 +300,7 @@ export const editorAdapter = {
     await saveDexie();
     return { shapeId: shape.id };
   },
-  async createDeck(args, signal?: AbortSignal, onProgress?: (message: string) => void, generateImage?: any, execution: { allowTextOverflow?: boolean; builtinTheme?: string; rewriteText?: any; replaceCurrent?: boolean; imageKeywords?: any; imageMatches?: any; research?: any; researchImages?: any[]; sourceBundles?: any[] } = {}) {
+  async createDeck(args, signal?: AbortSignal, onProgress?: (message: string) => void, generateImage?: any, execution: { insertOnly?: boolean; preparedAssets?: Map<string, any>; preparedLayoutAssets?: Map<string, any>; sharedHtmlLayouts?: any[]; allowTextOverflow?: boolean; builtinTheme?: string; rewriteText?: any; replaceCurrent?: boolean; imageKeywords?: any; imageMatches?: any; research?: any; researchImages?: any[]; sourceBundles?: any[] } = {}) {
     const { fileId, pageId, ...spec } = args;
     validateArguments(deckSchema, spec);
     const checkTarget = () => {
@@ -311,7 +311,7 @@ export const editorAdapter = {
     checkTarget();
     await prepare(args, signal, !execution.replaceCurrent);
     const file = getFileInfo();
-    const starterId = !execution.replaceCurrent && emptyStarterSlide(file, getSlideInfo()) ? pageId : undefined;
+    const starterId = !execution.insertOnly && !execution.replaceCurrent && emptyStarterSlide(file, getSlideInfo()) ? pageId : undefined;
     if (['docx', 'xlsx', 'pdf'].includes(file.sourceFormat)) throw new Error('Deck generation requires a presentation document.');
     if (execution.replaceCurrent) {
       if (spec.slides.length !== 1) throw new Error('Replacing the current slide requires exactly one generated slide.');
@@ -333,7 +333,7 @@ export const editorAdapter = {
           } catch(error) { checkTarget();signal?.throwIfAborted();return {placeholder:true,description:image.query,alt:image.alt,warning:error instanceof Error?error.message:String(error)}; }
         }});
     }
-    const layoutid = (execution.replaceCurrent ? file.slides.find(slide => slide.id === pageId)?.layoutid : getSlideInfo().layoutid) || file.layouts?.[0]?.id;
+    let layoutid = (execution.replaceCurrent ? file.slides.find(slide => slide.id === pageId)?.layoutid : getSlideInfo().layoutid) || file.layouts?.[0]?.id;
     if (!layoutid) throw new Error('The presentation has no usable layout.');
     const canvas = typeof document === 'undefined' ? undefined : document.createElement('canvas').getContext('2d');
     const options = { width: file.width, height: file.height, genId, geometry: getPrstInfo, allowTextOverflow: execution.allowTextOverflow === true,
@@ -350,8 +350,9 @@ export const editorAdapter = {
     }
     onProgress?.('Checking deck structure and text layout…');
     compileDeck(spec, options); // Reject all layout/data failures before downloading images or changing slides.
-    const assets = new Map(), used = new Set();
+    const assets = new Map(execution.preparedAssets || []), used = new Set();
     for (const { key, image } of deckImageRequests(spec)) {
+      if (assets.has(key)) continue;
       onProgress?.(`Finding image ${assets.size + 1}…`);
       let searchQueries: string[] = [];
       try{
@@ -369,6 +370,18 @@ export const editorAdapter = {
       }
     }
     const compiled = compileDeck(spec, { ...options, assets });
+    if (execution.sharedHtmlLayouts?.length) {
+      const shared = compileDeck({...spec,slides:execution.sharedHtmlLayouts},{...options,assets:execution.preparedLayoutAssets || new Map()});
+      const content = {name:'Shared AI artwork',shapes:shared.pages.flatMap(page=>page.shapes),timing:{
+        m:shared.pages.flatMap(page=>page.timing?.m || []),i:shared.pages.flatMap(page=>page.timing?.i || []),
+      }};
+      onProgress?.('Installing shared HTML artwork…');checkTarget();signal?.throwIfAborted();
+      const {installModelLayout} = await import('shared-vuejs/api/installModelLayout');
+      const layout = await installModelLayout(getFileInfo(),layoutid,content);
+      checkTarget();signal?.throwIfAborted();
+      updateFile({layouts:[...(getFileInfo().layouts || []),layout]});
+      layoutid=layout.id;
+    }
     if (execution.sourceBundles?.length) {
       const {saveToOPFS} = await import('shared-vuejs/api/opfs');
       const references = [];

@@ -28,6 +28,7 @@
   <LoadingModule />
   <FormulaReference />
   <NewFile />
+  <EditorAgent mode="insert" />
 </template>
 
 <script setup lang="ts">
@@ -69,6 +70,7 @@ import MediaOnline from "@/components/editor/Media/MediaOnline.vue";
 const GenerateLLM = defineAsyncComponent(
   () => import("@/components/editor/Media/GenerateLLM.vue"),
 );
+const EditorAgent = defineAsyncComponent(() => import("@/components/editor/Agent/EditorAgent.vue"));
 const NewFile = defineAsyncComponent(
   () => import("@/components/editor/Dialogs/NewFile.vue"),
 );
@@ -113,11 +115,6 @@ onBeforeMount(async () => {
 });
 
 function updateUI() {
-  const openAgentAt = Number(sessionStorage.getItem("desq-open-agent-on-new-file"));
-  sessionStorage.removeItem("desq-open-agent-on-new-file");
-  if (openAgentAt > 0 && Date.now() - openAgentAt < 5 * 60 * 1000) {
-    piniaInfo().setCurTaskPane("agent");
-  }
   displayFileTitle(getFileInfo().name || getFileInfo().title);
   piniaInfo().loadingBar = "";
   piniaInfo().statusMessage = "";

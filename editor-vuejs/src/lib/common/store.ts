@@ -143,6 +143,7 @@ export const piniaInfo = defineStore("info", () => {
   const curPPTXUpload = ref(null as any);
   const openLLMModal = ref(false);
   const openNewFileModal = ref(false);
+  const openEditorAgentModal = ref(false);
   const openPublishModal = ref(false);
   const openPreviewModal = ref(false);
   const openMediaOnline = ref(false);
@@ -220,6 +221,7 @@ export const piniaInfo = defineStore("info", () => {
     curPPTXUpload,
     openLLMModal,
     openNewFileModal,
+    openEditorAgentModal,
     openPreviewModal,
     openPublishModal,
     openShowVarsModal,

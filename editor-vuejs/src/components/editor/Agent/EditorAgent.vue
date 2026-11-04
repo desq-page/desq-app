@@ -1,9 +1,11 @@
 <template>
-  <div class="editor-agent" @pointerdown.stop="editorAdapter.rememberTextCursor()" @pointerup.stop @contextmenu.stop>
-    <section id="agent-taskpane" class="agent-panel" role="complementary" aria-label="Editor agent task pane">
-      <header><strong>✨ Create slides with external AI ✨</strong><button aria-label="Close agent panel" @click="open = false">×</button></header>
+  <NModal v-model:show="open" preset="card" :title="mode === 'new' ? '✨ Create a presentation with external AI' : '✨ Insert slides with external AI'"
+    :mask-closable="!busy" :close-on-esc="!busy" :closable="!busy"
+    :style="{ width: '900px', maxWidth: 'calc(100vw - 32px)', maxHeight: 'calc(100dvh - 40px)' }">
+  <div class="editor-agent" @pointerdown.stop="rememberCursor" @pointerup.stop @contextmenu.stop>
+    <section id="agent-taskpane" class="agent-panel" aria-label="AI presentation response">
       <section class="external-brief">
-        <p>Having a paid AI account? Just ask it to produce pptx directly. Or use prompt below, even with free accounts the response might be sufficient.</p>
+        <p>Copy the prompt into your AI chat, then paste its response or upload the HTML or JSON file here.</p>
         <fieldset class="layout-options" :disabled="busy">
           <legend>Choose layout</legend>
           <label class="layout-option">
@@ -23,7 +25,7 @@
         <textarea id="external-prompt" readonly :rows="externalLayoutStyle === 'templates' ? 3 : 3" :value="externalFullPrompt" @keydown.stop @keyup.stop />
         <label for="external-brief-json">Response (JSON or HTML)</label>
         <textarea id="external-brief-json" v-model="externalBriefText" rows="4" :disabled="busy" placeholder="Paste the JSON or full HTML response here" @keydown.stop @keyup.stop @keypress.stop @paste.stop />
-        <label>Or open the HTML response file <input type="file" accept=".html,.htm,text/html" :disabled="busy" @change="loadExternalHtml" /></label>
+        <label>Or open a response file <input type="file" accept=".html,.htm,.json,text/html,application/json" :disabled="busy" @change="loadExternalHtml" /></label>
         <p v-if="externalBriefError" role="alert">{{ externalBriefError }}</p>
         <!-- <div v-if="externalBriefResult.repaired">
           <p role="status">The JSON was repaired automatically. Review the repaired content carefully before creating slides; repair can change or omit content.</p>
@@ -36,9 +38,9 @@
           <ol><li v-for="(slide, index) in externalBriefDeck.slides" :key="index">{{ slide.title }} · {{ slide.layout }}</li></ol>
           <p>Review the slide list and source before creating slides.</p>
         </div> -->
-        <button class="primary-button create-button" type="button" :disabled="busy || !externalBriefDeck" @click="createExternalBrief">{{ busy ? 'Creating slides…' : 'Create slides from response' }}</button>
+        <button class="primary-button create-button" type="button" :disabled="busy || !externalBriefDeck" @click="createExternalBrief">{{ busy ? (mode === 'new' ? 'Creating presentation…' : 'Inserting slides…') : (mode === 'new' ? 'Create new presentation' : 'Insert slides into this presentation') }}</button>
       </section>
-      <section v-if="currentTemplateUsage" class="agent-template-usage" aria-label="Current slide design">
+      <section v-if="mode === 'insert' && currentTemplateUsage" class="agent-template-usage" aria-label="Current slide design">
         <strong>Current slide design</strong>
         <p v-if="currentNativeTemplate" class="model-note">Native template · master and layout linked</p>
         <p>{{ currentTemplateUsage.family }} · {{ currentTemplateUsage.layout }}</p>
@@ -47,10 +49,12 @@
       <p role="status" class="agent-result">{{ status }}</p>
     </section>
   </div>
+  </NModal>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
+import { NModal } from 'naive-ui';
 import { DocumentCopy24Regular } from '@vicons/fluent';
 import { piniaInfo, piniaSlides } from '@/lib/common/store';
 import { useRoute } from 'vue-router';
@@ -62,12 +66,18 @@ import { templateUsage } from '@/lib/agent/template-report.mjs';
 import { parseExternalBriefResult } from '@/lib/agent/external-brief.mjs';
 import { renderScriptedFrontendSlides } from '@/lib/agent/scripted-html-render.mjs';
 import { loadGeneratedGoogleFonts, renderedHtmlFontFamilies } from '@/lib/agent/generated-fonts.mjs';
+import { createExternalResponseFile, isHtmlResponse } from '@/lib/agent/external-response.mjs';
+import { prepareEmbeddedHtmlImages, embeddedHtmlAssets } from '@/lib/agent/html-embedded-images.mjs';
+import { parseFrontendSlides } from '@/lib/agent/frontend-slides-import.mjs';
 import { preflightDeckPlan } from '@/lib/agent/deck-preflight.mjs';
 import externalPrompt from '@/lib/agent/external-brief/instructions-v1.md?raw';
 import externalSchema from '@/lib/agent/external-brief/schema-v1.json?raw';
 
+const { mode } = defineProps<{ mode: 'new' | 'insert' }>();
+const emit = defineEmits<{ created: [fileId: string] }>();
 const route = useRoute();
-const open = computed({ get: () => piniaInfo().currentTaskPane === 'agent', set: value => piniaInfo().setCurTaskPane(value ? 'agent' : '') });
+const open = computed({ get: () => piniaInfo().openEditorAgentModal, set: value => { if (!busy.value) piniaInfo().openEditorAgentModal = value; } });
+const rememberCursor = () => { if (mode === 'insert') editorAdapter.rememberTextCursor(); };
 const busy = ref(false), status = ref(''), externalBriefText = ref('');
 const externalLayoutStyle = ref<'templates' | 'frontend-slides'>('frontend-slides');
 const nativeBriefSchema = JSON.parse(externalSchema);
@@ -89,7 +99,7 @@ const externalBriefDeck = computed(() => externalBriefResult.value.deck);
 const externalBriefError = computed(() => externalBriefResult.value.error);
 let active = true, installation: any, generation = 0;
 let executionController: AbortController | undefined;
-const registry = createEditorTools(editorAdapter, () => active &&
+const registry = createEditorTools(editorAdapter, () => active && mode === 'insert' &&
   getFileInfo()?.id === route.params.id && !!getSlidesSlideId() && getSlideInfo()?.id === getSlidesSlideId());
 const currentSlideDesign = computed(() => ({ slideId: piniaSlides().slideId, revision: piniaSlides().sldState, metadata: (getSlideInfo() as any)?.agentMetadata }));
 const currentNativeTemplate = computed(() => currentSlideDesign.value.metadata?.engine === 'pptx-template-native');
@@ -99,7 +109,7 @@ async function loadExternalHtml(event: Event) {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
   if (!file) return;
-  if (file.size > 50000000) { status.value = 'HTML must be under 50 MB.'; input.value = ''; return; }
+  if (file.size > 50000000) { status.value = 'Response files must be under 50 MB.'; input.value = ''; return; }
   externalBriefText.value = await file.text();
   input.value = '';
 }
@@ -112,6 +122,7 @@ async function copyPrompt() {
 }
 
 onMounted(async () => {
+  if (mode !== 'insert') return;
   document.addEventListener('selectionchange', editorAdapter.rememberTextCursor);
   try {
     const origins = parseAgentOrigins(import.meta.env.VITE_EDITOR_AGENT_ORIGINS);
@@ -125,25 +136,44 @@ async function createExternalBrief() {
   const deck = externalBriefDeck.value;
   if (!deck || busy.value) return;
   const fileId = getFileInfo()?.id, pageId = getSlidesSlideId();
-  if (!fileId || !pageId) { status.value = 'Open a presentation and select a slide first.'; return; }
+  if (mode === 'insert' && (!fileId || !pageId)) { status.value = 'Open a presentation and select a slide first.'; return; }
   const run = ++generation;
   executionController = new AbortController();
   const signal = executionController.signal;
   busy.value = true;
   try {
+    if (mode === 'new') {
+      const id = await createExternalResponseFile(externalBriefText.value, deck, {signal,onProgress: (message: string) => { if (active && generation === run) status.value = message; }});
+      signal.throwIfAborted();
+      piniaInfo().openEditorAgentModal = false;
+      emit('created', id);
+      return;
+    }
     status.value = 'Checking the slide content and layouts…';
     const documentResult = await registry.executeTool('desq_get_document');
     if (!documentResult.ok) throw Error(documentResult.error);
-    const isHtmlDocument = /^(?:\`\`\`(?:html)?\s*)?(?:<!doctype\s+html|<html\b)/i.test(externalBriefText.value.trim());
+    const isHtmlDocument = isHtmlResponse(externalBriefText.value);
+    let preparedAssets = new Map(), preparedLayoutAssets = new Map();
     let renderedDeck = deck;
     const importFontWarnings: string[] = [];
     if (isHtmlDocument) {
       status.value = 'Rendering the HTML…';
-      renderedDeck = await renderScriptedFrontendSlides(externalBriefText.value, deck, { signal });
+      const embedded = await prepareEmbeddedHtmlImages(externalBriefText.value, {prefix:'agent-image-' + crypto.randomUUID()});
+      renderedDeck = await renderScriptedFrontendSlides(embedded.source, parseFrontendSlides(embedded.source), { signal });
+      preparedAssets = embeddedHtmlAssets(renderedDeck, embedded.images);
+      preparedLayoutAssets = embeddedHtmlAssets({slides:renderedDeck.sharedLayouts || []}, embedded.images);
+      signal.throwIfAborted();
+      if (getFileInfo()?.id !== fileId || getSlidesSlideId() !== pageId) throw Error('The selected slide changed. Please try again.');
+      const { saveMediaRecordToOPFS } = await import('shared-vuejs/api/opfs');
+      for (const asset of embedded.images.values()) {
+        signal.throwIfAborted();
+        const data = new Uint8Array(await (await fetch(asset.data)).arrayBuffer());
+        await saveMediaRecordToOPFS({fileId,name:asset.name,data,w:asset.w,h:asset.h});
+      }
       signal.throwIfAborted();
       const { googleFonts } = await import('shared-vuejs/api/googleFonts');
       const catalog = new Map(googleFonts.map((font: string[]) => [font[0].toLowerCase(), font[0]]));
-      const families = renderedHtmlFontFamilies(renderedDeck).map((name: string) => catalog.get(name.toLowerCase())).filter(Boolean) as string[];
+      const families = renderedHtmlFontFamilies({...renderedDeck,slides:[...renderedDeck.slides,...(renderedDeck.sharedLayouts || [])]}).map((name: string) => catalog.get(name.toLowerCase())).filter(Boolean) as string[];
       if (families.length) {
         status.value = `Loading fonts: ${families.join(', ')}…`;
         const failed = await loadGeneratedGoogleFonts([...new Set(families)]);
@@ -152,14 +182,15 @@ async function createExternalBrief() {
       }
       signal.throwIfAborted();
     }
-    const args = { ...renderedDeck, fileId, pageId };
+    const { sharedLayouts, ...deckArguments } = renderedDeck;
+    const args = { ...deckArguments, fileId, pageId };
     preflightDeckPlan({ calls: [{ name: 'desq_create_deck', arguments: args }] }, { document: documentResult.result, allowTextOverflow: true });
     signal.throwIfAborted();
     if (getFileInfo()?.id !== fileId || getSlidesSlideId() !== pageId) throw Error('The selected slide changed. Please try again.');
     status.value = 'Creating editable slides…';
-    const result = await registry.executeTool('desq_create_deck', args, { signal, allowTextOverflow: true, onProgress: (message: string) => { if (active && generation === run) status.value = message; } });
+    const result = await registry.executeTool('desq_create_deck', args, { signal, allowTextOverflow: true, insertOnly: true, preparedAssets, preparedLayoutAssets, sharedHtmlLayouts: sharedLayouts, onProgress: (message: string) => { if (active && generation === run) status.value = message; } });
     if (!result.ok) throw Error(result.error);
-    if (active && generation === run) status.value = [`Created ${result.result.slideCount} editable slides.`, ...importFontWarnings, ...(result.result.warnings || [])].join('\n');
+    if (active && generation === run) status.value = [`Inserted ${result.result.slideCount} editable slides.`, ...importFontWarnings, ...(result.result.warnings || [])].join('\n');
   } catch (error) {
     if (active && generation === run) status.value = error instanceof Error ? error.message : String(error);
   } finally { if (active && generation === run) busy.value = false; }
@@ -167,9 +198,12 @@ async function createExternalBrief() {
 
 
 onBeforeUnmount(() => {
-  document.removeEventListener('selectionchange', editorAdapter.rememberTextCursor);
-  editorAdapter.clearTextCursor();
+  if (mode === 'insert') {
+    document.removeEventListener('selectionchange', editorAdapter.rememberTextCursor);
+    editorAdapter.clearTextCursor();
+  }
   active = false;
+  piniaInfo().openEditorAgentModal = false;
   generation++;
   executionController?.abort();
   registry.dispose();
@@ -178,8 +212,8 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.editor-agent { width: 100%; height: 100%; min-height: 0; font: 13px/1.5 system-ui, -apple-system, BlinkMacSystemFont, sans-serif; color: #203a2a; user-select: text; touch-action: auto; }
-.agent-panel { box-sizing: border-box; display: flex; flex-direction: column; width: 100%; height: 100%; min-height: 0; padding: 16px; overflow-y: auto; background: #f8faf5; border-left: 1px solid #dce5d8; }
+.editor-agent { width: 100%; height: auto; min-height: 0; font: 13px/1.5 system-ui, -apple-system, BlinkMacSystemFont, sans-serif; color: #203a2a; user-select: text; touch-action: auto; }
+.agent-panel { box-sizing: border-box; display: flex; flex-direction: column; width: 100%; height: auto; max-height: calc(100dvh - 150px); min-height: 0; padding: 4px 12px 16px; overflow-y: auto; background: #f8faf5; border: 0; }
 header { display: flex; justify-content: space-between; align-items: center; }
 header strong { font-size: 17px; line-height: 1.2; letter-spacing: -.02em; }
 header button { border: 0; background: transparent; color: #718074; font-size: 24px; cursor: pointer; }

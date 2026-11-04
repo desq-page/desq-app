@@ -1,6 +1,6 @@
 // Extract local raster bytes before the strict HTML layout sandbox strips src.
 // Resource URLs never pass through to the compiler or image-search resolver.
-export async function prepareEmbeddedHtmlImages(source, { document = globalThis.document, measure = imageDimensions } = {}) {
+export async function prepareEmbeddedHtmlImages(source, { document = globalThis.document, measure = imageDimensions, prefix = 'html-image' } = {}) {
   const parsed = new document.defaultView.DOMParser().parseFromString(source, 'text/html');
   const images = new Map(), bySource = new Map();
   for (const image of parsed.querySelectorAll('img[src]')) {
@@ -11,7 +11,7 @@ export async function prepareEmbeddedHtmlImages(source, { document = globalThis.
     if (!asset) {
       const {w,h} = await measure(src);
       if (![w,h].every(value => Number.isFinite(value) && value > 0)) throw Error('Embedded image has invalid dimensions.');
-      const name = `html-image-${images.size + 1}.${match[1].toLowerCase().replace('jpg','jpeg')}`;
+      const name = `${prefix}-${images.size + 1}.${match[1].toLowerCase().replace('jpg','jpeg')}`;
       asset = {name,w,h,data:src}; images.set(name,asset); bySource.set(src,asset);
     }
     image.removeAttribute('src'); image.removeAttribute('srcset');

@@ -21,7 +21,7 @@
         </NRadioGroup>
         <p class="format-description">{{ format === 'single' ? 'One HTML file with all media included.' : 'An HTML file and its supporting assets in a ZIP archive.' }}</p>
       </div>
-      <div>
+      <!-- <div>
         <p id="html-editable-label" class="field-label">Editability</p>
         <NRadioGroup v-model:value="embedEditor" aria-labelledby="html-editable-label" :disabled="saving">
           <NSpace>
@@ -30,7 +30,7 @@
           </NSpace>
         </NRadioGroup>
         <p class="editor-description">{{ embedEditor ? 'Include the editor so the file can be edited offline in a browser.' : 'Save a presentation for viewing, without the editor.' }}</p>
-      </div>
+      </div> -->
     </div>
     <p class="preparation-status" role="status" aria-live="polite">{{ preparationMessage }}</p>
     <NButton v-if="preparationError" size="small" @click="prepare">Try again</NButton>

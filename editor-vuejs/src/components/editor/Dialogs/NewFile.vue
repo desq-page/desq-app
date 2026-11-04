@@ -52,14 +52,11 @@ const tpl = ref("");
 
 async function openTemplate(tplValue: string) {
   piniaInfo().openNewFileModal = false;
+  if (tplValue === "ai") { piniaInfo().openEditorAgentModal = true; return; }
   piniaInfo().loadingBar = "Please wait...";
   try {
-    // File creation navigates to the editor with a full page reload.
-    if (tplValue === "ai") sessionStorage.setItem("desq-open-agent-on-new-file", String(Date.now()));
-    else sessionStorage.removeItem("desq-open-agent-on-new-file");
-    await createNewFile(tplValue === "ai" ? "blank" : tplValue || "blank");
+    await createNewFile(tplValue || "blank");
   } catch (error) {
-    sessionStorage.removeItem("desq-open-agent-on-new-file");
     piniaInfo().loadingBar = "";
     showError(error instanceof Error ? error.message : "Unable to create file");
   }

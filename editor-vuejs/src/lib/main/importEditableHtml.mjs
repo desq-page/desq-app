@@ -46,6 +46,10 @@ export async function importEditableHtml(file) {
   const doc = isDesqExport
     ? await readDocumentAsync(source, 'text/html')
     : await (await import('./importAgentHtml.mjs')).agentHtmlDocument(source, file.name);
+  return importEditableDocument(doc, { fileName:file.name, isDesqExport });
+}
+
+export async function importEditableDocument(doc, { fileName = 'Presentation', isDesqExport = false } = {}) {
   const fileId = genId(10);
   const plan = planEditableImport(doc, fileId);
   // Validate and decode every asset before writing any records.
@@ -75,5 +79,5 @@ export async function importEditableHtml(file) {
     return fileId;
   }
   const { submitHtmlDocument } = await import('shared-vuejs/api/submitHtml');
-  return submitHtmlDocument({ ...doc, file: plan.fileInfo }, media, { fileId, fileName: doc.file.name || file.name });
+  return submitHtmlDocument({ ...doc, file: plan.fileInfo }, media, { fileId, fileName: doc.file.name || fileName });
 }

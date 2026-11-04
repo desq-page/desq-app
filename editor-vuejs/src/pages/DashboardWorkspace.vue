@@ -8,6 +8,8 @@ import DashboardPage from "./DashboardPage.vue";
 import { removePptxUndoHistory } from "shared-vuejs/api/undoHistory";
 import g from "shared-vuejs/api/global";
 
+import { piniaInfo } from "@/lib/common/store";
+const EditorAgent = defineAsyncComponent(() => import("@/components/editor/Agent/EditorAgent.vue"));
 const NewFile = defineAsyncComponent(
   () => import("@/components/editor/Dialogs/NewFile.vue"),
 );
@@ -18,6 +20,7 @@ const GenerateLLM = defineAsyncComponent(
   () => import("@/components/editor/Media/GenerateLLM.vue"),
 );
 g.globalDialog = useDialog();
+const openCreatedPresentation = (id: string) => location.assign('/edit/' + id);
 
 onMounted(async () => {
   const fileId = getFileInfo()?.id || sessionStorage.getItem("fileId");
@@ -39,6 +42,7 @@ onMounted(async () => {
   <DashboardPage />
   <GenerateLLM />
   <NewFile />
+  <EditorAgent v-if="piniaInfo().openEditorAgentModal" mode="new" @created="openCreatedPresentation" />
   <StatusBar />
   <LoadingModule />
 </template>

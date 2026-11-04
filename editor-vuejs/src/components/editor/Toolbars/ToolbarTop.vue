@@ -407,7 +407,7 @@
           :icon="AutoAwesomeOutlined"
           :onClick="
             (e) => {
-             toggleTaskPane('agent')  
+             piniaInfo().openEditorAgentModal = true
             }
           "
           tooltip="Agent"

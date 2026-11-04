@@ -6,8 +6,9 @@ import { compactImageQuery } from './image-keywords.mjs';
 
 const limits = { comparison: [2, 2], 'three-column': [3, 3], metrics: [2, 4], timeline: [2, 5], process: [2, 5], agenda: [2, 6] };
 export function parseExternalBriefResult(input) {
-  if (typeof input !== 'string' || input.length > 1700000) throw Error('The brief must be JSON under 1,700,000 characters.');
+  if (typeof input !== 'string') throw Error('The response must be JSON or HTML.');
   if (/^(?:```(?:html)?\s*)?(?:<!doctype\s+html|<html\b)/i.test(input.trim())) return { deck: parseFrontendSlides(input), repaired: false, repairedJson: undefined };
+  if (input.length > 1700000) throw Error('The brief must be JSON under 1,700,000 characters.');
   const clean = input.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
   let data, repaired = false, repairedJson;
   try { data = JSON.parse(clean); }
