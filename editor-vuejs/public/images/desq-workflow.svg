@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="250" viewBox="0 0 720 250" fill="none">
+  <title>From AI and PowerPoint to DESQ, and back to HTML or PowerPoint</title>
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="m1 1 4 2.5L1 6" stroke="#66816b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+    <linearGradient id="editor" x1="340" y1="55" x2="490" y2="196" gradientUnits="userSpaceOnUse"><stop stop-color="#37694b"/><stop offset="1" stop-color="#193b2b"/></linearGradient>
+  </defs>
+  <g stroke="#829a7e" stroke-width="2" marker-end="url(#arrow)">
+    <path d="M116 80h29"/>
+    <path d="M266 80h30q18 0 18 18v16h24"/>
+    <path d="M266 190h30q18 0 18-18v-32h24"/>
+    <path d="M486 125h26q16 0 16-16V80h27"/>
+    <path d="M528 125v47q0 18 18 18h9"/>
+  </g>
+  <g font-family="system-ui, sans-serif" text-anchor="middle">
+    <text x="206" y="20" font-size="11" font-weight="700" letter-spacing="1.5" fill="#5a7459">START WITH</text>
+    <text x="412" y="20" font-size="11" font-weight="700" letter-spacing="1.5" fill="#5a7459">MAKE IT YOURS</text>
+    <text x="624" y="20" font-size="11" font-weight="700" letter-spacing="1.5" fill="#5a7459">TAKE IT ANYWHERE</text>
+    <rect x="4" y="42" width="112" height="77" rx="14" fill="#f0eafa" stroke="#d3c4e8"/>
+    <path d="m60 53 4 10 10 4-10 4-4 10-4-10-10-4 10-4Zm22 1 2 5 5 2-5 2-2 5-2-5-5-2 5-2Z" fill="#8761b5"/>
+    <text x="60" y="104" font-size="16" font-weight="650" fill="#61408a">AI chat</text>
+    <g fill="#fffdf6" stroke="#d0d9c4"><rect x="146" y="42" width="120" height="77" rx="14"/><rect x="146" y="152" width="120" height="77" rx="14"/></g>
+    <g stroke="#557b59" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m198 58-9 9 9 9m16-18 9 9-9 9m-5-21-6 24"/></g>
+    <text x="206" y="104" font-size="16" font-weight="650" fill="#31543a">HTML</text>
+    <g stroke="#bd683a" stroke-width="2" stroke-linejoin="round"><path d="M192 164h20l9 9v20h-29Z" fill="#fff4e9"/><path d="M212 164v9h9"/><path d="M198 184v-11h5a3 3 0 0 1 0 6h-5"/></g>
+    <text x="206" y="215" font-size="16" font-weight="650" fill="#92502e">PPTX</text>
+    <rect x="340" y="55" width="146" height="144" rx="20" fill="url(#editor)"/>
+    <rect x="366" y="75" width="94" height="61" rx="6" fill="#f5f7e9"/>
+    <path d="M366 89h94" stroke="#bccbb1"/><circle cx="373" cy="82" r="2" fill="#9db68a"/><circle cx="380" cy="82" r="2" fill="#9db68a"/>
+    <rect x="374" y="97" width="16" height="30" rx="2" fill="#d9e5cb"/><rect x="397" y="97" width="54" height="30" rx="2" fill="#eaf0df"/>
+    <path d="M404 104h23m-23 7h16" stroke="#799663" stroke-width="2" stroke-linecap="round"/>
+    <path d="m436 113 9 4-5 2-2 5Z" fill="#37694b"/>
+    <text x="413" y="163" font-size="24" font-weight="750" letter-spacing="1" fill="#fffdf6">DESQ</text>
+    <text x="413" y="183" font-size="12" fill="#d6e5cc">Edit · animate · present</text>
+    <rect x="557" y="42" width="138" height="77" rx="14" fill="#edf4e3" stroke="#bdd1a9"/>
+    <rect x="611" y="54" width="30" height="23" rx="3" stroke="#557b59" stroke-width="2"/><path d="M611 61h30m-19 5-4 3 4 3m8-6 4 3-4 3" stroke="#557b59" stroke-width="1.5" stroke-linecap="round"/>
+    <text x="626" y="101" font-size="14" font-weight="650" fill="#31543a">Single File HTML</text>
+    <rect x="557" y="152" width="138" height="77" rx="14" fill="#fff1e5" stroke="#e7c9ae"/>
+    <g stroke="#bd683a" stroke-width="2" stroke-linejoin="round"><path d="M612 164h20l9 9v20h-29Z"/><path d="M632 164v9h9m-23 11v-11h5a3 3 0 0 1 0 6h-5"/></g>
+    <text x="626" y="215" font-size="16" font-weight="650" fill="#92502e">Editable PPTX</text>
+    <text x="206" y="246" font-size="11" fill="#66816b">Import your presentation</text>
+    <text x="626" y="246" font-size="11" fill="#66816b">Save, share, or keep editing</text>
+  </g>
+</svg>

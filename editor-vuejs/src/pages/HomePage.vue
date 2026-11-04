@@ -49,8 +49,11 @@ const questions = [
           <div class="hero-stage">
             <div class="hero-copy">
               <p class="eyebrow">THE COMPLETE PRESENTATION EDITOR</p>
-              <h1 id="hero-title">Presentations,<br />in plain <em>HTML.</em></h1>
-              <p class="hero-description">All the power of PowerPoint. All the freedom of the web. Create, edit, and present in HTML. Convert PPTX privately on your device. And save as single HTML with your editor and viewer built in.</p>
+              <h1 id="hero-title">PowerPoint<br />meets <em>HTML.</em></h1>
+              <figure class="hero-workflow">
+                <img src="/images/desq-workflow.svg" alt="Create HTML with AI, or open a PowerPoint file. Edit in DESQ, then export as HTML or editable PowerPoint." width="720" height="250" />
+              </figure>
+              <!-- <p class="hero-description">All the power of PowerPoint. All the freedom of the web.</p> -->
               <div class="hero-actions">
                 <a href="/work" class="button button-lime">Create in browser <span aria-hidden="true">↗</span></a>
                 <a href="#features" class="text-link">Explore the features <span aria-hidden="true">↓</span></a>
@@ -59,7 +62,7 @@ const questions = [
             </div>
 
             <figure class="presentation-preview">
-              <div class="preview-toolbar"><span><span class="file-icon" aria-hidden="true">▱</span> christmas-2026-claude.html</span><span class="file-badge">HTML SAMPLE</span></div>
+              <div class="preview-toolbar"><span><span class="file-icon" aria-hidden="true">▱</span> christmas-2026-claude.html</span><span class="file-badge">SEE IT IN ACTION</span></div>
               <iframe
                 class="sample-player"
                 src="/samples/christmas-2026-claude.html"
@@ -179,7 +182,7 @@ h2 em { font: inherit; color: #648044; }
   .hero-shell { background-size: cover, 112% auto; background-position: center, left -80px; }
   .hero .hero-stage { gap: 32px; }
   .hero .hero-description { max-width: 550px; }
-  .hero-stage .presentation-preview { width: 100%; max-width: 520px; justify-self: end; }
+  .hero-stage .presentation-preview { width: 110%; max-width: 600px; justify-self: end; }
 }
 .hero { padding-block: 36px 32px; }
 .hero-stage { display: grid; grid-template-columns: minmax(0,1.08fr) minmax(0,1fr); align-items: center; gap: 56px; }
@@ -187,10 +190,14 @@ h2 em { font: inherit; color: #648044; }
 h1 { margin: 0; font-size: clamp(40px,4.4vw,60px); font-weight: 650; line-height: 1.08; letter-spacing: -.055em; }
 h1 em { font-style: normal; color: #496f34; }
 .hero-description { max-width: 490px; margin: 22px 0 0; color: #3d5641; font-size: 16px; line-height: 1.7; }
+.hero-workflow { margin: 26px 0 0; }
+.hero-workflow img { display: block; width: 100%; height: auto; }
 .hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 20px; margin-top: 26px; }
 .hero-note { margin: 17px 0 0; font-size: 11px; color: #425e43; }
 .hero-note > span { color: #496f34; margin-right: 4px; }
-.presentation-preview { width: 100%; max-width: 480px; justify-self: end; min-width: 0; margin: 0; padding: 14px; border: 1px solid #f3f9e933; border-radius: 10px; background: #f4f6eb; color: #294331; box-shadow: 0 22px 50px #031c2840; transform: none; }
+.presentation-preview { width: 110%; max-width: 600px; justify-self: end; min-width: 0; margin: 0; padding: 14px; border: 1px solid #f3f9e933; border-radius: 10px; background: #f4f6eb; color: #294331; box-shadow: 0 22px 50px #031c2840; transform: rotate(3deg); }
+.hero-stage { column-gap: 64px; }
+@media (max-width: 760px) { .hero-stage .presentation-preview { width: 100%; max-width: 520px; transform: none; } }
 .preview-toolbar, .preview-bottom, .preview-formats { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 10px; }
 .preview-toolbar { margin-bottom: 12px; font-size: 11px; font-weight: 600; }
 .file-icon { margin-right: 6px; font-size: 18px; vertical-align: middle; }
@@ -205,7 +212,7 @@ h1 em { font-style: normal; color: #496f34; }
 .value-symbol { font-size: 24px; line-height: 1; color: #496f34; }
 .hero-values h2 { margin: 14px 0 10px; font-size: clamp(20px,1.8vw,24px); letter-spacing: -.035em; }
 .hero-values p { margin: 0; font-size: 13px; line-height: 1.65; color: #42583e; }
-.features-section, .ownership-section { padding-block: 76px; scroll-margin-top: 30px; }
+.features-section, .ownership-section { padding-block: 36px; scroll-margin-top: 30px; }
 .section-intro { display: flex; align-items: end; justify-content: space-between; gap: 50px; margin-bottom: 36px; }
 .section-intro > p { max-width: 335px; margin: 0; color: var(--muted); font-size: 14px; }
 .feature-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0 36px; }
