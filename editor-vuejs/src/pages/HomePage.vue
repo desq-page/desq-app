@@ -84,7 +84,7 @@ const questions = [
           <div class="demo-section">
             <h2 class="demo-title">See it in action.</h2>
           <figure class="presentation-preview">
-              <div class="preview-toolbar"><span><span class="file-icon" aria-hidden="true">▱</span> christmas-2026-claude.html</span><span class="file-badge">SEE IT IN ACTION</span></div>
+              <div class="preview-toolbar"><span><span class="file-icon" aria-hidden="true">▱</span> christmas-2026-claude.html</span><span class="file-badge">SAMPLE HTML</span></div>
               <iframe
                 class="sample-player"
                 src="/samples/christmas-2026-claude.html"
