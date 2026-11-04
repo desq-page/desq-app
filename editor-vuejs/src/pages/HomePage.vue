@@ -50,32 +50,17 @@ const questions = [
             <div class="hero-copy">
               <p class="eyebrow">THE COMPLETE PRESENTATION EDITOR</p>
               <h1 id="hero-title">PowerPoint<br />meets <em>HTML.</em></h1>
-              <figure class="hero-workflow">
-                <img src="/images/desq-workflow.svg" alt="Create HTML with AI, or open a PowerPoint file. Edit in DESQ, then export as HTML or editable PowerPoint." width="720" height="250" />
-              </figure>
-              <!-- <p class="hero-description">All the power of PowerPoint. All the freedom of the web.</p> -->
+              <p class="hero-description">All the power of PowerPoint. All the freedom of the web. Create a deck with AI help, or open PowerPoint document and save as a single file HTML with full fidelity for sharing, embedding or publishing.</p>
               <div class="hero-actions">
-                <a href="/work" class="button button-lime">Create in browser <span aria-hidden="true">↗</span></a>
+                <a href="/work" class="button button-lime">Continue in browser <span aria-hidden="true">↗</span></a>
                 <a href="#features" class="text-link">Explore the features <span aria-hidden="true">↓</span></a>
               </div>
               <p class="hero-note"><span aria-hidden="true">✓</span> Free to edit. Just a browser. Works offline. Your files stay private.</p>
             </div>
 
-            <figure class="presentation-preview">
-              <div class="preview-toolbar"><span><span class="file-icon" aria-hidden="true">▱</span> christmas-2026-claude.html</span><span class="file-badge">SEE IT IN ACTION</span></div>
-              <iframe
-                class="sample-player"
-                src="/samples/christmas-2026-claude.html"
-                title="Christmas 2026 presentation created with Claude"
-                sandbox="allow-scripts allow-downloads"
-                allow="fullscreen"
-              ></iframe>
-              <figcaption class="sample-caption">
-                This HTML file is created by AI (free version).
-                <a href="/samples/christmas-2026-claude.html" download="christmas-2026-claude.html">Download it</a>
-                and open in <a href="/work">Desq editor</a> to turn it into editable PPTX with full animation intact.
-              </figcaption>
-            </figure>
+              <figure class="hero-workflow">
+                <img src="/images/desq-workflow.svg" alt="Create HTML with AI, or open a PowerPoint file. Edit in DESQ, then export as HTML or editable PowerPoint." width="720" height="250" />
+              </figure>
           </div>
 
           <div id="why-desq" class="hero-values" aria-label="Why DESQ">
@@ -94,6 +79,25 @@ const questions = [
               <h2>PowerPoint, both ways.</h2>
               <p>Load PPTX. Edit every detail. Save as PPTX. Full editability, with your Master Slides and corporate themes intact.</p>
             </article>
+          </div>
+
+          <div class="demo-section">
+            <h2 class="demo-title">See it in action.</h2>
+          <figure class="presentation-preview">
+              <div class="preview-toolbar"><span><span class="file-icon" aria-hidden="true">▱</span> christmas-2026-claude.html</span><span class="file-badge">SEE IT IN ACTION</span></div>
+              <iframe
+                class="sample-player"
+                src="/samples/christmas-2026-claude.html"
+                title="Christmas 2026 presentation created with Claude"
+                sandbox="allow-scripts allow-downloads"
+                allow="fullscreen"
+              ></iframe>
+              <figcaption class="sample-caption">
+                This HTML file is created by AI (free version).
+                <a href="/samples/christmas-2026-claude.html" download="christmas-2026-claude.html">Download it</a>
+                and open in <a href="/work">Desq editor</a> to turn it into editable PPTX with full animation intact.
+              </figcaption>
+            </figure>
           </div>
         </div>
       </section>
@@ -142,7 +146,7 @@ const questions = [
         <div class="faq-list"><details v-for="question in questions" :key="question.title"><summary>{{ question.title }}<span aria-hidden="true">+</span></summary><p>{{ question.answer }}</p></details></div>
       </section>
 
-      <section class="cta-section" aria-labelledby="cta-title"><div class="page-width cta-inner"><div><p class="eyebrow">EVERY FEATURE. ONE HTML FILE.</p><h2 id="cta-title">Your next great presentation<br />starts in your browser.</h2></div><div class="cta-actions"><a href="/work" class="button button-lime">Create in browser <span aria-hidden="true">↗</span></a><span>No installation. No account required to edit.</span></div></div></section>
+      <section class="cta-section" aria-labelledby="cta-title"><div class="page-width cta-inner"><div><p class="eyebrow">EVERY FEATURE. ONE HTML FILE.</p><h2 id="cta-title">Your next great presentation<br />starts in your browser.</h2></div><div class="cta-actions"><a href="/work" class="button button-lime">Continue in browser <span aria-hidden="true">↗</span></a><span>No installation. No account required to edit.</span></div></div></section>
     </main>
 
     <footer class="site-footer page-width"><a href="/" class="wordmark">DESQ</a><p>Office documents, with a life on the web.</p><nav aria-label="Footer navigation"><a href="/work">Workspace</a><a href="/terms">Terms</a><a href="/support">Support</a><a href="https://github.com/desq-page/desq-app" target="_blank" rel="noopener noreferrer">GitHub</a></nav></footer>
@@ -182,7 +186,7 @@ h2 em { font: inherit; color: #648044; }
   .hero-shell { background-size: cover, 112% auto; background-position: center, left -80px; }
   .hero .hero-stage { gap: 32px; }
   .hero .hero-description { max-width: 550px; }
-  .hero-stage .presentation-preview { width: 110%; max-width: 600px; justify-self: end; }
+
 }
 .hero { padding-block: 36px 32px; }
 .hero-stage { display: grid; grid-template-columns: minmax(0,1.08fr) minmax(0,1fr); align-items: center; gap: 56px; }
@@ -190,14 +194,16 @@ h2 em { font: inherit; color: #648044; }
 h1 { margin: 0; font-size: clamp(40px,4.4vw,60px); font-weight: 650; line-height: 1.08; letter-spacing: -.055em; }
 h1 em { font-style: normal; color: #496f34; }
 .hero-description { max-width: 490px; margin: 22px 0 0; color: #3d5641; font-size: 16px; line-height: 1.7; }
-.hero-workflow { margin: 26px 0 0; }
-.hero-workflow img { display: block; width: 100%; height: auto; }
+.hero-workflow { width: 100%; height: 80%; margin: 0; padding: 24px; border: 1px solid #b8caa7; border-radius: 10px; background: #f7faefed; box-shadow: 0 18px 45px #193b2b1a; }
+.hero-workflow img { display: block; width: 100%; height: 100%; }
 .hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 20px; margin-top: 26px; }
 .hero-note { margin: 17px 0 0; font-size: 11px; color: #425e43; }
 .hero-note > span { color: #496f34; margin-right: 4px; }
-.presentation-preview { width: 110%; max-width: 600px; justify-self: end; min-width: 0; margin: 0; padding: 14px; border: 1px solid #f3f9e933; border-radius: 10px; background: #f4f6eb; color: #294331; box-shadow: 0 22px 50px #031c2840; transform: rotate(3deg); }
+.demo-section { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: start; gap: 48px; margin-top: 48px; }
+.demo-title { margin: 0; font-size: clamp(32px, 4vw, 48px); }
+.presentation-preview { width: min(100%, 760px); min-width: 0; margin: 0 auto; padding: 14px; border: 1px solid #f3f9e933; border-radius: 10px; background: #f4f6eb; color: #294331; box-shadow: 0 22px 50px #031c2840; }
 .hero-stage { column-gap: 64px; }
-@media (max-width: 760px) { .hero-stage .presentation-preview { width: 100%; max-width: 520px; transform: none; } }
+
 .preview-toolbar, .preview-bottom, .preview-formats { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 10px; }
 .preview-toolbar { margin-bottom: 12px; font-size: 11px; font-weight: 600; }
 .file-icon { margin-right: 6px; font-size: 18px; vertical-align: middle; }
@@ -277,7 +283,7 @@ h1 em { font-style: normal; color: #496f34; }
 .site-footer nav { display: flex; flex-wrap: wrap; gap: 22px; font-size: 12px; }
 @media (min-width: 1100px) and (max-height: 800px) { .hero { padding-top: 28px; } .hero-values { margin-top: 30px; } .hero-values article { padding-block: 18px; } }
 @media (max-width: 1100px) { .hero-stage { gap: 32px; } .hero-actions { gap: 14px; } .hero-values article { padding: 18px; } .hero-values h2 { font-size: 21px; } .roundtrip-inner { gap: 50px; } .faq-section { gap: 40px; } .other-formats { gap: 24px; } }
-@media (max-width: 760px) { .page-width { width: calc(100% - 40px); } .site-header { min-height: 72px; gap: 16px; } .site-header .nav-detail { display: none; } .site-header .button { font-size: 11px; padding: 11px 14px; gap: 12px; } .wordmark { font-size: 24px; } .wordmark img { width: 29px; height: 29px; } .hero { padding-block: 34px 24px; } .hero-stage { grid-template-columns: 1fr; gap: 32px; } h1 { font-size: clamp(38px,7.5vw,56px); } .hero-description { font-size: 15px; max-width: 540px; } .hero-note { font-size: 10px; } .presentation-preview { width: min(100%,520px); justify-self: center; } .hero-values { grid-template-columns: 1fr; margin-top: 32px; gap: 12px; } .hero-values h2 { font-size: 23px; margin-top: 10px; } .features-section, .ownership-section { padding-block: 48px; } .section-intro { flex-direction: column; align-items: start; gap: 18px; margin-bottom: 26px; } .section-intro > p { max-width: 500px; } .feature-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 24px; } .roundtrip-inner { grid-template-columns: 1fr; gap: 28px; padding-block: 40px; } .roundtrip-copy > p:not(.eyebrow) { max-width: none; } .ownership-grid { grid-template-columns: 1fr; gap: 16px; } .ownership-card { padding: 26px; } .other-formats { flex-direction: column; align-items: start; gap: 24px; } .format-links { gap: 40px; } .faq-section { grid-template-columns: 1fr; gap: 24px; padding-block: 48px; } .faq-section > div > p:not(.eyebrow) { max-width: none; } .cta-inner { flex-direction: column; align-items: start; padding-block: 40px; gap: 26px; } .cta-actions { align-items: start; } .site-footer { gap: 16px; } .site-footer p { flex-basis: 60%; } }
+@media (max-width: 760px) { .page-width { width: calc(100% - 40px); } .site-header { min-height: 72px; gap: 16px; } .site-header .nav-detail { display: none; } .site-header .button { font-size: 11px; padding: 11px 14px; gap: 12px; } .wordmark { font-size: 24px; } .wordmark img { width: 29px; height: 29px; } .hero { padding-block: 34px 24px; } .hero-stage { grid-template-columns: 1fr; gap: 32px; } h1 { font-size: clamp(38px,7.5vw,56px); } .hero-description { font-size: 15px; max-width: 540px; } .hero-note { font-size: 10px; } .hero-workflow { padding: 16px; } .demo-section { grid-template-columns: 1fr; gap: 24px; margin-top: 40px; } .presentation-preview { width: 100%; } .hero-values { grid-template-columns: 1fr; margin-top: 32px; gap: 12px; } .hero-values h2 { font-size: 23px; margin-top: 10px; } .features-section, .ownership-section { padding-block: 48px; } .section-intro { flex-direction: column; align-items: start; gap: 18px; margin-bottom: 26px; } .section-intro > p { max-width: 500px; } .feature-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 24px; } .roundtrip-inner { grid-template-columns: 1fr; gap: 28px; padding-block: 40px; } .roundtrip-copy > p:not(.eyebrow) { max-width: none; } .ownership-grid { grid-template-columns: 1fr; gap: 16px; } .ownership-card { padding: 26px; } .other-formats { flex-direction: column; align-items: start; gap: 24px; } .format-links { gap: 40px; } .faq-section { grid-template-columns: 1fr; gap: 24px; padding-block: 48px; } .faq-section > div > p:not(.eyebrow) { max-width: none; } .cta-inner { flex-direction: column; align-items: start; padding-block: 40px; gap: 26px; } .cta-actions { align-items: start; } .site-footer { gap: 16px; } .site-footer p { flex-basis: 60%; } }
 @media (max-width: 420px) { .hero-actions { align-items: start; flex-direction: column; gap: 16px; } .eyebrow { font-size: 9px; } .feature-grid { grid-template-columns: 1fr; } .feature-card { padding-block: 22px; } .file-badge { font-size: 6px; } .preview-formats { font-size: 8px; } .preview-formats b { font-size: 9px; } .roundtrip-flow { padding: 22px; } .flow-step { gap: 14px; } .flow-step p { font-size: 11px; } .ownership-card { padding: 22px; } .agent-flow { gap: 6px; } .agent-flow span { padding: 8px; font-size: 10px; } }
 @media (prefers-reduced-motion: reduce) { .preview-slide *, .button { animation: none; transition: none; } .motion-toggle { display: none; } }
 </style>
