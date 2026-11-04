@@ -1,3 +1,4 @@
+import { imageAlphaMask } from './image-alpha-mask.mjs';
 import { authoredTextWidthPadding } from "./deck-text.mjs";
 import { getRunText, withRunText } from "shared-vuejs/api/lib-text-run-text";
 import { fitGeneratedTextFrames } from './generated-text-frames.mjs';
@@ -1124,6 +1125,7 @@ export function compilePageSVG(
         throw Error("SVG image URLs are not accepted; use data-query.");
       if(!a['data-query']?.trim()||!(a['aria-label']||a['data-alt'])?.trim())throw Error('Image description is missing.');
       if(a['data-query'].length>160||String(a['aria-label']||a['data-alt']).length>200)throw Error('Image description is too long.');
+      const alphaMask = imageAlphaMask(a['data-desq-alpha-mask']);
       const asset = assets.get(key),
         targetFrame = frame(
           m,
@@ -1181,6 +1183,7 @@ export function compilePageSVG(
           h: ih,
           blipFill: {
             blip: {
+              ...(alphaMask ? { alphaMod: { cont: { fill: { gradFill: alphaMask } } } } : {}),
               $_target: asset.media.name,
               $_w: asset.media.w,
               $_h: asset.media.h,
