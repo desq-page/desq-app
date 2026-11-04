@@ -99,7 +99,7 @@ async function loadExternalHtml(event: Event) {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
   if (!file) return;
-  if (file.size > 1700000) { status.value = 'HTML must be under 1,700,000 bytes.'; input.value = ''; return; }
+  if (file.size > 50000000) { status.value = 'HTML must be under 50 MB.'; input.value = ''; return; }
   externalBriefText.value = await file.text();
   input.value = '';
 }

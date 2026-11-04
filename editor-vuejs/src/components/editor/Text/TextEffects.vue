@@ -6,6 +6,7 @@
     :sub-tabbar-items="subTextTabbarItems"
   >
     <NFlex>
+      <WordArtPanel />
       <TextOutlinePanel />
       <LayoutHeader label="Text Shadow" />
 
@@ -33,6 +34,7 @@ import ShadowComp from "../Effects/ShadowComp.vue";
 import GlowComp from "../Effects/GlowComp.vue";
 import ReflectionComp from "../Effects/ReflectionComp.vue";
 import TextOutlinePanel from "./TextOutlinePanel.vue";
+import WordArtPanel from "./WordArtPanel.vue";
 ;
 
 const props = defineProps({

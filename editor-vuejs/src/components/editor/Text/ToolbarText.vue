@@ -56,7 +56,7 @@
         tooltip="Paragraph"
         :disabled
       />
-      <!-- <ToolbarItem
+      <ToolbarItem
         quaternary
         :icon="TextEffects24Filled"
         :onClick="
@@ -68,7 +68,7 @@
         tooltip="Text Effect"
         :extra-class="{ dropshadow: false }"
         :disabled
-      /> -->
+      />
     </div>
     <div class="row">
       <!-- <ToolbarItem
