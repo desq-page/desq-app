@@ -2,14 +2,14 @@
 import { onMounted } from "vue";
 
 onMounted(() => {
-  document.title = "DESQ — HTML Presentation Editor & PowerPoint to HTML";
+  document.title = "DESQ — HTML Presentation & Document Editor";
   let keywords = document.querySelector<HTMLMetaElement>('meta[name="keywords"]');
   if (!keywords) {
     keywords = document.createElement("meta");
     keywords.name = "keywords";
     document.head.appendChild(keywords);
   }
-  keywords.content = "HTML presentation editor, PowerPoint to HTML, convert PPTX to HTML, export PowerPoint to HTML, Office to HTML, slide sharing, embed presentations, interactive slides, presentation animation, slide design, PowerPoint editor, editable HTML slides, offline presentations, AI presentation editor";
+  keywords.content = "HTML presentation editor, Office document editor, Word to HTML, Publisher to HTML, PowerPoint to HTML, convert PPTX to HTML, export PowerPoint to HTML, Office to HTML, slide sharing, embed presentations, interactive slides, presentation animation, slide design, PowerPoint editor, editable HTML slides, offline presentations, AI presentation editor";
 });
 
 const features = [
@@ -38,7 +38,7 @@ const questions = [
       <a href="/" class="wordmark" aria-label="DESQ home"><img src="/favicon.svg?v=desq-color" alt="" />DESQ</a>
       <nav aria-label="Main navigation">
         <a class="nav-detail" href="#features">Features</a>
-        <a class="nav-detail" href="#powerpoint">PowerPoint compatibility</a>
+        <a href="https://github.com/desq-page/desq-app" target="_blank" class="nav-detail">Github</a>
         <a href="/work" class="button button-dark">Workspace <span aria-hidden="true">↗</span></a>
       </nav>
     </header>
@@ -48,18 +48,18 @@ const questions = [
         <div class="page-width hero">
           <div class="hero-stage">
             <div class="hero-copy">
-              <p class="eyebrow">THE COMPLETE PRESENTATION EDITOR</p>
-              <h1 id="hero-title">PowerPoint<br />meets <em>HTML.</em></h1>
-              <p class="hero-description">All the power of PowerPoint. All the freedom of the web. Create a deck with AI help, or open PowerPoint document and save as a single file HTML with full fidelity for sharing, embedding or publishing.</p>
+              <p class="eyebrow">THE FULL-FLEDGED PRESENTATION & DOCUMENT EDITOR</p>
+              <h1 id="hero-title">A complete office in a single <em>HTML</em> file.</h1>
+              <p class="hero-description">One ubiquitous format for it all: HTML. Create and open animated presentations, documents, print layouts, and interactive apps. With or without AI. Edit and share your work in a single HTML file. Because it is HTML, it just works! No additional tool needed.</p>
               <div class="hero-actions">
                 <a href="/work" class="button button-lime">Continue in browser <span aria-hidden="true">↗</span></a>
                 <a href="#features" class="text-link">Explore the features <span aria-hidden="true">↓</span></a>
               </div>
-              <p class="hero-note"><span aria-hidden="true">✓</span> Free to edit. Just a browser. Works offline. Your files stay private.</p>
+              <p class="hero-note"><span aria-hidden="true">✓</span> Free to edit. Works offline in browser. Your files stay private.<br/><span aria-hidden="true">✓</span> We start with <b>presentation</b>. More formats are planned.</p>
             </div>
 
               <figure class="hero-workflow">
-                <img src="/images/desq-workflow.svg" alt="Create HTML with AI, or open a PowerPoint file. Edit in DESQ, then export as HTML or editable PowerPoint." width="720" height="250" />
+                <img src="/images/desq-workflow.svg" alt="Optionally create HTML with AI, or open an Office document. Edit in DESQ, then save as editable HTML or a round-trip document." width="720" height="270" />
               </figure>
           </div>
 
@@ -67,7 +67,7 @@ const questions = [
             <article>
               <div class="value-top"><span>01 / PRESENT IN HTML</span><span class="value-symbol" aria-hidden="true">↗</span></div>
               <h2>Completely in HTML.</h2>
-              <p>Editor and viewer, right in your browser. One private, offline file to edit, share, embed, or publish online. Designed to work with AI agents.</p>
+              <p>Edit and view presentations and other Office documents in your browser. Share, embed, or publish a single HTML file, or work offline with AI agents.</p>
             </article>
             <article>
               <div class="value-top"><span>02 / EVERY FEATURE</span><span class="value-symbol" aria-hidden="true">✳</span></div>
@@ -104,8 +104,8 @@ const questions = [
 
       <section id="features" class="features-section page-width" aria-labelledby="features-title">
         <div class="section-intro">
-          <div><p class="eyebrow">FULL PRESENTATION POWER</p><h2 id="features-title">Everything that makes<br />a presentation, <em>a presentation.</em></h2></div>
-          <p>A full-featured HTML presentation editor. Every visual, every interaction, every transition—ready to edit and present in your browser.</p>
+          <div><p class="eyebrow">NO COMPROMISE. FULL OFFICE POWER</p><h2 id="features-title">Everything that makes<br />a presentation, <em>a presentation.</em></h2></div>
+          <p>Edit presentations and other Office documents in your browser, with the visuals, interactions, and transitions that bring slides to life.</p>
         </div>
         <div class="feature-grid">
           <article v-for="feature in features" :key="feature.name" class="feature-card">
@@ -115,24 +115,11 @@ const questions = [
         </div>
       </section>
 
-      <section id="powerpoint" class="roundtrip-section" aria-labelledby="roundtrip-title">
-        <div class="page-width roundtrip-inner">
-          <div class="roundtrip-copy"><p class="eyebrow">POWERPOINT IN. POWERPOINT OUT.</p><h2 id="roundtrip-title">A new way to work.<br />A familiar way back.</h2><p>Your deck stays editable through the entire journey. Load a PowerPoint file, make it your own in DESQ, and save it back as PPTX whenever your team needs it.</p><a href="/work" class="text-link">Open your presentation <span aria-hidden="true">↗</span></a></div>
-          <div class="roundtrip-flow" aria-label="Load PPTX, edit and present in HTML, save as PPTX">
-            <div class="flow-step"><span class="format-icon pptx-icon">P</span><div><span class="step-label">01 / LOAD</span><h3>Your PowerPoint.</h3><p>Bring your existing .pptx deck.</p></div></div>
-            <span class="flow-connector" aria-hidden="true">↕</span>
-            <div class="flow-step flow-html"><span class="format-icon html-icon">&lt;/&gt;</span><div><span class="step-label">02 / CREATE</span><h3>Your browser.</h3><p>Edit, animate, present. Save as HTML.</p></div></div>
-            <span class="flow-connector" aria-hidden="true">↕</span>
-            <div class="flow-step"><span class="format-icon pptx-icon">P</span><div><span class="step-label">03 / SAVE</span><h3>Back to PowerPoint.</h3><p>Editable PPTX. Masters and themes included.</p></div></div>
-          </div>
-        </div>
-      </section>
-
       <section class="ownership-section page-width" aria-labelledby="ownership-title">
-        <div class="section-intro"><div><p class="eyebrow">YOUR PRESENTATION. YOUR POSSIBILITIES.</p><h2 id="ownership-title">Your presentation. Your way.</h2></div><p>One HTML file gives your presentation a life beyond any single app.</p></div>
+        <div class="section-intro"><div><p class="eyebrow">YOUR WORK. YOUR POSSIBILITIES.</p><h2 id="ownership-title">Your documents. Your way.</h2></div><p>One HTML file gives your presentations and other Office documents a life beyond any single app.</p></div>
         <div class="ownership-grid">
-          <article class="ownership-card"><span class="ownership-label">01 / TAKE IT ANYWHERE</span><h3>The file is the workspace.</h3><p>Your slides, media, viewer, and editor live together. Open and edit offline, keep files private on your device, or share and embed your presentation when you're ready.</p><div class="file-contents" aria-label="One HTML file contains slides, media, viewer, and editor"><b>presentation.html</b><div><span>Slides</span><span>Media</span><span>Viewer</span><span>Editor</span></div></div></article>
-          <article class="ownership-card agent-card"><span class="ownership-label">02 / CREATE WITH AI AGENTS</span><h3>Open for a new way to create.</h3><p>DESQ is designed to work with AI agents. Create and edit presentations together, then refine every detail in your browser. Keep the result as HTML or take it back to PowerPoint.</p><div class="agent-flow" aria-label="AI agent and browser editor work with the same presentation"><span>AI agent</span><b aria-hidden="true">⇄</b><span>Your presentation</span><b aria-hidden="true">⇄</b><span>You</span></div><p class="privacy-note">Local editing stays on your device. You choose when to use a connected AI service.</p></article>
+          <article class="ownership-card"><span class="ownership-label">01 / TAKE IT ANYWHERE</span><h3>The file is the workspace.</h3><p>Your content, media, viewer, and editor live together. Open and edit offline, keep files private on your device, or share and embed your work when you're ready.</p><div class="file-contents" aria-label="One HTML file contains slides, media, viewer, and editor"><b>presentation.html</b><div><span>Slides</span><span>Media</span><span>Viewer</span><span>Editor</span></div></div></article>
+          <article class="ownership-card agent-card"><span class="ownership-label">02 / CREATE WITH AI AGENTS</span><h3>Open for a new way to create.</h3><p>DESQ is designed to work with AI agents. Create and edit presentations and documents together, then refine every detail in your browser. Keep the result as HTML or save presentations as PowerPoint.</p><div class="agent-flow" aria-label="AI agent and browser editor work with the same presentation"><span>AI agent</span><b aria-hidden="true">⇄</b><span>Your presentation</span><b aria-hidden="true">⇄</b><span>You</span></div><p class="privacy-note">Local editing stays on your device. You choose when to use a connected AI service.</p></article>
         </div>
       </section>
 
@@ -142,11 +129,11 @@ const questions = [
       </section>
 
       <section class="faq-section page-width" aria-labelledby="faq-title">
-        <div><p class="eyebrow">A FEW MORE DETAILS</p><h2 id="faq-title">From PowerPoint<br />to the open web.</h2><p>Convert PowerPoint to HTML, share your slides, and keep creating.</p></div>
+        <div><p class="eyebrow">A FEW MORE DETAILS</p><h2 id="faq-title">From Office<br />to the open web.</h2><p>Convert PowerPoint and other Office documents to HTML, share your work, and keep creating.</p></div>
         <div class="faq-list"><details v-for="question in questions" :key="question.title"><summary>{{ question.title }}<span aria-hidden="true">+</span></summary><p>{{ question.answer }}</p></details></div>
       </section>
 
-      <section class="cta-section" aria-labelledby="cta-title"><div class="page-width cta-inner"><div><p class="eyebrow">EVERY FEATURE. ONE HTML FILE.</p><h2 id="cta-title">Your next great presentation<br />starts in your browser.</h2></div><div class="cta-actions"><a href="/work" class="button button-lime">Continue in browser <span aria-hidden="true">↗</span></a><span>No installation. No account required to edit.</span></div></div></section>
+      <section class="cta-section" aria-labelledby="cta-title"><div class="page-width cta-inner"><div><p class="eyebrow">EVERY FEATURE. ONE HTML FILE.</p><h2 id="cta-title">Your next presentation or document<br />starts in your browser.</h2></div><div class="cta-actions"><a href="/work" class="button button-lime">Continue in browser <span aria-hidden="true">↗</span></a><span>No installation. No account required to edit.</span></div></div></section>
     </main>
 
     <footer class="site-footer page-width"><a href="/" class="wordmark">DESQ</a><p>Office documents, with a life on the web.</p><nav aria-label="Footer navigation"><a href="/work">Workspace</a><a href="/terms">Terms</a><a href="/support">Support</a><a href="https://github.com/desq-page/desq-app" target="_blank" rel="noopener noreferrer">GitHub</a></nav></footer>
@@ -226,18 +213,6 @@ h1 em { font-style: normal; color: #496f34; }
 .feature-symbol { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; background: #e9efdd; color: #57723a; font-size: 24px; }
 .feature-card h3 { margin: 16px 0 8px; font-size: 19px; line-height: 1.25; letter-spacing: -.025em; }
 .feature-card p { margin: 0; color: var(--muted); font-size: 13px; }
-.roundtrip-section { background: #eaf0e1; scroll-margin-top: 0; }
-.roundtrip-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: center; padding-block: 60px; }
-.roundtrip-copy > p:not(.eyebrow) { max-width: 430px; margin: 22px 0; color: var(--muted); font-size: 15px; }
-.roundtrip-flow { padding: 28px; background: #f9fbf5; border: 1px solid #d7e1ce; border-radius: 10px; }
-.flow-step { display: flex; align-items: center; gap: 18px; }
-.format-icon { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 50px; height: 58px; border-radius: 5px 14px 5px 5px; font-size: 24px; font-weight: 700; }
-.pptx-icon { background: #f8e7de; color: #ac5335; }
-.html-icon { background: #ddeaC5; color: #426332; font-size: 18px; }
-.step-label { font-size: 9px; letter-spacing: .12em; color: #6b7c5a; font-weight: 750; }
-.flow-step h3 { margin: 2px 0; font-size: 18px; letter-spacing: -.025em; }
-.flow-step p { margin: 0; color: var(--muted); font-size: 12px; }
-.flow-connector { display: block; padding: 5px 0; width: 50px; text-align: center; color: #849772; font-size: 23px; }
 .ownership-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
 .ownership-card { display: flex; flex-direction: column; padding: 32px; background: #f0f3e9; border: 1px solid var(--line); border-radius: 8px; }
 .ownership-label { font-size: 9px; font-weight: 700; color: #65804a; letter-spacing: .12em; }
@@ -282,8 +257,8 @@ h1 em { font-style: normal; color: #496f34; }
 .site-footer p { flex: 1; margin: 0; font-size: 11px; color: var(--muted); }
 .site-footer nav { display: flex; flex-wrap: wrap; gap: 22px; font-size: 12px; }
 @media (min-width: 1100px) and (max-height: 800px) { .hero { padding-top: 28px; } .hero-values { margin-top: 30px; } .hero-values article { padding-block: 18px; } }
-@media (max-width: 1100px) { .hero-stage { gap: 32px; } .hero-actions { gap: 14px; } .hero-values article { padding: 18px; } .hero-values h2 { font-size: 21px; } .roundtrip-inner { gap: 50px; } .faq-section { gap: 40px; } .other-formats { gap: 24px; } }
-@media (max-width: 760px) { .page-width { width: calc(100% - 40px); } .site-header { min-height: 72px; gap: 16px; } .site-header .nav-detail { display: none; } .site-header .button { font-size: 11px; padding: 11px 14px; gap: 12px; } .wordmark { font-size: 24px; } .wordmark img { width: 29px; height: 29px; } .hero { padding-block: 34px 24px; } .hero-stage { grid-template-columns: 1fr; gap: 32px; } h1 { font-size: clamp(38px,7.5vw,56px); } .hero-description { font-size: 15px; max-width: 540px; } .hero-note { font-size: 10px; } .hero-workflow { padding: 16px; } .demo-section { grid-template-columns: 1fr; gap: 24px; margin-top: 40px; } .presentation-preview { width: 100%; } .hero-values { grid-template-columns: 1fr; margin-top: 32px; gap: 12px; } .hero-values h2 { font-size: 23px; margin-top: 10px; } .features-section, .ownership-section { padding-block: 48px; } .section-intro { flex-direction: column; align-items: start; gap: 18px; margin-bottom: 26px; } .section-intro > p { max-width: 500px; } .feature-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 24px; } .roundtrip-inner { grid-template-columns: 1fr; gap: 28px; padding-block: 40px; } .roundtrip-copy > p:not(.eyebrow) { max-width: none; } .ownership-grid { grid-template-columns: 1fr; gap: 16px; } .ownership-card { padding: 26px; } .other-formats { flex-direction: column; align-items: start; gap: 24px; } .format-links { gap: 40px; } .faq-section { grid-template-columns: 1fr; gap: 24px; padding-block: 48px; } .faq-section > div > p:not(.eyebrow) { max-width: none; } .cta-inner { flex-direction: column; align-items: start; padding-block: 40px; gap: 26px; } .cta-actions { align-items: start; } .site-footer { gap: 16px; } .site-footer p { flex-basis: 60%; } }
-@media (max-width: 420px) { .hero-actions { align-items: start; flex-direction: column; gap: 16px; } .eyebrow { font-size: 9px; } .feature-grid { grid-template-columns: 1fr; } .feature-card { padding-block: 22px; } .file-badge { font-size: 6px; } .preview-formats { font-size: 8px; } .preview-formats b { font-size: 9px; } .roundtrip-flow { padding: 22px; } .flow-step { gap: 14px; } .flow-step p { font-size: 11px; } .ownership-card { padding: 22px; } .agent-flow { gap: 6px; } .agent-flow span { padding: 8px; font-size: 10px; } }
+@media (max-width: 1100px) { .hero-stage { gap: 32px; } .hero-actions { gap: 14px; } .hero-values article { padding: 18px; } .hero-values h2 { font-size: 21px; } .faq-section { gap: 40px; } .other-formats { gap: 24px; } }
+@media (max-width: 760px) { .page-width { width: calc(100% - 40px); } .site-header { min-height: 72px; gap: 16px; } .site-header .nav-detail { display: none; } .site-header .button { font-size: 11px; padding: 11px 14px; gap: 12px; } .wordmark { font-size: 24px; } .wordmark img { width: 29px; height: 29px; } .hero { padding-block: 34px 24px; } .hero-stage { grid-template-columns: 1fr; gap: 32px; } h1 { font-size: clamp(38px,7.5vw,56px); } .hero-description { font-size: 15px; max-width: 540px; } .hero-note { font-size: 10px; } .hero-workflow { padding: 16px; } .demo-section { grid-template-columns: 1fr; gap: 24px; margin-top: 40px; } .presentation-preview { width: 100%; } .hero-values { grid-template-columns: 1fr; margin-top: 32px; gap: 12px; } .hero-values h2 { font-size: 23px; margin-top: 10px; } .features-section, .ownership-section { padding-block: 48px; } .section-intro { flex-direction: column; align-items: start; gap: 18px; margin-bottom: 26px; } .section-intro > p { max-width: 500px; } .feature-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 24px; } .ownership-grid { grid-template-columns: 1fr; gap: 16px; } .ownership-card { padding: 26px; } .other-formats { flex-direction: column; align-items: start; gap: 24px; } .format-links { gap: 40px; } .faq-section { grid-template-columns: 1fr; gap: 24px; padding-block: 48px; } .faq-section > div > p:not(.eyebrow) { max-width: none; } .cta-inner { flex-direction: column; align-items: start; padding-block: 40px; gap: 26px; } .cta-actions { align-items: start; } .site-footer { gap: 16px; } .site-footer p { flex-basis: 60%; } }
+@media (max-width: 420px) { .hero-actions { align-items: start; flex-direction: column; gap: 16px; } .eyebrow { font-size: 9px; } .feature-grid { grid-template-columns: 1fr; } .feature-card { padding-block: 22px; } .file-badge { font-size: 6px; } .preview-formats { font-size: 8px; } .preview-formats b { font-size: 9px; } .ownership-card { padding: 22px; } .agent-flow { gap: 6px; } .agent-flow span { padding: 8px; font-size: 10px; } }
 @media (prefers-reduced-motion: reduce) { .preview-slide *, .button { animation: none; transition: none; } .motion-toggle { display: none; } }
 </style>
