@@ -25,7 +25,8 @@
         <textarea id="external-prompt" readonly :rows="externalLayoutStyle === 'templates' ? 3 : 3" :value="externalFullPrompt" @keydown.stop @keyup.stop />
         <label for="external-brief-json">Response (JSON or HTML)</label>
         <textarea id="external-brief-json" v-model="externalBriefText" rows="4" :disabled="busy" placeholder="Paste the JSON or full HTML response here" @keydown.stop @keyup.stop @keypress.stop @paste.stop />
-        <label>Or open a response file <input type="file" accept=".html,.htm,.json,text/html,application/json" :disabled="busy" @change="loadExternalHtml" /></label>
+        <label>Or open a response file <input type="file" accept=".html,.htm,.json,text/html,application/json" :disabled="busy" @click="clearSelectedResponseFile" @change="loadExternalHtml" /></label>
+        <p v-if="selectedResponseFile" class="selected-response-file" role="status">Loaded: {{ selectedResponseFile }}</p>
         <p v-if="externalBriefError" role="alert">{{ externalBriefError }}</p>
         <!-- <div v-if="externalBriefResult.repaired">
           <p role="status">The JSON was repaired automatically. Review the repaired content carefully before creating slides; repair can change or omit content.</p>
@@ -78,7 +79,7 @@ const emit = defineEmits<{ created: [fileId: string] }>();
 const route = useRoute();
 const open = computed({ get: () => piniaInfo().openEditorAgentModal, set: value => { if (!busy.value) piniaInfo().openEditorAgentModal = value; } });
 const rememberCursor = () => { if (mode === 'insert') editorAdapter.rememberTextCursor(); };
-const busy = ref(false), status = ref(''), externalBriefText = ref('');
+const busy = ref(false), status = ref(''), externalBriefText = ref(''), selectedResponseFile = ref('');
 const externalLayoutStyle = ref<'templates' | 'frontend-slides'>('frontend-slides');
 const nativeBriefSchema = JSON.parse(externalSchema);
 const nativeSlideProperties = nativeBriefSchema.properties.slides.items.properties;
@@ -109,9 +110,21 @@ async function loadExternalHtml(event: Event) {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
   if (!file) return;
-  if (file.size > 50000000) { status.value = 'Response files must be under 50 MB.'; input.value = ''; return; }
-  externalBriefText.value = await file.text();
+  if (file.size > 50000000) { status.value = 'Response files must be under 50 MB.'; selectedResponseFile.value = ''; input.value = ''; return; }
+  try {
+    externalBriefText.value = await file.text();
+    selectedResponseFile.value = file.name;
+    status.value = '';
+  } catch (error) {
+    selectedResponseFile.value = '';
+    status.value = error instanceof Error ? `Could not read ${file.name}: ${error.message}` : `Could not read ${file.name}.`;
+  }
+  // Reset after reading so choosing the same file again still fires change.
   input.value = '';
+}
+
+function clearSelectedResponseFile(event: MouseEvent) {
+  (event.currentTarget as HTMLInputElement).value = '';
 }
 
 async function copyPrompt() {
@@ -226,6 +239,7 @@ header button { border: 0; background: transparent; color: #718074; font-size: 2
 .layout-option strong, .layout-option small { display: block; }
 .layout-option small { margin-top: 3px; color: #718074; font-size: 12px; line-height: 1.4; }
 .external-brief > label { margin-top: 18px; }
+.selected-response-file { margin: 0 0 8px; color: #38533e; font-size: 12px; }
 textarea { width: 100%; box-sizing: border-box; margin: 0 0 8px; padding: 10px; border: 1px solid #dce5d8; border-radius: 9px; background: #fff; color: #203a2a; font: inherit; resize: vertical; }
 .external-brief button { display: inline-flex; justify-content: center; align-items: center; width: 100%; padding: 11px 14px; border: 0; border-radius: 9px; font: 700 13px system-ui, sans-serif; cursor: pointer; }
 .primary-button { color: #fff; background: #376d3a; }
