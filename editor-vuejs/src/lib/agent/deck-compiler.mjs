@@ -1,4 +1,5 @@
 import { groupImportedHtmlShapes, retargetGroupedAnimations } from './html-shape-groups.mjs';
+import { roundHtmlShapePaths } from './html-path-precision.mjs';
 import { validateMorphPairs } from "./morph-pairs.mjs";
 import { imagePlaceholderCaption } from './image-search-caption.mjs';
 import { promoteSlideBackground } from './slide-background.mjs';
@@ -339,6 +340,7 @@ export function compileDeck(deck, { width, height, genId, geometry, assets = new
     if (deck.slides[index].layout === 'html' && parseSlideHTML(deck.slides[index].html).hasAttribute('data-desq-imported'))
       page.shapes = groupImportedHtmlShapes(page.shapes, genId, { width, height });
     retargetGroupedAnimations(page);
+    if (deck.slides[index].layout === 'html') roundHtmlShapePaths(page.shapes);
   }
   if (pages.some(page => JSON.stringify(page.shapes).includes('\"desqFontWeight\"'))) warnings.push('Intermediate font weights are preserved in Desq; PPTX export approximates them with normal or bold.');
   if (deck.slides.every(slide => slide.layout === deck.slides[0].layout)) warnings.push('All slides use the same composition; consider varying layouts.');
