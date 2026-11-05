@@ -7,9 +7,9 @@ import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {runBrowserFixture} from './browser-fixture.mjs';
-const chrome=process.env.CHROME_BIN||['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome','/usr/bin/chromium'].find(existsSync);
+const chrome=process.env.CHROME_BIN||['C:/Program Files/Google/Chrome/Application/chrome.exe','/Applications/Google Chrome.app/Contents/MacOS/Google Chrome','/usr/bin/chromium'].find(existsSync);
 
-test('AI modal opens before file creation and routes pasted/uploaded responses by dashboard/editor context', {skip:!chrome,timeout:60000},async()=>{
+test('AI modal opens before file creation and builds read-only prompts and routes HTML uploads by dashboard/editor context', {skip:!chrome,timeout:60000},async()=>{
  const directory=mkdtempSync(join(tmpdir(),'desq-agent-modal-'));
  const mock={
   'naive-ui':`import{h}from'vue';export const NModal={props:['show','title'],setup:(p,{slots})=>()=>p.show?h('section',{role:'dialog'},[h('h2',p.title),slots.default?.()]):null};export const NButton={setup:(_,c)=>()=>h('button',c.attrs,c.slots.default?.())};`,
@@ -30,7 +30,7 @@ test('AI modal opens before file creation and routes pasted/uploaded responses b
   '@/lib/agent/deck-preflight.mjs':`export const preflightDeckPlan=()=>{};`,
   '@/lib/agent/external-response.mjs':`export const isHtmlResponse=text=>text.trim().startsWith('<');export const createExternalResponseFile=async(source,deck)=>{window.__agent.created.push({source,deck});return 'new-deck';};`,
   '@/lib/agent/html-embedded-images.mjs':`export const prepareEmbeddedHtmlImages=async source=>({source,images:new Map()});export const embeddedHtmlAssets=()=>new Map();`,
-  '@/lib/agent/frontend-slides-import.mjs':`export const parseFrontendSlides=()=>window.__agent.deck;`,
+  '@/lib/agent/frontend-slides-import.mjs':`export const parseFrontendSlides=source=>{if(source.includes('data-invalid'))throw Error('No slides found.');return window.__agent.deck;};`,
   'shared-vuejs/api/opfs':`export const saveMediaRecordToOPFS=async()=>{};`,
   'shared-vuejs/api/googleFonts':`export const googleFonts=[];`,
  };
@@ -47,13 +47,42 @@ import NewFile from './editor-vuejs/src/components/editor/Dialogs/NewFile.vue';
  [...host.querySelectorAll('.template-card')].find(b=>b.textContent.includes('Create with AI')).click();await nextTick();
  host.querySelector('.action button').click();await nextTick();
  check(state.store.openEditorAgentModal,'new file AI option opens modal');check(!state.store.openNewFileModal,'new file chooser closes');check(state.blankFiles===0,'opening agent does not create a blank file');app.unmount();host.remove();
- for(const mode of ['new','insert'])for(const upload of [false,true]){
+ Object.defineProperty(navigator,'clipboard',{value:{writeText:async text=>{state.copied=text;}},configurable:true});
+ for(const mode of ['new','insert']){
   state.mode=mode;state.calls=[];state.created=[];state.store.openEditorAgentModal=true;
   host=document.createElement('div');document.body.append(host);let createdId;
   app=createApp(Agent,{mode,onCreated:id=>{createdId=id;}});app.mount(host);await nextTick();
   check(!!host.querySelector('[role="dialog"]'),'agent is modal');
-  if(upload){const input=host.querySelector('input[type="file"]');Object.defineProperty(input,'files',{value:[new File(['<!doctype html><html><section class="slide">Response</section></html>'],'response.html',{type:'text/html'})],configurable:true});input.dispatchEvent(new Event('change',{bubbles:true}));await until(()=>!!host.querySelector('#external-brief-json').value);}
-  else{const field=host.querySelector('#external-brief-json');field.value=JSON.stringify(state.deck);field.dispatchEvent(new Event('input',{bubbles:true}));}
+  check(!host.querySelector('input[type="radio"]'),'layout chooser removed');
+  check(!host.querySelector('#external-brief-json'),'response paste field removed');
+  const prompt=host.querySelector('#external-prompt');
+  check(prompt.readOnly && !prompt.value,'generated prompt starts empty and read-only');
+  check(host.querySelector('.copy-button').disabled,'empty request cannot be copied');
+  const description=host.querySelector('#external-description');
+  description.value='Build a geography quiz game with hints and branching outcomes.';
+  description.dispatchEvent(new Event('input',{bubbles:true}));await nextTick();
+  check(prompt.value.includes(description.value),'prompt includes the user request');
+  check(prompt.value.includes('https://desq.page/AGENTS.md') && !prompt.value.includes('## Required delivery'),'prompt links to the public guide without copying its text');
+  check(prompt.value.includes('downloadable') && prompt.value.includes('morph') && prompt.value.includes('interactions'),'HTML and game guidance included');
+  host.querySelector('.copy-button').click();await until(()=>state.copied===prompt.value);
+  const input=host.querySelector('input[type="file"]');
+  check(!input.accept.includes('json') && input.accept.includes('.html'),'HTML response picker');
+  const select=async file=>{Object.defineProperty(input,'files',{value:[file],configurable:true});input.dispatchEvent(new Event('change',{bubbles:true}));await nextTick();};
+  await select(new File(['{}'],'response.json',{type:'application/json'}));
+  check(host.querySelector('.create-button').disabled && host.textContent.includes('Choose an HTML response file'),'JSON upload rejected');
+  await select(new File(['<!doctype html><html data-invalid></html>'],'invalid.html',{type:'text/html'}));
+  await until(()=>host.textContent.includes('Loaded: invalid.html'));
+  check(host.querySelector('.create-button').disabled && host.querySelector('[role="alert"]'),'invalid HTML cannot generate');
+  const file=new File(['<!doctype html><html><section class="slide">Response</section></html>'],'response.html',{type:'text/html'});
+  await select(file);await until(()=>host.textContent.includes('Loaded: response.html'));
+  check(!host.querySelector('.create-button').disabled,'valid HTML enables generation');
+  await select({name:'huge.html',size:50000001,text:async()=>''});
+  check(host.querySelector('.create-button').disabled && !host.textContent.includes('Loaded: response.html'),'oversize upload clears stale response');
+  await select({name:'unreadable.html',size:10,text:async()=>{throw Error('read failed')}});
+  await until(()=>host.textContent.includes('Could not read unreadable.html'));
+  check(host.querySelector('.create-button').disabled,'read failure cannot reuse stale HTML');
+  await select(file);await until(()=>host.textContent.includes('Loaded: response.html'));
+  check(input.value==='','file picker resets for same-file retries');
   await nextTick();const button=host.querySelector('.create-button');check(!button.disabled,'valid response enables submission');button.click();
   if(mode==='new'){await until(()=>createdId==='new-deck');check(state.created.length===1,'dashboard creates one deck');check(state.calls.length===0,'dashboard never inserts into an editor');check(!state.store.openEditorAgentModal,'new deck closes modal');}
   else{await until(()=>state.calls.some(call=>call.name==='desq_create_deck'));const call=state.calls.find(call=>call.name==='desq_create_deck');check(call.args.fileId==='file'&&call.args.pageId==='page','insert targets active deck and selected page');check(call.options.insertOnly===true,'insertion preserves existing starter slides');check(state.created.length===0,'editor never creates another deck');await until(()=>!host.querySelector('.create-button').disabled);}
@@ -62,9 +91,9 @@ import NewFile from './editor-vuejs/src/components/editor/Dialogs/NewFile.vue';
  const el=document.createElement('pre');el.id='result';el.textContent=JSON.stringify({ok:true});document.body.append(el);
 }catch(e){const el=document.createElement('pre');el.id='result';el.textContent=JSON.stringify({error:e.stack});document.body.append(el);}})();
 `},bundle:true,format:'iife',define:{'import.meta.env':'{}','process.env.NODE_ENV':'"test"'},outfile:join(directory,'fixture.js'),plugins:[{name:'agent-ui-fixture',setup(b){
-   b.onResolve({filter:/.*/},args=>{if(mock[args.path])return{path:args.path,namespace:'agent-mock'};if(args.path.includes('external-brief/')&&args.path.endsWith('?raw'))return{path:args.path,namespace:'agent-raw'};});
+   b.onResolve({filter:/.*/},args=>{if(mock[args.path])return{path:args.path,namespace:'agent-mock'};if(args.path==='@/lib/agent/html-authoring-prompt.mjs')return{path:resolve('editor-vuejs/src/lib/agent/html-authoring-prompt.mjs')};if(args.path.endsWith('.md?raw'))return{path:resolve(args.importer,'..',args.path.slice(0,-4)),namespace:'agent-raw'};});
    b.onLoad({filter:/.*/,namespace:'agent-mock'},args=>({contents:mock[args.path],resolveDir:resolve('.')}));
-   b.onLoad({filter:/.*/,namespace:'agent-raw'},args=>({contents:'export default '+JSON.stringify(args.path.includes('schema')?JSON.stringify({properties:{slides:{items:{properties:{layout:{enum:['title','html','svg']},svg:{},html:{}}}}}}):'Prompt')}));
+   b.onLoad({filter:/.*/,namespace:'agent-raw'},args=>({contents:'export default '+JSON.stringify(readFileSync(args.path,'utf8'))}));
    b.onLoad({filter:/\.vue$/},args=>{const {descriptor}=parse(readFileSync(args.path,'utf8'),{filename:args.path});return{contents:compileScript(descriptor,{id:args.path,inlineTemplate:true}).content,loader:'ts',resolveDir:resolve(args.path,'..')};});
   }}]});
   writeFileSync(join(directory,'fixture.html'),'<!doctype html><body><script src="fixture.js"></script></body>');

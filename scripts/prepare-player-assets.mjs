@@ -1,4 +1,5 @@
 import {preparePlayerScript} from './player-production.mjs';
+import {prepareAuthoringAssets} from './prepare-authoring-assets.mjs';
 import {createRequire} from 'node:module';
 import {mkdir,copyFile,access,rm,readFile,writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
@@ -6,6 +7,7 @@ import {resolve} from 'node:path';
 import {localCoreDirectory, resolveCorePackage} from './local-core.mjs';
 const require=createRequire(import.meta.url);
 export async function preparePlayerAssets(core = localCoreDirectory()) {
+  await prepareAuthoringAssets();
   const resolvePackage = name => resolveCorePackage(name, core) || require.resolve(name);
   const target=new URL('../editor-vuejs/public/player/',import.meta.url);
   // Switching back from local development must not ship private development maps.

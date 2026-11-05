@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>The capital challenge</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&amp;display=swap">
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}
+    body{background:#152b28;font-family:"Baloo 2",sans-serif;color:#173d32}
+    .deck-viewport{position:fixed;inset:0;overflow:hidden}
+    .deck-stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+    .slide{position:absolute;inset:0;width:1920px;height:1080px;padding:110px 140px;background:#f6eedc;visibility:hidden;opacity:0;pointer-events:none}
+    .slide.active.visible{visibility:visible;opacity:1;pointer-events:auto}
+    .kicker{font-size:30px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:#397960}
+    h1,h2{font-size:104px;line-height:1.1;max-width:1500px;margin:35px 0}
+    p{font-size:40px;max-width:1360px;line-height:1.4}
+    button{font:800 42px "Baloo 2",sans-serif;border:4px solid #173d32;border-radius:20px;padding:24px 48px;color:#173d32;background:#f4c95d;cursor:pointer}
+    button:focus-visible{outline:8px solid #d06839;outline-offset:8px}
+    button:hover{background:#ffdb7e}.answers{display:grid;grid-template-columns:1fr 1fr;gap:28px;max-width:1500px;margin:55px 0}
+    .secondary{background:#e0e9da}.hint{font-size:36px;color:#397960;margin-top:24px}.is-hidden{visibility:hidden}
+    .success{background:#dcebd6}.retry{background:#f7dfc9}.footer{position:absolute;bottom:70px;font-size:28px}
+    @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+  </style>
+</head>
+<body>
+  <!-- Browser prototype of docs/html-slide-interactions.md. The data-desq-goto,
+       trigger, initial-state and JSON declarations are not yet mapped by the
+       native importer. This example does not install or call a DESQ host SDK. -->
+  <div class="deck-viewport">
+    <main class="deck-stage" id="deck-stage">
+      <section class="slide active visible" data-desq-slide id="slide-intro">
+        <div class="kicker">A little geography challenge</div>
+        <h1>One question.<br>Four possibilities.</h1>
+        <p>Choose the capital of Vietnam. You can ask for a hint, or try again after an incorrect answer.</p>
+        <button type="button" id="start-button" data-desq-goto="slide-question">Start the challenge →</button>
+        <div class="footer">Use Tab to focus a button, then Enter or Space to activate it.</div>
+      </section>
+      <section class="slide" data-desq-slide id="slide-question">
+        <div class="kicker">Make your choice</div>
+        <h2>What is the capital of Vietnam?</h2>
+        <div class="answers">
+          <button type="button" id="answer-hcmc" data-desq-goto="slide-lose">Ho Chi Minh City</button>
+          <button type="button" id="answer-hanoi" data-desq-goto="slide-win">Hanoi</button>
+          <button type="button" id="answer-danang" data-desq-goto="slide-lose">Da Nang</button>
+          <button type="button" id="answer-hue" data-desq-goto="slide-lose">Hue</button>
+        </div>
+        <button type="button" class="secondary" id="hint-button" data-desq-trigger="hint">Show a hint</button>
+        <p class="hint" id="hint-text" data-desq-initial="hidden">The city's name begins with H.</p>
+      </section>
+      <section class="slide success" data-desq-slide id="slide-win">
+        <div class="kicker">You got it</div><h2>Hanoi is correct!</h2>
+        <p>Hanoi is Vietnam's capital. Ho Chi Minh City is its largest city.</p>
+        <button type="button" id="win-restart" data-desq-goto="slide-intro">Play again ↻</button>
+      </section>
+      <section class="slide retry" data-desq-slide id="slide-lose">
+        <div class="kicker">Another chance</div><h2>That wasn't the capital.</h2>
+        <p>Try another answer, or use the hint on the question screen.</p>
+        <button type="button" id="try-again" data-desq-goto="slide-question">Try again →</button>
+        <button type="button" class="secondary" id="lose-restart" data-desq-goto="slide-intro">Back to the start</button>
+      </section>
+    </main>
+  </div>
+  <script type="application/json" id="desq-interactions">
+    {"version":1,"entrySlide":"slide-intro","animations":[{"id":"hint-appear","slide":"slide-question","target":"hint-text","effect":"appear","durationMs":0}],"bindings":[{"id":"hint","slide":"slide-question","actions":[{"type":"play","animation":"hint-appear"}]}]}
+  </script>
+  <script>
+    // Small local runtime for the proposal, not an editor/plugin integration.
+    (() => {
+      const manifestText=document.getElementById('desq-interactions').textContent;
+      if(new TextEncoder().encode(manifestText).length>65536)throw Error('Interaction manifest is too large.');
+      const manifest=JSON.parse(manifestText), stage=document.getElementById('deck-stage');
+      const ids=new Map();
+      document.querySelectorAll('[id]').forEach(node=>{if(ids.has(node.id))throw Error('Duplicate ID: '+node.id);ids.set(node.id,node)});
+      const slides=new Map([...stage.querySelectorAll('[data-desq-slide]')].map(node=>[node.id,node]));
+      const requireSlide=id=>{if(!slides.has(id))throw Error('Unknown slide: '+id);return slides.get(id)};
+      const requireTarget=(id,slide)=>{const node=ids.get(id);if(!node||node.closest('[data-desq-slide]')!==requireSlide(slide))throw Error('Invalid target: '+id);return node};
+      const duration=value=>{if(!Number.isFinite(value)||value<0||value>60000)throw Error('Invalid duration.');return value};
+      const index=list=>{if(!Array.isArray(list)||list.length>200)throw Error('Invalid interaction list.');const map=new Map();list.forEach(item=>{if(typeof item.id!=='string'||!item.id||map.has(item.id))throw Error('Invalid interaction ID.');map.set(item.id,item)});return map};
+      if(manifest.version!==1||slides.size>20)throw Error('Unsupported interaction version or slide count.');
+      requireSlide(manifest.entrySlide);
+      const animations=index(manifest.animations), bindings=index(manifest.bindings);
+      animations.forEach(animation=>{requireTarget(animation.target,animation.slide);duration(animation.durationMs);if(animation.effect!=='appear'||animation.durationMs!==0)throw Error('This example implements instantaneous appear only.');});
+      bindings.forEach(binding=>{
+        requireSlide(binding.slide);
+        if(!Array.isArray(binding.actions)||!binding.actions.length||binding.actions.length>16)throw Error('Invalid action sequence.');
+        binding.actions.forEach(action=>{
+          if(action.type==='goto')requireSlide(action.slide);
+          else if(action.type==='show'||action.type==='hide')requireTarget(action.target,binding.slide);
+          else if(action.type==='wait')duration(action.durationMs);
+          else if(action.type==='play'){const animation=animations.get(action.animation);if(!animation||animation.slide!==binding.slide)throw Error('Invalid animation reference.');}
+          else throw Error('Unknown action: '+action.type);
+        });
+      });
+      stage.querySelectorAll('[data-desq-goto],[data-desq-trigger]').forEach(button=>{
+        if(button.tagName!=='BUTTON'||(button.hasAttribute('data-desq-goto')&&button.hasAttribute('data-desq-trigger')))throw Error('Invalid control.');
+        if(button.dataset.desqGoto)requireSlide(button.dataset.desqGoto);
+        else{const binding=bindings.get(button.dataset.desqTrigger);if(!binding||button.closest('[data-desq-slide]')!==requireSlide(binding.slide))throw Error('Invalid trigger source.');}
+      });
+      stage.querySelectorAll('[data-desq-initial]').forEach(node=>{if(node.dataset.desqInitial!=='hidden')throw Error('Unknown initial state.');node.classList.add('is-hidden');});
+      const fit=()=>{const scale=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`translate(${(innerWidth-1920*scale)/2}px,${(innerHeight-1080*scale)/2}px) scale(${scale})`};
+      addEventListener('resize',fit);fit();
+      let current='', epoch=0;
+      const locked=new Set(), waits=new Set();
+      const show=id=>{
+        requireSlide(id);epoch++;waits.forEach(cancel=>cancel());waits.clear();locked.clear();current=id;
+        slides.forEach((slide,key)=>{const active=key===id;slide.classList.toggle('active',active);slide.classList.toggle('visible',active);slide.setAttribute('aria-hidden',String(!active));});
+        requireSlide(id).querySelectorAll('[data-desq-initial="hidden"]').forEach(node=>node.classList.add('is-hidden'));
+      };
+      const wait=ms=>new Promise(resolve=>{let timer;const finish=()=>{clearTimeout(timer);waits.delete(finish);resolve()};timer=setTimeout(finish,ms);waits.add(finish)});
+      const run=async binding=>{
+        if(binding.slide!==current||locked.has(binding.id))return;
+        const token=epoch;locked.add(binding.id);
+        try{for(const action of binding.actions){
+          if(token!==epoch)return;
+          if(action.type==='goto'){show(action.slide);return;}
+          if(action.type==='wait')await wait(action.durationMs);
+          else if(action.type==='show'||action.type==='hide')requireTarget(action.target,binding.slide).classList.toggle('is-hidden',action.type==='hide');
+          else if(action.type==='play'){const animation=animations.get(action.animation);requireTarget(animation.target,binding.slide).classList.remove('is-hidden');}
+        }}finally{if(token===epoch)locked.delete(binding.id);}
+      };
+      stage.addEventListener('click',event=>{
+        const button=event.target.closest('button[data-desq-goto],button[data-desq-trigger]');
+        if(!button||button.closest('[data-desq-slide]')?.id!==current)return;
+        event.preventDefault();event.stopPropagation();
+        if(button.dataset.desqGoto)show(button.dataset.desqGoto);else void run(bindings.get(button.dataset.desqTrigger));
+      });
+      show(manifest.entrySlide);
+    })();
+  </script>
+</body>
+</html>
