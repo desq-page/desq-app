@@ -97,6 +97,7 @@ Then implement those actions in the standalone HTML using [the interaction contr
 
 - Prefer a `<button type="button" id="..." data-desq-goto="slide-win">` for an editable button with a slide destination. Implement a small runtime for the standalone file; DESQ imports the declared destination as a native link.
 - A handler whose entire contents are `goToSlide('slide-win')` (case-insensitive function name, optional `return`/trailing semicolon) also maps. Variables, conditions, multiple statements, wrapper functions and calls with side effects are not interpreted. Use `data-desq-goto` to expose the destination instead.
+- In DESQ scripts, call the built-in `gotoSlide('slide-win')` API for navigation from a function. For standalone browser playback, supply the HTML document's own navigation adapter or use `player.gotoSlide` when running with the DESQ player.
 - Plain `<a href="#slide-win">` is a useful standalone hyperlink, but the importer currently unwraps it, including its styling. Do not rely on anchor styling or navigation surviving import.
 - Implement “show feedback”, “play an animation”, “wait”, and “jump” with documented `ctx` APIs in editable user modules. Store cross-click state in `ctx.state`; do not depend on timers, closure variables or arbitrary DOM mutation.
 - A same-slide reveal is an animation trigger, not a new slide unless the content intentionally requires a separate screen. A wrong answer must not accidentally advance to the correct outcome.

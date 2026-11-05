@@ -294,7 +294,7 @@ export function createEditorStore(options = {}) {
       const model = await record(kind,item.id);
       layouts.push({id:model.id,parentid:model.parentid,timing:model.timing});
     }
-    return {slides,layouts};
+    return {slides,layouts,scripting:header.file.scripting};
   }
   return {
     workspace, view, slides, metadata, history, loading, error, ui, ready,

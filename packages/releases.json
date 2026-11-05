@@ -32,6 +32,15 @@
     },
     "shared-vuejs-0.2.8.tgz": {
       "sha256": "46c7cef9e807913b4ae55518eb62018b9310ce50025a53864641e3c5f5f8ea32"
+    },
+    "shared-vuejs-0.2.9.tgz": {
+      "sha256": "64ffd39a7102e60f06bdb7da82d2d0066922de433869174f58650f3bb1b043a1"
+    },
+    "shared-vuejs-0.2.10.tgz": {
+      "sha256": "894b943ca0089392b5f0d5a48c584c8a3aa0eccfeddc7e4dc16567a929bd87bf"
+    },
+    "desq-player-1.0.7.tgz": {
+      "sha256": "54f73df853e4cd7ea68a2639c7b46e1430a5b2acc680476d568e3f95e8b0ae0f"
     }
   }
 }

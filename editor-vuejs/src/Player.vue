@@ -90,6 +90,7 @@ onMounted(async () => {
       height: fileInfo.height,
       grid: fileInfo.grids,
       publish: fileInfo.publish,
+      scripting: fileInfo.scripting,
     });
   } else {
     ready.value = true;

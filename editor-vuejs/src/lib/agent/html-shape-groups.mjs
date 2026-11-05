@@ -1,6 +1,6 @@
 // Compiler source IDs preserve the ancestry of the HTML elements that produced
 // each primitive. Turn contiguous element ranges into ordinary editor groups.
-const isHtmlGroup = id => /^desq-html-group-\d+(?:-rot-.*)?$/.test(id);
+const isHtmlGroup = id => /^desq-html-group-\d+(?:-rot-.*?)?(?:-clip-.*?)?(?:-hover-.*)?$/.test(id);
 export function groupImportedHtmlShapes(shapes, genId, { width = 1280, height = 720 } = {}) {
   const tree = [];
   const stack = [{ ids: [], children: tree }];
@@ -20,10 +20,18 @@ export function groupImportedHtmlShapes(shapes, genId, { width = 1280, height = 
     return items.flatMap(item => {
       if (!item.ids) return [item];
       const children = build(item.children);
-      if (children.length < 2) return children;
-      const x = Math.min(...children.map(c => c.x)), y = Math.min(...children.map(c => c.y));
-      const right = Math.max(...children.map(c => c.x + c.w)), bottom = Math.max(...children.map(c => c.y + c.h));
-      const rotation = /-rot-(-?[\d.]+)-(-?[\d.]+)-(-?[\d.]+)$/.exec(item.ids.at(-1));
+      const [groupId, hoverData] = item.ids.at(-1).split(/-hover-(?=%7B)/);
+      let hoverStyle;
+      if (hoverData) {
+        try { hoverStyle = JSON.parse(decodeURIComponent(hoverData)); } catch {}
+      }
+      const clip = /-clip-([01])([01])-(-?[\d.]+)_(-?[\d.]+)_([\d.]+)_([\d.]+)$/.exec(groupId);
+      if (!children.length || (children.length < 2 && !clip && !hoverStyle)) return children;
+      const x = clip ? Number(clip[3]) * width / 1280 : Math.min(...children.map(c => c.x));
+      const y = clip ? Number(clip[4]) * height / 720 : Math.min(...children.map(c => c.y));
+      const right = clip ? x + Number(clip[5]) * width / 1280 : Math.max(...children.map(c => c.x + c.w));
+      const bottom = clip ? y + Number(clip[6]) * height / 720 : Math.max(...children.map(c => c.y + c.h));
+      const rotation = /-rot-(-?[\d.]+)-(-?[\d.]+)-(-?[\d.]+)(?:-clip-|$)/.exec(groupId);
       let groupX = x, groupY = y, rot = 0;
       if (rotation) {
         rot = Number(rotation[1]);
@@ -34,6 +42,9 @@ export function groupImportedHtmlShapes(shapes, genId, { width = 1280, height = 
       }
       const sourceIds = (children[0].sourceIds || []).filter(id => children.every(child => child.sourceIds?.includes(id)));
       return [{ id: genId(), sourceIds, name: 'HTML group', type: 'group', x: groupX, y: groupY, ...(rot ? { rot } : {}), w: right - x, h: bottom - y,
+        ...(clip?.[1] === '1' ? { overflowX: 'clip' } : {}),
+        ...(clip?.[2] === '1' ? { overflowY: 'clip' } : {}),
+        ...(hoverStyle ? { hoverStyle } : {}),
         children: children.map(child => ({ ...child, x: child.x - x, y: child.y - y })) }];
     });
   }

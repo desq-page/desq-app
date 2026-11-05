@@ -218,7 +218,11 @@ export function compileMotion(config, shapes, { width, height } = {}) {
         const axes = [['ppt_x', 'x', options.coordinate_width || width], ['ppt_y', 'y', options.coordinate_height || height]]
           .filter(([, axis, dimension]) => frames.some(frame => round3(frame[axis] / dimension) !== 0));
         if (!axes.length && !options.property_frames) continue;
-        const behaviors = axes.map(([property, axis, dimension]) => {
+        const behaviors = options.motion_path ? (() => {
+          const path = frames.map(({x, y}, index) =>
+            `${index ? 'L' : 'M'} ${round3(x / (options.coordinate_width || width))} ${round3(y / (options.coordinate_height || height))}`).join(' ');
+          return `<p:animMotion origin="layout" path="${path} E"><p:cBhvr><p:cTn id="6" dur="${duration}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl></p:cBhvr></p:animMotion>`;
+        })() : axes.map(([property, axis, dimension]) => {
           const values = frames.map(frame => `<p:tav tm="${Math.round(frame.t * 100000)}"><p:val><p:strVal val="#${property}+(${round3(frame[axis] / dimension)})"/></p:val></p:tav>`).join('');
           return `<p:anim calcmode="lin" valueType="num"><p:cBhvr><p:cTn id="6" dur="${duration}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>${property}</p:attrName></p:attrNameLst></p:cBhvr><p:tavLst>${values}</p:tavLst></p:anim>`;
         }).join('');

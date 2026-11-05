@@ -215,7 +215,6 @@
       <LayoutHeader
         :label="`Link Action (${piniaSelect().editingInfo ? 'hyperlink on text' : 'click on shape'})`"
       />
-      <p v-if="addonFunc">Local JavaScript binding: {{ addonFunc }}. Edit it in Add-Ins → Local JavaScript.</p>
       <NFlex vertical>
         <NFlex align="center" :wrap="false" :size="4">
           <input
@@ -290,20 +289,24 @@
             @click="openURL"
           />
         </NFlex>
-        <!-- <NFlex align="center" :wrap="false" :size="4">
+        <NFlex align="center" :wrap="false" :size="4">
           <input
             class="custom"
             id="chkHlinkAction3"
             name="hyperlinkType"
             type="radio"
-            :checked="!gotoSlide && !hyperlink && !!varValue && !addonFunc"
-            :disabled="
-              piniaSelect().editingInfo &&
-              piniaSelect().editingInfo.selectionText == ''
-            "
+            :checked="!!addonFunc"
+            disabled
           /><label for="chkHlinkAction3">Run</label>
+          <NInput
+            :value="addonFunc"
+            aria-label="Run function"
+            placeholder="No function bound"
+            title="Edit the binding in Add-Ins → Local JavaScript"
+            readonly
+          />
         </NFlex>
-        <IframeInputbox
+        <!-- <IframeInputbox
           :value="varValue"
           :on-change="updateVariable"
           :style="{
@@ -346,7 +349,7 @@
 import { getShapeDeep, updateShape, getFileInfo } from "shared-vuejs/editor";
 
 import { nextTick, onMounted, ref, watch } from "vue";
-import { NFlex, NSelect } from "naive-ui";
+import { NFlex, NInput, NSelect } from "naive-ui";
 import { piniaInfo, piniaSelect } from "@/lib/common/store";
 import DialogBase from "@/components/common/Layouts/DialogBase.vue";
 import IframeInputbox from "@/components/common/IframeInputbox.vue";
@@ -481,7 +484,9 @@ function updateDisplayURL() {
       varValue.value = url.value.substring(5);
     } else if (url.value?.startsWith("@run:")) {
       const funcInfo = url.value.substring(5).split("|");
-      addonFunc.value = funcInfo[0];
+      const project = (getFileInfo() as any)?.scripting;
+      const binding = project?.bindings?.find(binding => binding.id === funcInfo[0]);
+      addonFunc.value = binding?.function || funcInfo[0];
       inputStr.value = funcInfo[1];
       outputVar.value = funcInfo[2];
     } else {

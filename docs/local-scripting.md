@@ -30,6 +30,8 @@ Await host actions in sequence. Navigation must be the last host action in a fun
 | `await ctx.wait(milliseconds)` | Wait 0–10,000 ms |
 | `await ctx.slides.goto(id)` | Jump to a slide, including a hidden destination |
 
+`gotoSlide(id)` is also available directly in DESQ scripts. The importer replaces the recognized legacy HTML navigation helper with calls to this API. Browser integrations using the public player bundle can call `player.gotoSlide(id)` with a native slide ID or `player.gotoSlide(index)` with a one-based slide index.
+
 Imported HTML element/slide IDs are retained as aliases and mapped to native IDs. The dialog lists aliases and native IDs. New code written in the editor can use the listed native IDs. Shape changes affect playback only. Reopening playback starts clean. Pending scripts are cancelled on navigation and stopping playback; repeated clicks while a handler runs are ignored.
 
 The runtime uses QuickJS inside a dedicated Worker. User modules have no browser DOM, `window`, `fetch`, editor storage, network, or timer APIs. Use `ctx.wait`, not `setTimeout`. Each invocation has a 15-second wall-clock deadline, a 500-ms CPU budget per execution turn, 16 MiB VM memory and at most 128 host calls. A failed handler reports a console error and a `desq-script-error` browser event; it does not advance the slide.
