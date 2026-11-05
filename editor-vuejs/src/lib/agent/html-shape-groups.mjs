@@ -27,6 +27,12 @@ export function groupImportedHtmlShapes(shapes, genId, { width = 1280, height = 
       }
       const clip = /-clip-([01])([01])-(-?[\d.]+)_(-?[\d.]+)_([\d.]+)_([\d.]+)$/.exec(groupId);
       if (!children.length || (children.length < 2 && !clip && !hoverStyle)) return children;
+      const groupNumber = /^desq-html-group-(\d+)/.exec(groupId)?.[1];
+      const paintMarker = groupNumber && `desq-html-own-paint-${groupNumber}`;
+      const ownPaint = clip && paintMarker
+        ? children.filter(child => child.sourceIds?.includes(paintMarker)) : [];
+      const clippedContent = ownPaint.length
+        ? children.filter(child => !child.sourceIds?.includes(paintMarker)) : [];
       const x = clip ? Number(clip[3]) * width / 1280 : Math.min(...children.map(c => c.x));
       const y = clip ? Number(clip[4]) * height / 720 : Math.min(...children.map(c => c.y));
       const right = clip ? x + Number(clip[5]) * width / 1280 : Math.max(...children.map(c => c.x + c.w));
@@ -40,12 +46,24 @@ export function groupImportedHtmlShapes(shapes, genId, { width = 1280, height = 
         groupX += px + Math.cos(radians) * (cx - px) - Math.sin(radians) * (cy - py) - cx;
         groupY += py + Math.sin(radians) * (cx - px) + Math.cos(radians) * (cy - py) - cy;
       }
-      const sourceIds = (children[0].sourceIds || []).filter(id => children.every(child => child.sourceIds?.includes(id)));
-      return [{ id: genId(), sourceIds, name: 'HTML group', type: 'group', x: groupX, y: groupY, ...(rot ? { rot } : {}), w: right - x, h: bottom - y,
+      const sourceIds = (children[0].sourceIds || []).filter(id => id !== paintMarker && children.every(child => child.sourceIds?.includes(id)));
+      const relative = child => ({ ...child, x: child.x - x, y: child.y - y });
+      const clipped = {
         ...(clip?.[1] === '1' ? { overflowX: 'clip' } : {}),
         ...(clip?.[2] === '1' ? { overflowY: 'clip' } : {}),
+      };
+      const groupedChildren = ownPaint.length
+        ? [
+            ...ownPaint.map(relative),
+            ...(clippedContent.length ? [{ id: genId(), name: 'HTML clipped content', type: 'group',
+              x: 0, y: 0, w: right - x, h: bottom - y, ...clipped,
+              children: clippedContent.map(relative) }] : []),
+          ]
+        : children.map(relative);
+      return [{ id: genId(), sourceIds, name: 'HTML group', type: 'group', x: groupX, y: groupY, ...(rot ? { rot } : {}), w: right - x, h: bottom - y,
+        ...(!ownPaint.length ? clipped : {}),
         ...(hoverStyle ? { hoverStyle } : {}),
-        children: children.map(child => ({ ...child, x: child.x - x, y: child.y - y })) }];
+        children: groupedChildren }];
     });
   }
   return build(tree);

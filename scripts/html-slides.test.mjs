@@ -12,6 +12,7 @@ import {
   validateArguments,
 } from "../editor-vuejs/src/lib/agent/editor-tools.mjs";
 import { deckSchema } from "../editor-vuejs/src/lib/agent/deck-schema.mjs";
+import { groupImportedHtmlShapes } from "../editor-vuejs/src/lib/agent/html-shape-groups.mjs";
 import { compactModelContext } from "../editor-vuejs/src/lib/agent/agent-plan.mjs";
 import { buildAgentTask } from "../editor-vuejs/src/lib/agent/agent-task.mjs";
 const context = {
@@ -20,6 +21,30 @@ const context = {
   document: { fileId: "file" },
   page: { pageId: "page", shapes: [], shapeCount: 0 },
 };
+test("HTML overflow clips original children while keeping its own background and border visible", () => {
+  const groupId = 'desq-html-group-7-clip-11-100_80_300_200';
+  const paint = 'desq-html-own-paint-7';
+  const shape = (id, sourceIds, x, y, w, h) => ({ id, sourceIds, x, y, w, h });
+  const shapes = [
+    shape('background', [groupId, paint], 100, 80, 300, 200),
+    shape('border', [groupId, paint], 100, 80, 300, 200),
+    // A DOM child can have no source ID of its own, like the arena floor.
+    shape('floor', [groupId], 100, 250, 300, 30),
+    shape('runner', [groupId, 'jerry'], 50, 100, 80, 80),
+  ];
+  let nextId = 0;
+  const [arena] = groupImportedHtmlShapes(shapes, () => `group-${++nextId}`);
+  assert.equal(arena.overflowX, undefined);
+  assert.equal(arena.overflowY, undefined);
+  assert.deepEqual(arena.children.slice(0, 2).map(child => child.id), ['background', 'border']);
+  const content = arena.children[2];
+  assert.equal(content.overflowX, 'clip');
+  assert.equal(content.overflowY, 'clip');
+  assert.deepEqual(content.children.map(child => child.id), ['floor', 'runner']);
+  assert.deepEqual([arena.x, arena.y, arena.w, arena.h], [100, 80, 300, 200]);
+  assert.deepEqual([content.x, content.y, content.w, content.h], [0, 0, 300, 200]);
+  assert.equal(content.children[1].x, -50);
+});
 test("HTML transport is exposed for both providers without conflicting SVG instructions", () => {
   const instructions = editorPlanInstructions(
     createEditorTools({}).listTools(),

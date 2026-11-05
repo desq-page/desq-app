@@ -29,7 +29,23 @@ for(const {file,legacy} of cases)test('exported standalone HTML runs '+(legacy?'
    (async()=>{try{
     const source=${JSON.stringify(source)},deck=await renderScriptedFrontendSlides(source,parseFrontendSlides(source));
     let id=0;const compiled=compileDeck(deck,{width:1280,height:720,genId:()=>String(++id),geometry:(p,w,h)=>({d:'R0,0,'+w+','+h})});
+    let arenaGroup;
     if (${legacy}) {
+      const findGroup = (shapes, predicate) => {
+        for (const shape of shapes) {
+          if (shape.children && predicate(shape)) return shape;
+          const nested = shape.children && findGroup(shape.children, predicate);
+          if (nested) return nested;
+        }
+      };
+      arenaGroup = findGroup(compiled.pages[1].shapes, group =>
+        group.children.some(child => child.sourceIds?.some(id => /^desq-html-own-paint-\\d+$/.test(id))) &&
+        group.children.some(child => child.overflowX === 'clip' && child.overflowY === 'clip'));
+      check(arenaGroup && !arenaGroup.overflowX && !arenaGroup.overflowY,
+        'arena background and border stay outside the clipped content group');
+      const arenaContent = arenaGroup.children.find(child => child.overflowX === 'clip' && child.overflowY === 'clip');
+      check(arenaContent.children.every(child => !child.sourceIds?.some(id => /^desq-html-own-paint-\\d+$/.test(id))),
+        'only original arena children are clipped');
       const runs = compiled.pages[1].timing.m.filter(effect =>
         effect.bh.some(behavior => behavior.ty === 'motion') &&
         effect.bh.some(behavior => behavior.pr === 'ppt_w'));
@@ -80,6 +96,13 @@ for(const {file,legacy} of cases)test('exported standalone HTML runs '+(legacy?'
           const arena = runner.parentElement.closest('.in-shp[style*="overflow"]');
           check(arena && win.getComputedStyle(arena).overflowX === 'clip' &&
             win.getComputedStyle(arena).overflowY === 'clip', 'arena clips its animated children on both axes');
+          const paintId = arenaGroup.children.find(child =>
+            child.sourceIds?.some(id => /^desq-html-own-paint-\\d+$/.test(id)))?.id;
+          const paintNode = shape(current(), paintId);
+          const paintContainer = paintNode?.closest('.in-shp');
+          check(paintContainer && win.getComputedStyle(paintContainer).overflowX === 'visible' &&
+            win.getComputedStyle(paintContainer).overflowY === 'visible',
+            'arena background and border render outside the clip');
           const runners = compiled.pages[1].timing.m.filter(effect => effect.bh.some(behavior => behavior.ty === 'motion'));
           const layoutPositions = runners.map(effect => {
             const node = shape(current(), effect.sh);
