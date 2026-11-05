@@ -7,6 +7,7 @@ import { loadGeneratedGoogleFonts, renderedHtmlFontFamilies } from '../agent/gen
 import { prepareEmbeddedHtmlImages, embeddedHtmlAssets } from '../agent/html-embedded-images.mjs';
 import { canvasTextMeasurer } from '../agent/deck-text.mjs';
 import { resolveHtmlSlideLinks } from '../agent/html-slide-links.mjs';
+import {resolveImportedScriptProject} from '../agent/html-script-project.mjs';
 
 export async function agentHtmlDocument(source, name) {
   const embedded = await prepareEmbeddedHtmlImages(source);
@@ -27,6 +28,7 @@ export async function agentHtmlDocument(source, name) {
   doc.file.name = (name || deck.title).replace(/\.html?$/i, '');
   doc.slides = compiled.pages.map(page => ({ ...page, id: genId(), fileId: doc.file.id }));
   resolveHtmlSlideLinks(doc.slides, doc.slides.map(slide => slide.id));
+  if(deck.scripting)doc.file.scripting=resolveImportedScriptProject(deck.scripting,doc.slides,doc.slides.map(slide=>slide.id));
   if (deck.sharedLayouts?.length) {
     const shared = compileDeck({ ...deck, slides: deck.sharedLayouts }, { width:1280,height:720,genId,allowTextOverflow:true,
       geometry:(preset,w,h)=>({d:`R0,0,${w},${h}`}), assets:embeddedHtmlAssets({slides:deck.sharedLayouts},embedded.images), ...(context ? {measureText:canvasTextMeasurer(context)} : {}) });

@@ -28,7 +28,7 @@ test('direct scripted and declarative slide jumps survive HTML capture and nativ
     const links=shapes=>shapes.flatMap(shape=>[...(shape.link?[shape.link]:[]),...(shape.children?links(shape.children):[])]);
     check(links(compiled.pages[0].shapes).includes('@sld:imported-1'),'Start links to second imported slide');
     check(links(compiled.pages[1].shapes).includes('@sld:imported-0'),'Back links to first imported slide');
-    check(compiled.warnings.some(w=>w.includes('showQuiz')),'custom handler limitation reported');
+    check(deck.scripting.modules.some(m=>m.source.includes('showQuiz()')),'custom handler retained as editable source');
     document.body.insertAdjacentHTML('beforeend','<pre id="result">PASS</pre>');
    }catch(e){const el=document.createElement('pre');el.id='result';el.textContent=e.stack;document.body.append(el)}})();
   `},bundle:true,format:'iife',outfile:join(directory,'fixture.js'),plugins:[{name:'core',setup(b){b.onResolve({filter:/^shared-vuejs\//},args=>({path:resolveCorePackage(args.path,resolve('../desq-core'))}));}}]});

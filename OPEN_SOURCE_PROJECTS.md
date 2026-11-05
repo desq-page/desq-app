@@ -17,7 +17,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | @chenglou/pretext | 0.0.8 | MIT | git+https://github.com/chenglou/pretext.git |
 | @css-render/plugin-bem | 0.15.14 | MIT | https://github.com/07akioni/css-render |
 | @css-render/vue3-ssr | 0.15.14 | MIT | node_modules\@css-render\vue3-ssr |
-| @desq/player | 1.0.5 | Not specified | node_modules\@desq\player |
+| @desq/player | 1.0.6 | Not specified | node_modules\@desq\player |
 | @dmsnell/diff-match-patch | 1.1.0 | Apache-2.0 | git+https://github.com/dmsnell/diff-match-patch.git |
 | @emnapi/runtime | 1.11.3 | MIT | node_modules\@img\sharp-wasm32\node_modules\@emnapi\runtime |
 | @emotion/hash | 0.8.0 | MIT | https://github.com/emotion-js/emotion/tree/master/packages/hash |
@@ -228,11 +228,13 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | @xmldom/xmldom | 0.8.15 | MIT | git://github.com/xmldom/xmldom.git |
 | @zip.js/zip.js | 2.7.52 | BSD-3-Clause | git+https://github.com/gildas-lormeau/zip.js.git |
 | accepts | 1.3.8 | MIT | jshttp/accepts |
+| acorn | 8.19.0 | MIT | git+https://github.com/acornjs/acorn.git |
 | adler-32 | 1.3.1 | Apache-2.0 | git://github.com/SheetJS/js-adler32.git |
 | adm-zip | 0.6.1 | MIT | https://github.com/cthackers/adm-zip.git |
 | ajv-formats | 2.1.1 | MIT | git+https://github.com/ajv-validator/ajv-formats.git |
 | ajv-keywords | 5.1.0 | MIT | git+https://github.com/epoberezkin/ajv-keywords.git |
 | ajv | 8.18.0 | MIT | ajv-validator/ajv |
+| animejs | 4.5.0 | MIT | git+https://github.com/juliangarnier/anime.git |
 | ansi-colors | 4.1.3 | MIT | doowb/ansi-colors |
 | ansi-html-community | 0.0.8 | Apache-2.0 | git://github.com/mahdyar/ansi-html-community.git |
 | ansi-regex | 5.0.1 | MIT | chalk/ansi-regex |
@@ -559,7 +561,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | serve-static | 1.16.2 | MIT | expressjs/serve-static |
 | setprototypeof | 1.1.0 | ISC | https://github.com/wesleytodd/setprototypeof.git |
 | setprototypeof | 1.2.0 | ISC | https://github.com/wesleytodd/setprototypeof.git |
-| shared-vuejs | 0.2.6 | ISC | node_modules\shared-vuejs |
+| shared-vuejs | 0.2.7 | ISC | node_modules\shared-vuejs |
 | sharp | 0.35.5 | Apache-2.0 | git+https://github.com/lovell/sharp.git |
 | shell-quote | 1.12.0 | MIT | http://github.com/ljharb/shell-quote.git |
 | side-channel-list | 1.0.1 | MIT | git+https://github.com/ljharb/side-channel-list.git |

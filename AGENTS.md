@@ -13,7 +13,7 @@ The file must include its complete markup, inline CSS, standalone controller and
 ## Choose the content model first
 
 - **Business presentations:** use [Frontend Slides](https://github.com/zarazhangrui/frontend-slides) for visual design, composition and presentation flow, then apply this contract. Read its current `SKILL.md`, `html-template.md`, and `viewport-base.css` rather than guessing their contents.
-- **Quizzes, games, lessons and branching stories:** model the screens and their interaction graph before drawing them. Give every choice and outcome an explicit destination or animation action. Use [docs/html-slide-interactions.md](docs/html-slide-interactions.md): direct slide jumps are supported; the manifest and animation-trigger API remain proposed.
+- **Quizzes, games, lessons and branching stories:** model the screens and their interaction graph before drawing them. Give every choice and outcome an explicit destination or animation action. Use [docs/html-slide-interactions.md](docs/html-slide-interactions.md): direct slide jumps and the local JavaScript API are supported; the separate declarative interaction manifest remains proposed. See [the local scripting API](docs/local-scripting.md) for custom games.
 - **Continuous simulations, physics, arbitrary scoring or network-backed games:** do not promise faithful native slide conversion. Explain the gap or design a finite set of screens/actions that represents the intended experience.
 
 Frontend Slides is sufficient as a design baseline for ordinary business decks, not as an unconditional DESQ import specification. Its optional Fontshare fonts, canvas effects, browser editing/storage controls and custom JavaScript are outside the current import contract. Prefer Google Fonts, editable DOM/SVG artwork and declarative interactions. Do not copy its inline editor into a DESQ-targeted deck unless requested.
@@ -34,7 +34,8 @@ This section describes the local source checkout, not every older packaged core 
 | Tiled animated backgrounds | The implemented radial-dot/linear-position subset becomes native layers | Do not infer general CSS background-animation support |
 | Native text/path precision | Imported shape paths are rounded with `round3` | Round generated path numbers to three decimals too |
 | Direct slide jumps | `data-desq-goto` and a sole literal `goToSlide('slide-id')` / `gotoSlide('slide-id')` call are mapped before handlers are stripped | Use explicit destinations on buttons; targets must exist |
-| Custom click handlers and anchors | Arbitrary callbacks are not interpreted; anchors are still unwrapped | Do not hide navigation inside `checkAnswer()`, `restartGame()` or other custom functions |
+| Custom click handlers | Editable user modules and inline onclick bindings run in the isolated HTML player | Use [ctx APIs](docs/local-scripting.md); `checkAnswer` is user code, never an API |
+| HTML anchors | Still unwrapped during capture | Use button attributes for reliable native links |
 | Interaction JSON and animation triggers | Authoring proposal and example only | Never describe the whole interaction API as shipped |
 
 Do not invent a `window.DesqSlides`, host bridge, trigger attribute or SDK call and assume the editor supports it. `data-desq-reveal`, `data-desq-entrance` and `data-desq-repeating` are capture-generated implementation metadata, not a stable authoring API.
@@ -97,14 +98,14 @@ Then implement those actions in the standalone HTML using [the interaction contr
 - Prefer a `<button type="button" id="..." data-desq-goto="slide-win">` for an editable button with a slide destination. Implement a small runtime for the standalone file; DESQ imports the declared destination as a native link.
 - A handler whose entire contents are `goToSlide('slide-win')` (case-insensitive function name, optional `return`/trailing semicolon) also maps. Variables, conditions, multiple statements, wrapper functions and calls with side effects are not interpreted. Use `data-desq-goto` to expose the destination instead.
 - Plain `<a href="#slide-win">` is a useful standalone hyperlink, but the importer currently unwraps it, including its styling. Do not rely on anchor styling or navigation surviving import.
-- Represent “show feedback”, “play an animation”, “wait”, and “jump” as explicit data actions. Do not bury essential behavior exclusively in `onclick`, timers, closure variables or arbitrary DOM mutation.
+- Implement “show feedback”, “play an animation”, “wait”, and “jump” with documented `ctx` APIs in editable user modules. Store cross-click state in `ctx.state`; do not depend on timers, closure variables or arbitrary DOM mutation.
 - A same-slide reveal is an animation trigger, not a new slide unless the content intentionally requires a separate screen. A wrong answer must not accidentally advance to the correct outcome.
 - Do not advance the slide when a button consumes a click. Reset transient effects on screen re-entry, cancel pending actions on navigation, and prevent repeated clicks from duplicating action sequences.
 - Provide keyboard activation and clear focus styling. Avoid a whole-stage click handler that overrides interactive controls.
 - Keep important instructions/results as authored text. JavaScript may toggle their visibility but should not be the sole source of their content.
 - Respect reduced-motion preferences while preserving feedback and navigation.
 
-Direct navigation does not preserve custom game state, quiz popups or arbitrary callback behavior. Disclose those remaining gaps. Never claim an imported game is fully functional because its buttons are visible or one jump works.
+For custom game state, quiz popups and branching behavior, use [local JavaScript modules](docs/local-scripting.md) and the complete [local quiz example](examples/html-slides/local-quiz.html). Bind buttons with `data-desq-run`, `data-desq-module`, and JSON `data-desq-args`. `checkAnswer` and `restartGame` are editable user functions that call the actual `ctx` API. JavaScript runs only in the HTML player; PPTX stores code and bindings for DESQ reimport without running JavaScript in PowerPoint. Test every branch in the imported player.
 
 ## Verify before delivery
 

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Local script quiz</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#131d30;font-family:Arial,sans-serif;color:#17243d}.viewport{width:100vw;height:100vh;display:grid;place-items:center;overflow:hidden}.deck-stage{width:1280px;height:720px;position:relative;flex:none;transform:scale(var(--scale,1));transform-origin:center}.slide{position:absolute;inset:0;width:1280px;height:720px;visibility:hidden;opacity:0;background:#f2f5ff;padding:90px}.slide.active{visibility:visible;opacity:1}h1{font-size:64px;margin:0 0 30px}p{font-size:32px}button{font:700 30px Arial;padding:22px 34px;border:0;border-radius:16px;background:#354dcc;color:white;margin:12px 12px 12px 0;cursor:pointer}button:focus-visible{outline:5px solid #dca600;outline-offset:4px}#feedback{position:absolute;left:90px;top:510px;background:#d7ebff;padding:24px;border-radius:16px;font-size:32px}
+@media(prefers-reduced-motion:no-preference){.slide.active{animation:enter .25s ease-out}@keyframes enter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}}
+</style></head><body><div class="viewport"><main class="deck-stage">
+<section class="slide active" data-desq-slide id="question"><h1>One choice. One outcome.</h1><p>Which number is even?</p><button id="choice-two" data-desq-module="game" data-desq-run="checkAnswer" data-desq-args="[true]">Two</button><button id="choice-three" data-desq-module="game" data-desq-run="checkAnswer" data-desq-args="[false]">Three</button><div id="feedback" style="display:none">Checking your answer…</div></section>
+<section class="slide" data-desq-slide id="win"><h1>That's right!</h1><p>Two is divisible by two.</p><button id="restart-win" data-desq-module="game" data-desq-run="restartGame">Play again</button></section>
+<section class="slide" data-desq-slide id="lose"><h1>Try another choice.</h1><p>Three is odd.</p><button id="restart-lose" data-desq-module="game" data-desq-run="restartGame">Try again</button></section>
+</main></div>
+<script type="application/desq-script" data-module="game">
+export async function checkAnswer(ctx, correct) {
+  ctx.state.set('attempts', (ctx.state.get('attempts') || 0) + 1);
+  await ctx.shapes.show('feedback');
+  await ctx.wait(400);
+  await ctx.shapes.hide('feedback');
+  await ctx.slides.goto(correct ? 'win' : 'lose');
+}
+export async function restartGame(ctx) {
+  await ctx.shapes.hide('feedback');
+  await ctx.slides.goto('question');
+}
+</script>
+<script>
+// Standalone browser adapter. DESQ imports the module above, not this controller.
+const values=new Map(), modules=new Map();let busy=false;
+const ctx={state:{get:key=>values.get(key),set:(key,value)=>values.set(key,value)},shapes:{show:id=>{document.getElementById(id).style.display='block'},hide:id=>{document.getElementById(id).style.display='none'}},wait:ms=>new Promise(resolve=>setTimeout(resolve,ms)),slides:{goto:id=>{for(const slide of document.querySelectorAll('.slide'))slide.classList.toggle('active',slide.id===id)}}};
+document.addEventListener('click',async event=>{const button=event.target.closest('[data-desq-run]');if(!button||busy)return;busy=true;try{const id=button.dataset.desqModule;if(!modules.has(id)){const source=document.querySelector('script[data-module="'+id+'"]').textContent;const url=URL.createObjectURL(new Blob([source],{type:'text/javascript'}));try{modules.set(id,await import(url))}finally{URL.revokeObjectURL(url)}}await modules.get(id)[button.dataset.desqRun](ctx,...JSON.parse(button.dataset.desqArgs||'[]'))}finally{busy=false}});
+function resize(){document.documentElement.style.setProperty('--scale',Math.min(innerWidth/1280,innerHeight/720))}addEventListener('resize',resize);resize();
+</script></body></html>

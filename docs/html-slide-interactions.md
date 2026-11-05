@@ -1,3 +1,7 @@
+# Current implementation: local JavaScript
+
+Use [the shipped local scripting API](local-scripting.md) for editable game/app logic, button bindings, state, shape changes, existing animations and navigation. `checkAnswer` is user code, not an API. Scripts run in the HTML player; PPTX preserves them for reimport. The declarative manifest described below remains a separate proposal and must not be treated as the shipped scripting format.
+
 # Proposed public HTML interaction contract
 
 **Status: direct slide navigation implemented; manifest/animation-trigger API proposed.** `data-desq-goto` and sole literal `goToSlide('slide-id')` calls now map to native links. The accompanying quiz's direct navigation is supported; its manifest-driven hint remains a standalone prototype. No host SDK is installed by the example.

@@ -282,8 +282,8 @@ test('response insertion forwards media/layout assets and never requests starter
  const preparedAssets=new Map([['0:svg:0',{media:{name:'private.png',w:20,h:20}}]]);
  const sharedHtmlLayouts=[{title:'Shared',purpose:'Artwork',layout:'html',html:'<section>Snow</section>'}];
  const result=await registry.executeTool('desq_create_deck',{fileId:'file',pageId:'page',title:'Response',audience:'Readers',objective:'Explain',slides:[{layout:'cover',title:'One',purpose:'Open'}]},
-  {insertOnly:true,preparedAssets,sharedHtmlLayouts});
+  {insertOnly:true,preparedAssets,sharedHtmlLayouts,htmlScripting:{version:1}});
  assert.equal(result.ok,true,result.error);assert.equal(received[4].insertOnly,true);assert.equal(received[4].replaceCurrent,false);
- assert.equal(received[4].preparedAssets,preparedAssets);assert.equal(received[4].sharedHtmlLayouts,sharedHtmlLayouts);
+ assert.equal(received[4].preparedAssets,preparedAssets);assert.equal(received[4].sharedHtmlLayouts,sharedHtmlLayouts);assert.deepEqual(received[4].htmlScripting,{version:1});
  registry.dispose();
 });

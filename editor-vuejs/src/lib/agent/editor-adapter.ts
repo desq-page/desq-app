@@ -1,5 +1,7 @@
 import { canvasTextMeasurer } from './deck-text.mjs';
 import {hasHtmlSlideLinks,resolveHtmlSlideLinks} from './html-slide-links.mjs';
+import {resolveImportedScriptProject} from './html-script-project.mjs';
+import {mergeScriptProjects} from 'shared-vuejs/api/scripting';
 import { generatedFontFamilies, loadGeneratedGoogleFonts } from './generated-fonts.mjs';
 import { pageImageCount, promoteSlideBackground } from './slide-background.mjs';
 import { getFileInfo, getSlideInfo, getSlidesSlideId, getSelectSelShps, getSlidesMasterView,
@@ -301,7 +303,7 @@ export const editorAdapter = {
     await saveDexie();
     return { shapeId: shape.id };
   },
-  async createDeck(args, signal?: AbortSignal, onProgress?: (message: string) => void, generateImage?: any, execution: { insertOnly?: boolean; preparedAssets?: Map<string, any>; preparedLayoutAssets?: Map<string, any>; sharedHtmlLayouts?: any[]; allowTextOverflow?: boolean; builtinTheme?: string; rewriteText?: any; replaceCurrent?: boolean; imageKeywords?: any; imageMatches?: any; research?: any; researchImages?: any[]; sourceBundles?: any[] } = {}) {
+  async createDeck(args, signal?: AbortSignal, onProgress?: (message: string) => void, generateImage?: any, execution: { insertOnly?: boolean; preparedAssets?: Map<string, any>; preparedLayoutAssets?: Map<string, any>; sharedHtmlLayouts?: any[]; htmlScripting?: any; allowTextOverflow?: boolean; builtinTheme?: string; rewriteText?: any; replaceCurrent?: boolean; imageKeywords?: any; imageMatches?: any; research?: any; researchImages?: any[]; sourceBundles?: any[] } = {}) {
     const { fileId, pageId, ...spec } = args;
     validateArguments(deckSchema, spec);
     const checkTarget = () => {
@@ -418,6 +420,10 @@ export const editorAdapter = {
       if (getSlideInfo().shapes?.some(protectedShape)) throw new Error('The current slide contains locked or linked content and cannot be replaced by the agent.');
       onProgress?.('Replacing the current slide…');
       if (hasHtmlSlideLinks(compiled.pages)) resolveHtmlSlideLinks(compiled.pages,[pageId]);
+      if (execution.htmlScripting) {
+        const incoming = resolveImportedScriptProject(execution.htmlScripting,[page],[pageId]);
+        updateFile({scripting:mergeScriptProjects((getFileInfo() as any).scripting,incoming)} as any);
+      }
       deselectAll();
       updateSlide({ ...getSlideInfo(), ...page, id: pageId, fileId, layoutid,
         timing: page.timing, transition: page.transition });
@@ -435,8 +441,11 @@ export const editorAdapter = {
     }
     // pasteSlide inserts after the selected page. Advance it after each persisted page,
     // preserving model order and existing slides. Each page is one native Undo operation.
-    const linkedPageIds = hasHtmlSlideLinks(compiled.pages) ? compiled.pages.map(() => genId()) : null;
+    const linkedPageIds = hasHtmlSlideLinks(compiled.pages) || execution.htmlScripting ? compiled.pages.map(() => genId()) : null;
     if (linkedPageIds) resolveHtmlSlideLinks(compiled.pages,linkedPageIds);
+    const incomingScripts = resolveImportedScriptProject(execution.htmlScripting,compiled.pages,linkedPageIds || []);
+    const previousScripts = (getFileInfo() as any).scripting;
+    if (incomingScripts) updateFile({scripting:mergeScriptProjects(previousScripts,incomingScripts)} as any);
     try {
       for (const [index, page] of compiled.pages.entries()) {
         current({ fileId, pageId: pageIds.at(-1) || pageId }); signal?.throwIfAborted();
@@ -452,6 +461,7 @@ export const editorAdapter = {
       }
       await removeEmptyStarter(fileId, starterId, pageIds, warnings, onProgress);
     } catch (error) {
+      if (incomingScripts && !pageIds.length) updateFile({scripting:previousScripts} as any);
       throw new Error(`Deck insertion stopped after ${pageIds.length}/${compiled.pages.length} slides. Inserted pages remain editable; use Undo to remove them. ${error instanceof Error ? error.message : String(error)}`);
     } finally {
       // Even a partially inserted deck needs previews for its committed pages.

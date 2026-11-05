@@ -23,3 +23,10 @@ export function resolveHtmlSlideLinks(pages, slideIds) {
   });
   pages.forEach(page => visit(page.shapes));
 }
+export function collectScriptBindings(shapes){
+  for(const shape of shapes){
+    const source=[...(shape.sourceIds||[])].reverse().find(id=>id.startsWith('desq-html-script-call-'));
+    if(source)shape.link='@run:'+source.slice('desq-html-script-call-'.length);
+    if(shape.children)collectScriptBindings(shape.children);
+  }
+}

@@ -2,9 +2,9 @@
 
 DESQ is a browser-based presentation editor for creating, editing, and sharing presentations in HTML and PowerPoint formats.
 
-For LLM-authored HTML presentations, see [AGENTS.md](AGENTS.md). It documents the current import contract and links to the proposed interaction API and a standalone quiz example.
+For LLM-authored HTML presentations, see [AGENTS.md](AGENTS.md). It documents the import contract and links to the [local JavaScript API](docs/local-scripting.md) and a [standalone quiz](examples/html-slides/local-quiz.html). Edit user functions and bind shapes in **Add-Ins → Local JavaScript**.
 
-Development and production asset preparation syncs this guide and its linked references into `editor-vuejs/public/`, making them available at `/AGENTS.md`, `/docs/html-slide-interactions.md` and `/examples/html-slides/quiz.html`. To refresh these public copies directly, run `node scripts/prepare-authoring-assets.mjs`. Edit the source guides and example, rather than their generated public copies.
+Development and production asset preparation syncs the authoring guides and examples into `editor-vuejs/public/`. To refresh these public copies directly, run `node scripts/prepare-authoring-assets.mjs`.
 
 ## Install and develop
 

@@ -3,7 +3,7 @@ import {resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const publicRoot = new URL('../editor-vuejs/public/', import.meta.url);
-export const authoringAssetPaths = ['AGENTS.md', 'docs/html-slide-interactions.md', 'examples/html-slides/quiz.html'];
+export const authoringAssetPaths = ['AGENTS.md', 'docs/html-slide-interactions.md', 'docs/local-scripting.md', 'examples/html-slides/local-quiz.html', 'examples/html-slides/quiz.html'];
 
 // The repository guides are authoritative; public copies are generated assets.
 export async function prepareAuthoringAssets(target = publicRoot) {

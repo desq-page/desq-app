@@ -175,13 +175,13 @@ async function createExternalBrief() {
       }
       signal.throwIfAborted();
     }
-    const { sharedLayouts, ...deckArguments } = renderedDeck;
+    const { sharedLayouts, scripting, ...deckArguments } = renderedDeck;
     const args = { ...deckArguments, fileId, pageId };
     preflightDeckPlan({ calls: [{ name: 'desq_create_deck', arguments: args }] }, { document: documentResult.result, allowTextOverflow: true });
     signal.throwIfAborted();
     if (getFileInfo()?.id !== fileId || getSlidesSlideId() !== pageId) throw Error('The selected slide changed. Please try again.');
     status.value = 'Creating editable slides…';
-    const result = await registry.executeTool('desq_create_deck', args, { signal, allowTextOverflow: true, insertOnly: true, preparedAssets, preparedLayoutAssets, sharedHtmlLayouts: sharedLayouts, onProgress: (message: string) => { if (active && generation === run) status.value = message; } });
+    const result = await registry.executeTool('desq_create_deck', args, { signal, allowTextOverflow: true, insertOnly: true, preparedAssets, preparedLayoutAssets, sharedHtmlLayouts: sharedLayouts, htmlScripting: scripting, onProgress: (message: string) => { if (active && generation === run) status.value = message; } });
     if (!result.ok) throw Error(result.error);
     if (active && generation === run) status.value = [`Inserted ${result.result.slideCount} editable slides.`, ...importFontWarnings, ...(result.result.warnings || [])].join('\n');
   } catch (error) {

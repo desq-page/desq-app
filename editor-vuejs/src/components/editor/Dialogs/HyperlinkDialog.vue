@@ -215,6 +215,7 @@
       <LayoutHeader
         :label="`Link Action (${piniaSelect().editingInfo ? 'hyperlink on text' : 'click on shape'})`"
       />
+      <p v-if="addonFunc">Local JavaScript binding: {{ addonFunc }}. Edit it in Add-Ins → Local JavaScript.</p>
       <NFlex vertical>
         <NFlex align="center" :wrap="false" :size="4">
           <input
@@ -487,7 +488,7 @@ function updateDisplayURL() {
       hyperlink.value = url.value || "";
     }
 
-    if (!hyperlink.value && !gotoSlide.value && !varValue.value) {
+    if (!hyperlink.value && !gotoSlide.value && !varValue.value && !addonFunc.value) {
       noneSelected.value = true;
     }
   });
