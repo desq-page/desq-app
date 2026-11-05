@@ -29,6 +29,19 @@ for(const {file,legacy} of cases)test('exported standalone HTML runs '+(legacy?'
    (async()=>{try{
     const source=${JSON.stringify(source)},deck=await renderScriptedFrontendSlides(source,parseFrontendSlides(source));
     let id=0;const compiled=compileDeck(deck,{width:1280,height:720,genId:()=>String(++id),geometry:(p,w,h)=>({d:'R0,0,'+w+','+h})});
+    if (${legacy}) {
+      const runs = compiled.pages[1].timing.m.filter(effect =>
+        effect.bh.some(behavior => behavior.pr === 'ppt_x') &&
+        effect.bh.some(behavior => behavior.pr === 'ppt_w'));
+      check(runs.length >= 2, 'Tom and Jerry retain travel and facing in the same effect');
+      for (const run of runs) {
+        const horizontal = run.bh.find(behavior => behavior.pr === 'ppt_x');
+        const facing = run.bh.find(behavior => behavior.pr === 'ppt_w');
+        check(horizontal.cm[1].t === .45 && horizontal.cm[1].v !== horizontal.cm[0].v, 'travel reaches the turnaround');
+        check(facing.cm.some(point => point.t === .5 && String(point.v).includes('(-1)')), 'facing becomes mirrored at 50%');
+        check(run.du === 4 && !run.bh.some(behavior => behavior.pr === 'style.rotation'), 'four-second run without spin');
+      }
+    }
     const doc=blankDocument();doc.slides=compiled.pages.map((page,index)=>({...page,id:'page-'+index,fileId:doc.file.id}));
     resolveHtmlSlideLinks(doc.slides,doc.slides.map(s=>s.id));
     doc.file.slides=doc.slides.map(({id,name,transition,timing})=>({id,name,transition,timing}));doc.file.scripting=resolveImportedScriptProject(deck.scripting,doc.slides,doc.slides.map(s=>s.id));
@@ -45,9 +58,20 @@ for(const {file,legacy} of cases)test('exported standalone HTML runs '+(legacy?'
       const direct=()=>current()?.querySelector('[data-link^="@sld:"]');
       const popup=()=>shape(current(),module.refs['quiz-popup'][0]);
       const trigger=()=>shape(current(),module.refs['trigger-quiz-btn'][0]);
-      const start=async()=>{await until(direct,'legacy start button missing');click(direct());await until(popup,'legacy quiz did not open');check(getComputedStyle(popup()).display==='none','legacy popup initially hidden');click(trigger());await until(()=>getComputedStyle(popup()).display!=='none'&&getComputedStyle(trigger()).display==='none',()=> 'legacy quiz popup was not revealed: '+playbackError);await new Promise(resolve=>setTimeout(resolve,80));};
+      const start=async(verifyMotion=false)=>{
+        await until(direct,'legacy start button missing');click(direct());await until(popup,'legacy quiz did not open');
+        if (verifyMotion) {
+          const run = compiled.pages[1].timing.m.find(effect => effect.bh.some(behavior => behavior.pr === 'ppt_w'));
+          const runner = shape(current(), run.sh);
+          const matrix = () => new win.DOMMatrix(win.getComputedStyle(runner).transform);
+          const facing = () => new win.DOMMatrix(win.getComputedStyle(runner.querySelector(':scope > .in-shp') || runner).transform);
+          await until(() => matrix().e > 50, 'runner did not move across the arena');
+          await until(() => facing().a < -.5 && matrix().e > 50, 'runner did not mirror while displaced');
+        }
+        check(getComputedStyle(popup()).display==='none','legacy popup initially hidden');click(trigger());await until(()=>getComputedStyle(popup()).display!=='none'&&getComputedStyle(trigger()).display==='none',()=> 'legacy quiz popup was not revealed: '+playbackError);await new Promise(resolve=>setTimeout(resolve,80));
+      };
       const answer=(label)=>[...popup().querySelectorAll('[data-link^="@run:"]')].find(node=>label.test(node.textContent));
-      await start();click(answer(/bowl of milk/i));
+      await start(true);click(answer(/bowl of milk/i));
       await until(()=>/tom wins/i.test(current()?.textContent),()=> 'legacy correct branch did not open: '+playbackError+' / '+current()?.textContent.slice(0,120));
       click(current().querySelector('[data-link^="@run:"]'));await start();
       click(answer(/hot pepper pizza/i));

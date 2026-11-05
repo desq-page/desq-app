@@ -201,7 +201,7 @@ export function compileMotion(config, shapes, { width, height } = {}) {
       let xml = ['custom_emphasis', 'custom_entrance'].includes(preset.key)
         ? `<p:cTn id="5" presetClass="${effect === 'custom_entrance' ? 'entr' : 'emph'}" fill="hold"><p:childTnLst></p:childTnLst></p:cTn>`
         : optionRow(preset, options.effect_options);
-      if (preset.key === 'custom_emphasis' && !options.translation_frames) throw Error('Custom Emphasis requires translation keyframes.');
+      if (preset.key === 'custom_emphasis' && !options.translation_frames && !options.property_frames) throw Error('Custom Emphasis requires keyframes.');
       if (preset.key === 'emphasis_spin' && Number.isFinite(options.rotation_from) && Number.isFinite(options.rotation_to)) {
         xml = xml.replace(/<p:childTnLst>[\s\S]*<\/p:childTnLst>/,
           `<p:childTnLst><p:anim calcmode="lin" valueType="num"><p:cBhvr><p:cTn id="6" dur="${Math.round(seconds(options.duration, .5) * 1000)}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>style.rotation</p:attrName></p:attrNameLst></p:cBhvr><p:tavLst><p:tav tm="0"><p:val><p:fltVal val="${round3(options.rotation_from)}"/></p:val></p:tav><p:tav tm="50000"><p:val><p:fltVal val="${round3(options.rotation_to)}"/></p:val></p:tav><p:tav tm="100000"><p:val><p:fltVal val="${round3(options.rotation_from)}"/></p:val></p:tav></p:tavLst></p:anim></p:childTnLst>`);
@@ -217,20 +217,20 @@ export function compileMotion(config, shapes, { width, height } = {}) {
         // it would reset a concurrent parent/child CSS movement on that axis.
         const axes = [['ppt_x', 'x', options.coordinate_width || width], ['ppt_y', 'y', options.coordinate_height || height]]
           .filter(([, axis, dimension]) => frames.some(frame => round3(frame[axis] / dimension) !== 0));
-        if (!axes.length) continue;
+        if (!axes.length && !options.property_frames) continue;
         const behaviors = axes.map(([property, axis, dimension]) => {
           const values = frames.map(frame => `<p:tav tm="${Math.round(frame.t * 100000)}"><p:val><p:strVal val="#${property}+(${round3(frame[axis] / dimension)})"/></p:val></p:tav>`).join('');
           return `<p:anim calcmode="lin" valueType="num"><p:cBhvr><p:cTn id="6" dur="${duration}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>${property}</p:attrName></p:attrNameLst></p:cBhvr><p:tavLst>${values}</p:tavLst></p:anim>`;
         }).join('');
         xml = xml.replace(/<p:childTnLst>[\s\S]*<\/p:childTnLst>/, `<p:childTnLst>${behaviors}</p:childTnLst>`);
       }
-      if (effect === 'custom_entrance') {
+      if (effect === 'custom_entrance' || (effect === 'custom_emphasis' && options.property_frames)) {
         const properties = options.property_frames;
         if (!properties || typeof properties !== 'object') throw Error('Custom Entrance requires property keyframes.');
         const duration = Math.round(seconds(options.duration, .5) * 1000);
         const behaviors = Object.entries(properties).map(([property, frames]) => {
-          if (!['opacity', 'ppt_x', 'ppt_y', 'ppt_w', 'ppt_h'].includes(property) || !Array.isArray(frames) || frames.length < 2 || frames.length > 100 ||
-            frames.some(frame => !Number.isFinite(frame.t) || frame.t < 0 || frame.t > 1 || !Number.isFinite(frame.v))) throw Error('Invalid entrance keyframes.');
+          if (!(effect === 'custom_entrance' ? ['opacity', 'ppt_x', 'ppt_y', 'ppt_w', 'ppt_h'] : ['ppt_w', 'ppt_h']).includes(property) || !Array.isArray(frames) || frames.length < 2 || frames.length > 100 ||
+            frames.some(frame => !Number.isFinite(frame.t) || frame.t < 0 || frame.t > 1 || !Number.isFinite(frame.v))) throw Error('Invalid imported property keyframes.');
           const name = property === 'opacity' ? 'style.opacity' : property;
           const values = frames.map(frame => {
             const value = property === 'opacity' ? String(round3(frame.v)) : ['ppt_w', 'ppt_h'].includes(property) ? `#${property}*(${round3(frame.v)})` : `#${property}+(${round3(frame.v)})`;
@@ -238,8 +238,8 @@ export function compileMotion(config, shapes, { width, height } = {}) {
           }).join('');
           return `<p:anim calcmode="lin" valueType="num"><p:cBhvr><p:cTn id="6" dur="${duration}" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>${name}</p:attrName></p:attrNameLst></p:cBhvr><p:tavLst>${values}</p:tavLst></p:anim>`;
         }).join('');
-        const visible = '<p:set><p:cBhvr><p:cTn id="7" dur="1" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>style.visibility</p:attrName></p:attrNameLst></p:cBhvr><p:to><p:strVal val="visible"/></p:to></p:set>';
-        xml = xml.replace(/<p:childTnLst>[\s\S]*<\/p:childTnLst>/, `<p:childTnLst>${visible}${behaviors}</p:childTnLst>`);
+        const visible = effect === 'custom_entrance' ? '<p:set><p:cBhvr><p:cTn id="7" dur="1" fill="hold"/><p:tgtEl><p:spTgt spid="2"/></p:tgtEl><p:attrNameLst><p:attrName>style.visibility</p:attrName></p:attrNameLst></p:cBhvr><p:to><p:strVal val="visible"/></p:to></p:set>' : '';
+        xml = xml.replace('</p:childTnLst>', `${visible}${behaviors}</p:childTnLst>`);
       }
       if (preset.key === 'emphasis_transparency') {
         const minimumOpacity = round3(1 - (options.effect_options?.amount ?? .5));
@@ -323,14 +323,14 @@ export function compileMotion(config, shapes, { width, height } = {}) {
           throw Error(`Native animation ${effect} did not compile.`);
         const converted = result.m[0];
         if (/^html-reveal-\d+$/.test(target)) converted.sourceTarget = target;
-        if (options.translation_frames) converted.customName = 'Custom Emphasis';
+        if (effect === 'custom_emphasis') converted.customName = 'Custom Emphasis';
         if (effect === 'custom_entrance') converted.customName = 'Custom Entrance';
         if (targetIndex) converted.tr = 2;
         converted.nativeTiming = {
           rowXml: xml,
           // These rows are authored at the requested duration, rather than
           // copied from the catalog's unscaled timing template.
-          defaultDurationMs: options.translation_frames || effect === 'custom_entrance' || preset.key === 'emphasis_transparency' || (preset.key === 'emphasis_spin' && Number.isFinite(options.rotation_from))
+          defaultDurationMs: options.translation_frames || options.property_frames || effect === 'custom_entrance' || preset.key === 'emphasis_transparency' || (preset.key === 'emphasis_spin' && Number.isFinite(options.rotation_from))
             ? Math.round(duration * 1000) : defaultDuration,
         };
         converted.ac = options.accelerate ?? converted.ac;

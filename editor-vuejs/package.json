@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "vue3-google-login": "^2.0.33",
-    "shared-vuejs": "file:../packages/shared-vuejs-0.2.7.tgz",
+    "shared-vuejs": "file:../packages/shared-vuejs-0.2.8.tgz",
     "@desq/player": "file:../packages/desq-player-1.0.6.tgz"
   },
   "license": "AGPL-3.0-only"

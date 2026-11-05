@@ -12,7 +12,7 @@
   "dependencies": {
     "vanjs-core": "^1.6.0",
     "vanjs-ext": "^0.6.3",
-    "shared-vuejs": "file:../packages/shared-vuejs-0.2.7.tgz",
+    "shared-vuejs": "file:../packages/shared-vuejs-0.2.8.tgz",
     "@desq/player": "file:../packages/desq-player-1.0.6.tgz"
   },
   "devDependencies": {
