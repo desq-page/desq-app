@@ -15,7 +15,7 @@
         <textarea id="external-prompt" readonly rows="6" :value="externalFullPrompt" placeholder="Your prompt will appear here, with a link to AGENTS.md on desq.page." aria-describedby="external-prompt-note" @keydown.stop @keyup.stop @keypress.stop @paste.stop />
         <p id="external-prompt-note" class="model-note">The prompt asks your AI to read <a :href="AUTHORING_GUIDE_URL" target="_blank" rel="noopener noreferrer">AGENTS.md on desq.page</a>.</p>
         <input ref="responseFileInput" type="file" accept=".html,.htm,text/html" hidden :disabled="busy || loadingResponse" @click="clearSelectedResponseFile" @change="loadExternalHtml" />
-        <button class="response-file-button" type="button" :disabled="busy || loadingResponse" @click="responseFileInput?.click()">{{ loadingResponse ? 'Reading HTML…' : 'Choose HTML response' }}</button>
+        <button class="response-file-button" type="button" :disabled="busy || loadingResponse" @click="responseFileInput?.click()">{{ loadingResponse ? 'Reading HTML…' : 'Upload HTML response file' }}</button>
         <p v-if="selectedResponseFile" class="selected-response-file" role="status">Loaded: {{ selectedResponseFile }}</p>
         <p v-if="externalBriefError" role="alert">{{ externalBriefError }}</p>
         <p v-if="externalBriefDeck" class="response-summary">{{ externalBriefDeck.title }} · {{ externalBriefDeck.slides.length }} slides</p>
@@ -110,7 +110,7 @@ async function copyPrompt() {
   if (!externalFullPrompt.value) return;
   try {
     await navigator.clipboard.writeText(externalFullPrompt.value);
-    status.value = 'Prompt copied. Paste it into your AI chat, then download the HTML response.';
+    status.value = 'Prompt copied. Paste it into your AI chat, then download the HTML response and upload here.';
   } catch { status.value = 'Could not copy automatically. Select and copy the prompt above.'; }
 }
 

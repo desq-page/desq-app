@@ -13,7 +13,7 @@ The file must include its complete markup, inline CSS, standalone controller and
 ## Choose the content model first
 
 - **Business presentations:** use [Frontend Slides](https://github.com/zarazhangrui/frontend-slides) for visual design, composition and presentation flow, then apply this contract. Read its current `SKILL.md`, `html-template.md`, and `viewport-base.css` rather than guessing their contents.
-- **Quizzes, games, lessons and branching stories:** model the screens and their interaction graph before drawing them. Give every choice and outcome an explicit destination or animation action. Use the proposed declarative contract in [docs/html-slide-interactions.md](docs/html-slide-interactions.md); report that native interaction mapping is not yet implemented.
+- **Quizzes, games, lessons and branching stories:** model the screens and their interaction graph before drawing them. Give every choice and outcome an explicit destination or animation action. Use [docs/html-slide-interactions.md](docs/html-slide-interactions.md): direct slide jumps are supported; the manifest and animation-trigger API remain proposed.
 - **Continuous simulations, physics, arbitrary scoring or network-backed games:** do not promise faithful native slide conversion. Explain the gap or design a finite set of screens/actions that represents the intended experience.
 
 Frontend Slides is sufficient as a design baseline for ordinary business decks, not as an unconditional DESQ import specification. Its optional Fontshare fonts, canvas effects, browser editing/storage controls and custom JavaScript are outside the current import contract. Prefer Google Fonts, editable DOM/SVG artwork and declarative interactions. Do not copy its inline editor into a DESQ-targeted deck unless requested.
@@ -33,8 +33,9 @@ This section describes the local source checkout, not every older packaged core 
 | Decorative pseudo-elements | Empty solid decorations can be materialized; other effects vary | Prefer explicit elements for important artwork and hit targets |
 | Tiled animated backgrounds | The implemented radial-dot/linear-position subset becomes native layers | Do not infer general CSS background-animation support |
 | Native text/path precision | Imported shape paths are rounded with `round3` | Round generated path numbers to three decimals too |
-| HTML links and click handlers | Anchors are unwrapped; link/event attributes and scripts are removed from imported content | Standalone navigation does not yet become native interaction |
-| Proposed `data-desq-goto` and interaction JSON | Authoring proposal and example only | Never describe these as a shipped import API |
+| Direct slide jumps | `data-desq-goto` and a sole literal `goToSlide('slide-id')` / `gotoSlide('slide-id')` call are mapped before handlers are stripped | Use explicit destinations on buttons; targets must exist |
+| Custom click handlers and anchors | Arbitrary callbacks are not interpreted; anchors are still unwrapped | Do not hide navigation inside `checkAnswer()`, `restartGame()` or other custom functions |
+| Interaction JSON and animation triggers | Authoring proposal and example only | Never describe the whole interaction API as shipped |
 
 Do not invent a `window.DesqSlides`, host bridge, trigger attribute or SDK call and assume the editor supports it. `data-desq-reveal`, `data-desq-entrance` and `data-desq-repeating` are capture-generated implementation metadata, not a stable authoring API.
 
@@ -91,9 +92,10 @@ win/lose --restart--> intro
 question --help--> play the hint animation on this screen
 ```
 
-Then implement those actions in the standalone HTML using the declarative conventions in [the proposed interaction API](docs/html-slide-interactions.md). Use [examples/html-slides/quiz.html](examples/html-slides/quiz.html) as a working browser example, not evidence that native mapping already exists.
+Then implement those actions in the standalone HTML using [the interaction contract](docs/html-slide-interactions.md). The direct `data-desq-goto` buttons in [examples/html-slides/quiz.html](examples/html-slides/quiz.html) map to native slide links; its manifest-driven hint trigger remains a browser prototype.
 
-- Prefer a `<button type="button" id="..." data-desq-goto="slide-win">` for an editable button with a slide destination. The attribute is proposed; a small local runtime must currently implement it in the standalone file.
+- Prefer a `<button type="button" id="..." data-desq-goto="slide-win">` for an editable button with a slide destination. Implement a small runtime for the standalone file; DESQ imports the declared destination as a native link.
+- A handler whose entire contents are `goToSlide('slide-win')` (case-insensitive function name, optional `return`/trailing semicolon) also maps. Variables, conditions, multiple statements, wrapper functions and calls with side effects are not interpreted. Use `data-desq-goto` to expose the destination instead.
 - Plain `<a href="#slide-win">` is a useful standalone hyperlink, but the importer currently unwraps it, including its styling. Do not rely on anchor styling or navigation surviving import.
 - Represent “show feedback”, “play an animation”, “wait”, and “jump” as explicit data actions. Do not bury essential behavior exclusively in `onclick`, timers, closure variables or arbitrary DOM mutation.
 - A same-slide reveal is an animation trigger, not a new slide unless the content intentionally requires a separate screen. A wrong answer must not accidentally advance to the correct outcome.
@@ -102,7 +104,7 @@ Then implement those actions in the standalone HTML using the declarative conven
 - Keep important instructions/results as authored text. JavaScript may toggle their visibility but should not be the sole source of their content.
 - Respect reduced-motion preferences while preserving feedback and navigation.
 
-Until native mapping lands, deliver a working standalone experience and disclose the native interaction gap. Never claim an imported game is fully functional because its buttons are visible.
+Direct navigation does not preserve custom game state, quiz popups or arbitrary callback behavior. Disclose those remaining gaps. Never claim an imported game is fully functional because its buttons are visible or one jump works.
 
 ## Verify before delivery
 

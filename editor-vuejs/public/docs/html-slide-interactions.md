@@ -1,6 +1,6 @@
 # Proposed public HTML interaction contract
 
-**Status: proposal; native HTML-import mapping is not implemented.** The accompanying quiz implements a small local browser runtime for these conventions. No DESQ host SDK or native import support is implied by that example.
+**Status: direct slide navigation implemented; manifest/animation-trigger API proposed.** `data-desq-goto` and sole literal `goToSlide('slide-id')` calls now map to native links. The accompanying quiz's direct navigation is supported; its manifest-driven hint remains a standalone prototype. No host SDK is installed by the example.
 
 The objective is a single declaration that an HTML runtime can execute and an importer can map to editable slide hyperlinks and native animation triggers. The importer must not reverse-engineer arbitrary JavaScript.
 
@@ -8,9 +8,9 @@ The objective is a single declaration that an HTML runtime can execute and an im
 
 Slide markers already work. The native document/player have slide-link and shape-trigger concepts. Native timing export supports interactive sequences in `timing.i`.
 
-The HTML bridge is missing: capture removes `on*`/link attributes, unwraps anchors, and discards scripts. Authored element identities are not preserved universally through all native grouping operations. The SVG compiler's hyperlink allowlist is narrower than the player's stable-slide-ID link syntax. PowerPoint also needs an actual slide relationship, not an external URL containing an HTML fragment.
+The direct-jump bridge extracts declared destinations or sole literal calls before capture removes event attributes and scripts. It preserves the button's native geometry through grouping, resolves destinations to native slide IDs, and writes internal PowerPoint slide relationships. It does not interpret custom wrapper functions, variables or branching JavaScript. Anchors are still unwrapped. Manifest parsing, general element-identity transport, hidden-state capture and animation-trigger mapping remain to be implemented.
 
-Consequently, adding attributes to a generated HTML file alone will not preserve its interactivity on import.
+Consequently, direct destination attributes preserve navigation, but adding proposed trigger/manifest fields alone will not preserve the rest of a game's behavior.
 
 ## Authoring surface to implement
 
@@ -20,12 +20,14 @@ Use HTML attributes for simple navigation and JSON for animation/event sequences
 | --- | --- | --- |
 | `section.slide[data-desq-slide][id]` | Slide identity and boundary | Supported today |
 | An ordinary DOM `id` on a button/shape | Authored element identity | Browser-supported; complete native identity mapping pending |
-| `data-desq-goto="slide-win"` | Jump to the slide with that authored ID | Proposed |
+| `data-desq-goto="slide-win"` | Jump to the slide with that authored ID | Supported |
 | `data-desq-trigger="hint"` | Start the named interaction binding on click/keyboard activation | Proposed |
 | `script#desq-interactions[type="application/json"]` | Versioned interaction manifest | Proposed |
 | `data-desq-initial="hidden"` | Element begins hidden in playback but remains an editable authored object | Proposed |
 
 Choose either `data-desq-goto` or `data-desq-trigger` on one control. A control with both is invalid. All referenced IDs are document-global and unique; they are not slide numbers. A runtime may change generated native IDs, but must retain the authored-ID mapping.
+
+A legacy handler can also be imported when its entire body is a literal call such as `goToSlide('slide-win')` or `return gotoSlide("slide-win");`. No handler is evaluated to discover its destination. `checkAnswer(true)`, `restartGame()`, expressions, multi-statement handlers and callbacks registered with `addEventListener` are outside this compatibility subset. Declare `data-desq-goto` on each source button instead. Missing and conflicting explicit targets are errors.
 
 An actual HTML anchor with a same-document `href` can also represent a direct jump in a future adapter. If an adapter supports both forms, conflicting destinations must be rejected, not guessed.
 
@@ -89,10 +91,10 @@ Keep the first implementation intentionally finite: slide jumps, explicit feedba
 
 ## Native mapping plan
 
-1. Parse inert HTML and the JSON manifest before capture/sanitization. Validate version, IDs, dimensions, action/effect allowlists and all references. Suggested v1 bounds: 20 slides, 200 bindings/animations, 16 actions per binding, 60,000 ms per duration, and 64 KiB manifest text. These are proposed API limits, not existing parser guarantees.
+1. Direct jumps already parse inert HTML before capture/sanitization. Add JSON manifest parsing and validate version, IDs, dimensions, action/effect allowlists and all references. Suggested v1 bounds: 20 slides, 200 bindings/animations, 16 actions per binding, 60,000 ms per duration, and 64 KiB manifest text. These are proposed manifest limits, not existing parser guarantees.
 2. Build an authored-slide-ID → imported-slide-ID map, plus an authored-element-ID → native-shape/group-ID map. Preserve mappings in document metadata through save/reopen. Retain all hidden-state objects for editing.
 3. Transport source element identities through SVG measurement and native grouping. A painted button and its label must form one hit target. Preserve discontiguous targets explicitly; do not guess by caption text or nearest geometry.
-4. Map simple jumps to native slide hyperlinks after native IDs are assigned. The current player understands `@sld:<native-id>`; do not feed arbitrary raw IDs into the existing SVG compiler's hyperlink field without adding a validated typed mapping. PPTX export must write an internal slide relationship and action.
+4. Direct jumps now resolve to `@sld:<native-id>` after native IDs are assigned, including inserted decks. The mapping is separate from the SVG compiler's external-hyperlink allowlist. PPTX serialization writes an internal slide relationship and action. Retain this behavior when extending the manifest adapter.
 5. Map same-slide `play` bindings to native interactive timing groups, using the source button's native ID as the trigger (`trs`) and target objects as effect targets. Keep these out of the ordinary slide-click sequence. Preserve group remapping.
 6. Either implement sequences such as `show → wait → goto` consistently in the player/export adapter or reject them with a precise unsupported-action report. Do not silently turn them into immediate jumps. Native PowerPoint may require a narrower supported subset than standalone HTML.
 7. Keep only validated data in the native document. The existing opaque capture sandbox remains separate from the editor; the editor never receives executable imported script handlers.

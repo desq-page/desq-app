@@ -1,4 +1,5 @@
 import { canvasTextMeasurer } from './deck-text.mjs';
+import {hasHtmlSlideLinks,resolveHtmlSlideLinks} from './html-slide-links.mjs';
 import { generatedFontFamilies, loadGeneratedGoogleFonts } from './generated-fonts.mjs';
 import { pageImageCount, promoteSlideBackground } from './slide-background.mjs';
 import { getFileInfo, getSlideInfo, getSlidesSlideId, getSelectSelShps, getSlidesMasterView,
@@ -416,6 +417,7 @@ export const editorAdapter = {
       current(args);
       if (getSlideInfo().shapes?.some(protectedShape)) throw new Error('The current slide contains locked or linked content and cannot be replaced by the agent.');
       onProgress?.('Replacing the current slide…');
+      if (hasHtmlSlideLinks(compiled.pages)) resolveHtmlSlideLinks(compiled.pages,[pageId]);
       deselectAll();
       updateSlide({ ...getSlideInfo(), ...page, id: pageId, fileId, layoutid,
         timing: page.timing, transition: page.transition });
@@ -433,11 +435,14 @@ export const editorAdapter = {
     }
     // pasteSlide inserts after the selected page. Advance it after each persisted page,
     // preserving model order and existing slides. Each page is one native Undo operation.
+    const linkedPageIds = hasHtmlSlideLinks(compiled.pages) ? compiled.pages.map(() => genId()) : null;
+    if (linkedPageIds) resolveHtmlSlideLinks(compiled.pages,linkedPageIds);
     try {
       for (const [index, page] of compiled.pages.entries()) {
         current({ fileId, pageId: pageIds.at(-1) || pageId }); signal?.throwIfAborted();
         onProgress?.(`Inserting slide ${index + 1} of ${compiled.pages.length}: ${page.name}`);
-        const id = await pasteSlide({ ...page, id: pageId, fileId, layoutid }, fileId);
+        const id = await pasteSlide({ ...page, id: pageId, fileId, layoutid }, fileId, undefined, linkedPageIds ? {id:linkedPageIds[index]} : undefined);
+        if (linkedPageIds && id !== linkedPageIds[index]) throw Error('Core does not support importing linked HTML slides. Update desq-core.');
         pageIds.push(id);
         if (getFileInfo()?.id !== fileId) throw new Error('The open document changed.');
         onProgress?.(`Saving slide ${index + 1} of ${compiled.pages.length}…`);

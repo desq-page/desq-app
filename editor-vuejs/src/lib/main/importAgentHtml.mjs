@@ -6,6 +6,7 @@ import { compileDeck } from '../agent/deck-compiler.mjs';
 import { loadGeneratedGoogleFonts, renderedHtmlFontFamilies } from '../agent/generated-fonts.mjs';
 import { prepareEmbeddedHtmlImages, embeddedHtmlAssets } from '../agent/html-embedded-images.mjs';
 import { canvasTextMeasurer } from '../agent/deck-text.mjs';
+import { resolveHtmlSlideLinks } from '../agent/html-slide-links.mjs';
 
 export async function agentHtmlDocument(source, name) {
   const embedded = await prepareEmbeddedHtmlImages(source);
@@ -25,6 +26,7 @@ export async function agentHtmlDocument(source, name) {
   doc.file.fonts = [...new Set(families)].map(family => ({ family, type: 'google' }));
   doc.file.name = (name || deck.title).replace(/\.html?$/i, '');
   doc.slides = compiled.pages.map(page => ({ ...page, id: genId(), fileId: doc.file.id }));
+  resolveHtmlSlideLinks(doc.slides, doc.slides.map(slide => slide.id));
   if (deck.sharedLayouts?.length) {
     const shared = compileDeck({ ...deck, slides: deck.sharedLayouts }, { width:1280,height:720,genId,allowTextOverflow:true,
       geometry:(preset,w,h)=>({d:`R0,0,${w},${h}`}), assets:embeddedHtmlAssets({slides:deck.sharedLayouts},embedded.images), ...(context ? {measureText:canvasTextMeasurer(context)} : {}) });
