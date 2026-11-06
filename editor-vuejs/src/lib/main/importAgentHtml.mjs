@@ -1,7 +1,10 @@
+import { normalizeHtmlFractionContainers } from '../agent/html-fractions.mjs';
+import { inheritSharedSlideBackground, sharedSlideBackground } from '../agent/slide-background.mjs';
 import { parseFrontendSlides } from 'shared-vuejs/api/html-import-frontend-slides-import';
 import { renderScriptedFrontendSlides } from 'shared-vuejs/api/html-import-scripted-html-render';
 import { blankDocument } from 'shared-vuejs/api/document-model';
 import { genId } from 'shared-vuejs/api/utility';
+import { prepareHtmlFormFields } from '../agent/html-form-fields.mjs';
 import { compileDeck } from '../agent/deck-compiler.mjs';
 import { loadGeneratedGoogleFonts, renderedHtmlFontFamilies } from '../agent/generated-fonts.mjs';
 import { prepareEmbeddedHtmlImages, embeddedHtmlAssets } from '../agent/html-embedded-images.mjs';
@@ -10,16 +13,21 @@ import { resolveHtmlSlideLinks } from '../agent/html-slide-links.mjs';
 import {resolveImportedScriptProject} from '../agent/html-script-project.mjs';
 
 export async function agentHtmlDocument(source, name) {
-  const embedded = await prepareEmbeddedHtmlImages(source);
+  const {source: prepared, fields} = prepareHtmlFormFields(normalizeHtmlFractionContainers(source).trim()
+    .replace(/^```(?:html)?\s*/i, '').replace(/\s*```$/, ''));
+  const embedded = await prepareEmbeddedHtmlImages(prepared);
   source = embedded.source;
-  const deck = await renderScriptedFrontendSlides(source, parseFrontendSlides(source));
+  const parsed = parseFrontendSlides(source);
+  // Chrome can round each slide's settling timer up to one second in the hidden iframe.
+  const timeout = 15000 + (parsed.slides.length - 1) * 1000;
+  const deck = await renderScriptedFrontendSlides(source, parsed, { timeout });
   const { googleFonts } = await import('shared-vuejs/api/googleFonts');
   const catalog = new Map(googleFonts.map(font => [font[0].toLowerCase(), font[0]]));
   const families = renderedHtmlFontFamilies(deck).map(family => catalog.get(family.toLowerCase())).filter(Boolean);
   await loadGeneratedGoogleFonts([...new Set(families)]);
   await document.fonts?.ready;
   const context = document.createElement('canvas').getContext('2d');
-  const compiled = compileDeck(deck, { width: 1280, height: 720, genId, allowTextOverflow: true,
+  const compiled = compileDeck(deck, { width: 1280, height: 720, genId, allowTextOverflow: true, htmlFormFields: fields,
     geometry: (preset, w, h) => ({ d: `R0,0,${w},${h}` }), assets: embeddedHtmlAssets(deck, embedded.images),
     ...(context ? { measureText: canvasTextMeasurer(context) } : {}) });
   const doc = blankDocument();
@@ -29,11 +37,16 @@ export async function agentHtmlDocument(source, name) {
   doc.slides = compiled.pages.map(page => ({ ...page, id: genId(), fileId: doc.file.id }));
   resolveHtmlSlideLinks(doc.slides, doc.slides.map(slide => slide.id));
   if(deck.scripting)doc.file.scripting=resolveImportedScriptProject(deck.scripting,doc.slides,doc.slides.map(slide=>slide.id));
-  if (deck.sharedLayouts?.length) {
-    const shared = compileDeck({ ...deck, slides: deck.sharedLayouts }, { width:1280,height:720,genId,allowTextOverflow:true,
-      geometry:(preset,w,h)=>({d:`R0,0,${w},${h}`}), assets:embeddedHtmlAssets({slides:deck.sharedLayouts},embedded.images), ...(context ? {measureText:canvasTextMeasurer(context)} : {}) });
-    doc.layouts = shared.pages.map(page => ({ ...page, id:genId(), fileId:doc.file.id, name:'Shared HTML layout', sharedHtmlLayout:true }));
-    for (const slide of doc.slides) { slide.layoutid = doc.layouts[0].id; slide.showMaster = 1; }
+  const background = sharedSlideBackground(doc.slides, deck.slides);
+  if (deck.sharedLayouts?.length || background) {
+    const shared = deck.sharedLayouts?.length
+      ? compileDeck({ ...deck, slides: deck.sharedLayouts }, { width:1280,height:720,genId,allowTextOverflow:true,
+        geometry:(preset,w,h)=>({d:`R0,0,${w},${h}`}), assets:embeddedHtmlAssets({slides:deck.sharedLayouts},embedded.images), ...(context ? {measureText:canvasTextMeasurer(context)} : {}) }).pages[0]
+      : { shapes: [] };
+    const layout = { ...shared, bg: shared.bg ?? background, id:genId(), fileId:doc.file.id, name:'Shared HTML layout', sharedHtmlLayout:true };
+    doc.layouts = [layout];
+    inheritSharedSlideBackground(doc.slides, deck.slides, layout, { width: 1280, height: 720, genId }, deck.sharedLayouts?.[0]);
+    for (const slide of doc.slides) { slide.layoutid = layout.id; slide.showMaster = 1; }
   }
   doc.file.slides = doc.slides.map(({ id, name, transition, layoutid, showMaster }) => ({ id, name, transition, layoutid, showMaster }));
   return doc;

@@ -17,6 +17,18 @@ test('published authoring assets match their sources and include linked local re
     assert.equal(await readFile(published,'utf8'),await readFile(new URL('../'+path,import.meta.url),'utf8'));
     if(path.endsWith('.md')){
       const text=await readFile(published,'utf8');
+      const html=await readFile(new URL(path.replace(/\.md$/, '.html'),target),'utf8');
+      assert.match(html,/<!doctype html>/);
+      assert.match(html,/<h1>/);
+      for(const [,link] of html.matchAll(/href="([^"]+)"/g)){
+        if(/^https?:|^#/.test(link))continue;
+        assert.ok((await stat(new URL(link,published))).isFile(),`Unpublished HTML reference: ${link}`);
+      }
+      if (path === 'AGENTS.md') {
+        assert.match(html,/<table>/);
+        assert.match(html,/&lt;mfrac&gt;/);
+        assert.match(html,/href="docs\/local-scripting.html"/);
+      }
       for(const [,link] of text.matchAll(/\]\(([^)]+)\)/g)){
         if(/^https?:|^#/.test(link))continue;
         assert.ok((await stat(new URL(link,published))).isFile(),`Unpublished reference: ${link}`);
@@ -32,7 +44,7 @@ test('HTML authoring prompts reference the public contract without embedding its
   assert.equal(buildHtmlAuthoringPrompt('  '),'');
   const prompt=buildHtmlAuthoringPrompt('  Build a branching geography game.  ');
   assert.ok(prompt.includes(AUTHORING_GUIDE_URL));
-  assert.ok(prompt.includes('https://desq.page/docs/html-slide-interactions.md'));
+  assert.ok(prompt.includes('https://desq.page/docs/html-slide-interactions.html'));
   assert.ok(prompt.endsWith('Build a branching geography game.'));
   assert.match(prompt,/downloadable UTF-8 \.html/);
   assert.match(prompt,/animations and morph/);

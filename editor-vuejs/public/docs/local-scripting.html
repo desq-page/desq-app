@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DESQ authoring guide</title>
+</head>
+<body>
+<main>
+<h1>Local JavaScript for HTML slides</h1>
+<p>DESQ stores editable JavaScript modules and button bindings in the document. Open <strong>Add-Ins → Local JavaScript</strong> to edit code, choose an exported function and JSON arguments, then <strong>Save and bind selected shape</strong>. Saving and thumbnails do not execute these modules. Play the HTML presentation to run them.</p>
+<p><code>checkAnswer</code>, <code>restartGame</code> and other game functions are user code. They are not DESQ APIs. The host API is the <code>ctx</code> argument passed to the selected function:</p>
+<pre><code class="language-js">export async function checkAnswer(ctx, isCorrect) {
+  ctx.state.set(&#39;score&#39;, (ctx.state.get(&#39;score&#39;) || 0) + (isCorrect ? 1 : 0));
+  await ctx.shapes.hide(&#39;quiz-popup&#39;);
+  await ctx.slides.goto(isCorrect ? &#39;slide-win&#39; : &#39;slide-lose&#39;);
+}
+</code></pre>
+<p>Use exported function declarations (<code>export function</code> or <code>export async function</code>). Modules can import other stored modules by ID (<code>import {helper} from &#39;helpers&#39;</code>). There are no remote imports. Each click gets a fresh JavaScript VM; use <code>ctx.state</code>, rather than module globals, for state that persists between clicks. State starts from the document&#39;s initial JSON state on each playback and is not written back to the editor.</p>
+<h2>Host API v1</h2>
+<p>Await host actions in sequence. Navigation must be the last host action in a function.</p>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ctx.state.get(name)</code></td>
+<td>Read playback JSON state</td>
+</tr>
+<tr>
+<td><code>ctx.state.set(name, value)</code></td>
+<td>Store a JSON value for later clicks</td>
+</tr>
+<tr>
+<td><code>await ctx.shapes.show(id)</code> / <code>hide(id)</code></td>
+<td>Change shape/group visibility; referenced shapes on unloaded slides update when they load</td>
+</tr>
+<tr>
+<td><code>await ctx.shapes.text(id, value)</code></td>
+<td>Replace the contents of one text box with plain text; rich formatting is flattened</td>
+</tr>
+<tr>
+<td><code>await ctx.shapes.move(id, x, y)</code></td>
+<td>Set a translation offset in slide coordinates, not an absolute position; each offset must be within ±10,000</td>
+</tr>
+<tr>
+<td><code>await ctx.shapes.style(id, styles)</code></td>
+<td>Set <code>opacity</code> (0–1), <code>color</code>, <code>fill</code>, <code>stroke</code>, or <code>backgroundColor</code>; colors accept simple names, hex and rgb/rgba</td>
+</tr>
+<tr>
+<td><code>await ctx.animations.play(id)</code></td>
+<td>Replay existing native effects for a shape on the current slide (or an effect ID); this does not compile arbitrary JavaScript into animations</td>
+</tr>
+<tr>
+<td><code>await ctx.wait(milliseconds)</code></td>
+<td>Wait 0–10,000 ms</td>
+</tr>
+<tr>
+<td><code>await ctx.slides.goto(id)</code></td>
+<td>Jump to a slide, including a hidden destination</td>
+</tr>
+</tbody></table>
+<p><code>gotoSlide(id)</code> is also available directly in DESQ scripts. The importer replaces the recognized legacy HTML navigation helper with calls to this API. Browser integrations using the public player bundle can call <code>player.gotoSlide(id)</code> with a native slide ID or <code>player.gotoSlide(index)</code> with a one-based slide index.</p>
+<p>Imported HTML element/slide IDs are retained as aliases and mapped to native IDs. The dialog lists aliases and native IDs. New code written in the editor can use the listed native IDs. Shape changes affect playback only. Reopening playback starts clean. Pending scripts are cancelled on navigation and stopping playback; repeated clicks while a handler runs are ignored.</p>
+<p>The runtime uses QuickJS inside a dedicated Worker. User modules have no browser DOM, <code>window</code>, <code>fetch</code>, editor storage, network, or timer APIs. Use <code>ctx.wait</code>, not <code>setTimeout</code>. Each invocation has a 15-second wall-clock deadline, a 500-ms CPU budget per execution turn, 16 MiB VM memory and at most 128 host calls. A failed handler reports a console error and a <code>desq-script-error</code> browser event; it does not advance the slide.</p>
+<h2>Authoring downloadable HTML</h2>
+<p>Deliver one downloadable, self-contained UTF-8 <code>.html</code> file. Follow <a href="../AGENTS.html">AGENTS.md</a> for slide boundaries, fonts, editable artwork, animations, morph continuity and interactive app/game design. Preserve a working standalone browser controller as well as the import declarations.</p>
+<p>Prefer explicit modules and button bindings:</p>
+<pre><code class="language-html">&lt;section class=&quot;slide active&quot; data-desq-slide id=&quot;slide-question&quot;&gt;
+  &lt;button id=&quot;answer-correct&quot; data-desq-module=&quot;game&quot;
+    data-desq-run=&quot;checkAnswer&quot; data-desq-args=&quot;[true]&quot;&gt;Correct choice&lt;/button&gt;
+  &lt;button id=&quot;answer-wrong&quot; data-desq-module=&quot;game&quot;
+    data-desq-run=&quot;checkAnswer&quot; data-desq-args=&quot;[false]&quot;&gt;Wrong choice&lt;/button&gt;
+  &lt;div id=&quot;quiz-popup&quot; style=&quot;display:none&quot;&gt;Feedback&lt;/div&gt;
+&lt;/section&gt;
+&lt;section class=&quot;slide&quot; data-desq-slide id=&quot;slide-win&quot;&gt;You won!&lt;/section&gt;
+&lt;section class=&quot;slide&quot; data-desq-slide id=&quot;slide-lose&quot;&gt;Try again&lt;/section&gt;
+&lt;script type=&quot;application/desq-script&quot; data-module=&quot;game&quot;&gt;
+export async function checkAnswer(ctx, correct) {
+  await ctx.shapes.show(&#39;quiz-popup&#39;);
+  await ctx.wait(600);
+  await ctx.slides.goto(correct ? &#39;slide-win&#39; : &#39;slide-lose&#39;);
+}
+&lt;/script&gt;
+</code></pre>
+<p>This declaration alone does not run in an ordinary browser. Include a small standalone controller that loads these same modules and passes a browser implementation of <code>ctx</code>. See the complete <a href="../examples/html-slides/local-quiz.html">local quiz example</a>. Never put both a direct <code>data-desq-goto</code> and a script binding on the same control. Use document-global unique element and slide IDs. Keep hidden feedback as authored DOM with an ID; it is imported as editable geometry and initially hidden in playback.</p>
+<p>For a simple unconditional jump, keep using <code>data-desq-goto=&quot;slide-id&quot;</code> or a sole literal <code>goToSlide(&#39;slide-id&#39;)</code> handler. Those become ordinary native slide hyperlinks and can work in PowerPoint without scripting.</p>
+<h2>Existing onclick HTML</h2>
+<p>The importer stores inline <code>onclick</code> bodies as generated exported functions and retains parseable top-level function declarations and simple literal/function variable declarations. The original inline script text is also stored for reference. This extraction does not execute the code in the editor.</p>
+<p>A narrow compatibility facade recognizes <code>document.getElementById(id).classList.add/remove(&#39;show&#39;/&#39;visible&#39;)</code>, visibility/display assignments, simple style assignments, and <code>.slide</code> class-based navigation. This covers the imported Tom and Jerry popup/answer/restart pattern. It is not a general DOM implementation. Arbitrary selectors, listeners, timers, DOM construction, closure state and external scripts need to be rewritten using <code>ctx</code>. Unsupported operations fail during playback; preserving source does not guarantee that every imported game will run unchanged.</p>
+<p>Only button/shape click bindings are implemented. Lifecycle events, general event listeners, a visual sequence editor, and automatic translation of arbitrary JavaScript into PowerPoint animations are outside v1. Existing native animations and slide transitions remain available independently.</p>
+<h2>Save and export</h2>
+<ul>
+<li><strong>DESQ document / HTML export:</strong> preserves modules, bindings, aliases and initial state. The HTML player runs the scripts. They remain editable after reimport of DESQ&#39;s document-bearing HTML format.</li>
+<li><strong>PPTX export:</strong> stores the versioned project in <code>customXml/desq-scripting.xml</code>, with a presentation relationship and content-type entry. Shape extensions preserve <code>@run:&lt;binding-id&gt;</code> / <code>@set:LET(name,literal)</code> links and stable shape identities. Slide aliases map to the final slide part names. DESQ restores them on import.</li>
+<li><strong>PowerPoint:</strong> does not execute this JavaScript. Native direct slide hyperlinks and native animations are separate. Other applications may remove custom XML/extensions when resaving, so test the actual round-trip you intend to use.</li>
+</ul>
+<p>The persisted project has <code>version:1</code>, <code>modules:[{id,source,refs,slides}]</code>, <code>bindings:[{id,module,function,args}]</code>, <code>state:{}</code> and <code>initialHidden:[]</code>. Alias maps contain arrays of native IDs because one authored element may compile to multiple editable objects. <code>@run:</code> contains a binding ID, not executable JavaScript or a function-call expression. The legacy <code>@set:</code> bridge only accepts <code>LET(identifier, JSON-literal)</code>; arbitrary formulas are not evaluated.</p>
+</main>
+</body>
+</html>

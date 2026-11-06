@@ -62,7 +62,7 @@ import NewFile from './editor-vuejs/src/components/editor/Dialogs/NewFile.vue';
   description.value='Build a geography quiz game with hints and branching outcomes.';
   description.dispatchEvent(new Event('input',{bubbles:true}));await nextTick();
   check(prompt.value.includes(description.value),'prompt includes the user request');
-  check(prompt.value.includes('https://desq.page/AGENTS.md') && !prompt.value.includes('## Required delivery'),'prompt links to the public guide without copying its text');
+  check(prompt.value.includes('https://desq.page/AGENTS.html') && !prompt.value.includes('## Required delivery'),'prompt links to the public guide without copying its text');
   check(prompt.value.includes('downloadable') && prompt.value.includes('morph') && prompt.value.includes('interactions'),'HTML and game guidance included');
   host.querySelector('.copy-button').click();await until(()=>state.copied===prompt.value);
   const input=host.querySelector('input[type="file"]');

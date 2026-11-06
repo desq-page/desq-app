@@ -12,8 +12,8 @@
           <label for="external-prompt">Generated prompt</label>
           <button class="copy-button" type="button" :disabled="!externalFullPrompt" aria-label="Copy prompt" title="Copy prompt" @click="copyPrompt"><DocumentCopy24Regular aria-hidden="true" /></button>
         </div>
-        <textarea id="external-prompt" readonly rows="6" :value="externalFullPrompt" placeholder="Your prompt will appear here, with a link to AGENTS.md on desq.page." aria-describedby="external-prompt-note" @keydown.stop @keyup.stop @keypress.stop @paste.stop />
-        <p id="external-prompt-note" class="model-note">The prompt asks your AI to read <a :href="AUTHORING_GUIDE_URL" target="_blank" rel="noopener noreferrer">AGENTS.md on desq.page</a>.</p>
+        <textarea id="external-prompt" readonly rows="6" :value="externalFullPrompt" placeholder="Your prompt will appear here, with a link to the authoring guide on desq.page." aria-describedby="external-prompt-note" @keydown.stop @keyup.stop @keypress.stop @paste.stop />
+        <p id="external-prompt-note" class="model-note">The prompt asks your AI to read <a :href="AUTHORING_GUIDE_URL" target="_blank" rel="noopener noreferrer">the authoring guide on desq.page</a>.</p>
         <input ref="responseFileInput" type="file" accept=".html,.htm,text/html" hidden :disabled="busy || loadingResponse" @click="clearSelectedResponseFile" @change="loadExternalHtml" />
         <button class="response-file-button" type="button" :disabled="busy || loadingResponse" @click="responseFileInput?.click()">{{ loadingResponse ? 'Reading HTML…' : 'Upload HTML response file' }}</button>
         <p v-if="selectedResponseFile" class="selected-response-file" role="status">Loaded: {{ selectedResponseFile }}</p>
@@ -151,7 +151,8 @@ async function createExternalBrief() {
     const importFontWarnings: string[] = [];
     if (isHtmlDocument) {
       status.value = 'Rendering the HTML…';
-      const embedded = await prepareEmbeddedHtmlImages(externalBriefText.value, {prefix:'agent-image-' + crypto.randomUUID()});
+      const { normalizeHtmlFractionContainers } = await import('@/lib/agent/html-fractions.mjs');
+      const embedded = await prepareEmbeddedHtmlImages(normalizeHtmlFractionContainers(externalBriefText.value), {prefix:'agent-image-' + crypto.randomUUID()});
       renderedDeck = await renderScriptedFrontendSlides(embedded.source, parseFrontendSlides(embedded.source), { signal });
       preparedAssets = embeddedHtmlAssets(renderedDeck, embedded.images);
       preparedLayoutAssets = embeddedHtmlAssets({slides:renderedDeck.sharedLayouts || []}, embedded.images);

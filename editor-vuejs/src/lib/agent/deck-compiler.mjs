@@ -1,3 +1,4 @@
+import { mergeHtmlFormFieldShapes } from './html-form-fields.mjs';
 import { groupImportedHtmlShapes, retargetGroupedAnimations } from './html-shape-groups.mjs';
 import { roundHtmlShapePaths } from './html-path-precision.mjs';
 import { collectHtmlSlideLinks, collectScriptBindings } from './html-slide-links.mjs';
@@ -15,7 +16,7 @@ import { htmlToSVG, parseSlideHTML } from './html-slides.mjs';
 import {compileMotion} from './ppt-master-motion.mjs';
 
 // Authored SVG/HTML -> native Desq objects. No model code is executed.
-export function compileDeck(deck, { width, height, genId, geometry, assets = new Map(), measureText,outlineText,deferTextOutlines=false,allowTextOverflow=false } = {}) {
+export function compileDeck(deck, { width, height, genId, geometry, assets = new Map(), measureText,outlineText,deferTextOutlines=false,allowTextOverflow=false,htmlFormFields } = {}) {
   if (![width, height].every(Number.isFinite) || width < 300 || height < 200 || width > 10000 || height > 10000)
     throw new Error('Unsupported presentation dimensions.');
   if (!deck.title.trim() || !deck.audience.trim() || !deck.objective.trim()) throw new Error('Deck title, audience and objective are required.');
@@ -337,6 +338,7 @@ export function compileDeck(deck, { width, height, genId, geometry, assets = new
   }
   validateMorphPairs(pages);
   for (const [index, page] of pages.entries()) {
+    if (htmlFormFields?.size) page.shapes = mergeHtmlFormFieldShapes(page.shapes, htmlFormFields);
     promoteSlideBackground(page, { width, height });
     if (deck.slides[index].layout === 'html' && parseSlideHTML(deck.slides[index].html).hasAttribute('data-desq-imported'))
       page.shapes = groupImportedHtmlShapes(page.shapes, genId, { width, height });

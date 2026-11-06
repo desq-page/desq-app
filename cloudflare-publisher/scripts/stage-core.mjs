@@ -1,6 +1,19 @@
-import { cp, readFile, realpath, rm } from 'node:fs/promises';
+import { cp, mkdir, readFile, realpath, rm, symlink } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { dirname, resolve, sep } from 'node:path';
+
+async function installedDependency(packagePath, name) {
+  const require = createRequire(resolve(packagePath, 'package.json'));
+  // Inspect npm's lookup paths directly so packages with browser-only
+  // entrypoints or a private package.json work as well.
+  for (const directory of require.resolve.paths(`${name}/package.json`) || []) {
+    try {
+      return dirname(await realpath(resolve(directory, name, 'package.json')));
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+    }
+  }
+}
 
 // Replace installed package outputs, not their tracked release archives or lockfiles.
 // The caller builds the core first; failures must stop the deployment.
@@ -22,6 +35,15 @@ export async function stageCore(core, consumers) {
       if (staged.has(targetPath)) continue;
       const manifest = JSON.parse(await readFile(resolve(sourcePath, 'package.json'), 'utf8'));
       if (manifest.name !== name) throw new Error(`Unexpected core package at ${sourcePath}`);
+      for (const dependency of Object.keys(manifest.dependencies || {})) {
+        if (await installedDependency(targetPath, dependency)) continue;
+        const installed = await installedDependency(sourcePath, dependency);
+        if (!installed) throw new Error(`Missing ${dependency} for ${name}. Run npm ci in ${core}.`);
+        const link = resolve(targetPath, 'node_modules', dependency);
+        await mkdir(dirname(link), { recursive: true });
+        // Resolve transitive imports from the core installation that owns them.
+        await symlink(installed, link, 'junction');
+      }
       // Copy into a fresh temporary directory before replacing the installed dist.
       const temporary = resolve(targetPath, '.desq-core-dist');
       await rm(temporary, { recursive: true, force: true });

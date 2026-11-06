@@ -106,6 +106,25 @@ Then implement those actions in the standalone HTML using [the interaction contr
 - Keep important instructions/results as authored text. JavaScript may toggle their visibility but should not be the sole source of their content.
 - Respect reduced-motion preferences while preserving feedback and navigation.
 
+## Authoring math
+
+Use Presentation MathML for fractions and formulas in standalone browser HTML. Use `mfrac` for a stacked fraction, `msup` and `msub` for powers and subscripts, and `msqrt` or `mroot` for radicals. Put numbers in `mn`, variables in `mi`, and operators in `mo`. Group a multi-token numerator, denominator, or exponent with `mrow`. Use `display="block"` for a centered equation on its own line.
+
+```html
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mfrac><mn>3</mn><mn>5</mn></mfrac>
+  <mo>&lt;</mo>
+  <mfrac><mn>2</mn><mn>3</mn></mfrac>
+</math>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <msqrt>
+    <mrow><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mn>1</mn></mrow>
+  </msqrt>
+</math>
+```
+
+For HTML intended for editable DESQ import, use readable HTML text such as `3/5 < 2/3` (escape the less-than sign as `&lt;`) and `<sup>` or `<sub>` for simple notation. The HTML slide parser currently rejects MathML elements. Use the native equation authoring path when the deliverable requires editable PowerPoint equations.
+
 For custom game state, quiz popups and branching behavior, use [local JavaScript modules](docs/local-scripting.md) and the complete [local quiz example](examples/html-slides/local-quiz.html). Bind buttons with `data-desq-run`, `data-desq-module`, and JSON `data-desq-args`. `checkAnswer` and `restartGame` are editable user functions that call the actual `ctx` API. JavaScript runs only in the HTML player; PPTX stores code and bindings for DESQ reimport without running JavaScript in PowerPoint. Test every branch in the imported player.
 
 ## Verify before delivery

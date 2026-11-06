@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DESQ authoring guide</title>
+</head>
+<body>
+<main>
+<h1>Current implementation: local JavaScript</h1>
+<p>Use <a href="local-scripting.html">the shipped local scripting API</a> for editable game/app logic, button bindings, state, shape changes, existing animations and navigation. <code>checkAnswer</code> is user code, not an API. Scripts run in the HTML player; PPTX preserves them for reimport. The declarative manifest described below remains a separate proposal and must not be treated as the shipped scripting format.</p>
+<h1>Proposed public HTML interaction contract</h1>
+<p><strong>Status: direct slide navigation implemented; manifest/animation-trigger API proposed.</strong> <code>data-desq-goto</code> and sole literal <code>goToSlide(&#39;slide-id&#39;)</code> calls now map to native links. The accompanying quiz&#39;s direct navigation is supported; its manifest-driven hint remains a standalone prototype. No host SDK is installed by the example.</p>
+<p>The objective is a single declaration that an HTML runtime can execute and an importer can map to editable slide hyperlinks and native animation triggers. The importer must not reverse-engineer arbitrary JavaScript.</p>
+<h2>Existing building blocks and gaps</h2>
+<p>Slide markers already work. The native document/player have slide-link and shape-trigger concepts. Native timing export supports interactive sequences in <code>timing.i</code>.</p>
+<p>The direct-jump bridge extracts declared destinations or sole literal calls before capture removes event attributes and scripts. It preserves the button&#39;s native geometry through grouping, resolves destinations to native slide IDs, and writes internal PowerPoint slide relationships. It does not interpret custom wrapper functions, variables or branching JavaScript. Anchors are still unwrapped. Manifest parsing, general element-identity transport, hidden-state capture and animation-trigger mapping remain to be implemented.</p>
+<p>Consequently, direct destination attributes preserve navigation, but adding proposed trigger/manifest fields alone will not preserve the rest of a game&#39;s behavior.</p>
+<h2>Authoring surface to implement</h2>
+<p>Use HTML attributes for simple navigation and JSON for animation/event sequences. Keep the surface declarative, versioned, renderer-independent and available to any LLM without a build system.</p>
+<table>
+<thead>
+<tr>
+<th>Declaration</th>
+<th>Meaning</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>section.slide[data-desq-slide][id]</code></td>
+<td>Slide identity and boundary</td>
+<td>Supported today</td>
+</tr>
+<tr>
+<td>An ordinary DOM <code>id</code> on a button/shape</td>
+<td>Authored element identity</td>
+<td>Browser-supported; complete native identity mapping pending</td>
+</tr>
+<tr>
+<td><code>data-desq-goto=&quot;slide-win&quot;</code></td>
+<td>Jump to the slide with that authored ID</td>
+<td>Supported</td>
+</tr>
+<tr>
+<td><code>data-desq-trigger=&quot;hint&quot;</code></td>
+<td>Start the named interaction binding on click/keyboard activation</td>
+<td>Proposed</td>
+</tr>
+<tr>
+<td><code>script#desq-interactions[type=&quot;application/json&quot;]</code></td>
+<td>Versioned interaction manifest</td>
+<td>Proposed</td>
+</tr>
+<tr>
+<td><code>data-desq-initial=&quot;hidden&quot;</code></td>
+<td>Element begins hidden in playback but remains an editable authored object</td>
+<td>Proposed</td>
+</tr>
+</tbody></table>
+<p>Choose either <code>data-desq-goto</code> or <code>data-desq-trigger</code> on one control. A control with both is invalid. All referenced IDs are document-global and unique; they are not slide numbers. A runtime may change generated native IDs, but must retain the authored-ID mapping.</p>
+<p>A legacy handler can also be imported when its entire body is a literal call such as <code>goToSlide(&#39;slide-win&#39;)</code> or <code>return gotoSlide(&quot;slide-win&quot;);</code>. No handler is evaluated to discover its destination. <code>checkAnswer(true)</code>, <code>restartGame()</code>, expressions, multi-statement handlers and callbacks registered with <code>addEventListener</code> are outside this compatibility subset. Declare <code>data-desq-goto</code> on each source button instead. Missing and conflicting explicit targets are errors.</p>
+<p>An actual HTML anchor with a same-document <code>href</code> can also represent a direct jump in a future adapter. If an adapter supports both forms, conflicting destinations must be rejected, not guessed.</p>
+<h2>Manifest v1 proposal</h2>
+<pre><code class="language-json">{
+  &quot;version&quot;: 1,
+  &quot;entrySlide&quot;: &quot;slide-intro&quot;,
+  &quot;animations&quot;: [
+    {
+      &quot;id&quot;: &quot;hint-appear&quot;,
+      &quot;slide&quot;: &quot;slide-question&quot;,
+      &quot;target&quot;: &quot;hint-text&quot;,
+      &quot;effect&quot;: &quot;appear&quot;,
+      &quot;durationMs&quot;: 0
+    }
+  ],
+  &quot;bindings&quot;: [
+    {
+      &quot;id&quot;: &quot;hint&quot;,
+      &quot;slide&quot;: &quot;slide-question&quot;,
+      &quot;actions&quot;: [{&quot;type&quot;: &quot;play&quot;, &quot;animation&quot;: &quot;hint-appear&quot;}]
+    }
+  ]
+}
+</code></pre>
+<p>The matching authoring markup is:</p>
+<pre><code class="language-html">&lt;button type=&quot;button&quot; id=&quot;answer-hanoi&quot; data-desq-goto=&quot;slide-win&quot;&gt;Hanoi&lt;/button&gt;
+&lt;button type=&quot;button&quot; id=&quot;hint-button&quot; data-desq-trigger=&quot;hint&quot;&gt;Show hint&lt;/button&gt;
+&lt;p id=&quot;hint-text&quot; data-desq-initial=&quot;hidden&quot;&gt;The city&#39;s name begins with H.&lt;/p&gt;
+</code></pre>
+<p>Every <code>data-desq-trigger</code> references one binding. Each binding identifies its containing slide. Its source controls must belong to that slide. Each animation identifies an element on the same slide; v1 has no cross-slide animation target.</p>
+<p>Proposed actions:</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Fields</th>
+<th>Execution</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>goto</code></td>
+<td><code>slide</code></td>
+<td>Navigate to a declared slide; finish this sequence</td>
+</tr>
+<tr>
+<td><code>play</code></td>
+<td><code>animation</code></td>
+<td>Play the declared animation; await completion</td>
+</tr>
+<tr>
+<td><code>show</code> / <code>hide</code></td>
+<td><code>target</code></td>
+<td>Change playback visibility of an element on the current slide</td>
+</tr>
+<tr>
+<td><code>wait</code></td>
+<td><code>durationMs</code></td>
+<td>Await a bounded delay, cancellable on navigation</td>
+</tr>
+</tbody></table>
+<p>Actions execute in array order. No JavaScript expressions, selectors, URLs, variable names, functions or <code>eval</code> fields are accepted. Start with <code>appear</code>/<code>fade</code> in an implementation&#39;s animation allowlist; add effect types only when both standalone and native mappings exist. The bundled example implements <code>appear</code> only and validates that restriction.</p>
+<p>Keep the first implementation intentionally finite: slide jumps, explicit feedback and animation triggers. Scores, conditional expressions, storage, audio/video and physics are outside v1. Branch a quiz by giving different answer controls different declared destinations.</p>
+<h2>Playback semantics</h2>
+<ul>
+<li>Execute a binding on a real button activation, not a click anywhere on the slide. Native button Enter/Space behavior must work.</li>
+<li>Lock that binding while its action sequence is running. Do not run it twice on a double click.</li>
+<li>Cancel pending waits/animations when navigating. A stale timer from the previous slide must never redirect the user.</li>
+<li>Reset a slide&#39;s declared initial visibility on entry. An ordinary restart button can navigate to <code>entrySlide</code>; more persistent game state would require a separately specified reset action.</li>
+<li>Reduced motion may reduce animation duration to zero; it must not suppress the outcome or navigation.</li>
+<li>During editor capture, materialize all authored states as editable objects, including initially hidden targets. Apply <code>data-desq-initial</code> as playback metadata, not by permanently dropping objects with zero opacity.</li>
+<li>Editing mode should show/select objects without running game actions. Playback mode executes the graph.</li>
+</ul>
+<h2>Native mapping plan</h2>
+<ol>
+<li>Direct jumps already parse inert HTML before capture/sanitization. Add JSON manifest parsing and validate version, IDs, dimensions, action/effect allowlists and all references. Suggested v1 bounds: 20 slides, 200 bindings/animations, 16 actions per binding, 60,000 ms per duration, and 64 KiB manifest text. These are proposed manifest limits, not existing parser guarantees.</li>
+<li>Build an authored-slide-ID → imported-slide-ID map, plus an authored-element-ID → native-shape/group-ID map. Preserve mappings in document metadata through save/reopen. Retain all hidden-state objects for editing.</li>
+<li>Transport source element identities through SVG measurement and native grouping. A painted button and its label must form one hit target. Preserve discontiguous targets explicitly; do not guess by caption text or nearest geometry.</li>
+<li>Direct jumps now resolve to <code>@sld:&lt;native-id&gt;</code> after native IDs are assigned, including inserted decks. The mapping is separate from the SVG compiler&#39;s external-hyperlink allowlist. PPTX serialization writes an internal slide relationship and action. Retain this behavior when extending the manifest adapter.</li>
+<li>Map same-slide <code>play</code> bindings to native interactive timing groups, using the source button&#39;s native ID as the trigger (<code>trs</code>) and target objects as effect targets. Keep these out of the ordinary slide-click sequence. Preserve group remapping.</li>
+<li>Either implement sequences such as <code>show → wait → goto</code> consistently in the player/export adapter or reject them with a precise unsupported-action report. Do not silently turn them into immediate jumps. Native PowerPoint may require a narrower supported subset than standalone HTML.</li>
+<li>Keep only validated data in the native document. The existing opaque capture sandbox remains separate from the editor; the editor never receives executable imported script handlers.</li>
+<li>Publish a schema/validator and a small versioned runtime only after these semantics are implemented. Let both the example and importer consume the same validator; do not maintain conflicting schema copies or tell authors an unshipped SDK exists.</li>
+</ol>
+<h2>Acceptance criteria before calling this public API supported</h2>
+<ul>
+<li>Business-deck import behavior remains unchanged.</li>
+<li>All correct/wrong answer branches and restart destinations work in the standalone file, imported DESQ player, and saved/reopened HTML.</li>
+<li>Same-slide reveal stays on the current slide; it triggers from the specified button, not from an unrelated click.</li>
+<li>Hidden feedback remains editable and can be replayed after leaving/re-entering the slide.</li>
+<li>Button hit areas include their labels; grouping and native ID regeneration do not break references.</li>
+<li>Missing/duplicate IDs, unknown versions/actions, invalid numbers and unsafe targets fail validation.</li>
+<li>Thumbnail generation succeeds before any manual edit and never runs navigation actions.</li>
+<li>PowerPoint export is tested for internal slide links and shape-triggered effects independently. Unsupported sequences are reported.</li>
+</ul>
+<h2>References</h2>
+<ul>
+<li><a href="https://github.com/zarazhangrui/frontend-slides/blob/main/SKILL.md">Frontend Slides skill</a> and <a href="https://github.com/zarazhangrui/frontend-slides/blob/main/html-template.md">template</a>: business-deck composition and fixed-stage HTML architecture.</li>
+<li><a href="https://github.com/nyblnet/bento/blob/main/AGENTS.md">bento AGENTS.md</a>: inspiration for an explicit agent-facing document contract. Its implementation and compact JSON are not DESQ formats.</li>
+<li><a href="../examples/html-slides/quiz.html">Standalone quiz example</a>: executable browser prototype of this proposal, with explicit status comments in its source.</li>
+</ul>
+</main>
+</body>
+</html>

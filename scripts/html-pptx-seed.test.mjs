@@ -29,10 +29,12 @@ test('HTML import seeds blank-PPTX path with inherited artwork and media', async
  assert.equal(nested.children[0].table.tr[0].tc[0].txBody.p.r[0].t,'🎄');
  assert.equal(args[0].media.length,1);assert.equal(args[1].fileId,'new-id');
  assert.equal(args[1].cbAfterProcess,true);
- const shared={...doc,layouts:[{id:'shared',sharedHtmlLayout:true,shapes:[{id:'snow'}],timing:{m:[{sh:'snow'}]}}],
+ const shared={...doc,layouts:[{id:'shared',sharedHtmlLayout:true,bg:{bgPr:{solidFill:{uniClr:{$_val:'F8FAFC'}}}},shapes:[{id:'snow'}],timing:{m:[{sh:'snow'}]}}],
  slides:doc.slides.map(slide=>({...slide,layoutid:'shared',showMaster:1}))};
  await context.module.exports.submitHtmlDocument(shared,[],{fileId:'layout-deck'});
  assert.equal(args[0].sharedLayout.shapes[0].id,'snow');
+ assert.equal(args[0].sharedLayout.bg.bgPr.solidFill.uniClr.$_val,'F8FAFC');
+ assert.equal(args[0].slides[0].bg,undefined);
  assert.deepEqual(Array.from(args[0].slides[0].shapes,shape=>shape.id),['content'],'shared shapes are not duplicated into the slide');
 
 });

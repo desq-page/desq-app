@@ -1,5 +1,5 @@
-export const AUTHORING_GUIDE_URL = 'https://desq.page/AGENTS.md';
-export const INTERACTION_GUIDE_URL = 'https://desq.page/docs/html-slide-interactions.md';
+export const AUTHORING_GUIDE_URL = 'https://desq.page/AGENTS.html';
+export const INTERACTION_GUIDE_URL = 'https://desq.page/docs/html-slide-interactions.html';
 
 // The public URLs keep prompts short and point agents at the published contract.
 export function buildHtmlAuthoringPrompt(description) {
@@ -7,7 +7,7 @@ export function buildHtmlAuthoringPrompt(description) {
   if (!request) return '';
   return `Build the app, game, lesson or presentation described below as a complete standalone HTML slide experience for DESQ.
 
-Before authoring, read and follow AGENTS.md: ${AUTHORING_GUIDE_URL}
+Before authoring, read and follow the DESQ authoring guide: ${AUTHORING_GUIDE_URL}
 For interactive apps and games, also read: ${INTERACTION_GUIDE_URL}
 If you cannot access these guides, ask me to provide them; do not claim you have read them.
 

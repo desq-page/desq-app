@@ -1,3 +1,4 @@
+import { inheritSharedSlideBackground, sharedSlideBackground } from './slide-background.mjs';
 import { canvasTextMeasurer } from './deck-text.mjs';
 import {hasHtmlSlideLinks,resolveHtmlSlideLinks} from './html-slide-links.mjs';
 import {resolveImportedScriptProject} from './html-script-project.mjs';
@@ -373,11 +374,15 @@ export const editorAdapter = {
       }
     }
     const compiled = compileDeck(spec, { ...options, assets });
-    if (execution.sharedHtmlLayouts?.length) {
-      const shared = compileDeck({...spec,slides:execution.sharedHtmlLayouts},{...options,assets:execution.preparedLayoutAssets || new Map()});
-      const content = {name:'Shared AI artwork',shapes:shared.pages.flatMap(page=>page.shapes),timing:{
-        m:shared.pages.flatMap(page=>page.timing?.m || []),i:shared.pages.flatMap(page=>page.timing?.i || []),
+    const background = sharedSlideBackground(compiled.pages, spec.slides);
+    if (execution.sharedHtmlLayouts?.length || background) {
+      const shared = execution.sharedHtmlLayouts?.length
+        ? compileDeck({...spec,slides:execution.sharedHtmlLayouts},{...options,assets:execution.preparedLayoutAssets || new Map()}).pages
+        : [];
+      const content = {name:'Shared AI artwork',bg:shared[0]?.bg ?? background,shapes:shared.flatMap(page=>page.shapes),timing:{
+        m:shared.flatMap(page=>page.timing?.m || []),i:shared.flatMap(page=>page.timing?.i || []),
       }};
+      inheritSharedSlideBackground(compiled.pages, spec.slides, content, options, execution.sharedHtmlLayouts?.[0]);
       onProgress?.('Installing shared HTML artwork…');checkTarget();signal?.throwIfAborted();
       const {installModelLayout} = await import('shared-vuejs/api/installModelLayout');
       const layout = await installModelLayout(getFileInfo(),layoutid,content);
