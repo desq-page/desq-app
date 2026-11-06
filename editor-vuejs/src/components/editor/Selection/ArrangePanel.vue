@@ -30,7 +30,7 @@
       :key="item.id"
       @click="(e) => clickShape(e, item.id)"
     >
-      <div class="">
+      <div class="shape-row">
         <span class="shape-name">
           <ToolbarItem quaternary :shp="item.shp" :size="20" />
           <NIcon v-if="item.locked">
@@ -45,29 +45,52 @@
           />
           <span v-if="!piniaSelect().selShps.includes(item.id)">{{ item.name }}</span>
         </span>
-        <TransitionGroup>
-          <div
-            v-for="child in item.children?.slice()?.reverse()"
-            :key="child.id"
-            class="shape-child"
-            :class="{
-              selected: piniaSelect().selGrpShps.includes(child.id),
-            }"
-            @click="(e) => clickChildShape(e, child.id, item.id)"
-          >
-            <ToolbarItem :shp="child.shp" :size="20" />
-            <span class="parentName" v-if="child.parentid"> ⇒ </span>
-            <input
-              class="nameinput"
-              :value="child.name"
-              v-if="piniaSelect().selGrpShps.includes(child.id)"
-              @change="(e) => updateName(e, child)"
-              @click.stop
-            />
-            <span class="namedisplay" v-else>{{ child.name }}</span>
-          </div>
-        </TransitionGroup>
+        <button
+          class="layer-visibility-button"
+          type="button"
+          :aria-label="visibilityLabel(item)"
+          :title="visibilityLabel(item)"
+          @click.stop="toggleVisibility($event, item)"
+        >
+          <NIcon aria-hidden="true">
+            <component :is="item.hidden ? EyeOff24Regular : Eye24Regular" />
+          </NIcon>
+        </button>
       </div>
+      <TransitionGroup>
+        <div
+          v-for="child in item.children?.slice()?.reverse()"
+          :key="child.id"
+          class="shape-child"
+          :class="{
+            selected: piniaSelect().selGrpShps.includes(child.id),
+            'shape-hidden': child.hidden,
+          }"
+          @click="(e) => clickChildShape(e, child.id, item.id)"
+        >
+          <ToolbarItem :shp="child.shp" :size="20" />
+          <span class="parentName" v-if="child.parentid"> ⇒ </span>
+          <input
+            class="nameinput"
+            :value="child.name"
+            v-if="piniaSelect().selGrpShps.includes(child.id)"
+            @change="(e) => updateName(e, child)"
+            @click.stop
+          />
+          <span class="namedisplay" v-else>{{ child.name }}</span>
+          <button
+            class="layer-visibility-button"
+            type="button"
+            :aria-label="visibilityLabel(child)"
+            :title="visibilityLabel(child)"
+            @click.stop="toggleVisibility($event, child)"
+          >
+            <NIcon aria-hidden="true">
+              <component :is="child.hidden ? EyeOff24Regular : Eye24Regular" />
+            </NIcon>
+          </button>
+        </div>
+      </TransitionGroup>
     </div>
   </DialogBase>
 </template>
@@ -87,7 +110,7 @@ import {
   sendBackward,
   sendToBack,
 } from "shared-vuejs/api/arrange";
-import { lockSelectedShapes, deleteShape } from "shared-vuejs/api/shape";
+import { lockSelectedShapes, hideSelectedShapes, deleteShape } from "shared-vuejs/api/shape";
 import { addHandle, deselectAll, removeHandle } from "shared-vuejs/api/handle";
 import ToolbarItem from "../Toolbars/ToolbarItem.vue";
 import { InfoOutlined, LockFilled, LockOutlined } from "@vicons/material";
@@ -97,6 +120,8 @@ import {
   ArrowUp24Filled,
   ArrowUpload24Filled,
   Delete20Regular,
+  Eye24Regular,
+  EyeOff24Regular,
 } from "@vicons/fluent";
 import { NIcon } from "naive-ui";
 import { saveDexie } from "shared-vuejs/api/dbutils";
@@ -117,13 +142,13 @@ const selItems: any = [
       lockSelectedShapes();
     },
   },
-  // {
-  //   icon: EyeOff,
-  //   tooltip: "Hide",
-  //   onClick: (e) => {
-  //     hideSelectedShapes();
-  //   },
-  // },
+  {
+    icon: EyeOff24Regular,
+    tooltip: "Hide Selected",
+    onClick: () => {
+      hideSelectedShapes();
+    },
+  },
   {
     type: "divider",
   },
@@ -223,6 +248,20 @@ function updateName(e, item) {
   }
 }
 
+function visibilityLabel(item) {
+  return `${item.hidden ? "Show" : "Hide"} ${item.name || "shape"}`;
+}
+
+function toggleVisibility(e, item) {
+  e.stopPropagation();
+  const shp = getShapeDeep(item.id);
+  if (!shp) return;
+  shp.hidden = !shp.hidden;
+  item.hidden = shp.hidden;
+  updateShape(shp);
+  saveDexie();
+}
+
 function updateList() {
   // const sld = gid("sld");
   // if (sld && !observer) {
@@ -272,6 +311,7 @@ function mapGroupList(list) {
         {
           id: item.id,
           name: item.name,
+          hidden: item.hidden,
           parent: list.name,
           label: item.name,
           key: item.id,
@@ -377,12 +417,48 @@ function shiftFocusToAvoidKeydown() {
   opacity: 0.3;
 }
 
+.shape-row {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
 .shape-name {
   color: black;
   pointer-events: none;
   display: flex;
   align-items: center;
   gap: 2px;
+}
+
+.shape-row .shape-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.layer-visibility-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #555;
+  cursor: pointer;
+}
+
+.layer-visibility-button:hover {
+  background: #eee;
+  color: #111;
+}
+
+.layer-visibility-button:focus-visible {
+  outline: 2px solid #1677ff;
+  outline-offset: 1px;
 }
 
 .namedisplay {
@@ -404,11 +480,17 @@ function shiftFocusToAvoidKeydown() {
   padding: 5px 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  height: 20px;
-  max-width: 80%;
+  min-height: 28px;
+  max-width: 100%;
   display: flex;
   align-items: center;
   pointer-events: all;
+}
+
+.shape-child .namedisplay,
+.shape-child .nameinput {
+  flex: 1;
+  min-width: 0;
 }
 
 .shape-child.selected {
