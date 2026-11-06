@@ -13,6 +13,8 @@ If you cannot access these guides, ask me to provide them; do not claim you have
 
 For a business presentation, use https://github.com/zarazhangrui/frontend-slides as a design baseline with the DESQ requirements layered on top. For an app or game, plan every screen and branch, include appropriate animations and morph-style transitions, and make buttons, feedback, restart paths and other interactions work in the downloaded HTML.
 
+Write every slide, card, answer choice, button and feedback target directly in the HTML with stable IDs and initial content. Use JavaScript to update those existing elements. Put bindings on the authored controls using data-desq-goto, data-desq-run or an inline onclick that calls a named function with literal arguments. Avoid generating slide elements or assigning click handlers in JavaScript.
+
 Deliver a downloadable UTF-8 .html file, not JSON, a screenshot, a preview-only link or a partial snippet. Use explicit slide markers and stable IDs. Follow the referenced interaction guidance without claiming proposed native APIs are already implemented. Verify the result in a browser before delivering it.
 
 USER'S REQUEST

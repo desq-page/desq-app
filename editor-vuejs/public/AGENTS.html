@@ -125,6 +125,22 @@
 <li>Do not manually serialize CSS or HTML attributes without escaping quotes and ampersands. Font-family quoting must survive both the DOM and server-rendered thumbnail paths.</li>
 </ul>
 <h2>Interaction authoring</h2>
+<p>Write the full slide structure directly in the HTML. Author every card, answer choice, button, label, score display, and feedback panel as an element with its initial content and a stable ID where scripts need to reference it. The importer discovers interactive targets and click bindings from the source markup before capture. Use JavaScript to update the state, text, or visibility of those existing elements.</p>
+<ul>
+<li>Put each clickable card or choice in a real <code>&lt;button type=&quot;button&quot;&gt;</code>. Use <code>data-desq-goto</code> for slide jumps and <code>data-desq-run</code> for editable local script bindings. For an inline binding, put <code>onclick</code> directly on the authored button and call a named function with literal arguments, such as <code>onclick=&quot;selectCupcake(&#39;cupcake-one&#39;)&quot;</code>.</li>
+<li>Keep inline handlers to a single function call. Put behavior in a top-level named function or a DESQ script module. For behavior that must survive import, use the supported local scripting APIs and pass stable IDs or data values as arguments.</li>
+<li>Write repeated items and alternate states out in the markup. Keep their DOM nodes and IDs across resets and use script to update existing elements. Avoid building slide elements with <code>createElement</code>, HTML template strings, <code>innerHTML</code>, or <code>insertAdjacentHTML</code>. Avoid assigning <code>.onclick</code>, attaching click listeners in JavaScript, or relying on event delegation for actions that must survive import.</li>
+</ul>
+<pre><code class="language-html">&lt;div id=&quot;cupcake-choices&quot;&gt;
+  &lt;button type=&quot;button&quot; id=&quot;cupcake-one&quot; onclick=&quot;selectCupcake(&#39;cupcake-one&#39;)&quot;&gt;
+    Cupcake 1
+  &lt;/button&gt;
+  &lt;button type=&quot;button&quot; id=&quot;cupcake-two&quot; onclick=&quot;selectCupcake(&#39;cupcake-two&#39;)&quot;&gt;
+    Cupcake 2
+  &lt;/button&gt;
+&lt;/div&gt;
+&lt;p id=&quot;sort-feedback&quot; aria-live=&quot;polite&quot;&gt;&lt;/p&gt;
+</code></pre>
 <p>For an app or game, design <strong>animations, morph-style continuity and interactivity</strong> as part of the experience. Use meaningful entrance/reveal effects, visible response to button actions, and smooth object/state transitions where they help explain progress or outcomes. Use morph transitions when the same conceptual objects continue between screens; keep their shape topology and intended identity consistent, while keeping actual HTML IDs document-global and unique. Do not claim a CSS transition automatically maps to native DESQ or PowerPoint Morph. Check the supported mapping and disclose approximations. Avoid decorative motion that makes controls hard to use, and provide reduced-motion behavior.</p>
 <p>For games, write a small screen graph first. Example:</p>
 <pre><code class="language-text">intro --start--&gt; question

@@ -81,6 +81,24 @@ Produce one complete UTF-8 HTML file with doctype, language, charset, title, inl
 
 ## Interaction authoring
 
+Write the full slide structure directly in the HTML. Author every card, answer choice, button, label, score display, and feedback panel as an element with its initial content and a stable ID where scripts need to reference it. The importer discovers interactive targets and click bindings from the source markup before capture. Use JavaScript to update the state, text, or visibility of those existing elements.
+
+- Put each clickable card or choice in a real `<button type="button">`. Use `data-desq-goto` for slide jumps and `data-desq-run` for editable local script bindings. For an inline binding, put `onclick` directly on the authored button and call a named function with literal arguments, such as `onclick="selectCupcake('cupcake-one')"`.
+- Keep inline handlers to a single function call. Put behavior in a top-level named function or a DESQ script module. For behavior that must survive import, use the supported local scripting APIs and pass stable IDs or data values as arguments.
+- Write repeated items and alternate states out in the markup. Keep their DOM nodes and IDs across resets and use script to update existing elements. Avoid building slide elements with `createElement`, HTML template strings, `innerHTML`, or `insertAdjacentHTML`. Avoid assigning `.onclick`, attaching click listeners in JavaScript, or relying on event delegation for actions that must survive import.
+
+```html
+<div id="cupcake-choices">
+  <button type="button" id="cupcake-one" onclick="selectCupcake('cupcake-one')">
+    Cupcake 1
+  </button>
+  <button type="button" id="cupcake-two" onclick="selectCupcake('cupcake-two')">
+    Cupcake 2
+  </button>
+</div>
+<p id="sort-feedback" aria-live="polite"></p>
+```
+
 For an app or game, design **animations, morph-style continuity and interactivity** as part of the experience. Use meaningful entrance/reveal effects, visible response to button actions, and smooth object/state transitions where they help explain progress or outcomes. Use morph transitions when the same conceptual objects continue between screens; keep their shape topology and intended identity consistent, while keeping actual HTML IDs document-global and unique. Do not claim a CSS transition automatically maps to native DESQ or PowerPoint Morph. Check the supported mapping and disclose approximations. Avoid decorative motion that makes controls hard to use, and provide reduced-motion behavior.
 
 For games, write a small screen graph first. Example:

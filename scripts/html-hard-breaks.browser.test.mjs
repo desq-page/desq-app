@@ -8,7 +8,7 @@ import {pathToFileURL} from 'node:url';
 import {runBrowserFixture} from './browser-fixture.mjs';
 const chrome=process.env.CHROME_BIN || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome','/usr/bin/chromium'].find(existsSync);
 
-test('HTML snapshot preserves explicit heading breaks across font remeasurement and keeps soft wrapping and inline fractions', {skip:!chrome,timeout:60000},async()=>{
+test('HTML snapshot preserves explicit heading breaks across font remeasurement and preserves soft wrapping, inline fractions and tight emoji boxes', {skip:!chrome,timeout:60000},async()=>{
  const directory=mkdtempSync(join(tmpdir(),'desq-hard-breaks-'));
  try {
   await build({stdin:{resolveDir:resolve('.'),contents:`
@@ -18,7 +18,7 @@ import {normalizeHtmlFractionContainers} from './editor-vuejs/src/lib/agent/html
 import {compilePageSVG} from './editor-vuejs/src/lib/agent/ppt-master-svg.mjs';
 import {htmlToSVG} from '../desq-core/shared-vuejs/src/edlib/html-import/html-slides.mjs';
 (async()=>{try{
- const source='<style>.slide{width:1280px;height:720px}h1{position:absolute;left:200px;top:80px;font:48px Arial;width:max-content}p{position:absolute;left:200px;top:300px;font:24px Arial;width:140px}.comparison{position:absolute;top:480px;left:200px;width:800px;display:flex;align-items:center;justify-content:center;gap:15px;font:24px Arial}.fraction-inline{display:inline-flex;flex-direction:column;font-size:48px;color:#2563eb}.num{border-bottom:2px solid currentColor}</style><section class="slide"><h1>The harvest is<br>only beginning.</h1><p>This paragraph wraps over several lines<br>and remains wrapped.</p><p class="comparison">Compare <div class="fraction-inline"><span class="num">3 × 2</span><span>7 × 2</span></div> and <div class="fraction-inline"><span class="num">5</span><span>7</span></div>.</p></section>';
+ const source='<style>.slide{width:1280px;height:720px}h1{position:absolute;left:200px;top:80px;font:48px Arial;width:max-content}p{position:absolute;left:200px;top:300px;font:24px Arial;width:140px}.comparison{position:absolute;top:480px;left:200px;width:800px;display:flex;align-items:center;justify-content:center;gap:15px;font:24px Arial}.fraction-inline{display:inline-flex;flex-direction:column;font-size:48px;color:#2563eb}.num{border-bottom:2px solid currentColor}</style><section class="slide"><h1>The harvest is<br>only beginning.</h1><p>This paragraph wraps over several lines<br>and remains wrapped.</p><p class="comparison">Compare <div class="fraction-inline"><span class="num">3 × 2</span><span>7 × 2</span></div> and <div class="fraction-inline"><span class="num">5</span><span>7</span></div>.</p><div style="position:absolute;left:200px;top:600px;font:50px Arial">🧁</div></section>';
  const normalized=normalizeHtmlFractionContainers(source);
  const deck=await renderScriptedFrontendSlides(normalized,parseFrontendSlides(normalized));
  let headingWrap,paragraphWrap;
@@ -36,7 +36,10 @@ import {htmlToSVG} from '../desq-core/shared-vuejs/src/edlib/html-import/html-sl
  const compiled=compilePageSVG(svg,{width:1280,height:720,genId:()=>String(++id),geometry:(_,w,h)=>({d:'R0,0,'+w+','+h})});
  const comparison=compiled.shapes.find(shape=>shape.txBody?.p?.some(p=>p.r?.some(run=>run.t.includes('Compare'))));
  const runs=comparison?.txBody.p[0].r;
- const result={headingWrap,paragraphWrap,lines,alignment:comparison?.txBody.p[0].pPr.$_algn,fractions:runs?.filter(run=>run.docOmml).length,
+ const glyph=xml.querySelector('text[data-html-glyph-box]');
+ const icon=compiled.shapes.find(shape=>shape.txBody?.p?.some(p=>p.r?.some(run=>run.t==='🧁')));
+ const result={glyphBox:glyph?.getAttribute('data-html-glyph-box').split(' ').map(Number),
+   iconBox:icon&&[icon.x,icon.y,icon.w,icon.h],headingWrap,paragraphWrap,lines,alignment:comparison?.txBody.p[0].pPr.$_algn,fractions:runs?.filter(run=>run.docOmml).length,
    multiplication:runs?.some(run=>run.docMathML?.includes('×')),
    prose:runs?.filter(run=>!run.docOmml).map(run=>run.t).join(''),
    mathShapeCount:compiled.shapes.filter(shape=>shape.txBody?.p?.some(p=>p.r?.some(run=>run.docOmml))).length};
@@ -51,6 +54,8 @@ import {htmlToSVG} from '../desq-core/shared-vuejs/src/edlib/html-import/html-sl
   assert.equal(result.error,undefined,result.error);
   assert.equal(result.headingWrap,'nowrap');
   assert.equal(result.paragraphWrap,'normal');
+  assert.equal(result.iconBox?.length,4);
+  assert.ok(result.iconBox.every((value,index)=>Math.abs(value-result.glyphBox[index])<0.002));
   assert.equal(result.fractions,2,JSON.stringify(result));
   assert.equal(result.multiplication,true);
   assert.equal(result.alignment,'ctr');

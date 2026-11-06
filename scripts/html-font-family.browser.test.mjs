@@ -13,25 +13,23 @@ test('HTML Baloo 2 text retains its family through capture, native conversion an
  const directory=mkdtempSync(join(tmpdir(),'desq-html-font-'));
  try {
   await build({stdin:{resolveDir:resolve('.'),contents:`
-   import {parseFrontendSlides} from '../desq-core/shared-vuejs/src/edlib/html-import/frontend-slides-import.mjs';
-   import {renderScriptedFrontendSlides} from '../desq-core/shared-vuejs/src/edlib/html-import/scripted-html-render.mjs';
-   import {compileDeck} from './editor-vuejs/src/lib/agent/deck-compiler.mjs';
+   import {agentHtmlDocument} from './editor-vuejs/src/lib/main/importAgentHtml.mjs';
    import {mapRPrStyle} from 'shared-vuejs/api/sharedMaster';
    const check=(ok,message)=>{if(!ok)throw Error(message)};
    (async()=>{try{
-    const source='<style>body{font-family:"Baloo 2",sans-serif}.slide{width:1280px;height:720px}.hint{font-size:25px;font-weight:700}</style><section class="slide"><div class="hint">One question • Four choices • One dramatic ending</div></section>';
-    const deck=await renderScriptedFrontendSlides(source,parseFrontendSlides(source));
-    let id=0;
-    const compiled=compileDeck(deck,{width:1280,height:720,genId:()=>String(++id),geometry:(p,w,h)=>({d:'R0,0,'+w+','+h})});
+    const source='<style>body{font-family:"Baloo 2",sans-serif}.slide{width:1280px;height:720px}.hint{font-size:25px;font-weight:800}</style><section class="slide"><div class="hint">One question • Four choices • One dramatic ending</div></section>';
+    const doc=await agentHtmlDocument(source,'Font weight.html');
+    check(doc.file.fonts.find(font=>font.family==='Baloo 2')?.weights?.includes(800),'authored font weight is saved for playback');
     const runs=[];
     const visit=shapes=>shapes.forEach(shape=>{for(const p of shape.txBody?.p||[])runs.push(...(p.r||[]));if(shape.children)visit(shape.children)});
-    visit(compiled.pages[0].shapes);
+    visit(doc.slides[0].shapes);
     const run=runs.find(run=>run.t?.includes('One question'));
     check(run?.rPr?.latin?.$_typeface==='Baloo 2','native run preserves Baloo 2');
     const parent=document.createElement('div');parent.style.fontFamily='Carlito';
     const label=document.createElement('span');parent.append(label);document.body.append(parent);
     Object.assign(label.style,mapRPrStyle(run.rPr,{},{}));
     check(label.style.fontFamily.includes('Baloo 2'),'browser accepts generated family CSS');
+    check(getComputedStyle(label).fontWeight === '800','browser retains the authored weight');
     check(getComputedStyle(label).fontFamily.includes('Baloo 2'),'numbered family does not inherit Carlito');
     document.body.insertAdjacentHTML('beforeend','<pre id="result">PASS</pre>');
    }catch(e){const el=document.createElement('pre');el.id='result';el.textContent=e.stack;document.body.append(el)}})();

@@ -783,12 +783,35 @@ export function compilePageSVG(
             first.x + first.w / 2 + Math.cos(angle) * dx - Math.sin(angle) * dy,
           cy =
             first.y + first.h / 2 + Math.sin(angle) * dx + Math.cos(angle) * dy;
+        const glyph = a["data-html-glyph-box"]?.split(" ").map(Number);
+        const measuredGlyph = lines.length === 1 && glyph?.length === 4 &&
+          glyph.every(Number.isFinite) && glyph[2] > 0 && glyph[3] > 0;
+        const [glyphX, glyphY] = measuredGlyph
+          ? point(m, glyph[0] + glyph[2] / 2, glyph[1] + glyph[3] / 2)
+          : [cx, cy];
+        const measuredTextHeight = number(a["data-html-measured-height"]);
+        const hasMeasuredTextHeight = measuredTextHeight > 0 && Number.isFinite(measuredTextHeight);
+        const measuredTextWidth = number(a["data-html-measured-width"]);
+        const hasMeasuredTextWidth = measuredTextWidth > 0 && Number.isFinite(measuredTextWidth);
+        const contentPadding = lines.reduce((widest, line) => line.w > widest.w ? line : widest, first).svgTextWidthPadding;
+        const frameWidth = measuredGlyph ? glyph[2] * sx : hasMeasuredTextWidth
+          ? Math.min(w, measuredTextWidth * sx + 2 * sx)
+          : w;
+        const frameHeight = measuredGlyph ? glyph[3] * sy : hasMeasuredTextHeight
+          ? Math.min(h, measuredTextHeight * sy + (a["data-html-formula-box"] === "1" ? 0 : 2 * sy))
+          : h;
+        const frameX = measuredGlyph ? glyphX - frameWidth / 2 : hasMeasuredTextWidth
+          ? a["text-anchor"] === "middle" ? cx - contentPadding / 2 - frameWidth / 2
+            : a["text-anchor"] === "end" ? cx + w / 2 - contentPadding - frameWidth
+              : cx - w / 2
+          : cx - w / 2;
         push({
           ...first,
-          x: cx - w / 2,
-          y: cy - h / 2,
-          w,
-          h,
+          x: frameX,
+          // Keep the source baseline fixed as the measured text frame tightens.
+          y: measuredGlyph ? glyphY - frameHeight / 2 : cy - h / 2,
+          w: frameWidth,
+          h: frameHeight,
           svgTextBaselineOffset: offset,
           svgTextWidthPadding: lines.reduce((a, b) => a.w > b.w ? a : b).svgTextWidthPadding,
           txBody: {
@@ -797,7 +820,7 @@ export function compilePageSVG(
               ...first.txBody.bodyPr,
               // Individual SVG frames reserve trailing measurement padding.
               // Exclude it from paragraph alignment so the shared anchor stays put.
-              ...(a["text-anchor"] === "middle" || a["text-anchor"] === "end"
+              ...(measuredGlyph || hasMeasuredTextWidth ? { $_rIns: 0 } : a["text-anchor"] === "middle" || a["text-anchor"] === "end"
                 ? { $_rIns: Math.round(lines.reduce((widest, line) => line.w > widest.w ? line : widest, first).svgTextWidthPadding * 9525) }
                 : {}),
             },

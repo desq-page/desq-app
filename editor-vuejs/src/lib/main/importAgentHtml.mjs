@@ -32,7 +32,6 @@ export async function agentHtmlDocument(source, name) {
     ...(context ? { measureText: canvasTextMeasurer(context) } : {}) });
   const doc = blankDocument();
   doc.assets = Object.fromEntries([...embedded.images].map(([name,asset]) => [name,{data:asset.data,w:asset.w,h:asset.h}]));
-  doc.file.fonts = [...new Set(families)].map(family => ({ family, type: 'google' }));
   doc.file.name = (name || deck.title).replace(/\.html?$/i, '');
   doc.slides = compiled.pages.map(page => ({ ...page, id: genId(), fileId: doc.file.id }));
   resolveHtmlSlideLinks(doc.slides, doc.slides.map(slide => slide.id));
@@ -48,6 +47,21 @@ export async function agentHtmlDocument(source, name) {
     inheritSharedSlideBackground(doc.slides, deck.slides, layout, { width: 1280, height: 720, genId }, deck.sharedLayouts?.[0]);
     for (const slide of doc.slides) { slide.layoutid = layout.id; slide.showMaster = 1; }
   }
+  const weights = new Map(families.map(family => [family.toLowerCase(), new Set()]));
+  const collect = shapes => {
+    for (const shape of shapes) {
+      for (const paragraph of shape.txBody?.p || []) for (const {rPr} of paragraph.r || []) {
+        const weight = rPr?.desqFontWeight;
+        if (weight) weights.get(rPr.latin?.$_typeface?.toLowerCase())?.add(weight);
+      }
+      if (shape.children) collect(shape.children);
+    }
+  };
+  for (const page of [...doc.slides, ...(doc.layouts || [])]) collect(page.shapes);
+  doc.file.fonts = [...new Set(families)].map(family => {
+    const variants = [...weights.get(family.toLowerCase())].sort((a, b) => a - b);
+    return {family, type: 'google', ...(variants.length ? {weights: variants} : {})};
+  });
   doc.file.slides = doc.slides.map(({ id, name, transition, layoutid, showMaster }) => ({ id, name, transition, layoutid, showMaster }));
   return doc;
 }

@@ -48,5 +48,7 @@ test('HTML authoring prompts reference the public contract without embedding its
   assert.ok(prompt.endsWith('Build a branching geography game.'));
   assert.match(prompt,/downloadable UTF-8 \.html/);
   assert.match(prompt,/animations and morph/);
+  assert.match(prompt,/directly in the HTML/);
+  assert.match(prompt,/inline onclick that calls a named function/);
   assert.ok(!prompt.includes('## Required delivery'));
 });
