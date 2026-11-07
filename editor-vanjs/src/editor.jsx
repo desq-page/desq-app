@@ -164,6 +164,8 @@ export function mountEditor(host, options = {}) {
       const source = await fileDataURL(file);
       const image = new Image(); image.src = source; await image.decode();
       const shape = createShape('image', getDoc().file), assetId = `image-${shape.id}`;
+      const scale = Math.min(1, getDoc().file.width / image.naturalWidth);
+      shape.w *= scale;
       shape.name = file.name; shape.h = shape.w * image.naturalHeight / image.naturalWidth;
       shape.blipFill.blip.$_target = assetId; images.push({ shape, assetId, source });
     }

@@ -29,6 +29,102 @@ async function loadInpaint(ort, engine) {
   return ort.InferenceSession.create(await downloadModel(inpaintModel), options);
 }
 
+function makeGlyphMask(context, boxes) {
+  const { width, height } = context.canvas;
+  const pixels = context.getImageData(0, 0, width, height).data;
+  const mask = new Uint8Array(width * height);
+  for (const box of boxes) {
+    const left = Math.max(0, Math.floor(box.x)), top = Math.max(0, Math.floor(box.y));
+    const right = Math.min(width, Math.ceil(box.x + box.width));
+    const bottom = Math.min(height, Math.ceil(box.y + box.height));
+    const w = right - left, h = bottom - top;
+    if (w < 2 || h < 2) continue;
+    const gray = new Uint8Array(w * h), histogram = new Uint32Array(256);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const offset = ((top + y) * width + left + x) * 4;
+      const value = Math.round(.299 * pixels[offset] + .587 * pixels[offset + 1] + .114 * pixels[offset + 2]);
+      gray[y * w + x] = value;
+      histogram[value]++;
+    }
+    // Otsu separates lettering from the local paper/bubble tone without
+    // treating the OCR rectangle itself as the removal mask.
+    const total = gray.length;
+    let sum = 0;
+    for (let i = 0; i < 256; i++) sum += i * histogram[i];
+    let backgroundWeight = 0, backgroundSum = 0, bestVariance = -1, threshold = 127;
+    for (let i = 0; i < 256; i++) {
+      backgroundWeight += histogram[i];
+      if (!backgroundWeight) continue;
+      const foregroundWeight = total - backgroundWeight;
+      if (!foregroundWeight) break;
+      backgroundSum += i * histogram[i];
+      const meanBackground = backgroundSum / backgroundWeight;
+      const meanForeground = (sum - backgroundSum) / foregroundWeight;
+      const variance = backgroundWeight * foregroundWeight * (meanBackground - meanForeground) ** 2;
+      if (variance > bestVariance) { bestVariance = variance; threshold = i; }
+    }
+    // OCR boxes usually surround dark lettering. When the selected pixels are
+    // mostly dark (reverse lettering), invert the threshold polarity.
+    let dark = 0, light = 0;
+    for (const value of gray) value <= threshold ? dark++ : light++;
+    const inkIsDark = dark <= light;
+    let inkCount = 0;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const value = gray[y * w + x];
+      if (inkIsDark ? value <= threshold : value > threshold) inkCount++;
+    }
+    // If contrast is ambiguous, leave the source untouched instead of falling
+    // back to painting the whole OCR rectangle over nearby bubble artwork.
+    if (!bestVariance || inkCount < total * .002 || inkCount > total * .55) continue;
+    const candidate = new Uint8Array(total);
+    for (let i = 0; i < total; i++) candidate[i] = inkIsDark ? gray[i] <= threshold : gray[i] > threshold ? 1 : 0;
+    const visited = new Uint8Array(total), queue = new Int32Array(total);
+    for (let start = 0; start < total; start++) {
+      if (!candidate[start] || visited[start]) continue;
+      let head = 0, tail = 0, minX = w, minY = h, maxX = -1, maxY = -1, touchesEdge = false;
+      queue[tail++] = start;
+      visited[start] = 1;
+      while (head < tail) {
+        const index = queue[head++], x = index % w, y = Math.floor(index / w);
+        minX = Math.min(minX, x); minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x); maxY = Math.max(maxY, y);
+        touchesEdge ||= x === 0 || y === 0 || x === w - 1 || y === h - 1;
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+          const nx = x + dx, ny = y + dy;
+          if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue;
+          const next = ny * w + nx;
+          if (candidate[next] && !visited[next]) { visited[next] = 1; queue[tail++] = next; }
+        }
+      }
+      const componentWidth = maxX - minX + 1, componentHeight = maxY - minY + 1;
+      const longRule = componentWidth > w * .8 && componentHeight < Math.max(3, h * .08) ||
+        componentHeight > h * .8 && componentWidth < Math.max(3, w * .08);
+      // OCR boxes have padding around letters. Edge-connected and rule-like
+      // components are likely bubble borders or artwork crossing the box.
+      if (touchesEdge || longRule) continue;
+      for (let i = 0; i < tail; i++) {
+        const index = queue[i];
+        mask[(top + Math.floor(index / w)) * width + left + index % w] = 1;
+      }
+    }
+  }
+  // Include a one-pixel halo for antialiased glyph edges, while leaving nearby
+  // bubble contours and artwork untouched.
+  const expanded = new Uint8Array(mask);
+  for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+    const index = y * width + x;
+    if (mask[index]) continue;
+    for (let dy = -1; dy <= 1 && !expanded[index]; dy++) for (let dx = -1; dx <= 1; dx++) {
+      const nx = x + dx, ny = y + dy;
+      if (nx >= 0 && nx < width && ny >= 0 && ny < height && mask[ny * width + nx]) {
+        expanded[index] = 1;
+        break;
+      }
+    }
+  }
+  return expanded;
+}
+
 async function eraseText(context, boxes, contextBoxes, engine) {
   const ort = await import('onnxruntime-web/wasm');
   ort.env.wasm.numThreads = 1;
@@ -43,6 +139,7 @@ async function eraseText(context, boxes, contextBoxes, engine) {
   const { width, height } = context.canvas;
   const pixels = context.getImageData(0, 0, width, height);
   const repaired = new ImageData(new Uint8ClampedArray(pixels.data), width, height);
+  const glyphMask = makeGlyphMask(context, boxes);
   const bounds = ({ x, y, width: w, height: h }, padding = 0) => ({
     left: Math.max(0, Math.floor(x - padding)), top: Math.max(0, Math.floor(y - padding)),
     right: Math.min(width, Math.ceil(x + w + padding)), bottom: Math.min(height, Math.ceil(y + h + padding)),
@@ -94,6 +191,7 @@ async function eraseText(context, boxes, contextBoxes, engine) {
       const clean = outputs[session.outputNames[0]].data;
       if (clean.length !== rgb.length) throw new Error('The cleanup model returned an unexpected image size.');
       for (let y = hole.top; y < hole.bottom; y++) for (let x = hole.left; x < hole.right; x++) {
+        if (glyphMask[y * width + x] === 0) continue;
         const i = (y - top) * w + x - left;
         const target = (y * width + x) * 4;
         for (let c = 0; c < 3; c++) repaired.data[target + c] = aot ? (clean[i + c * size] + 1) * 127.5 : clean[i + c * size];
@@ -187,15 +285,14 @@ async function pictureCanvas(picture) {
   }
 }
 
-async function withOcr(language, callback) {
-  const { PaddleOcrService, V5_LATIN_MOBILE_MODEL } = await import(/* @vite-ignore */ ocrModule);
-  if (language === 'vi-VN' && !V5_LATIN_MOBILE_MODEL)
-    throw new Error('The Vietnamese OCR model is unavailable.');
-  const service = language === 'vi-VN'
-    ? new PaddleOcrService({ model: V5_LATIN_MOBILE_MODEL })
-    : new PaddleOcrService();
+async function withOcr(language, callback, progress = () => {}) {
+  progress('Loading OCR model…');
+  const { PaddleOcrService, V6_TINY_MODEL } = await import(/* @vite-ignore */ ocrModule);
+  if (!V6_TINY_MODEL) throw new Error('The V6 tiny OCR model is unavailable.');
+  const service = new PaddleOcrService({ model: V6_TINY_MODEL });
   try {
     await service.initialize();
+    progress('OCR model ready…');
     return await callback(service);
   } finally {
     await service.destroy();
@@ -246,6 +343,7 @@ export async function detectImageTextRegions(shape, progress) {
           Object.keys(box).every(key => Math.abs(part[key] - box[key]) < 0.001)))) continue;
     addShapeRaw({
       name: 'OCR region', type: 'rect', $_otag: 'sp', ...regionGeometry(picture, box),
+      locked: true,
       solidFill: { uniClr: { ...blue.uniClr, alpha: { $_val: 9000 } } },
       ln: { solidFill: blue, $_w: 12700 },
       ocrRegion: { pictureId: picture.id, source: job.source, crop: job.crop, box },
@@ -278,87 +376,102 @@ export async function mergeImageTextRegions(shapes) {
   await saveDexie();
 }
 
-export async function extractImageText(shape, progress, language, engine = 'migan') {
-  const marker = getShapeDeep(shape.id);
-  const selection = marker?.ocrRegion;
-  if (!selection || marker.locked) throw new Error('Select a detected text region.');
-  const job = openPicture(selection.pictureId);
-  if (selection.source !== job.source || selection.crop !== job.crop)
+export async function extractImageText(shapes, progress, language, engine = 'migan') {
+  const markers = shapes.map(shape => getShapeDeep(shape.id));
+  if (!markers.length || markers.some(marker => !marker?.ocrRegion))
+    throw new Error('Select a detected text region.');
+  const first = markers[0].ocrRegion;
+  if (markers.some(marker => marker.ocrRegion.pictureId !== first.pictureId ||
+      marker.ocrRegion.source !== first.source || marker.ocrRegion.crop !== first.crop))
+    throw new Error('Extract regions from one picture at a time.');
+  const job = openPicture(first.pictureId);
+  if (first.source !== job.source || first.crop !== job.crop)
     throw new Error('The picture changed. Detect its text regions again.');
-  const currentImage = () => {
-    const picture = job.current();
-    const currentMarker = getShapeDeep(marker.id);
-    if (!currentMarker || currentMarker.locked ||
-        JSON.stringify(currentMarker.ocrRegion) !== JSON.stringify(selection))
-      throw new Error('The selected region changed during extraction.');
-    return picture;
-  };
   const context = await pictureCanvas(job.picture);
   const canvas = context.canvas;
   const toPixels = box => ({ x: box.x * canvas.width, y: box.y * canvas.height,
     width: box.width * canvas.width, height: box.height * canvas.height });
-  const region = toPixels(selection.box);
-  const holes = (selection.parts || [selection.box]).map(toPixels);
-  const left = Math.max(0, Math.floor(region.x)), top = Math.max(0, Math.floor(region.y));
-  const crop = document.createElement('canvas');
-  crop.width = Math.min(canvas.width, Math.ceil(region.x + region.width)) - left;
-  crop.height = Math.min(canvas.height, Math.ceil(region.y + region.height)) - top;
-  const cropContext = crop.getContext('2d');
-  cropContext.fillStyle = '#fff';
-  cropContext.fillRect(0, 0, crop.width, crop.height);
-  for (const hole of holes) {
-    const x = Math.floor(hole.x), y = Math.floor(hole.y);
-    const w = Math.ceil(hole.x + hole.width) - x, h = Math.ceil(hole.y + hole.height) - y;
-    cropContext.drawImage(canvas, x, y, w, h, x - left, y - top, w, h);
+  const records = markers.map(marker => {
+    const selection = marker.ocrRegion;
+    const region = toPixels(selection.box);
+    const holes = (selection.parts || [selection.box]).map(toPixels);
+    const left = Math.max(0, Math.floor(region.x)), top = Math.max(0, Math.floor(region.y));
+    const crop = document.createElement('canvas');
+    crop.width = Math.min(canvas.width, Math.ceil(region.x + region.width)) - left;
+    crop.height = Math.min(canvas.height, Math.ceil(region.y + region.height)) - top;
+    const cropContext = crop.getContext('2d');
+    cropContext.fillStyle = '#fff';
+    cropContext.fillRect(0, 0, crop.width, crop.height);
+    for (const hole of holes) {
+      const x = Math.floor(hole.x), y = Math.floor(hole.y);
+      const w = Math.ceil(hole.x + hole.width) - x, h = Math.ceil(hole.y + hole.height) - y;
+      cropContext.drawImage(canvas, x, y, w, h, x - left, y - top, w, h);
+    }
+    return { marker, selection, region, holes, crop };
+  });
+  await withOcr(language, async service => {
+    for (const [index, record] of records.entries()) {
+      progress(`Reading line box ${index + 1} of ${records.length}…`);
+      // Run PaddleOCR's per-line strategy inside each selected OCR box.
+      record.text = (await service.recognize(record.crop, { strategy: 'per-line' }))
+        .text.trim().normalize('NFC');
+    }
+  }, progress);
+  const readable = records.filter(record => record.text);
+  if (!readable.length) return false;
+  for (const record of records) {
+    const currentMarker = getShapeDeep(record.marker.id);
+    if (!currentMarker || JSON.stringify(currentMarker.ocrRegion) !== JSON.stringify(record.selection))
+      throw new Error('A selected region changed during extraction.');
   }
-  progress('Reading selected region…');
-  region.text = await withOcr(language, async service => (await service.recognize(crop)).text.trim().normalize('NFC'));
-  if (!region.text) return false;
-  currentImage();
-  const neighbors = pictureMarkers(job.picture.id)
-    .filter(shape => shape.ocrRegion.source === job.source && shape.ocrRegion.crop === job.crop)
+  const current = job.current();
+  const allRegions = pictureMarkers(current.id)
+    .filter(shape => shape.ocrRegion.source === job.source && shape.ocrRegion.crop === job.crop);
+  const neighbors = allRegions.filter(shape => !markers.some(marker => marker.id === shape.id))
     .flatMap(shape => (shape.ocrRegion.parts || [shape.ocrRegion.box]).map(toPixels));
 
-  progress('Cleaning the image…');
+  progress(`Cleaning ${readable.length} region${readable.length === 1 ? '' : 's'}…`);
   const before = context.getImageData(0, 0, canvas.width, canvas.height);
-  const cleaned = await eraseText(context, holes, neighbors, engine);
+  const targetHoles = readable.flatMap(record => record.holes);
+  const cleaned = await eraseText(context, targetHoles, neighbors, engine);
   const after = context.getImageData(0, 0, canvas.width, canvas.height);
-  const measure = document.createElement('canvas').getContext('2d');
-  measure.font = '100px Arial';
-  currentImage();
   const media = await processImage(cleaned, { fileId: job.fileId });
   if (!media?.name) throw new Error('Could not store the cleaned picture.');
-  const current = currentImage();
-  const { dataUrl, ...blip } = current.blipFill.blip;
-  updateShape({ id: current.id, blipFill: { ...current.blipFill, blip: {
+  const currentPicture = job.current();
+  const { dataUrl, ...blip } = currentPicture.blipFill.blip;
+  updateShape({ id: currentPicture.id, blipFill: { ...currentPicture.blipFill, blip: {
     ...blip, $_target: media.name, $_w: media.w, $_h: media.h,
   } } });
-  for (const sibling of pictureMarkers(current.id)) {
-    if (sibling.id !== marker.id && sibling.ocrRegion.source === job.source && sibling.ocrRegion.crop === job.crop)
+  for (const sibling of allRegions) {
+    if (!readable.some(record => record.marker.id === sibling.id))
       updateShape({ id: sibling.id, ocrRegion: { ...sibling.ocrRegion, source: media.name } });
   }
-  const geometry = regionGeometry(current, selection.box);
-  const { w, h } = geometry;
-  const ink = estimateInkColor(before, after, region);
-  const lang = language || textLanguage(region.text);
-  const lines = region.text.split(/\r?\n/).filter(line => line.trim());
-  const measuredWidth = Math.max(...lines.map(line => measure.measureText(line).width));
-  const lineHeight = h / lines.length;
-  const size = Math.min(lineHeight * 0.8, measuredWidth > 0 ? w * 100 / measuredWidth : lineHeight);
-  updateShape({
-    id: marker.id, ocrRegion: null, solidFill: null, hideSpinHandle: true,
-    name: 'Extracted text', type: 'text', $_otag: 'sp',
-    ...geometry, d: `R0,0,${w},${h}`, noFill: true, ln: { noFill: true },
-    txBody: {
-      bodyPr: { $_wrap: 'none', $_anchor: 'ctr', $_lIns: 0, $_rIns: 0, $_tIns: 0, $_bIns: 0 },
-      p: lines.map(line => ({ ...(lang === 'he' ? { pPr: { $_rtl: 1 } } : {}), r: [{ t: line, rPr: {
-        $_sz: Math.max(100, Math.round(size * 75)),
-        latin: { $_typeface: 'Arial' },
-        ...(lang ? { $_lang: lang } : {}),
-        ...(ink ? { solidFill: { uniClr: { $_otag: 'srgbClr', $_val: ink } } } : {}),
-      } }] })),
-    },
-  });
+  const measure = document.createElement('canvas').getContext('2d');
+  measure.font = '100px Arial';
+  for (const record of readable) {
+    const { marker, selection, region, text } = record;
+    const geometry = regionGeometry(currentPicture, selection.box);
+    const { w, h } = geometry;
+    const ink = estimateInkColor(before, after, region);
+    const lang = language || textLanguage(text);
+    const lines = text.split(/\r?\n/).filter(line => line.trim());
+    const measuredWidth = Math.max(...lines.map(line => measure.measureText(line).width));
+    const lineHeight = h / lines.length;
+    const size = Math.min(lineHeight * 0.8, measuredWidth > 0 ? w * 100 / measuredWidth : lineHeight);
+    updateShape({
+      id: marker.id, ocrRegion: null, locked: false, solidFill: null, hideSpinHandle: true,
+      name: 'Extracted text', type: 'text', $_otag: 'sp',
+      ...geometry, d: `R0,0,${w},${h}`, noFill: true, ln: { noFill: true },
+      txBody: {
+        bodyPr: { $_wrap: 'none', $_anchor: 'ctr', $_lIns: 0, $_rIns: 0, $_tIns: 0, $_bIns: 0 },
+        p: lines.map(line => ({ ...(lang === 'he' ? { pPr: { $_rtl: 1 } } : {}), r: [{ t: line, rPr: {
+          $_sz: Math.max(100, Math.round(size * 75)), latin: { $_typeface: 'Arial' },
+          ...(lang ? { $_lang: lang } : {}),
+          ...(ink ? { solidFill: { uniClr: { $_otag: 'srgbClr', $_val: ink } } } : {}),
+        } }] })),
+      },
+    });
+  }
   await saveDexie();
-  return true;
+  return readable.length;
 }

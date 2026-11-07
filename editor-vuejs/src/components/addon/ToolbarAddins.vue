@@ -35,21 +35,21 @@
     :onClick="mergeRegions"
   />
   <ToolbarItem
-    caption="Extract Text"
+    caption="Extract All Remaining Boxes"
     :icon="ImageEdit20Regular"
     :size="30"
     :disabled="!canExtractText() || extracting"
     :onClick="() => runImageExtraction(false)"
   />
   <ToolbarItem
-    caption="Extract Text (Kites AOT)"
+    caption="Extract All Remaining Boxes (Kites AOT)"
     :icon="ImageEdit20Regular"
     :size="30"
     :disabled="!canExtractText() || extracting"
     :onClick="() => runImageExtraction(false, undefined, 'aot')"
   />
   <ToolbarItem
-    caption="Extract Vietnamese Text"
+    caption="Extract All Remaining Boxes (Vietnamese)"
     :icon="ImageEdit20Regular"
     :size="30"
     :disabled="!canExtractText() || extracting"
@@ -105,7 +105,7 @@ import ToolbarItem from "../editor/Toolbars/ToolbarItem.vue";
 import g from "shared-vuejs/api/global";
 import { rmbgUsingXenova } from "../editor/Toolbars/ToolbarUtils";
 import { Person } from "@vicons/carbon";
-import { getFileInfo, getShapeDeep, getSlidesSlideId } from "shared-vuejs/editor";
+import { getFileInfo, getShapeDeep, getSlideInfo, getSlidesSlideId } from "shared-vuejs/editor";
 import { showError, showMessage } from "shared-vuejs/api/utils";
 import { traceImage } from "shared-vuejs/api/svgUtils";
 
@@ -122,11 +122,11 @@ function selectedOcrRegions() {
   const selection = piniaSelect();
   if (!selection.selShps.length || selection.selGrpShps?.length) return [];
   const regions = selection.selShps.map(id => getShapeDeep(id));
-  return regions.every(shape => shape?.ocrRegion && !shape.locked) ? regions : [];
+  return regions.every(shape => shape?.ocrRegion) ? regions : [];
 }
 
 function canExtractText() {
-  return selectedOcrRegions().length > 0;
+  return (getSlideInfo()?.shapes || []).some(shape => shape.ocrRegion);
 }
 
 function canMergeRegions() {
@@ -158,7 +158,7 @@ async function runImageExtraction(detect: boolean, language?: string, engine = '
   if (extracting.value) return;
   const shapes = detect
     ? (canDetectText() ? [piniaSelect().selShpFormat] : [])
-    : selectedOcrRegions();
+    : (getSlideInfo()?.shapes || []).filter(shape => shape.ocrRegion);
   if (!shapes.length) return;
   const fileId = getFileInfo()?.id;
   const slideId = getSlidesSlideId();
@@ -171,17 +171,27 @@ async function runImageExtraction(detect: boolean, language?: string, engine = '
     if (detect) {
       if (!await detectImageTextRegions(shapes[0], progress)) showMessage('No text regions were found.');
     } else {
-      let unreadable = 0;
-      for (const [index, shape] of shapes.entries()) {
+      if (getFileInfo()?.id !== fileId || getSlidesSlideId() !== slideId)
+        throw new Error('The slide changed during extraction.');
+      const groups = new Map();
+      for (const shape of shapes) {
+        const region = shape.ocrRegion;
+        const key = JSON.stringify([region.pictureId, region.source, region.crop]);
+        groups.set(key, [...(groups.get(key) || []), shape]);
+      }
+      let extractedTotal = 0, unreadableTotal = 0;
+      for (const [index, regions] of [...groups.values()].entries()) {
         if (getFileInfo()?.id !== fileId || getSlidesSlideId() !== slideId)
           throw new Error('The slide changed during extraction.');
-        const regionProgress = (message: string) =>
-          progress(shapes.length > 1 ? `Region ${index + 1} of ${shapes.length} · ${message}` : message);
-        if (!await extractImageText(shape, regionProgress, language, engine)) unreadable++;
+        const regionProgress = (message: string) => progress(groups.size > 1
+          ? `Picture ${index + 1} of ${groups.size} · ${message}` : message);
+        const extracted = await extractImageText(regions, regionProgress, language, engine);
+        extractedTotal += extracted;
+        unreadableTotal += regions.length - extracted;
       }
-      if (unreadable) showMessage(shapes.length === 1
-        ? 'No text was recognized in this region.'
-        : `No text was recognized in ${unreadable} of ${shapes.length} selected regions.`);
+      if (unreadableTotal) showMessage(extractedTotal
+        ? `Extracted ${extractedTotal} regions; ${unreadableTotal} had no recognized text and remain.`
+        : 'No text was recognized in the remaining regions.');
     }
   } catch (error) {
     showError(error instanceof Error ? error.message : String(error), 'Image text extraction');
