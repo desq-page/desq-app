@@ -7,12 +7,15 @@ const semantic = new Set('h1 h2 h3 h4 h5 h6 p ul ol table img svg'.split(' '));
 // Geometry fallback only. Source markup still passes the converter's safety
 // checks. Keep the text, emphasis, lists, tables, images and SVG diagrams; replace
 // oversized CSS geometry with a bounded, host-owned layout in the shared palette.
-export function reflowLocalHTML(html, { title, design, reservePhoto = false }) {
-  let content, sourceTitle, fullText;
+export function reflowLocalHTML(html, { title, design, reservePhoto = false, width, height }) {
+  let content, sourceTitle, fullText, sourceWidth, sourceHeight;
   const captured = {};
   try {
     htmlToSVG(html, { inspectLayout(page, doc) {
       const view = doc.defaultView;
+      const canvas = page.getBoundingClientRect();
+      sourceWidth = canvas.width;
+      sourceHeight = canvas.height;
       const heading = page.querySelector('h1') || page.querySelector('h2');
       sourceTitle = heading?.textContent.trim() || title;
       const blocks = [];
@@ -91,7 +94,14 @@ export function reflowLocalHTML(html, { title, design, reservePhoto = false }) {
     } });
   } catch (error) { if (error !== captured) throw error; }
   if (!content?.length) throw Error('Cannot reflow an empty slide.');
-  const render = (node, size, width) => {
+  const canvasWidth = Math.round(Number(width) || sourceWidth || 1280);
+  const canvasHeight = Math.round(Number(height) || sourceHeight || 720);
+  const scaleX = canvasWidth / 1280, scaleY = canvasHeight / 720;
+  const typeScale = Math.min(scaleX, scaleY);
+  const marginX = 56 * scaleX, titleTop = 40 * scaleY, titleSize = 40 * typeScale;
+  const bodyTop = 166 * scaleY, bottomMargin = 60 * scaleY, gap = 28 * scaleX;
+  const availableBodyHeight = canvasHeight - bodyTop - bottomMargin;
+  const render = (node, size, width, imageHeight = 180 * scaleY) => {
     const clone = node.cloneNode(true);
     // Freeze text structure, not CSS sizes/positioning from the failed layout.
     for (const el of [clone, ...clone.querySelectorAll('*')]) {
@@ -104,29 +114,31 @@ export function reflowLocalHTML(html, { title, design, reservePhoto = false }) {
       if (el.localName === 'svg') {
         const vb = (el.getAttribute('viewBox') || '').trim().split(/[ ,]+/).map(Number);
         if (vb.length !== 4 || !vb.every(Number.isFinite) || vb[2] <= 0 || vb[3] <= 0) throw Error('Cannot preserve SVG without a valid viewBox during reflow.');
-        el.setAttribute('style', `display:block;position:static;width:${width}px;height:${Math.min(280, width * vb[3] / vb[2])}px;margin:0 0 12px`);
+        el.setAttribute('style', `display:block;position:static;width:${width}px;height:${Math.min(280 * scaleY, width * vb[3] / vb[2])}px;margin:0 0 ${12 * scaleY}px`);
       } else if (el.namespaceURI === 'http://www.w3.org/2000/svg') continue;
-      else if (el.localName === 'img') el.setAttribute('style', `display:block;position:static;width:${width}px;height:180px;object-fit:cover;margin:0 0 12px`);
-      else if (/^h[1-6]$/.test(el.localName)) el.setAttribute('style', `font-size:${size + 2}px;font-weight:700;line-height:1.2;color:${design.accent};margin:0 0 10px`);
-      else if (['ul', 'ol'].includes(el.localName)) el.setAttribute('style', 'padding:0 0 0 26px;margin:0 0 12px');
-      else if (el.localName === 'li') el.setAttribute('style', 'margin:0 0 8px');
-      else if (el.localName === 'table') el.setAttribute('style', 'width:100%;table-layout:fixed;border-collapse:collapse;margin:0 0 12px');
-      else if (['td', 'th'].includes(el.localName)) el.setAttribute('style', `padding:8px;border:1px solid ${design.accent};overflow-wrap:anywhere`);
-      else if (el === clone) el.setAttribute('style', 'margin:0 0 12px;overflow-wrap:anywhere');
+      else if (el.localName === 'img') el.setAttribute('style', `display:block;position:static;width:${width}px;height:${imageHeight}px;object-fit:cover;margin:0 0 ${12 * scaleY}px`);
+      else if (/^h[1-6]$/.test(el.localName)) el.setAttribute('style', `font-size:${size + 2 * typeScale}px;font-weight:700;line-height:1.2;color:${design.accent};margin:0 0 ${10 * scaleY}px`);
+      else if (['ul', 'ol'].includes(el.localName)) el.setAttribute('style', `padding:0 0 0 ${26 * scaleX}px;margin:0 0 ${12 * scaleY}px`);
+      else if (el.localName === 'li') el.setAttribute('style', `margin:0 0 ${8 * scaleY}px`);
+      else if (el.localName === 'table') el.setAttribute('style', `width:100%;table-layout:fixed;border-collapse:collapse;margin:0 0 ${12 * scaleY}px`);
+      else if (['td', 'th'].includes(el.localName)) el.setAttribute('style', `padding:${8 * typeScale}px;border:1px solid ${design.accent};overflow-wrap:anywhere`);
+      else if (el === clone) el.setAttribute('style', `margin:0 0 ${12 * scaleY}px;overflow-wrap:anywhere`);
     }
     return clone.outerHTML;
   };
   const reservedPhoto = reservePhoto ? content.find(node=>node.localName === 'img') : undefined;
   if (reservedPhoto) content = content.filter(node=>node !== reservedPhoto);
-  const photoHTML = reservedPhoto ? `<div style="position:absolute;left:752px;top:176px;width:472px;height:360px">${render(reservedPhoto,24,472).replace('height:180px','height:360px')}</div>` : '';
+  const photoWidth = 472 * scaleX, photoHeight = 360 * scaleY;
+  const photoHTML = reservedPhoto ? `<div style="position:absolute;left:${752 * scaleX}px;top:${176 * scaleY}px;width:${photoWidth}px;height:${photoHeight}px">${render(reservedPhoto,24 * typeScale,photoWidth,photoHeight)}</div>` : '';
   let lastError;
-  for (const size of [24, 22, 20]) for (const columns of (reservedPhoto ? [1] : [1, 2, 3])) {
+  for (const baseSize of [24, 22, 20]) for (const columns of (reservedPhoto ? [1] : [1, 2, 3])) {
     try {
-    const contentWidth = reservedPhoto ? 648 : 1168;
-    const width = (contentWidth - (columns - 1) * 28) / columns;
+    const size = baseSize * typeScale;
+    const contentWidth = reservedPhoto ? 648 * scaleX : canvasWidth - 2 * marginX;
+    const columnWidth = (contentWidth - (columns - 1) * gap) / columns;
     const groups = Array.from({length:columns}, () => []);
-    groups[0] = content.map(node => render(node, size, width));
-    const candidate = `<section style="position:relative;width:1280px;height:720px;overflow:hidden;background:${design.background};color:${design.foreground};font-family:Arial"><h1 style="position:absolute;left:56px;top:40px;width:1168px;font-size:40px;line-height:1.15;margin:0">${escape(sourceTitle)}</h1><div style="position:absolute;left:56px;top:166px;width:${contentWidth}px;display:flex;align-items:flex-start;gap:28px;font-size:${size}px;line-height:1.25">${groups.map(group => `<div data-reflow-column style="width:${width}px;flex:none;min-width:0">${group.join('')}</div>`).join('')}</div>${photoHTML}</section>`;
+    groups[0] = content.map(node => render(node, size, columnWidth));
+    const candidate = `<section style="position:relative;width:${canvasWidth}px;height:${canvasHeight}px;overflow:hidden;background:${design.background};color:${design.foreground};font-family:Arial"><h1 style="position:absolute;left:${marginX}px;top:${titleTop}px;width:${canvasWidth - 2 * marginX}px;font-size:${titleSize}px;line-height:1.15;margin:0">${escape(sourceTitle)}</h1><div style="position:absolute;left:${marginX}px;top:${bodyTop}px;width:${contentWidth}px;max-height:${availableBodyHeight}px;display:flex;align-items:flex-start;gap:${gap}px;font-size:${size}px;line-height:1.25">${groups.map(group => `<div data-reflow-column style="width:${columnWidth}px;flex:none;min-width:0">${group.join('')}</div>`).join('')}</div>${photoHTML}</section>`;
       const result = refineLocalHTML(candidate, { prepareLayout(page) {
         const cols = [...page.querySelectorAll('[data-reflow-column]')];
         const units = cols.flatMap(col => [...col.children]);
@@ -134,7 +146,7 @@ export function reflowLocalHTML(html, { title, design, reservePhoto = false }) {
         let index = 0;
         for (const unit of units) {
           cols[index].append(unit);
-          if (cols[index].scrollHeight > 500 && cols[index].children.length > 1 && index < cols.length - 1) cols[++index].append(unit);
+          if (cols[index].scrollHeight > availableBodyHeight && cols[index].children.length > 1 && index < cols.length - 1) cols[++index].append(unit);
         }
       } });
       if (result.issues.length) throw Error(result.issues.join(' '));
@@ -155,10 +167,11 @@ export function reflowLocalHTML(html, { title, design, reservePhoto = false }) {
         if (boundary > 40) take = take.slice(0, boundary);
         take = take.replace(/[\uD800-\uDBFF]$/, '') + '…';
       }
-      selected.push(`<p style="margin:0 0 16px">${escape(take)}</p>`); remaining -= take.length;
+      selected.push(`<p style="margin:0 0 ${16 * scaleY}px">${escape(take)}</p>`); remaining -= take.length;
     }
     const shortTitle = sourceTitle.length > 54 ? sourceTitle.slice(0, 51).replace(/[\uD800-\uDBFF]$/, '') + '…' : sourceTitle;
-    const candidate = `<section style="position:relative;width:1280px;height:720px;background:${design.background};color:${design.foreground};font-family:Arial;overflow:hidden"><h1 style="position:absolute;left:56px;top:40px;width:1168px;font-size:40px;line-height:1.15">${escape(shortTitle)}</h1><div style="position:absolute;left:56px;top:174px;width:${reservedPhoto ? 648 : 1168}px;font-size:24px;line-height:1.25">${selected.join('')}</div>${photoHTML}<p style="position:absolute;left:56px;top:650px;width:1168px;font-size:20px;color:${design.foreground}">Content excerpt — full generated content is saved with this slide.</p></section>`;
+    const excerptTop = 174 * scaleY, excerptSize = 24 * typeScale;
+    const candidate = `<section style="position:relative;width:${canvasWidth}px;height:${canvasHeight}px;background:${design.background};color:${design.foreground};font-family:Arial;overflow:hidden"><h1 style="position:absolute;left:${marginX}px;top:${titleTop}px;width:${canvasWidth - 2 * marginX}px;font-size:${titleSize}px;line-height:1.15">${escape(shortTitle)}</h1><div style="position:absolute;left:${marginX}px;top:${excerptTop}px;width:${reservedPhoto ? 648 * scaleX : canvasWidth - 2 * marginX}px;font-size:${excerptSize}px;line-height:1.25">${selected.join('')}</div>${photoHTML}<p style="position:absolute;left:${marginX}px;top:${canvasHeight - 70 * scaleY}px;width:${canvasWidth - 2 * marginX}px;font-size:${20 * typeScale}px;color:${design.foreground}">Content excerpt — full generated content is saved with this slide.</p></section>`;
     try {
       const result = refineLocalHTML(candidate);
       if (result.issues.length) throw Error(result.issues.join(' '));

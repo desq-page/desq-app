@@ -18,6 +18,13 @@ export async function planLocalHTML({ command, tools, context, generate,
   if (!command?.trim() || command.length > 4000) throw Error('Enter a slide request within 4000 characters.');
   const count = context.slideTask?.mode === 'edit' ? 1 : context.slideTask?.count ?? 1;
   if (!Number.isInteger(count) || count < 1 || count > 20) throw Error('Invalid requested local slide count.');
+  const canvasWidth = Math.round(Number(context.document?.width) || 1280);
+  const canvasHeight = Math.round(Number(context.document?.height) || 720);
+  const canvasScale = Math.min(canvasWidth / 1280, canvasHeight / 720);
+  const outerMargin = Math.round(56 * canvasScale), titleBand = Math.round(150 * canvasScale);
+  const bodyTop = Math.round(180 * canvasScale), gap = Math.round(24 * canvasScale);
+  const contentBottom = canvasHeight - Math.round(40 * canvasScale);
+  const bodyHeight = contentBottom - bodyTop;
   const check = () => { if (isStopped()) throw Error('Local model stopped. No slides were inserted.'); };
   const metrics = { source: 'model', workflow: 'html-local-guided', inferenceMs: 0,
     inputTokens: 0, repaired: false, reviewed: false, planningCalls: 1, repairCalls: 0, reflowedSlides: 0, reflowAttempts: 0, photosRestored: 0, adjustments: [], warnings: [] };
@@ -66,7 +73,7 @@ export async function planLocalHTML({ command, tools, context, generate,
       onProgress?.(`${modelLabel}: ${attempt ? 'repairing' : 'writing'} HTML slide ${index + 1} of ${count}…`);
       if (attempt) metrics.repairCalls++;
       const response = await generate([
-        { role: 'system', content: `Create one polished editable presentation slide. Return ONLY one complete <section style="position:relative;width:1280px;height:720px;overflow:hidden;...">...</section>. No JSON, Markdown fences, explanation or tool calls. Write the final content and layout now. Follow the supplied shared palette, title and layout direction. When a PPTX reference is supplied, its geometry, fonts and field capacities take priority over the generic sizing recommendations below. Use Arial, title 40–56px, body 24–30px, labels at least 20px. Keep a 56px outer margin, title in the top 150px, body below 180px, 24px gaps, and at most 2 title lines. Prefer flex/grid and flow text over unrelated absolute text boxes. Use compact content that fits; never shrink dense text. The section must stay 1280×720 including padding (box-sizing:border-box). Limit body content to 480px height and roughly 80 words; use at most 4 short modules. For flex/grid children use min-height:0 and avoid fixed heights larger than the available space. No content below y=680. Use background/foreground for primary text, accent for emphasis, surface for panels; choose readable ink on accent panels. ${guide}` },
+      { role: 'system', content: `Create one polished editable presentation slide for the existing DESQ deck. Return ONLY one complete <section style="position:relative;width:${canvasWidth}px;height:${canvasHeight}px;overflow:hidden;...">...</section>. Use this deck's ${canvasWidth}×${canvasHeight}px canvas; DESQ scales inserted slide content to the current deck width. No JSON, Markdown fences, explanation or tool calls. Write the final content and layout now. Follow the supplied shared palette, title and layout direction. When a PPTX reference is supplied, its geometry, fonts and field capacities take priority over the generic sizing recommendations below. Use Arial, title ${Math.round(40 * canvasScale)}–${Math.round(56 * canvasScale)}px, body ${Math.round(24 * canvasScale)}–${Math.round(30 * canvasScale)}px, labels at least ${Math.round(20 * canvasScale)}px. Keep a ${outerMargin}px outer margin, title in the top ${titleBand}px, body below ${bodyTop}px, ${gap}px gaps, and at most 2 title lines. Prefer flex/grid and flow text over unrelated absolute text boxes. Use compact content that fits; never shrink dense text. The section must stay ${canvasWidth}×${canvasHeight}px including padding (box-sizing:border-box). Limit body content to ${bodyHeight}px height and roughly 80 words; use at most 4 short modules. For flex/grid children use min-height:0 and avoid fixed heights larger than the available space. No content below y=${contentBottom}. Use background/foreground for primary text, accent for emphasis, surface for panels; choose readable ink on accent panels. ${guide}` },
         { role: 'user', content: JSON.stringify({ request: command, slideNumber: index + 1,
           totalSlides: count, sharedStyle: { theme: brief.theme, ...brief.design },
           title: direction.title, layoutDirection: layout.guide,
@@ -89,14 +96,14 @@ export async function planLocalHTML({ command, tools, context, generate,
         const rawLayoutID = html.match(/data-presenton-layout=["']([^"']+)["']/i)?.[1];
         const photoLayout = familyLayouts.find(l=>l.id===rawLayoutID) || templateCandidates[0];
         try {
-          quality = restoreLocalPhoto(html,{request:command,title:direction.title,layout:photoLayout,budget:imageBudget,design:brief.design}) || refineLocalHTML(html);
+          quality = restoreLocalPhoto(html,{request:command,title:direction.title,layout:photoLayout,budget:imageBudget,design:brief.design,width:canvasWidth,height:canvasHeight}) || refineLocalHTML(html);
           if (quality.photoRestored) { metrics.photosRestored++; metrics.reflowedSlides++; }
         }
         catch (error) {
           if (error.code !== 'HTML_SLIDE_OVERFLOW') throw error;
           onProgress?.(`${modelLabel}: reflowing slide ${index + 1} to fit locally…`);
           metrics.reflowAttempts++;
-          quality = reflowLocalHTML(html, { title: direction.title, design: brief.design });
+          quality = reflowLocalHTML(html, { title: direction.title, design: brief.design, width: canvasWidth, height: canvasHeight });
           metrics.reflowedSlides++;
           if (!quality.overflowContent) metrics.warnings.push(`Slide ${index + 1}: oversized generated layout was replaced with a compact editable layout; text and media retained.`);
         }
@@ -121,7 +128,7 @@ export async function planLocalHTML({ command, tools, context, generate,
       } catch (error) {
         if (attempt) throw Error(`Slide ${index + 1}: ${error.message} No slides were inserted.`);
         correction = error.message.slice(0, 1500);
-        if (/overflow|clipped box|too dense/i.test(correction)) correction += ' Keep the canvas exactly 1280×720; NEVER enlarge the section or hide overflowing text. Reduce body content by about one third, remove excess vertical margins/padding/gaps, and make the body fit between y=180 and y=660. Preserve the title, key facts and readable font sizes. Return the complete corrected section.';
+        if (/overflow|clipped box|too dense/i.test(correction)) correction += ` Keep the canvas exactly ${canvasWidth}×${canvasHeight}px; NEVER enlarge the section or hide overflowing text. Reduce body content by about one third, remove excess vertical margins/padding/gaps, and make the body fit between y=${bodyTop} and y=${contentBottom}. Preserve the title, key facts and readable font sizes. Return the complete corrected section.`;
         metrics.repaired = true;
       }
     }

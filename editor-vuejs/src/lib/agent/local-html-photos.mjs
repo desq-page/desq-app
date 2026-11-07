@@ -11,7 +11,7 @@ export function photoDirection(request, title, layout, budget) {
 
 // A reference is advisory, so restore a real image request when the model drops
 // the selected photo slot. Reflow text beside it rather than painting over text.
-export function restoreLocalPhoto(html, { request, title, layout, budget, design }) {
+export function restoreLocalPhoto(html, { request, title, layout, budget, design, width, height }) {
   const direction = photoDirection(request,title,layout,budget);
   if (!direction) return undefined;
   const root = parseSlideHTML(html);
@@ -22,6 +22,6 @@ export function restoreLocalPhoto(html, { request, title, layout, budget, design
   image.setAttribute('data-host-photo','true');
   image.style.cssText='position:absolute;left:752px;top:176px;width:472px;height:360px;object-fit:cover';
   root.append(image);
-  const result = reflowLocalHTML(root.outerHTML,{title,design,reservePhoto:true});
+  const result = reflowLocalHTML(root.outerHTML,{title,design,reservePhoto:true,width,height});
   return {...result,photoRestored:true,adjustments:['Restored the selected template photo slot as a resolvable image request.',...result.adjustments]};
 }

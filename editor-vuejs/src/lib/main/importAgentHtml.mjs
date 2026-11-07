@@ -27,24 +27,27 @@ export async function agentHtmlDocument(source, name) {
   await loadGeneratedGoogleFonts([...new Set(families)]);
   await document.fonts?.ready;
   const context = document.createElement('canvas').getContext('2d');
-  const compiled = compileDeck(deck, { width: 1280, height: 720, genId, allowTextOverflow: true, htmlFormFields: fields,
+  const width = deck.width || parsed.width || 1280, height = deck.height || parsed.height || 720;
+  const compiled = compileDeck(deck, { width, height, genId, allowTextOverflow: true, htmlFormFields: fields,
     geometry: (preset, w, h) => ({ d: `R0,0,${w},${h}` }), assets: embeddedHtmlAssets(deck, embedded.images),
     ...(context ? { measureText: canvasTextMeasurer(context) } : {}) });
   const doc = blankDocument();
   doc.assets = Object.fromEntries([...embedded.images].map(([name,asset]) => [name,{data:asset.data,w:asset.w,h:asset.h}]));
   doc.file.name = (name || deck.title).replace(/\.html?$/i, '');
+  doc.file.width = width;
+  doc.file.height = height;
   doc.slides = compiled.pages.map(page => ({ ...page, id: genId(), fileId: doc.file.id }));
   resolveHtmlSlideLinks(doc.slides, doc.slides.map(slide => slide.id));
   if(deck.scripting)doc.file.scripting=resolveImportedScriptProject(deck.scripting,doc.slides,doc.slides.map(slide=>slide.id));
   const background = sharedSlideBackground(doc.slides, deck.slides);
   if (deck.sharedLayouts?.length || background) {
     const shared = deck.sharedLayouts?.length
-      ? compileDeck({ ...deck, slides: deck.sharedLayouts }, { width:1280,height:720,genId,allowTextOverflow:true,
+      ? compileDeck({ ...deck, slides: deck.sharedLayouts }, { width,height,genId,allowTextOverflow:true,
         geometry:(preset,w,h)=>({d:`R0,0,${w},${h}`}), assets:embeddedHtmlAssets({slides:deck.sharedLayouts},embedded.images), ...(context ? {measureText:canvasTextMeasurer(context)} : {}) }).pages[0]
       : { shapes: [] };
     const layout = { ...shared, bg: shared.bg ?? background, id:genId(), fileId:doc.file.id, name:'Shared HTML layout', sharedHtmlLayout:true };
     doc.layouts = [layout];
-    inheritSharedSlideBackground(doc.slides, deck.slides, layout, { width: 1280, height: 720, genId }, deck.sharedLayouts?.[0]);
+    inheritSharedSlideBackground(doc.slides, deck.slides, layout, { width, height, genId }, deck.sharedLayouts?.[0]);
     for (const slide of doc.slides) { slide.layoutid = layout.id; slide.showMaster = 1; }
   }
   const weights = new Map(families.map(family => [family.toLowerCase(), new Set()]));

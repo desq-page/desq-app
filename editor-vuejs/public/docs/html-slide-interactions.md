@@ -118,5 +118,4 @@ Keep the first implementation intentionally finite: slide jumps, explicit feedba
 ## References
 
 - [Frontend Slides skill](https://github.com/zarazhangrui/frontend-slides/blob/main/SKILL.md) and [template](https://github.com/zarazhangrui/frontend-slides/blob/main/html-template.md): business-deck composition and fixed-stage HTML architecture.
-- [bento AGENTS.md](https://github.com/nyblnet/bento/blob/main/AGENTS.md): inspiration for an explicit agent-facing document contract. Its implementation and compact JSON are not DESQ formats.
 - [Standalone quiz example](../examples/html-slides/quiz.html): executable browser prototype of this proposal, with explicit status comments in its source.

@@ -124,9 +124,9 @@ export function parsePageSVG(svg) {
     view[0] !== 0 ||
     view[1] !== 0 ||
     view[2] !== 1280 ||
-    view[3] !== 720
+    !(view[3] > 0 && view[3] <= 10000)
   )
-    throw Error('Page SVG requires viewBox="0 0 1280 720".');
+    throw Error('Page SVG requires a viewBox starting at 0 0, 1280 units wide, and a positive height no greater than 10000.');
   return roots[0];
 }
 const inheritedKeys = new Set([
@@ -295,6 +295,7 @@ export function compilePageSVG(
     booleans,
     outlineText,
     deferTextOutlines = false,
+    scaleToWidth = false,
     language = "en-US",
   },
 ) {
@@ -314,7 +315,9 @@ export function compilePageSVG(
     for (const c of children(n)) if (tagOf(c) !== "#text") index(c);
   };
   index(root);
-  const baseMatrix = [width / 1280, 0, 0, height / 720, 0, 0];
+  const scaleX = width / 1280;
+  const scaleY = scaleToWidth ? scaleX : height / 720;
+  const baseMatrix = [scaleX, 0, 0, scaleY, 0, 0];
   const paint = (raw, alpha) => {
     if (raw === "none") return { noFill: true };
     const ref = /^url\(#([^\s)]+)\)$/.exec(raw || "");
@@ -851,15 +854,16 @@ export function compilePageSVG(
           const ca = attr(c);
           if (["x", "y", "dx", "dy", "rotate"].some((k) => k in ca))
             throw Error("Positioned tspan requires separate text elements.");
-          if (ca["data-pptx-inline-formula"])
+          if (ca["data-pptx-inline-formula"]) {
+            const formula = compileLatex(ca["data-pptx-inline-formula"], { display: false });
+            if (ca["data-html-inline-fraction"] === "1")
+              formula.mathML = `<mrow class="desq-imported-fraction">${formula.mathML}</mrow>`;
             runs.push({
               text: "\ufffc",
               style: style(ca, s),
-              formula: compileLatex(ca["data-pptx-inline-formula"], {
-                display: false,
-              }),
+              formula,
             });
-          else collect(c, style(ca, s));
+          } else collect(c, style(ca, s));
         } else throw Error("Unsupported text child.");
       }
     };
@@ -1045,6 +1049,13 @@ export function compilePageSVG(
       alpha = parentAlpha * opacity(a.opacity);
     if (a.display === "none" || ["hidden", "collapse"].includes(a.visibility))
       return;
+    if (tag === "rect" && raw["data-desq-html-markup"] && scaleToWidth) {
+      const [x, y] = point(m, number(a.x), number(a.y));
+      const [right, bottom] = point(m, number(a.x) + number(a.width), number(a.y) + number(a.height));
+      push({ id: genId(), name: "HTML shape", type: "html", x, y, w: right-x, h: bottom-y,
+        htmlMarkup: raw["data-desq-html-markup"], htmlInitiallyHidden: raw["data-desq-html-hidden"] === "1" });
+      return;
+    }
     const replacement = a["data-pptx-replace-with"] || a["data-pptx-native"];
     if (replacement) {
       const payload = nativePayload(node, replacement);

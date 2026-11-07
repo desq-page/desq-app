@@ -20,7 +20,45 @@
 <li><strong>Continuous simulations, physics, arbitrary scoring or network-backed games:</strong> do not promise faithful native slide conversion. Explain the gap or design a finite set of screens/actions that represents the intended experience.</li>
 </ul>
 <p>Frontend Slides is sufficient as a design baseline for ordinary business decks, not as an unconditional DESQ import specification. Its optional Fontshare fonts, canvas effects, browser editing/storage controls and custom JavaScript are outside the current import contract. Prefer Google Fonts, editable DOM/SVG artwork and declarative interactions. Do not copy its inline editor into a DESQ-targeted deck unless requested.</p>
-<p>The <a href="https://github.com/nyblnet/bento/blob/main/AGENTS.md">bento agent guide</a> is a useful precedent for a documented authoring contract, stable identities, declarative document data and browser verification. Its JSON format and APIs belong to bento; do not use them as DESQ APIs.</p>
+<h2>DESQ HTML authoring contract</h2>
+<p>The downloadable HTML is the declarative document. Its slide sections define page order, its elements define editable artwork, its CSS defines appearance and supported motion, and its attributes declare interaction bindings. Use the following format for new files.</p>
+<table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Declaration</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Slide</td>
+<td>A sibling <code>&lt;section class=&quot;slide&quot; data-desq-slide id=&quot;slide-question&quot;&gt;</code> inside the stage. Use one explicit pixel canvas throughout the presentation.</td>
+</tr>
+<tr>
+<td>Editable artwork</td>
+<td>Author text, backgrounds, controls and diagrams as HTML and inline SVG. Use CSS for layout, paint and simple entrance or repeating animations.</td>
+</tr>
+<tr>
+<td>Identity</td>
+<td>Give every slide, interactive control and script target a document-wide unique ID. Use descriptive IDs such as <code>question-1-feedback</code> and retain them across revisions and resets.</td>
+</tr>
+<tr>
+<td>Navigation</td>
+<td>Declare a literal destination with <code>data-desq-goto=&quot;slide-results&quot;</code>.</td>
+</tr>
+<tr>
+<td>Custom action</td>
+<td>Declare <code>data-desq-module=&quot;quiz&quot;</code>, <code>data-desq-run=&quot;answer&quot;</code> and optional <code>data-desq-args=&quot;[true]&quot;</code> on the control. Arguments are JSON values.</td>
+</tr>
+<tr>
+<td>Behavior</td>
+<td>Define exported functions in <code>&lt;script type=&quot;application/desq-script&quot; data-module=&quot;quiz&quot;&gt;</code>. Use the documented <code>ctx</code> API for state, shape updates, navigation and native animation playback.</td>
+</tr>
+<tr>
+<td>HTML shape</td>
+<td>Use <code>data-desq-html-shape</code> for an element that needs HTML rendering in the player. Give script targets IDs and explicit dimensions. Canvas markup can be captured. Canvas drawing and arbitrary browser scripts require separate integration.</td>
+</tr>
+</tbody></table>
+<p>Choose native shapes for content users need to edit. Keep custom behavior in small functions that accept <code>ctx</code> and literal arguments. Run the same functions in the standalone browser with a small adapter that maps the IDs to DOM elements. DESQ supplies its own adapter in the player. See the <a href="examples/html-slides/local-quiz.html">local quiz example</a> and <a href="docs/local-scripting.html">scripting API</a>.</p>
 <h2>Current capability boundary</h2>
 <p>This section describes the local source checkout, not every older packaged core release. Check the implementation when extending it.</p>
 <table>
@@ -68,7 +106,7 @@
 </tr>
 <tr>
 <td>Direct slide jumps</td>
-<td><code>data-desq-goto</code> and a sole literal <code>goToSlide(&#39;slide-id&#39;)</code> / <code>gotoSlide(&#39;slide-id&#39;)</code> call are mapped before handlers are stripped</td>
+<td><code>data-desq-goto</code> and a sole literal <code>goToSlide(&#39;slide-id&#39;)</code> call are mapped before handlers are stripped</td>
 <td>Use explicit destinations on buttons; targets must exist</td>
 </tr>
 <tr>
@@ -89,7 +127,7 @@
 </tbody></table>
 <p>Do not invent a <code>window.DesqSlides</code>, host bridge, trigger attribute or SDK call and assume the editor supports it. <code>data-desq-reveal</code>, <code>data-desq-entrance</code> and <code>data-desq-repeating</code> are capture-generated implementation metadata, not a stable authoring API.</p>
 <h2>Required HTML structure</h2>
-<p>Produce one complete UTF-8 HTML file with doctype, language, charset, title, inline CSS, and any small standalone controller. Keep a fixed <strong>1920 × 1080</strong>, 16:9 coordinate system. The importer also accepts 1280 × 720, but do not mix dimensions within a deck.</p>
+<p>Produce one complete UTF-8 HTML file with doctype, language, charset, title, inline CSS, and any small standalone controller. Choose a fixed slide canvas that suits the presentation; there is no required width, height, or aspect ratio. Declare explicit pixel dimensions for the stage and slides, and use the same dimensions throughout the deck. DESQ preserves the authored dimensions when importing the HTML as a new presentation. When slides are added to an existing deck, DESQ scales them uniformly to the current deck width while preserving their aspect ratio.</p>
 <pre><code class="language-html">&lt;div class=&quot;deck-viewport&quot;&gt;
   &lt;main class=&quot;deck-stage&quot; id=&quot;deck-stage&quot;&gt;
     &lt;section class=&quot;slide active visible&quot; data-desq-slide id=&quot;slide-intro&quot;&gt;
@@ -102,7 +140,7 @@
 &lt;/div&gt;
 </code></pre>
 <ul>
-<li>Define <code>.deck-stage { width:1920px; height:1080px; position:relative; }</code> explicitly. The parser recognizes these fixed dimensions in CSS.</li>
+<li>Define <code>.deck-stage { width:&lt;chosen-width&gt;px; height:&lt;chosen-height&gt;px; position:relative; }</code> explicitly. Use numeric pixel dimensions so the importer can retain the authored canvas.</li>
 <li>Scale the whole <code>.deck-stage</code> to fit the viewport. Never reflow slide internals at mobile breakpoints. Keep stage scaling separate from element animation.</li>
 <li>Keep every slide as a sibling under that stage. The slide itself has the full stage width/height and a stable authored layout.</li>
 <li>Switch with <code>.active</code> / <code>.visible</code>, <code>visibility</code>, <code>opacity</code> and <code>pointer-events</code>. Keep inactive slides measurable; avoid <code>display:none</code> for newly authored decks.</li>
@@ -180,7 +218,7 @@ question --help--&gt; play the hint animation on this screen
 <h2>Verify before delivery</h2>
 <ol>
 <li>Validate the slide IDs, action targets, element IDs, dimensions and count. Traverse every branch, restart path and same-slide trigger. Reject dangling references.</li>
-<li>Open the standalone HTML in a real browser. Inspect every screen at 1280 × 720 and a phone viewport. Confirm fonts, no clipping, readable text, visible focus, and correct answer/outcome routing.</li>
+<li>Open the standalone HTML in a real browser. Inspect every screen at its authored canvas size and at a 1280 × 720 and phone viewport. Confirm fonts, no clipping, readable text, visible focus, and correct answer/outcome routing.</li>
 <li>Import it into DESQ. Inspect every slide, including inactive alternatives. Confirm editable text and geometry, font identities, images, groups, button artwork and supported animation behavior.</li>
 <li>Generate thumbnails <strong>without manually editing each slide first</strong>. Check the server-rendered path, not only the live editor DOM. No XML parse, decode or rejected-promise errors are acceptable.</li>
 <li>If interaction mapping is implemented, verify button jumps and animation triggers in the DESQ player and saved/reopened HTML. Test PPTX links/triggers separately; browser success is not proof of PowerPoint behavior.</li>

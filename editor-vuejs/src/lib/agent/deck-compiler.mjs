@@ -31,19 +31,13 @@ export function compileDeck(deck, { width, height, genId, geometry, assets = new
       const svg = slide.layout === 'markdown' ? markdownPageSVG(slide,{design:sharedDesign,measureText,onWarning:warning=>warnings.push(`Slide ${pageIndex+1}: ${warning}`)}) : slide.layout === 'html' ? htmlToSVG(slide.html, { onWarning: warning => warnings.push(`Slide ${pageIndex + 1}: ${warning}`) }) : slide.svg;
       if (slide.layout === 'html' && slide.svg) throw Error('HTML pages use html, not a model-supplied svg fallback.');
       if(slide.body||slide.bullets?.length||slide.items?.length||slide.elements?.length||slide.images?.length) throw Error(`${slide.layout.toUpperCase()} pages put every object in ${slide.layout}, not legacy layout fields.`);
-      let page = compilePageSVG(svg,{width,height,genId,geometry,assets,pageIndex,measureText,booleans:slide.booleans,language:deck.language,outlineText,deferTextOutlines});
+      let page = compilePageSVG(svg,{width,height,genId,geometry,assets,pageIndex,measureText,booleans:slide.booleans,language:deck.language,outlineText,deferTextOutlines,scaleToWidth:slide.layout==='html'});
       // HTML rows already use browser wrapping. Keep their explicit line breaks and
       // rich runs rather than asking the preview/PowerPoint to re-wrap estimated widths.
       const applyHtmlTextSettings = () => {
         if (slide.layout !== 'html') return;
-        const root = parseSlideHTML(slide.html);
-        const imported = root.hasAttribute('data-desq-imported');
-        const stageWidth = Number(root.getAttribute('data-desq-stage-width') || 1280);
         for (const shape of page.shapes) if (shape.txBody) {
           shape.txBody.bodyPr.$_wrap = 'none';
-          // CSS pixels and Office points use different units. Keep the numeric
-          // size in the editor while rendering the original visual size.
-          if (imported && !shape.imagePlaceholder) shape.txBody.bodyPr.normAutofit = { $_fontScale: Math.round(75000 * 1280 / stageWidth) };
         }
       };
       applyHtmlTextSettings();
@@ -65,7 +59,7 @@ export function compileDeck(deck, { width, height, genId, geometry, assets = new
         }else credited.push([key,asset]);
         seen.add(signature);
       }
-      if(replaced)page=compilePageSVG(svg,{width,height,genId,geometry,assets:fallbackAssets,pageIndex,measureText,booleans:slide.booleans,language:deck.language,outlineText,deferTextOutlines});
+      if(replaced)page=compilePageSVG(svg,{width,height,genId,geometry,assets:fallbackAssets,pageIndex,measureText,booleans:slide.booleans,language:deck.language,outlineText,deferTextOutlines,scaleToWidth:slide.layout==='html'});
       if (replaced) applyHtmlTextSettings();
       if(credited.length){
         const rPr={$_sz:Math.round(7*scale*100),latin:{$_typeface:'Arial'},solidFill:editorColor('#334455')};

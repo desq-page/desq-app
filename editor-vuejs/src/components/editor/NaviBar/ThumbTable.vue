@@ -179,7 +179,7 @@ const cbThumbInViewport = (entries) => {
           const thumbImg = gid("thumb-" + sldId);
           if (!thumbImg || thumbImg?.naturalWidth <= 8) {
             // queueThumb.value[sldId] = true;
-            saveThumb(sldId);
+            void saveThumb(sldId).catch(error => console.warn("Could not render slide thumbnail", sldId, error));
             entry.target.timeoutThumb = undefined;
           }
         }, 1);

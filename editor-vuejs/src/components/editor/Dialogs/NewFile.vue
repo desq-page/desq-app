@@ -44,8 +44,8 @@ import { InsertDriveFileOutlined } from "@vicons/material";
 import { showError } from "@/lib/main/utils";
 
 const templates = [
-  { tpl: "blank", label: "Presentation", app: "P", appName: "PPTX", orientation: "landscape" },
-  { tpl: "portrait", label: "Publication", app: "▤", appName: "PPTX", orientation: "portrait" },
+  { tpl: "blank", label: "Blank Presentation", app: "P", appName: "PPTX", orientation: "landscape" },
+  // { tpl: "portrait", label: "Publication", app: "▤", appName: "PPTX", orientation: "portrait" },
   { tpl: "ai", label: "Create with AI", app: "✦", appName: "Presentation", orientation: "landscape" },
 ];
 const tpl = ref("");
@@ -65,7 +65,7 @@ async function openTemplate(tplValue: string) {
 <style scoped>
 .template-list {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   margin-top: 20px;
 }
