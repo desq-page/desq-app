@@ -5,7 +5,6 @@
   <div class="editor-agent" @pointerdown.stop="rememberCursor" @pointerup.stop @contextmenu.stop>
     <section id="agent-taskpane" class="agent-panel" aria-label="AI presentation response">
       <section class="external-brief">
-        <p>Describe what you want to build, copy the generated prompt into your AI chat, then choose the downloaded HTML response here.</p>
         <label for="external-description">What would you like to build?</label>
         <textarea id="external-description" v-model="externalDescription" rows="4" :disabled="busy" placeholder="Describe your app, game or presentation, its audience, content and how it should work…" @keydown.stop @keyup.stop @keypress.stop @paste.stop />
         <div class="prompt-heading">
@@ -13,7 +12,7 @@
           <button class="copy-button" type="button" :disabled="!externalFullPrompt" aria-label="Copy prompt" title="Copy prompt" @click="copyPrompt"><DocumentCopy24Regular aria-hidden="true" /></button>
         </div>
         <textarea id="external-prompt" readonly rows="6" :value="externalFullPrompt" placeholder="Your prompt will appear here, with a link to the authoring guide on desq.page." aria-describedby="external-prompt-note" @keydown.stop @keyup.stop @keypress.stop @paste.stop />
-        <p id="external-prompt-note" class="model-note">The prompt asks your AI to read <a :href="AUTHORING_GUIDE_URL" target="_blank" rel="noopener noreferrer">the authoring guide on desq.page</a>.</p>
+        <p id="external-prompt-note" class="model-note">Copy the generated prompt above into your AI chat, then download HTML response and upload here.</p>
         <input ref="responseFileInput" type="file" accept=".html,.htm,text/html" hidden :disabled="busy || loadingResponse" @click="clearSelectedResponseFile" @change="loadExternalHtml" />
         <button class="response-file-button" type="button" :disabled="busy || loadingResponse" @click="responseFileInput?.click()">{{ loadingResponse ? 'Reading HTML…' : 'Upload HTML response file' }}</button>
         <p v-if="selectedResponseFile" class="selected-response-file" role="status">Loaded: {{ selectedResponseFile }}</p>
