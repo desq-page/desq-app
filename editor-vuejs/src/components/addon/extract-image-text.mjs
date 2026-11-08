@@ -48,6 +48,7 @@ function makeGlyphMask(context, boxes) {
   const mask = new Uint8Array(width * height);
   for (const box of boxes) {
     const { left, top, right, bottom } = pixelBounds(box, width, height, glyphSearchPadding(box));
+    const original = pixelBounds(box, width, height, 0);
     const w = right - left, h = bottom - top;
     if (w < 2 || h < 2) continue;
     const gray = new Uint8Array(w * h), histogram = new Uint32Array(256);
@@ -93,12 +94,15 @@ function makeGlyphMask(context, boxes) {
     for (let start = 0; start < total; start++) {
       if (!candidate[start] || visited[start]) continue;
       let head = 0, tail = 0, minX = w, minY = h, maxX = -1, maxY = -1, touchesEdge = false;
+      let inside = 0;
       queue[tail++] = start;
       visited[start] = 1;
       while (head < tail) {
         const index = queue[head++], x = index % w, y = Math.floor(index / w);
         minX = Math.min(minX, x); minY = Math.min(minY, y);
         maxX = Math.max(maxX, x); maxY = Math.max(maxY, y);
+        if (left + x >= original.left && left + x < original.right &&
+            top + y >= original.top && top + y < original.bottom) inside++;
         touchesEdge ||= x === 0 || y === 0 || x === w - 1 || y === h - 1;
         for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
           const nx = x + dx, ny = y + dy;
@@ -112,7 +116,11 @@ function makeGlyphMask(context, boxes) {
         componentHeight > h * .8 && componentWidth < Math.max(3, w * .08);
       // OCR boxes have padding around letters. Edge-connected and rule-like
       // components are likely bubble borders or artwork crossing the box.
-      if (touchesEdge || longRule) continue;
+      // Padding recovers clipped descenders and small detached accents.
+      // Artwork mostly outside the OCR box must not enter the repair mask.
+      const detachedAccent = componentWidth <= box.height * .35 && componentHeight <= box.height * .35 &&
+        left + minX >= original.left && left + maxX < original.right;
+      if (touchesEdge || longRule || (inside < tail * .5 && !detachedAccent)) continue;
       for (let i = 0; i < tail; i++) {
         const index = queue[i];
         mask[(top + Math.floor(index / w)) * width + left + index % w] = 1;
@@ -134,6 +142,99 @@ function makeGlyphMask(context, boxes) {
     }
   }
   return expanded;
+}
+
+// Find large textured or solid graphics on the flattened slide. Measure
+// midtone variation so black lettering on a flat background contributes
+// less than the mix of tones in a photograph.
+function embeddedGraphicBounds(context) {
+  const { width, height } = context.canvas;
+  const { data } = context.getImageData(0, 0, width, height);
+  const step = Math.max(12, Math.round(Math.min(width, height) / 45));
+  const columns = Math.ceil(width / step), rows = Math.ceil(height / step);
+  const textured = new Uint8Array(columns * rows);
+  const tones = new Uint16Array(16);
+  for (let row = 0; row < rows; row++) for (let column = 0; column < columns; column++) {
+    tones.fill(0);
+    let count = 0;
+    for (let y = row * step; y < Math.min(height, (row + 1) * step); y += 2)
+      for (let x = column * step; x < Math.min(width, (column + 1) * step); x += 2) {
+        const i = (y * width + x) * 4;
+        tones[Math.floor((.299 * data[i] + .587 * data[i + 1] + .114 * data[i + 2]) / 16)]++;
+        count++;
+      }
+    const populated = tones.filter(tone => tone >= count * .035).length;
+    const darkCoverage = tones.subarray(0, 9).reduce((sum, tone) => sum + tone, 0) / count;
+    textured[row * columns + column] = Number(populated >= 6 || darkCoverage >= .8);
+  }
+  const pictures = [];
+  for (let start = 0; start < textured.length; start++) {
+    if (!textured[start]) continue;
+    const queue = [start];
+    textured[start] = 0;
+    let left = columns, right = 0, top = rows, bottom = 0;
+    for (let head = 0; head < queue.length; head++) {
+      const index = queue[head], x = index % columns, y = Math.floor(index / columns);
+      left = Math.min(left, x);
+      right = Math.max(right, x + 1);
+      top = Math.min(top, y);
+      bottom = Math.max(bottom, y + 1);
+      for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
+        const nx = x + dx, ny = y + dy;
+        const next = ny * columns + nx;
+        if (nx < 0 || nx >= columns || ny < 0 || ny >= rows || !textured[next]) continue;
+        textured[next] = 0;
+        queue.push(next);
+      }
+    }
+    const w = right - left, h = bottom - top;
+    if (w < 5 || h < 5 || queue.length < w * h * .14) continue;
+    pictures.push({ left: left * step, top: top * step, right: right * step, bottom: bottom * step });
+  }
+  return pictures;
+}
+
+function isInsidePicture(box, pictures) {
+  return pictures.some(({ left, top, right, bottom }) => {
+    const width = Math.max(0, Math.min(right, box.x + box.width) - Math.max(left, box.x));
+    const height = Math.max(0, Math.min(bottom, box.y + box.height) - Math.max(top, box.y));
+    return width * height >= box.width * box.height * .6;
+  });
+}
+
+// A long diagram connector spans both axes but leaves most of its ink
+// bounds empty. Require substantial horizontal and vertical extent so thin
+// upright glyphs such as 1 and I remain eligible.
+function isSparseConnector(crop) {
+  const { width, height } = crop;
+  const { data } = crop.getContext('2d').getImageData(0, 0, width, height);
+  const gray = new Uint8Array(width * height);
+  let min = 255, max = 0;
+  for (let i = 0; i < gray.length; i++) {
+    const pixel = i * 4;
+    const value = Math.round(.299 * data[pixel] + .587 * data[pixel + 1] + .114 * data[pixel + 2]);
+    gray[i] = value;
+    min = Math.min(min, value);
+    max = Math.max(max, value);
+  }
+  if (max - min < 48) return false;
+  const threshold = (min + max) / 2;
+  let dark = 0;
+  for (const value of gray) if (value < threshold) dark++;
+  const inkIsDark = dark <= gray.length / 2;
+  let left = width, right = -1, top = height, bottom = -1;
+  for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+    if ((gray[y * width + x] < threshold) !== inkIsDark) continue;
+    left = Math.min(left, x);
+    right = Math.max(right, x);
+    top = Math.min(top, y);
+    bottom = Math.max(bottom, y);
+  }
+  const inkWidth = right - left + 1, inkHeight = bottom - top + 1;
+  const inkCount = inkIsDark ? dark : gray.length - dark;
+  return inkWidth >= 20 && inkHeight >= 20 &&
+    inkWidth >= inkHeight * .45 && inkWidth <= inkHeight * 2.2 &&
+    inkCount < inkWidth * inkHeight * .12;
 }
 
 async function eraseText(context, boxes, contextBoxes, engine) {
@@ -254,7 +355,7 @@ function erasedInkBounds(before, after, region, ink) {
 }
 
 function textLanguage(text) {
-  if (/[ăđơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/iu.test(text)) return 'vi-VN';
+  if (/[ăđơưũĩạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/iu.test(text)) return 'vi-VN';
   if (/[\p{Script=Hiragana}\p{Script=Katakana}]/u.test(text)) return 'ja-JP';
   if (/\p{Script=Hangul}/u.test(text)) return 'ko-KR';
   if (/\p{Script=Hebrew}/u.test(text)) return 'he';
@@ -306,17 +407,33 @@ async function pictureCanvas(picture) {
   }
 }
 
-async function withOcr(language, callback, progress = () => {}) {
+async function withOcr(callback, progress = () => {}) {
   progress('Loading OCR model…');
-  const { PaddleOcrService, V6_MEDIUM_MODEL } = await import(/* @vite-ignore */ ocrModule);
-  if (!V6_MEDIUM_MODEL) throw new Error('The V6 tiny OCR model is unavailable.');
-  const service = new PaddleOcrService({ model: V6_MEDIUM_MODEL });
+  const { PaddleOcrService, V6_TINY_MODEL } = await import(/* @vite-ignore */ ocrModule);
+  if (!V6_TINY_MODEL) throw new Error('The V6 medium OCR model is unavailable.');
+  const service = new PaddleOcrService({ model: V6_TINY_MODEL });
   try {
     await service.initialize();
     progress('OCR model ready…');
     return await callback(service);
   } finally {
     await service.destroy();
+  }
+}
+
+async function withVietnameseRecognizer(callback, progress) {
+  progress('Loading Vietnamese OCR model…');
+  const moduleUrl = 'https://esm.sh/tesseract.js@6.0.1';
+  const { createWorker, PSM } = await import(/* @vite-ignore */ moduleUrl);
+  const worker = await createWorker('vie', 1, {
+    langPath: 'https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/main',
+    gzip: false,
+  });
+  try {
+    await worker.setParameters({ tessedit_pageseg_mode: PSM.SINGLE_LINE });
+    return await callback(async crop => (await worker.recognize(crop)).data.text);
+  } finally {
+    await worker.terminate();
   }
 }
 
@@ -338,19 +455,56 @@ function regionGeometry(picture, box) {
 const pictureMarkers = id => (getSlideInfo()?.shapes || []).filter(shape => shape.ocrRegion?.pictureId === id);
 const blue = { uniClr: { $_otag: 'srgbClr', $_val: '2563EB' } };
 
+function enclosingBox(parts) {
+  const x = Math.min(...parts.map(box => box.x));
+  const y = Math.min(...parts.map(box => box.y));
+  const width = Math.max(...parts.map(box => box.x + box.width)) - x;
+  const height = Math.max(...parts.map(box => box.y + box.height)) - y;
+  return { x, y, width, height };
+}
+
+function groupAdjacentLines(boxes, aspectRatio) {
+  const follows = (upper, lower) => {
+    const height = Math.min(upper.height, lower.height);
+    const gap = lower.y - upper.y - upper.height;
+    if (lower.y <= upper.y || gap < -height * .3 || gap > height * .65 ||
+        Math.max(upper.height, lower.height) > height * 1.3) return false;
+    const overlap = Math.min(upper.x + upper.width, lower.x + lower.width) - Math.max(upper.x, lower.x);
+    if (overlap < Math.min(upper.width, lower.width) * .75) return false;
+    const tolerance = height * .45 / aspectRatio;
+    return Math.abs(upper.x - lower.x) <= tolerance ||
+      Math.abs(upper.x + upper.width / 2 - lower.x - lower.width / 2) <= tolerance;
+  };
+  const next = new Map();
+  const linked = new Set();
+  for (const upper of boxes) {
+    const below = boxes.filter(lower => follows(upper, lower));
+    if (below.length !== 1 || boxes.filter(other => follows(other, below[0])).length !== 1) continue;
+    next.set(upper, below[0]);
+    linked.add(below[0]);
+  }
+  return boxes.filter(box => !linked.has(box)).map(box => {
+    const parts = [box];
+    for (let line = next.get(box); line; line = next.get(line)) parts.push(line);
+    return parts;
+  });
+}
+
 export async function detectImageTextRegions(shape, progress) {
   const job = openPicture(shape.id);
   progress('Loading OCR model…');
   const context = await pictureCanvas(job.picture);
   const { width, height } = context.canvas;
-  const { boxes } = await withOcr(undefined, service => {
+  const { boxes } = await withOcr(service => {
     progress('Detecting text regions…');
     return service.detect(context.canvas);
   });
   const picture = job.current();
   const [l, t, r, b] = JSON.parse(job.crop).map(value => value / 100000);
+  const pictures = embeddedGraphicBounds(context);
   const regions = boxes.flatMap(box => {
-    if (![box.x, box.y, box.width, box.height].every(Number.isFinite)) return [];
+    if (![box.x, box.y, box.width, box.height].every(Number.isFinite) ||
+        box.width <= 0 || box.height <= 0 || isInsidePicture(box, pictures)) return [];
     const x = Math.max(0, l, box.x / width), y = Math.max(0, t, box.y / height);
     const w = Math.min(1, 1 - r, (box.x + box.width) / width) - x;
     const h = Math.min(1, 1 - b, (box.y + box.height) / height) - y;
@@ -358,16 +512,17 @@ export async function detectImageTextRegions(shape, progress) {
   });
   if (!regions.length) return false;
   const existing = pictureMarkers(picture.id);
-  for (const box of regions) {
-    if (existing.some(({ ocrRegion }) => ocrRegion.source === job.source && ocrRegion.crop === job.crop &&
+  const newRegions = regions.filter(box => !existing.some(({ ocrRegion }) => ocrRegion.source === job.source && ocrRegion.crop === job.crop &&
         (ocrRegion.parts || [ocrRegion.box]).some(part =>
-          Object.keys(box).every(key => Math.abs(part[key] - box[key]) < 0.001)))) continue;
+          Object.keys(box).every(key => Math.abs(part[key] - box[key]) < 0.001))));
+  for (const parts of groupAdjacentLines(newRegions, width / height)) {
+    const box = enclosingBox(parts);
     addShapeRaw({
       name: 'OCR region', type: 'rect', $_otag: 'sp', ...regionGeometry(picture, box),
       locked: true,
       solidFill: { uniClr: { ...blue.uniClr, alpha: { $_val: 9000 } } },
       ln: { solidFill: blue, $_w: 12700 },
-      ocrRegion: { pictureId: picture.id, source: job.source, crop: job.crop, box },
+      ocrRegion: { pictureId: picture.id, source: job.source, crop: job.crop, box, ...(parts.length > 1 ? { parts } : {}) },
     });
   }
   await saveDexie();
@@ -385,11 +540,7 @@ export async function mergeImageTextRegions(shapes) {
   if (job.source !== first.source || job.crop !== first.crop)
     throw new Error('The picture changed. Detect its text regions again.');
   const parts = markers.flatMap(({ ocrRegion }) => ocrRegion.parts || [ocrRegion.box]);
-  const x = Math.min(...parts.map(box => box.x));
-  const y = Math.min(...parts.map(box => box.y));
-  const width = Math.max(...parts.map(box => box.x + box.width)) - x;
-  const height = Math.max(...parts.map(box => box.y + box.height)) - y;
-  const box = { x, y, width, height };
+  const box = enclosingBox(parts);
   const geometry = regionGeometry(job.picture, box);
   updateShape({ id: markers[0].id, ...geometry, d: `R0,0,${geometry.w},${geometry.h}`,
     ocrRegion: { ...first, box, parts } });
@@ -397,7 +548,7 @@ export async function mergeImageTextRegions(shapes) {
   await saveDexie();
 }
 
-export async function extractImageText(shapes, progress, language, engine = 'migan') {
+export async function extractImageText(shapes, progress, engine = 'migan') {
   const markers = shapes.map(shape => getShapeDeep(shape.id));
   if (!markers.length || markers.some(marker => !marker?.ocrRegion))
     throw new Error('Select a detected text region.');
@@ -409,60 +560,139 @@ export async function extractImageText(shapes, progress, language, engine = 'mig
   if (first.source !== job.source || first.crop !== job.crop)
     throw new Error('The picture changed. Detect its text regions again.');
   const context = await pictureCanvas(job.picture);
+  return extractRegions(job, context, markers, progress, engine);
+}
+
+export async function extractImageTextAt(pictureId, point, { progress, highlight, active }) {
+  const job = openPicture(pictureId);
+  const context = await pictureCanvas(job.picture);
+  if (!active()) return false;
+  const { width, height } = context.canvas;
+  const { boxes } = await withOcr(service => service.detect(context.canvas), progress);
+  if (!active()) return false;
+  job.current();
+  const [l, t, r, b] = JSON.parse(job.crop).map(value => value / 100000);
+  const regions = boxes.flatMap(box => {
+    const x = Math.max(l, box.x / width), y = Math.max(t, box.y / height);
+    const right = Math.min(1 - r, (box.x + box.width) / width);
+    const bottom = Math.min(1 - b, (box.y + box.height) / height);
+    return right > x && bottom > y ? [{ x, y, width: right - x, height: bottom - y }] : [];
+  });
+  const x = l + point.x * (1 - l - r), y = t + point.y * (1 - t - b);
+  const hit = regions.filter(box => x >= box.x && x <= box.x + box.width &&
+    y >= box.y && y <= box.y + box.height)
+    .sort((a, b) => a.width * a.height - b.width * b.height)[0];
+  if (!hit) return false;
+  const parts = groupAdjacentLines(regions, width / height).find(group => group.includes(hit));
+  const box = enclosingBox(parts);
+  highlight({ x: (box.x - l) / (1 - l - r), y: (box.y - t) / (1 - t - b),
+    width: box.width / (1 - l - r), height: box.height / (1 - t - b) });
+  return extractRegions(job, context, [{ ocrRegion: { box, parts } }], progress, 'migan', active);
+}
+
+async function extractRegions(job, context, markers, progress, engine, active) {
   const canvas = context.canvas;
+  const interactive = Boolean(active);
   const toPixels = box => ({ x: box.x * canvas.width, y: box.y * canvas.height,
     width: box.width * canvas.width, height: box.height * canvas.height });
-  const records = markers.map(marker => {
-    const selection = marker.ocrRegion;
-    const region = toPixels(selection.box);
-    const holes = (selection.parts || [selection.box]).map(toPixels);
-    const left = Math.max(0, Math.floor(region.x)), top = Math.max(0, Math.floor(region.y));
+  const cropLine = (region, margin = 0) => {
+    // Vietnamese tone marks can sit outside a tight detected line.
+    const line = { ...region, y: region.y - margin, height: region.height + margin * 2 };
+    const { left, top, right, bottom } = pixelBounds(line, canvas.width, canvas.height, 0);
     const crop = document.createElement('canvas');
-    crop.width = Math.min(canvas.width, Math.ceil(region.x + region.width)) - left;
-    crop.height = Math.min(canvas.height, Math.ceil(region.y + region.height)) - top;
+    crop.width = right - left;
+    crop.height = bottom - top;
     const cropContext = crop.getContext('2d');
     cropContext.fillStyle = '#fff';
     cropContext.fillRect(0, 0, crop.width, crop.height);
-    for (const hole of holes) {
-      const x = Math.floor(hole.x), y = Math.floor(hole.y);
-      const w = Math.ceil(hole.x + hole.width) - x, h = Math.ceil(hole.y + hole.height) - y;
-      cropContext.drawImage(canvas, x, y, w, h, x - left, y - top, w, h);
-    }
-    return { marker, selection, region, holes, crop };
+    cropContext.drawImage(canvas, left, top, crop.width, crop.height, 0, 0, crop.width, crop.height);
+    return crop;
+  };
+  const records = markers.map(marker => {
+    const selection = marker.ocrRegion;
+    const region = toPixels(selection.box);
+    const holes = (selection.parts || [selection.box]).map(toPixels).sort((a, b) => a.y - b.y || a.x - b.x);
+    return { marker, selection, region, holes };
   });
+  const pictures = interactive ? [] : embeddedGraphicBounds(context);
   const validation = document.createElement('canvas').getContext('2d');
   const measure = document.createElement('canvas').getContext('2d');
   measure.font = '100px Arial';
-  await withOcr(language, async service => {
-    const recognize = async crop => (await service.recognize(crop, { strategy: 'per-line' }))
-      .text.trim().normalize('NFC');
-    for (const [index, record] of records.entries()) {
-      progress(`Reading line box ${index + 1} of ${records.length}…`);
-      const text = await recognize(record.crop);
+  const normalize = text => text.trim().normalize('NFC');
+  const logResult = (record, lineIndex, model, text) => console.info('[Image text extraction] Raw OCR result', {
+    shapeId: record.marker.id,
+    line: lineIndex + 1,
+    model,
+    text,
+    codePoints: Array.from(text, char => `U+${char.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')}`),
+  });
+  await withOcr(async service => {
+    const recognize = async crop => (await service.recognize(crop, { strategy: 'per-line', minimumConfidence: interactive ? 0 : .6 })).text;
+    const verify = async (crop, text, read = recognize) => {
       // Illustrations can produce short, isolated OCR tokens. Check that the
       // crop could plausibly contain the token and that it survives a second
       // reading with the color removed and a little surrounding whitespace.
-      if (record.holes.length === 1 && /^[\p{L}\p{N}]{1,2}$/u.test(text)) {
+      if (/^[\p{L}\p{N}]{1,2}$/u.test(text)) {
         const metrics = measure.measureText(text);
         const inkHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
         const inkWidth = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
-        const { width, height } = record.crop;
-        if (inkHeight > 0 && width / height > Math.max(1.25, 1.8 * inkWidth / inkHeight)) continue;
+        const { width, height } = crop;
+        if (inkHeight > 0 && width / height > Math.max(1.25, 1.8 * inkWidth / inkHeight)) return false;
         const padding = Math.max(2, Math.ceil(height * .08));
         validation.canvas.width = width + padding * 2;
         validation.canvas.height = height + padding * 2;
         validation.fillStyle = '#fff';
         validation.fillRect(0, 0, validation.canvas.width, validation.canvas.height);
         validation.filter = 'grayscale(1)';
-        validation.drawImage(record.crop, padding, padding);
-        if (await recognize(validation.canvas) !== text) continue;
+        validation.drawImage(crop, padding, padding);
+        if (normalize(await read(validation.canvas)) !== text) return false;
       }
-      record.text = text;
+      return Boolean(text);
+    };
+    for (const [index, record] of records.entries()) {
+      const rawLines = [];
+      for (const [lineIndex, hole] of record.holes.entries()) {
+        progress(`Reading box ${index + 1} of ${records.length} · line ${lineIndex + 1} of ${record.holes.length}…`);
+        if (isInsidePicture(hole, pictures)) break;
+        const crop = cropLine(hole);
+        if (!interactive && isSparseConnector(crop)) break;
+        const rawText = await recognize(crop);
+        logResult(record, lineIndex, 'PP-OCRv6 medium', rawText);
+        const text = normalize(rawText);
+        // Keep isolated OCR fragments out of the inpainting mask. Count
+        // Unicode letters and digits so accents and punctuation add no length.
+        if (!interactive && record.holes.length === 1 && (text.match(/[\p{L}\p{N}]/gu)?.length ?? 0) <= 3) break;
+        if (!(interactive ? text : await verify(crop, text))) break;
+        rawLines.push(rawText);
+      }
+      if (rawLines.length !== record.holes.length) continue;
+      record.rawLines = rawLines;
     }
   }, progress);
+  const candidates = records.filter(record => record.rawLines);
+  const vietnamese = candidates.some(record => textLanguage(normalize(record.rawLines.join(' '))) === 'vi-VN');
+  if (vietnamese) {
+    await withVietnameseRecognizer(async recognize => {
+      for (const record of candidates) {
+        for (const [lineIndex, hole] of record.holes.entries()) {
+          const preliminary = normalize(record.rawLines[lineIndex]);
+          if (/[^\p{Script=Latin}\p{N}\p{M}\p{P}\p{S}\s]/u.test(preliminary)) continue;
+          const rawText = await recognize(cropLine(hole, glyphSearchPadding(hole)));
+          logResult(record, lineIndex, 'Tesseract Vietnamese', rawText);
+          const text = normalize(rawText);
+          if (text && (interactive || record.holes.length > 1 || (text.match(/[\p{L}\p{N}]/gu)?.length ?? 0) > 3))
+            record.rawLines[lineIndex] = rawText;
+        }
+      }
+    }, progress);
+  }
+  for (const record of candidates) {
+    record.rawText = record.rawLines.join('\n');
+    record.text = record.rawLines.map(normalize).join('\n');
+  }
   const readable = records.filter(record => record.text);
-  if (!readable.length) return false;
-  for (const record of records) {
+  if (!readable.length || (interactive && !active())) return false;
+  for (const record of interactive ? [] : records) {
     const currentMarker = getShapeDeep(record.marker.id);
     if (!currentMarker || JSON.stringify(currentMarker.ocrRegion) !== JSON.stringify(record.selection))
       throw new Error('A selected region changed during extraction.');
@@ -477,8 +707,10 @@ export async function extractImageText(shapes, progress, language, engine = 'mig
   const before = context.getImageData(0, 0, canvas.width, canvas.height);
   const targetHoles = readable.flatMap(record => record.holes);
   const cleaned = await eraseText(context, targetHoles, neighbors, engine);
+  if (interactive && !active()) return false;
   const after = context.getImageData(0, 0, canvas.width, canvas.height);
   const media = await processImage(cleaned, { fileId: job.fileId });
+  if (interactive && !active()) return false;
   if (!media?.name) throw new Error('Could not store the cleaned picture.');
   const currentPicture = job.current();
   const { dataUrl, ...blip } = currentPicture.blipFill.blip;
@@ -493,8 +725,16 @@ export async function extractImageText(shapes, progress, language, engine = 'mig
     const { marker, selection, region, text } = record;
     let geometry = regionGeometry(currentPicture, selection.box);
     const ink = estimateInkColor(before, after, region);
-    const lang = language || textLanguage(text);
+    const lang = textLanguage(text) || (vietnamese ? 'vi-VN' : undefined);
     const lines = text.split(/\r?\n/).filter(line => line.trim());
+    const centered = selection.parts?.length > 1 &&
+      selection.parts.some(part => Math.abs(part.x - selection.box.x) > selection.box.height * .08) &&
+      selection.parts.every(part => Math.abs(part.x + part.width / 2 - selection.box.x -
+        selection.box.width / 2) <= selection.box.height * .08);
+    const paragraphProperties = {
+      ...(lang === 'he' ? { $_rtl: 1 } : {}),
+      ...(centered ? { $_algn: 'ctr' } : {}),
+    };
     const measuredWidth = Math.max(...lines.map(line => measure.measureText(line).width));
     const lineHeight = geometry.h / lines.length;
     let size = Math.min(lineHeight * 0.8, measuredWidth > 0 ? geometry.w * 100 / measuredWidth : lineHeight);
@@ -520,19 +760,28 @@ export async function extractImageText(shapes, progress, language, engine = 'mig
       }
     }
     const { w, h } = geometry;
-    updateShape({
+    const shape = {
       id: marker.id, ocrRegion: null, locked: false, solidFill: null, hideSpinHandle: true,
       name: 'Extracted text', type: 'text', $_otag: 'sp',
       ...geometry, d: `R0,0,${w},${h}`, noFill: true, ln: { noFill: true },
       txBody: {
         bodyPr: { $_wrap: 'none', $_anchor: 'ctr', $_lIns: 0, $_rIns: 0, $_tIns: 0, $_bIns: 0 },
-        p: lines.map(line => ({ ...(lang === 'he' ? { pPr: { $_rtl: 1 } } : {}), r: [{ t: line, rPr: {
+        p: lines.map(line => ({ pPr: paragraphProperties, r: [{ t: line, rPr: {
           $_sz: Math.max(100, Math.round(size * 75)), latin: { $_typeface: 'Arial' },
           ...(lang ? { $_lang: lang } : {}),
           ...(ink ? { solidFill: { uniClr: { $_otag: 'srgbClr', $_val: ink } } } : {}),
         } }] })),
       },
-    });
+    };
+    const id = interactive ? addShapeRaw(shape).id : marker.id;
+    if (!interactive) updateShape(shape);
+    const paragraphs = getShapeDeep(id)?.txBody?.p;
+    const storedText = paragraphs?.map(paragraph => paragraph.r.map(run => run.t).join('')).join('\n');
+    const expectedText = lines.join('\n');
+    const matches = storedText?.normalize('NFC') === expectedText;
+    const diagnostic = { shapeId: marker.id, rawOcrText: record.rawText, expectedText, storedText, matches };
+    if (matches) console.debug('[Image text extraction] OCR text comparison', diagnostic);
+    else console.warn('[Image text extraction] OCR text differs from shape text', diagnostic);
   }
   await saveDexie();
   return readable.length;

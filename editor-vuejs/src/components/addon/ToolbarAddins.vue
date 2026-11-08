@@ -21,42 +21,6 @@
   />
 
   <ToolbarItem
-    caption="Detect Text Regions"
-    :icon="ImageEdit20Regular"
-    :size="30"
-    :disabled="!canDetectText() || extracting"
-    :onClick="() => runImageExtraction(true)"
-  />
-  <ToolbarItem
-    caption="Merge Selected Regions"
-    :icon="ImageEdit20Regular"
-    :size="30"
-    :disabled="!canMergeRegions() || extracting"
-    :onClick="mergeRegions"
-  />
-  <ToolbarItem
-    caption="Extract All Remaining Boxes"
-    :icon="ImageEdit20Regular"
-    :size="30"
-    :disabled="!canExtractText() || extracting"
-    :onClick="() => runImageExtraction(false)"
-  />
-  <ToolbarItem
-    caption="Extract All Remaining Boxes (Kites AOT)"
-    :icon="ImageEdit20Regular"
-    :size="30"
-    :disabled="!canExtractText() || extracting"
-    :onClick="() => runImageExtraction(false, undefined, 'aot')"
-  />
-  <ToolbarItem
-    caption="Extract All Remaining Boxes (Vietnamese)"
-    :icon="ImageEdit20Regular"
-    :size="30"
-    :disabled="!canExtractText() || extracting"
-    :onClick="() => runImageExtraction(false, 'vi-VN')"
-  />
-
-  <ToolbarItem
     quaternary
     :disabled="!piniaSelect().selShpFormat?.blipFill"
     caption="Remove Background"
@@ -91,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue';
+import { ref } from 'vue';
 import ScriptCodeDialog from '../editor/Dialogs/ScriptCodeDialog.vue';
 const scriptDialogOpen=ref(false);
 import { getShapeImage } from "shared-vuejs/api/downloadShape";
@@ -105,101 +69,7 @@ import ToolbarItem from "../editor/Toolbars/ToolbarItem.vue";
 import g from "shared-vuejs/api/global";
 import { rmbgUsingXenova } from "../editor/Toolbars/ToolbarUtils";
 import { Person } from "@vicons/carbon";
-import { getFileInfo, getShapeDeep, getSlideInfo, getSlidesSlideId } from "shared-vuejs/editor";
-import { showError, showMessage } from "shared-vuejs/api/utils";
 import { traceImage } from "shared-vuejs/api/svgUtils";
-
-const extracting = ref(false);
-
-function canDetectText() {
-  const selection = piniaSelect();
-  const shape = selection.selShpFormat;
-  return selection.selShps.length === 1 && !selection.selGrpShps?.length &&
-    shape?.type === 'image' && !shape.locked && !shape.video && !shape.audio && !!shape.blipFill?.blip;
-}
-
-function selectedOcrRegions() {
-  const selection = piniaSelect();
-  if (!selection.selShps.length || selection.selGrpShps?.length) return [];
-  const regions = selection.selShps.map(id => getShapeDeep(id));
-  return regions.every(shape => shape?.ocrRegion) ? regions : [];
-}
-
-function canExtractText() {
-  return (getSlideInfo()?.shapes || []).some(shape => shape.ocrRegion);
-}
-
-function canMergeRegions() {
-  const regions = selectedOcrRegions();
-  const first = regions[0]?.ocrRegion;
-  return regions.length > 1 && regions.every(({ ocrRegion }) =>
-    ocrRegion.pictureId === first.pictureId && ocrRegion.source === first.source && ocrRegion.crop === first.crop);
-}
-
-async function mergeRegions() {
-  if (extracting.value || !canMergeRegions()) return;
-  const regions = selectedOcrRegions();
-  const fileId = getFileInfo()?.id;
-  const slideId = getSlidesSlideId();
-  extracting.value = true;
-  try {
-    const { mergeImageTextRegions } = await import('./extract-image-text.mjs');
-    if (getFileInfo()?.id !== fileId || getSlidesSlideId() !== slideId)
-      throw new Error('The slide changed before the regions could be merged.');
-    await mergeImageTextRegions(regions);
-  } catch (error) {
-    showError(error instanceof Error ? error.message : String(error), 'Merge text regions');
-  } finally {
-    extracting.value = false;
-  }
-}
-
-async function runImageExtraction(detect: boolean, language?: string, engine = 'migan') {
-  if (extracting.value) return;
-  const shapes = detect
-    ? (canDetectText() ? [piniaSelect().selShpFormat] : [])
-    : (getSlideInfo()?.shapes || []).filter(shape => shape.ocrRegion);
-  if (!shapes.length) return;
-  const fileId = getFileInfo()?.id;
-  const slideId = getSlidesSlideId();
-  const info = piniaInfo();
-  extracting.value = true;
-  info.loadingBar = 'Preparing image…';
-  try {
-    const { detectImageTextRegions, extractImageText } = await import('./extract-image-text.mjs');
-    const progress = (message: string) => { info.loadingBar = message; };
-    if (detect) {
-      if (!await detectImageTextRegions(shapes[0], progress)) showMessage('No text regions were found.');
-    } else {
-      if (getFileInfo()?.id !== fileId || getSlidesSlideId() !== slideId)
-        throw new Error('The slide changed during extraction.');
-      const groups = new Map();
-      for (const shape of shapes) {
-        const region = shape.ocrRegion;
-        const key = JSON.stringify([region.pictureId, region.source, region.crop]);
-        groups.set(key, [...(groups.get(key) || []), shape]);
-      }
-      let extractedTotal = 0, unreadableTotal = 0;
-      for (const [index, regions] of [...groups.values()].entries()) {
-        if (getFileInfo()?.id !== fileId || getSlidesSlideId() !== slideId)
-          throw new Error('The slide changed during extraction.');
-        const regionProgress = (message: string) => progress(groups.size > 1
-          ? `Picture ${index + 1} of ${groups.size} · ${message}` : message);
-        const extracted = await extractImageText(regions, regionProgress, language, engine);
-        extractedTotal += extracted;
-        unreadableTotal += regions.length - extracted;
-      }
-      if (unreadableTotal) showMessage(extractedTotal
-        ? `Extracted ${extractedTotal} regions; ${unreadableTotal} could not be verified and remain.`
-        : 'No text could be verified in the remaining regions.');
-    }
-  } catch (error) {
-    showError(error instanceof Error ? error.message : String(error), 'Image text extraction');
-  } finally {
-    info.loadingBar = '';
-    extracting.value = false;
-  }
-}
 
 async function editInPhotopea(shp) {
   const dataUrl = await getShapeImage(shp);

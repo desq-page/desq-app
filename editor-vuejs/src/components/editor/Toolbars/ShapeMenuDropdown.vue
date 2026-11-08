@@ -12,12 +12,12 @@
 </template>
 
 <script setup lang="ts">
-import { getHandlingHandlingInfo, getSelectCropShp, getSelectEditingInfo, getSelectEditingPoint, getSelectSelGrpShps, getSelectSelShpFormat } from "shared-vuejs/editor";
+import { getFileInfo, getShapeDeep, getSlidesSlideId, getHandlingHandlingInfo, getSelectCropShp, getSelectEditingInfo, getSelectEditingPoint, getSelectSelGrpShps, getSelectSelShpFormat } from "shared-vuejs/editor";
 
 import { piniaInfo, piniaSelect } from "@/lib/common/store";
 import ToolbarItemDropdown from "./ToolbarItemDropdown.vue";
 import { useCssModule, computed, nextTick } from "vue";
-import { showMessage } from "shared-vuejs/api/utils";
+import { showError, showMessage } from "shared-vuejs/api/utils";
 
 import {
   convertSVGToShape,
@@ -57,6 +57,7 @@ import {
   showEditingPoint,
 } from "./ToolbarUtils";
 import {
+  AutoAwesomeOutlined,
   DownloadFilled,
   FlipFilled,
   LockOutlined,
@@ -64,7 +65,7 @@ import {
 } from "@vicons/material";
 import { detachFromGroup, toggleGroup } from "shared-vuejs/api/group";
 import { copyShape, duplicateShape, pasteShape } from "shared-vuejs/api/clipboard";
-import { addHandle } from "shared-vuejs/api/handle";
+import { addHandle, deselectAll } from "shared-vuejs/api/handle";
 import g from "shared-vuejs/api/global";
 
 import { toggleTaskPane } from "@/lib/main/utils.js";
@@ -83,7 +84,94 @@ const props = defineProps({
 //     getSelectEditingPoint() !== undefined,
 // );
 
+function editablePicture() {
+  const selection = piniaSelect();
+  const picture = selection.selShpFormat;
+  return selection.selShps.length === 1 && !selection.selGrpShps?.length &&
+    picture?.type === 'image' && !picture.locked && !picture.video && !picture.audio &&
+    !!picture.blipFill?.blip ? picture : undefined;
+}
+
+async function editPictureText() {
+  const picture = editablePicture();
+  const info = piniaInfo();
+  const popup = info.curPopupXY;
+  if (!picture || !popup || info.loadingBar) return;
+  const image = document.getElementById(picture.id);
+  const fileId = getFileInfo()?.id, slideId = getSlidesSlideId();
+  if (!image || !fileId || !slideId) return;
+  const rect = image.getBoundingClientRect();
+  const angle = (picture.rot || 0) * Math.PI / 180;
+  const cos = Math.cos(angle), sin = Math.sin(angle);
+  const scale = rect.width / (Math.abs(cos) * picture.w + Math.abs(sin) * picture.h);
+  if (!(scale > 0)) return;
+  const centerX = rect.left + rect.width / 2, centerY = rect.top + rect.height / 2;
+  // Core anchors the menu ten pixels below the original page-coordinate click.
+  const dx = popup.x - window.scrollX - centerX;
+  const dy = popup.y - 10 - window.scrollY - centerY;
+  const flipX = picture.flipH ? -1 : 1, flipY = picture.flipV ? -1 : 1;
+  const x = .5 + (dx * cos + dy * sin) * flipX / (scale * picture.w);
+  const y = .5 + (dy * cos - dx * sin) * flipY / (scale * picture.h);
+  if (x < 0 || x > 1 || y < 0 || y > 1) return;
+
+  let highlight: HTMLDivElement | undefined;
+  let frame = 0;
+  let canceled = false;
+  const active = () => !canceled && getFileInfo()?.id === fileId &&
+    getSlidesSlideId() === slideId && !!getShapeDeep(picture.id);
+  const checkSlide = () => {
+    if (!active()) {
+      canceled = true;
+      highlight?.remove();
+      return;
+    }
+    frame = requestAnimationFrame(checkSlide);
+  };
+  frame = requestAnimationFrame(checkSlide);
+  info.loadingBar = 'Finding text…';
+  try {
+    const { extractImageTextAt } = await import('../../addon/extract-image-text.mjs');
+    if (!active()) return;
+    const extracted = await extractImageTextAt(picture.id, { x, y }, {
+      active,
+      progress: (message: string) => { if (active()) info.loadingBar = message; },
+      highlight: (box: { x: number; y: number; width: number; height: number }) => {
+        const offsetX = (box.x + box.width / 2 - .5) * picture.w * scale * flipX;
+        const offsetY = (box.y + box.height / 2 - .5) * picture.h * scale * flipY;
+        highlight = document.createElement('div');
+        Object.assign(highlight.style, {
+          position: 'fixed', pointerEvents: 'none', zIndex: '10000', boxSizing: 'border-box',
+          border: '2px solid #2563eb', background: '#2563eb22',
+          left: `${centerX + offsetX * cos - offsetY * sin}px`,
+          top: `${centerY + offsetX * sin + offsetY * cos}px`,
+          width: `${box.width * picture.w * scale}px`, height: `${box.height * picture.h * scale}px`,
+          transform: `translate(-50%, -50%) rotate(${angle}rad)`,
+        });
+        document.body.append(highlight);
+      },
+    });
+    if (!active()) return;
+    if (extracted) {
+      deselectAll();
+      await addHandle(picture.id);
+    } else showMessage('No text was found at that point.');
+  } catch (error) {
+    if (active()) showError(error instanceof Error ? error.message : String(error), 'Edit Text (AI)');
+  } finally {
+    cancelAnimationFrame(frame);
+    highlight?.remove();
+    info.loadingBar = '';
+  }
+}
+
 const ShapeContextMenuOptions = computed(() => [
+  {
+    label: "Edit Text (AI)",
+    key: "edit-picture-text",
+    icon: AutoAwesomeOutlined,
+    show: !!editablePicture(),
+    onClick: editPictureText,
+  },
   // {
   //   label: "Shift + Right Click For More",
   //   icon: InformationFilled,
