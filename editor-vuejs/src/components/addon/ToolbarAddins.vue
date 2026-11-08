@@ -190,8 +190,8 @@ async function runImageExtraction(detect: boolean, language?: string, engine = '
         unreadableTotal += regions.length - extracted;
       }
       if (unreadableTotal) showMessage(extractedTotal
-        ? `Extracted ${extractedTotal} regions; ${unreadableTotal} had no recognized text and remain.`
-        : 'No text was recognized in the remaining regions.');
+        ? `Extracted ${extractedTotal} regions; ${unreadableTotal} could not be verified and remain.`
+        : 'No text could be verified in the remaining regions.');
     }
   } catch (error) {
     showError(error instanceof Error ? error.message : String(error), 'Image text extraction');

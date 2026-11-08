@@ -29,14 +29,25 @@ async function loadInpaint(ort, engine) {
   return ort.InferenceSession.create(await downloadModel(inpaintModel), options);
 }
 
+const glyphMargin = 3;
+
+// OCR line boxes can clip descenders and detached diacritics. Search past
+// their edges before rejecting components that run into surrounding artwork.
+const glyphSearchPadding = box => Math.max(3, Math.min(24, Math.ceil(box.height * .15)));
+
+function pixelBounds({ x, y, width: w, height: h }, width, height, padding) {
+  return {
+    left: Math.max(0, Math.floor(x - padding)), top: Math.max(0, Math.floor(y - padding)),
+    right: Math.min(width, Math.ceil(x + w + padding)), bottom: Math.min(height, Math.ceil(y + h + padding)),
+  };
+}
+
 function makeGlyphMask(context, boxes) {
   const { width, height } = context.canvas;
   const pixels = context.getImageData(0, 0, width, height).data;
   const mask = new Uint8Array(width * height);
   for (const box of boxes) {
-    const left = Math.max(0, Math.floor(box.x)), top = Math.max(0, Math.floor(box.y));
-    const right = Math.min(width, Math.ceil(box.x + box.width));
-    const bottom = Math.min(height, Math.ceil(box.y + box.height));
+    const { left, top, right, bottom } = pixelBounds(box, width, height, glyphSearchPadding(box));
     const w = right - left, h = bottom - top;
     if (w < 2 || h < 2) continue;
     const gray = new Uint8Array(w * h), histogram = new Uint32Array(256);
@@ -108,13 +119,13 @@ function makeGlyphMask(context, boxes) {
       }
     }
   }
-  // Include a one-pixel halo for antialiased glyph edges, while leaving nearby
-  // bubble contours and artwork untouched.
+  // Cover antialiased edges and light compression fringes around the detected ink.
   const expanded = new Uint8Array(mask);
   for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
     const index = y * width + x;
     if (mask[index]) continue;
-    for (let dy = -1; dy <= 1 && !expanded[index]; dy++) for (let dx = -1; dx <= 1; dx++) {
+    for (let dy = -glyphMargin; dy <= glyphMargin && !expanded[index]; dy++) for (let dx = -glyphMargin; dx <= glyphMargin; dx++) {
+      if (dx * dx + dy * dy > glyphMargin * glyphMargin) continue;
       const nx = x + dx, ny = y + dy;
       if (nx >= 0 && nx < width && ny >= 0 && ny < height && mask[ny * width + nx]) {
         expanded[index] = 1;
@@ -140,19 +151,10 @@ async function eraseText(context, boxes, contextBoxes, engine) {
   const pixels = context.getImageData(0, 0, width, height);
   const repaired = new ImageData(new Uint8ClampedArray(pixels.data), width, height);
   const glyphMask = makeGlyphMask(context, boxes);
-  const bounds = ({ x, y, width: w, height: h }, padding = 0) => ({
-    left: Math.max(0, Math.floor(x - padding)), top: Math.max(0, Math.floor(y - padding)),
-    right: Math.min(width, Math.ceil(x + w + padding)), bottom: Math.min(height, Math.ceil(y + h + padding)),
-  });
-  const holes = boxes.map(box => bounds(box));
-  const known = new Uint8Array(width * height).fill(255);
-  for (const hole of [...holes, ...contextBoxes.map(box => bounds(box, 2))]) {
-    if (hole.right <= hole.left) continue;
-    for (let y = hole.top; y < hole.bottom; y++)
-      known.fill(0, y * width + hole.left, y * width + hole.right);
-  }
-  // Give each hole nearby context. Exclude neighboring text from that context
-  // and composite only the target area back into the original picture.
+  const holes = boxes.map(box => pixelBounds(box, width, height, glyphSearchPadding(box) + glyphMargin));
+  const neighborMask = contextBoxes.length ? makeGlyphMask(context, contextBoxes) : null;
+  // Keep the background between strokes available to the model. Neighboring
+  // glyphs are hidden from the model but only target glyphs are composited.
   for (const hole of holes) {
     const padding = aot ? 24 : Math.max(24, Math.ceil((hole.bottom - hole.top) * 2));
     let left = Math.max(0, hole.left - padding), top = Math.max(0, hole.top - padding);
@@ -173,9 +175,9 @@ async function eraseText(context, boxes, contextBoxes, engine) {
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
       const source = Math.min(height - 1, top + y) * width + Math.min(width - 1, left + x);
       const i = y * w + x;
-      const keep = known[source] === 255;
+      const keep = !glyphMask[source] && !neighborMask?.[source];
       hasBackground ||= keep;
-      mask[i] = aot ? Number(!keep) : known[source];
+      mask[i] = aot ? Number(!keep) : Number(keep) * 255;
       for (let c = 0; c < 3; c++) {
         const pixel = pixels.data[source * 4 + c];
         rgb[i + c * size] = aot ? (keep ? pixel / 127.5 - 1 : 0) : pixel;
@@ -191,7 +193,7 @@ async function eraseText(context, boxes, contextBoxes, engine) {
       const clean = outputs[session.outputNames[0]].data;
       if (clean.length !== rgb.length) throw new Error('The cleanup model returned an unexpected image size.');
       for (let y = hole.top; y < hole.bottom; y++) for (let x = hole.left; x < hole.right; x++) {
-        if (glyphMask[y * width + x] === 0) continue;
+        if (!glyphMask[y * width + x] || neighborMask?.[y * width + x]) continue;
         const i = (y - top) * w + x - left;
         const target = (y * width + x) * 4;
         for (let c = 0; c < 3; c++) repaired.data[target + c] = aot ? (clean[i + c * size] + 1) * 127.5 : clean[i + c * size];
@@ -230,6 +232,25 @@ function estimateInkColor(before, after, region) {
   for (const bucket of buckets.values()) if (!ink || bucket.weight > ink.weight) ink = bucket;
   return ink && [ink.r, ink.g, ink.b].map(value =>
     Math.round(value / ink.weight).toString(16).padStart(2, '0')).join('').toUpperCase();
+}
+
+function erasedInkBounds(before, after, region, ink) {
+  const [r, g, b] = ink.match(/../g).map(channel => parseInt(channel, 16));
+  const { left, top, right, bottom } = pixelBounds(region, before.width, before.height, 0);
+  let minX = right, minY = bottom, maxX = left - 1, maxY = top - 1;
+  for (let y = top; y < bottom; y++) for (let x = left; x < right; x++) {
+    const i = (y * before.width + x) * 4;
+    if (Math.hypot(before.data[i] - r, before.data[i + 1] - g, before.data[i + 2] - b) > 40 ||
+        Math.hypot(before.data[i] - after.data[i], before.data[i + 1] - after.data[i + 1],
+          before.data[i + 2] - after.data[i + 2]) < 35) continue;
+    minX = Math.min(minX, x);
+    minY = Math.min(minY, y);
+    maxX = Math.max(maxX, x);
+    maxY = Math.max(maxY, y);
+  }
+  if (maxX < minX) return;
+  return { x: minX / before.width, y: minY / before.height,
+    width: (maxX - minX + 1) / before.width, height: (maxY - minY + 1) / before.height };
 }
 
 function textLanguage(text) {
@@ -287,9 +308,9 @@ async function pictureCanvas(picture) {
 
 async function withOcr(language, callback, progress = () => {}) {
   progress('Loading OCR model…');
-  const { PaddleOcrService, V6_TINY_MODEL } = await import(/* @vite-ignore */ ocrModule);
-  if (!V6_TINY_MODEL) throw new Error('The V6 tiny OCR model is unavailable.');
-  const service = new PaddleOcrService({ model: V6_TINY_MODEL });
+  const { PaddleOcrService, V6_MEDIUM_MODEL } = await import(/* @vite-ignore */ ocrModule);
+  if (!V6_MEDIUM_MODEL) throw new Error('The V6 tiny OCR model is unavailable.');
+  const service = new PaddleOcrService({ model: V6_MEDIUM_MODEL });
   try {
     await service.initialize();
     progress('OCR model ready…');
@@ -409,12 +430,34 @@ export async function extractImageText(shapes, progress, language, engine = 'mig
     }
     return { marker, selection, region, holes, crop };
   });
+  const validation = document.createElement('canvas').getContext('2d');
+  const measure = document.createElement('canvas').getContext('2d');
+  measure.font = '100px Arial';
   await withOcr(language, async service => {
+    const recognize = async crop => (await service.recognize(crop, { strategy: 'per-line' }))
+      .text.trim().normalize('NFC');
     for (const [index, record] of records.entries()) {
       progress(`Reading line box ${index + 1} of ${records.length}…`);
-      // Run PaddleOCR's per-line strategy inside each selected OCR box.
-      record.text = (await service.recognize(record.crop, { strategy: 'per-line' }))
-        .text.trim().normalize('NFC');
+      const text = await recognize(record.crop);
+      // Illustrations can produce short, isolated OCR tokens. Check that the
+      // crop could plausibly contain the token and that it survives a second
+      // reading with the color removed and a little surrounding whitespace.
+      if (record.holes.length === 1 && /^[\p{L}\p{N}]{1,2}$/u.test(text)) {
+        const metrics = measure.measureText(text);
+        const inkHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+        const inkWidth = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
+        const { width, height } = record.crop;
+        if (inkHeight > 0 && width / height > Math.max(1.25, 1.8 * inkWidth / inkHeight)) continue;
+        const padding = Math.max(2, Math.ceil(height * .08));
+        validation.canvas.width = width + padding * 2;
+        validation.canvas.height = height + padding * 2;
+        validation.fillStyle = '#fff';
+        validation.fillRect(0, 0, validation.canvas.width, validation.canvas.height);
+        validation.filter = 'grayscale(1)';
+        validation.drawImage(record.crop, padding, padding);
+        if (await recognize(validation.canvas) !== text) continue;
+      }
+      record.text = text;
     }
   }, progress);
   const readable = records.filter(record => record.text);
@@ -446,18 +489,37 @@ export async function extractImageText(shapes, progress, language, engine = 'mig
     if (!readable.some(record => record.marker.id === sibling.id))
       updateShape({ id: sibling.id, ocrRegion: { ...sibling.ocrRegion, source: media.name } });
   }
-  const measure = document.createElement('canvas').getContext('2d');
-  measure.font = '100px Arial';
   for (const record of readable) {
     const { marker, selection, region, text } = record;
-    const geometry = regionGeometry(currentPicture, selection.box);
-    const { w, h } = geometry;
+    let geometry = regionGeometry(currentPicture, selection.box);
     const ink = estimateInkColor(before, after, region);
     const lang = language || textLanguage(text);
     const lines = text.split(/\r?\n/).filter(line => line.trim());
     const measuredWidth = Math.max(...lines.map(line => measure.measureText(line).width));
-    const lineHeight = h / lines.length;
-    const size = Math.min(lineHeight * 0.8, measuredWidth > 0 ? w * 100 / measuredWidth : lineHeight);
+    const lineHeight = geometry.h / lines.length;
+    let size = Math.min(lineHeight * 0.8, measuredWidth > 0 ? geometry.w * 100 / measuredWidth : lineHeight);
+    // The OCR box and the font advance can both be asymmetric around a digit.
+    // Fit the visible ink and offset the text origin by the glyph's bearing.
+    if (ink && /^[\p{L}\p{N}]\p{M}*$/u.test(text)) {
+      const box = erasedInkBounds(before, after, region, ink);
+      const metrics = measure.measureText(text);
+      const inkHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+      const fontHeight = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
+      if (box && inkHeight > 0 && fontHeight > 0) {
+        const sx = geometry.w / selection.box.width;
+        const sy = geometry.h / selection.box.height;
+        const scale = box.height * sy / inkHeight;
+        size = scale * 100;
+        geometry = regionGeometry(currentPicture, {
+          x: box.x + box.width / 2 + (metrics.actualBoundingBoxLeft - metrics.actualBoundingBoxRight) * scale / (2 * sx),
+          y: box.y + box.height / 2 + (metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent -
+            2 * metrics.fontBoundingBoxAscent) * scale / (2 * sy),
+          width: metrics.width * scale / sx,
+          height: fontHeight * scale / sy,
+        });
+      }
+    }
+    const { w, h } = geometry;
     updateShape({
       id: marker.id, ocrRegion: null, locked: false, solidFill: null, hideSpinHandle: true,
       name: 'Extracted text', type: 'text', $_otag: 'sp',
