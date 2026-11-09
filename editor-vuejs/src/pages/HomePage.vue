@@ -2,7 +2,7 @@
 import { onMounted } from "vue";
 
 onMounted(() => {
-  document.title = "DESQ — HTML Presentation & Document Editor";
+  document.title = "DESQ — HTML Presentation Editor & Powerpoint to HTML";
   let keywords = document.querySelector<HTMLMetaElement>('meta[name="keywords"]');
   if (!keywords) {
     keywords = document.createElement("meta");
@@ -48,9 +48,9 @@ const questions = [
         <div class="page-width hero">
           <div class="hero-stage">
             <div class="hero-copy">
-              <p class="eyebrow">THE FULL-FLEDGED PRESENTATION & DOCUMENT EDITOR</p>
-              <h1 id="hero-title">A complete office in a single <em>HTML</em> file.</h1>
-              <p class="hero-description">One ubiquitous format for it all: HTML. Create and open animated presentations, documents, print layouts, and interactive apps. With or without AI. Edit and share your work in a single HTML file. Because it is HTML, it just works! No additional tool needed.</p>
+              <p class="eyebrow">THE FULL-FLEDGED SLIDE EDITOR</p>
+              <h1 id="hero-title">Your next design is on <em>Slide</em>.</h1>
+              <p class="hero-description">All formats converged. Presentation, Documents, PDF, Publishers, Games, all fit into slide. One ubiquitous format for it all: HTML. Create and open animated presentations, documents, print layouts, and interactive apps. With or without AI. Edit and share your work in a single HTML file. Because it is HTML, it just works! No additional tool needed.</p>
               <div class="hero-actions">
                 <a href="/work" class="button button-lime">Continue in browser <span aria-hidden="true">↗</span></a>
                 <a href="#features" class="text-link">Explore the features <span aria-hidden="true">↓</span></a>
