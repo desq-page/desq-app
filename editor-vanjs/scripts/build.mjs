@@ -1,3 +1,4 @@
+import {obfuscateProductionScript} from '../../scripts/obfuscate-production.mjs';
 import {preparePlayerScript} from '../../scripts/player-production.mjs';
 import { build, context } from 'esbuild';
 import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
@@ -43,15 +44,28 @@ function options(entry, filename, globalName, wrapper, kind) {
     }}] : []), { name: 'native-editor-boundaries', setup(builder) {
       builder.onResolve({ filter: /^(vue|vue-router|pinia|naive-ui|@vicons\/|@vue\/|@vueuse\/)/ }, args => ({ errors: [{ text: `The standalone editor cannot import ${args.path}.` }] }));
       if (kind === 'editor') {
-        builder.onLoad({ filter: /[\\/]edlib[\\/]common[\\/]inout[\\/]downloadShape\.js$/ }, async args => {
-          const source = await readFile(args.path, 'utf8');
-          const catalogue = 'const { googleFonts } = await import("../../../lib/googleFonts.js");';
-          if (!source.includes(catalogue)) throw Error('Shape font detection changed; update the standalone font integration.');
-          // The document already records its Google fonts. Keep the font loader
-          // and use that metadata for picture export without the full catalogue.
-          const replacement = 'const googleFonts = (vStaticSlides.fileInfo?.fonts || []).filter(font => font.type === "google").map(font => [font.family]);';
-          return { contents: source.replace(catalogue, replacement), loader: 'ts', resolveDir: resolve(args.path, '..'), watchFiles: [args.path] };
+        // Substitute dependencies by import path so the core modules can be obfuscated.
+        builder.onResolve({ filter: /googleFonts\.js$/ }, args => {
+          if (args.importer === resolve(sharedDist, 'edlib/common/inout/downloadShape.js'))
+            return { path: 'document-fonts', namespace: 'standalone-editor-adapter' };
         });
+        builder.onResolve({ filter: /video-optimization\.js$/ }, args => {
+          if (args.importer === resolve(sharedDist, 'edlib/common/inout/upload.js'))
+            return { path: 'video-optimization', namespace: 'standalone-editor-adapter' };
+        });
+        builder.onLoad({ filter: /.*/, namespace: 'standalone-editor-adapter' }, ({ path }) => ({
+          contents: path === 'document-fonts'
+            ? `import { vStaticSlides } from './edlib/vanjs/vanStore.js';
+               export const googleFonts = {
+                 find(predicate) {
+                   return (vStaticSlides.fileInfo?.fonts || [])
+                     .filter(font => font.type === 'google').map(font => [font.family]).find(predicate);
+                 },
+               };`
+            : 'export async function optimizeDeckVideos() {}',
+          loader: 'js',
+          resolveDir: sharedDist,
+        }));
         // Shared editing modules refer to the Office archive pipeline for the
         // Vue host. The standalone canvas has its own document store and only
         // saves HTML/ZIP, so those operations are unavailable here.
@@ -65,26 +79,23 @@ function options(entry, filename, globalName, wrapper, kind) {
           const contents = disabledOfficeModule(source);
           return { contents, loader: 'js', watchFiles: [args.path] };
         });
-        builder.onLoad({ filter: /[\\/]edlib[\\/]common[\\/]inout[\\/]upload\.js$/ }, async args => {
-          const source = await readFile(args.path, 'utf8');
-          const importLine = 'import { optimizeDeckVideos } from "../media/video-optimization.js";';
-          const optimizeBlock = /\s*if \(\/\\\.\(mp4\|m4v\|mov\|avi\)\$\/i\.test\(blobId\)\) \{\s*void optimizeDeckVideos\(fileId, true\)\.catch\(\(error\) => console\.warn\("Video optimization unavailable:", error\)\);\s*\}/;
-          if (!source.includes(importLine) || !optimizeBlock.test(source)) throw Error('Video upload optimization changed; update the standalone upload integration.');
-          return { contents: source.replace(importLine, '').replace(optimizeBlock, ''), loader: 'ts', resolveDir: resolve(args.path, '..'), watchFiles: [args.path] };
-        });
       }
       if (kind === 'editor' || kind === 'presentation') {
         // Charts are rendered by the Vue host before transfer to VanJS.
         builder.onLoad({ filter: /[\\/]lib[\\/]chart[\\/]chart\.js$/ }, () => ({ contents:
           'export const processChart=(shape)=>shape.chartSvg?.replace(/<svg width="[^"]*" height="[^"]*"/, `<svg width="${shape.w}rem" height="${shape.h}rem"`) || `<svg width="${shape.w}rem" height="${shape.h}rem"><text x="8" y="20">Chart preview unavailable</text></svg>`; export const resizeChart=()=>{};', loader: 'js' }));
       }
-      builder.onEnd(result => {
+      builder.onEnd(async result => {
         if (result.errors.length) return;
         const files = Object.keys(result.metafile.inputs);
         const forbidden = files.filter(name => /node_modules\/(?:vue|@vue|vue-router|pinia|naive-ui|@vicons)\//.test(name) ||
           (kind === 'editor' && /(?:^|\/)player\/src\//.test(name)) ||
           (kind === 'editor' && !name.startsWith('office-archive-disabled:') && /shared-vuejs\/dist\/edlib\/(?:common\/media\/(?:video-optimization|optimize-video\.worker)|pubbridge\/|pptx\/(?:import\/|unzipPPTX|pptxArchive|updateSlideXml|slidePackage|export\/))/.test(name)));
         if (forbidden.length) throw Error(`Renderer crossed an editor dependency boundary: ${forbidden.join(', ')}`);
+        if (process.env.PROD === '1') {
+          const file = resolve(root, 'dist', filename);
+          await writeFile(file, obfuscateProductionScript(await readFile(file, 'utf8')));
+        }
         inputs[kind] = files.map(name => relative(root, resolve(root, name)));
         if (kind === 'editor') {
           packageQueue = packageQueue.then(packageBuild);

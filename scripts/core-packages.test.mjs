@@ -28,11 +28,15 @@ test('the installed importer retains presentation text defaults for rendering', 
  const root=dirname(require.resolve('shared-vuejs/package.json'));
  const importer=readFileSync(resolve(root,'dist/edlib/pptx/import/import-txml.js'),'utf8');
  const loader=readFileSync(resolve(root,'dist/edlib/common/inout/load.js'),'utf8');
- assert.match(importer,/fileInfo\.defaultTextStyle\s*=\s*g\.defaultTextStyle/);
- assert.doesNotMatch(loader,/delete\s+fileInfoWithoutStyles\.defaultTextStyle/);
+ assert.match(importer,/(?:\.defaultTextStyle|\[['"]defaultTextStyle['"]\])\s*=\s*\w+(?:\.defaultTextStyle|\[['"]defaultTextStyle['"]\])/);
+ assert.doesNotMatch(loader,/delete\s+\w+(?:\.defaultTextStyle|\[['"]defaultTextStyle['"]\])/);
 });
 
-test('installed text renderer uses the exact imported font weight', async () => {
+test('installed text renderer uses the exact imported font weight', async t => {
+ if (!globalThis.navigator) {
+   Object.defineProperty(globalThis, 'navigator', {value: {userAgent: ''}, configurable: true});
+   t.after(() => delete globalThis.navigator);
+ }
  const root=dirname(require.resolve('shared-vuejs/package.json'));
  const {pathToFileURL}=await import('node:url');
  const {getRunFont}=await import(pathToFileURL(resolve(root,'dist/lib/text/textUtil.js')).href);

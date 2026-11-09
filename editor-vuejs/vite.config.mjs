@@ -1,3 +1,5 @@
+import { obfuscateProductionScript } from '../scripts/obfuscate-production.mjs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { agentHostPlugin } from '../cloudflare-publisher/src/agent/node.mjs';
 import path from "node:path";
 import { join } from "node:path";
@@ -19,11 +21,20 @@ import { suppressPackagedSourcemapWarnings } from "../scripts/packaged-sourcemap
 // Vite 8 minifies with Rolldown/Oxc; esbuild.drop does not cover its
 // dependency chunks or worker builds.
 const productionMinify = process.env.PROD
-  ? { compress: { dropConsole: true, dropDebugger: true } }
+  ? { mangle: false, compress: { dropConsole: true, dropDebugger: true } }
   : undefined;
 
 const require = createRequire(import.meta.url);
 const pdfWorker = require.resolve('pdfjs-dist/build/pdf.worker.min.mjs').replaceAll('\\', '/');
+
+const productionObfuscation = () => ({
+  name: 'desq-production-obfuscation',
+  apply: 'build',
+  enforce: 'post',
+  renderChunk(code) {
+    return { code: obfuscateProductionScript(code), map: null };
+  },
+});
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => ({
@@ -64,16 +75,22 @@ export default defineConfig(({ command, mode }) => ({
     mkcert(),
     vue(),
     visualizer(),
+    ...(productionMinify ? [productionObfuscation()] : []),
     {
       enforce: "post",
       transformIndexHtml() {
-        buildSync({
+        const { outputFiles } = buildSync({
+          write: false,
           minify: !!process.env.PROD,
           drop: process.env.PROD ? ["console", "debugger"] : undefined,
           bundle: true,
           entryPoints: [join(process.cwd(), "service-worker.js")],
           outfile: join(process.cwd(), "dist", "service-worker.js"),
         });
+        for (const file of outputFiles) {
+          mkdirSync(path.dirname(file.path), { recursive: true });
+          writeFileSync(file.path, productionMinify ? obfuscateProductionScript(file.text) : file.contents);
+        }
       },
     },
   ],
@@ -101,6 +118,7 @@ export default defineConfig(({ command, mode }) => ({
 
   },
   worker: {
+    ...(productionMinify ? { plugins: () => [productionObfuscation()] } : {}),
     rolldownOptions: {
       output: {
         ...(productionMinify ? { minify: productionMinify } : {}),
