@@ -10,6 +10,14 @@
     :onClick="() => extractPictureText(piniaInfo())"
   />
   <ToolbarItem
+    caption="Extract Region (AI)"
+    :icon="ImageEdit20Regular"
+    :size="30"
+    :color="g.themeOverrides?.common?.primaryColor"
+    :disabled="!editablePicture() || !!piniaInfo().loadingBar"
+    :onClick="() => selectPictureTextRegion(piniaInfo())"
+  />
+  <ToolbarItem
     caption="Edit In Photopea..."
     :icon="ImageEdit20Regular"
     :size="30"
@@ -67,7 +75,7 @@ import { ref } from 'vue';
 import ScriptCodeDialog from '../editor/Dialogs/ScriptCodeDialog.vue';
 const scriptDialogOpen=ref(false);
 import { getShapeImage } from "shared-vuejs/api/downloadShape";
-import { editablePicture, extractPictureText } from "shared-vuejs/api/edit-picture-text";
+import { editablePicture, extractPictureText, selectPictureTextRegion } from "shared-vuejs/api/edit-picture-text";
 import { piniaInfo, piniaSelect } from "@/lib/common/store";
 import {
   ImageEdit20Regular,
