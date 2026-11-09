@@ -9,7 +9,7 @@ onMounted(() => {
     keywords.name = "keywords";
     document.head.appendChild(keywords);
   }
-  keywords.content = "HTML presentation editor, Office document editor, Word to HTML, Publisher to HTML, PowerPoint to HTML, convert PPTX to HTML, export PowerPoint to HTML, Office to HTML, slide sharing, embed presentations, interactive slides, presentation animation, slide design, PowerPoint editor, editable HTML slides, offline presentations, AI presentation editor";
+  keywords.content = "HTML presentation editor, Office document editor, Word to HTML, Publisher to HTML, PowerPoint to HTML, convert PPTX to HTML, export PowerPoint to HTML, Office to HTML, slide sharing, embed presentations, interactive slides, presentation animation, Powerpoint games, slide design, PowerPoint editor, editable HTML slides, offline presentations, AI presentation editor";
 });
 
 const features = [
@@ -48,14 +48,14 @@ const questions = [
         <div class="page-width hero">
           <div class="hero-stage">
             <div class="hero-copy">
-              <p class="eyebrow">THE FULL-FLEDGED SLIDE EDITOR</p>
-              <h1 id="hero-title">Your next design is on <em>Slide</em>.</h1>
-              <p class="hero-description">All formats converged. Presentation, Documents, PDF, Publishers, Games, all fit into slide. One ubiquitous format for it all: HTML. Create and open animated presentations, documents, print layouts, and interactive apps. With or without AI. Edit and share your work in a single HTML file. Because it is HTML, it just works! No additional tool needed.</p>
+              <p class="eyebrow">THE FULL-FLEDGED AI ERA SLIDE EDITOR</p>
+              <h1 id="hero-title">Your next design <br/>is <em>slide</em>.</h1>
+              <p class="hero-description">All formats converged. Presentation, Documents, PDF, Publishers, Powerpoint Games, all are slides. One ubiquitous format for it all: HTML. Create and open animated presentations, documents, print layouts, and interactive apps. With or without AI. Edit and share your work in a single HTML file. Because it is HTML, it just works! No additional tool needed.</p>
               <div class="hero-actions">
                 <a href="/work" class="button button-lime">Continue in browser <span aria-hidden="true">↗</span></a>
                 <a href="#features" class="text-link">Explore the features <span aria-hidden="true">↓</span></a>
               </div>
-              <p class="hero-note"><span aria-hidden="true">✓</span> Free to edit. Works offline in browser. Your files stay private.<br/><span aria-hidden="true">✓</span> We start with <b>presentation</b>. More formats are planned.</p>
+              <p class="hero-note"><span aria-hidden="true">✓</span> Free to edit. Works offline in browser. Your files stay private</p>
             </div>
 
               <figure class="hero-workflow">
@@ -104,7 +104,7 @@ const questions = [
 
       <section id="features" class="features-section page-width" aria-labelledby="features-title">
         <div class="section-intro">
-          <div><p class="eyebrow">NO COMPROMISE. FULL OFFICE POWER</p><h2 id="features-title">Everything that makes<br />a presentation, <em>a presentation.</em></h2></div>
+          <div><p class="eyebrow">NO COMPROMISE. FULL SLIDE POWER</p><h2 id="features-title">Everything that makes<br />a slide, <em>a slide.</em></h2></div>
           <p>Edit presentations and other Office documents in your browser, with the visuals, interactions, and transitions that bring slides to life.</p>
         </div>
         <div class="feature-grid">
