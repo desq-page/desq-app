@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { LogoGoogle } from "@vicons/carbon";
-import { DeviceLaptop, FileUpload, Palette, History } from "@vicons/tabler";
+import { FileUpload, Palette, History } from "@vicons/tabler";
 
 export function createSystemFontSource(
   queryFonts = () => (window as any).queryLocalFonts?.bind(window),
@@ -87,7 +87,7 @@ export function themeFontFamilies(theme) {
   });
 }
 
-export function createFontNameMenu({ getFonts, getThemeFonts = () => [], applyFont, loadUploadedFont, loadGoogleFont, openPanel, systemFonts = systemFontSource }) {
+export function createFontNameMenu({ getFonts, getThemeFonts = () => [], applyFont, loadUploadedFont, loadGoogleFont, openPanel, previewGoogleFonts = (_families: string[]) => {} }) {
   function fontType(family): RecentFontType {
     const fonts = getFonts() || [];
     if (fonts.some(font => font.family === family && font.type === "local" && font.name)) return "uploaded";
@@ -105,9 +105,25 @@ export function createFontNameMenu({ getFonts, getThemeFonts = () => [], applyFo
   const fontOption = (source, family, label = family, type?: RecentFontType) => ({
     label, key: `${source}:${family}:${label}`, onClick: () => selectFont(family, type),
   });
+  function preloadRecentFonts() {
+    const google: string[] = [];
+    const fonts = getFonts() || [];
+    for (const font of recentFontFamilies.value) {
+      const type = font.type || fontType(font.family);
+      if (type === "google") google.push(font.family);
+      if (type === "uploaded") {
+        for (const asset of fonts.filter(asset => asset.family === font.family && asset.type === "local" && asset.name))
+          loadUploadedFont(asset);
+      }
+    }
+    if (google.length) previewGoogleFonts(google);
+  }
   function options() {
     const theme = getThemeFonts() || [];
     return [
+      { label: "Google Fonts…", key: "google-fonts", icon: LogoGoogle, onClick: () => openPanel("googlefonts") },
+      { label: "Uploaded Fonts…", key: "uploaded-fonts", icon: FileUpload, onClick: () => openPanel("localfonts") },
+      { type: "divider", key: "font-panels-divider" },
       { type: "group", label: "Theme Fonts", key: "theme-fonts", icon: Palette, children: theme.length
         ? theme.map(font => fontOption("theme", font.family, `${font.family} (${font.role})`))
         : [{ label: "No theme fonts", key: "empty-theme-fonts", disabled: true }],
@@ -116,15 +132,11 @@ export function createFontNameMenu({ getFonts, getThemeFonts = () => [], applyFo
         ? recentFontFamilies.value.map(font => {
           const type = font.type || fontType(font.family);
           const label = { system: "System", google: "Google", uploaded: "Uploaded" }[type];
-          return fontOption("recent", font.family, `${font.family} (${label})`, type);
+          return { ...fontOption("recent", font.family, `${font.family} (${label})`, type), fontFamily: font.family };
         })
         : [{ label: "No recent fonts", key: "empty-recent-fonts", disabled: true }],
       },
-      { type: "divider", key: "font-panels-divider" },
-      { label: "Google Fonts…", key: "google-fonts", icon: LogoGoogle, onClick: () => openPanel("googlefonts") },
-      { label: "Uploaded Fonts…", key: "uploaded-fonts", icon: FileUpload, onClick: () => openPanel("localfonts") },
-      { label: "System Fonts (restricted)…", key: "system-fonts", icon: DeviceLaptop, onClick: () => openPanel("systemfonts") },
     ];
   }
-  return { options };
+  return { options, preloadRecentFonts };
 }

@@ -11,8 +11,8 @@
           <label for="external-prompt">Generated prompt</label>
           <button class="copy-button" type="button" :disabled="!externalFullPrompt" aria-label="Copy prompt" title="Copy prompt" @click="copyPrompt"><DocumentCopy24Regular aria-hidden="true" /></button>
         </div>
-        <textarea id="external-prompt" readonly rows="6" :value="externalFullPrompt" placeholder="Your prompt will appear here, with a link to the authoring guide on desq.page." aria-describedby="external-prompt-note" @keydown.stop @keyup.stop @keypress.stop @paste.stop />
-        <p id="external-prompt-note" class="model-note">Copy the generated prompt above into your AI chat, then download HTML response and upload here.</p>
+        <textarea id="external-prompt" readonly rows="6" :value="externalFullPrompt" placeholder="Your prompt will appear here." aria-describedby="external-prompt-note" @keydown.stop @keyup.stop @keypress.stop @paste.stop />
+        <p id="external-prompt-note" class="model-note">Copy the generated prompt above into your AI chat / NotebookLM, then download HTML response and upload here.</p>
         <input ref="responseFileInput" type="file" accept=".html,.htm,text/html" hidden :disabled="busy || loadingResponse" @click="clearSelectedResponseFile" @change="loadExternalHtml" />
         <button class="response-file-button" type="button" :disabled="busy || loadingResponse" @click="responseFileInput?.click()">{{ loadingResponse ? 'Reading HTML…' : 'Upload HTML response file' }}</button>
         <p v-if="selectedResponseFile" class="selected-response-file" role="status">Loaded: {{ selectedResponseFile }}</p>
@@ -109,7 +109,7 @@ async function copyPrompt() {
   if (!externalFullPrompt.value) return;
   try {
     await navigator.clipboard.writeText(externalFullPrompt.value);
-    status.value = 'Prompt copied. Paste it into your AI chat, then download the HTML response and upload here.';
+    status.value = 'Prompt copied. Paste it into your AI chat / NotebookLM, then download the HTML response and upload here.';
   } catch { status.value = 'Could not copy automatically. Select and copy the prompt above.'; }
 }
 

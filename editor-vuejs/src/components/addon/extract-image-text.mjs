@@ -10,6 +10,7 @@ const inpaintModel = 'https://huggingface.co/andraniksargsyan/migan/resolve/main
 const aotModelBase = 'https://huggingface.co/Unhead/aotgan/resolve/main/';
 const aotWeights = 'aotgan-dynamic.onnx.data';
 const inpaintSessions = new Map();
+let slideLanguageScan;
 
 async function downloadModel(url) {
   const response = await fetch(url);
@@ -127,6 +128,10 @@ function makeGlyphMask(context, boxes) {
       }
     }
   }
+  return mask;
+}
+
+function expandGlyphMask(mask, width, height) {
   // Cover antialiased edges and light compression fringes around the detected ink.
   const expanded = new Uint8Array(mask);
   for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
@@ -237,7 +242,75 @@ function isSparseConnector(crop) {
     inkCount < inkWidth * inkHeight * .12;
 }
 
-async function eraseText(context, boxes, contextBoxes, engine) {
+const fontCandidates = ['Arial', 'Calibri', 'Aptos', 'Helvetica Neue', 'Verdana',
+  'Tahoma', 'Times New Roman', 'Georgia', 'Cambria', 'Courier New'];
+
+function glyphSignature(bounds, inkAt) {
+  let left = bounds.right, right = bounds.left - 1, top = bounds.bottom, bottom = bounds.top - 1;
+  for (let y = bounds.top; y < bounds.bottom; y++) for (let x = bounds.left; x < bounds.right; x++) {
+    if (inkAt(x, y) < .5) continue;
+    left = Math.min(left, x);
+    right = Math.max(right, x);
+    top = Math.min(top, y);
+    bottom = Math.max(bottom, y);
+  }
+  if (right < left || bottom < top) return;
+  const width = right - left + 1, height = bottom - top + 1;
+  const rows = 24, columns = 96;
+  const samples = new Float32Array(rows * columns);
+  for (let y = 0; y < rows * 2; y++) for (let x = 0; x < columns * 2; x++) {
+    samples[Math.floor(y / 2) * columns + Math.floor(x / 2)] +=
+      inkAt(left + Math.floor((x + .5) * width / (columns * 2)),
+        top + Math.floor((y + .5) * height / (rows * 2))) / 4;
+  }
+  return { samples, aspect: width / height };
+}
+
+function matchExtractedFont(text, box, context, mask, glyphs) {
+  if ((text.match(/[\p{Script=Latin}\p{N}]/gu)?.length ?? 0) < 5 || text.length > 140) return;
+  const { width, height } = context.canvas;
+  const source = glyphSignature(pixelBounds(box, width, height, 0), (x, y) => mask[y * width + x]);
+  if (!source) return;
+  const probe = 'mwMWil1Q0';
+  const fallbackWidths = ['monospace', 'serif'].map(fallback => {
+    glyphs.font = `48px ${fallback}`;
+    return glyphs.measureText(probe).width;
+  });
+  const scores = [];
+  for (const family of fontCandidates) {
+    const available = ['monospace', 'serif'].some((fallback, index) => {
+      glyphs.font = `48px "${family}", ${fallback}`;
+      return Math.abs(glyphs.measureText(probe).width - fallbackWidths[index]) > .1;
+    });
+    if (!available) continue;
+    for (const bold of [false, true]) {
+      const font = `${bold ? 'bold ' : ''}48px "${family}"`;
+      glyphs.font = font;
+      const metrics = glyphs.measureText(text);
+      glyphs.canvas.width = Math.ceil(metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight) + 4;
+      glyphs.canvas.height = Math.ceil(metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent) + 4;
+      glyphs.font = font;
+      glyphs.fillText(text, metrics.actualBoundingBoxLeft + 2, metrics.actualBoundingBoxAscent + 2);
+      const { width, height } = glyphs.canvas;
+      const { data } = glyphs.getImageData(0, 0, width, height);
+      const rendered = glyphSignature({ left: 0, top: 0, right: width, bottom: height },
+        (x, y) => data[(y * width + x) * 4 + 3] / 255);
+      if (!rendered) continue;
+      let difference = 0, union = 0;
+      for (let i = 0; i < source.samples.length; i++) {
+        difference += Math.abs(source.samples[i] - rendered.samples[i]);
+        union += Math.max(source.samples[i], rendered.samples[i]);
+      }
+      const score = difference / union + .25 * Math.abs(Math.log(source.aspect / rendered.aspect));
+      scores.push({ family, bold, score });
+    }
+  }
+  scores.sort((a, b) => a.score - b.score);
+  const [best, runnerUp] = scores;
+  if (best && runnerUp && best.score < .40 && runnerUp.score - best.score >= .025) return best;
+}
+
+async function eraseText(context, boxes, contextBoxes, engine, glyphMask) {
   const ort = await import('onnxruntime-web/wasm');
   ort.env.wasm.numThreads = 1;
   if (!inpaintSessions.has(engine)) {
@@ -251,9 +324,10 @@ async function eraseText(context, boxes, contextBoxes, engine) {
   const { width, height } = context.canvas;
   const pixels = context.getImageData(0, 0, width, height);
   const repaired = new ImageData(new Uint8ClampedArray(pixels.data), width, height);
-  const glyphMask = makeGlyphMask(context, boxes);
   const holes = boxes.map(box => pixelBounds(box, width, height, glyphSearchPadding(box) + glyphMargin));
-  const neighborMask = contextBoxes.length ? makeGlyphMask(context, contextBoxes) : null;
+  const neighborMask = contextBoxes.length
+    ? expandGlyphMask(makeGlyphMask(context, contextBoxes), width, height)
+    : null;
   // Keep the background between strokes available to the model. Neighboring
   // glyphs are hidden from the model but only target glyphs are composited.
   for (const hole of holes) {
@@ -362,6 +436,19 @@ function textLanguage(text) {
   return undefined;
 }
 
+// The preliminary read can lose tone marks or whole accented letters.
+function likelyVietnamese(text) {
+  if (textLanguage(text) === 'vi-VN') return true;
+  const folded = text.toLowerCase().normalize('NFD').replace(/\p{M}/gu, '').replace(/đ/g, 'd');
+  const words = folded.match(/\p{L}+/gu) ?? [];
+  const phrase = words.join(' ');
+  if (/\b(kinh te|giai phap|giao duc|viet nam|phat trien|bao ve|cong dong|thuc hien|ket luan|moi truong|du lich|giu gin|la phoi)\b/.test(phrase))
+    return true;
+  const common = new Set(['cua', 'nguoi', 'nhung', 'duoc', 'khong', 'trong', 'nhieu', 'chung',
+    'chinh', 'minh', 'giua', 'nhan', 'nhat', 'tieng', 'viet', 'thuc', 'trien', 'phuong']);
+  return new Set(words.filter(word => common.has(word))).size >= 2;
+}
+
 const imageSource = picture => picture?.blipFill?.blip?.$_target || picture?.blipFill?.blip?.dataUrl;
 const cropKey = picture => JSON.stringify(['l', 't', 'r', 'b'].map(side =>
   Number(picture?.blipFill?.srcRect?.['$_' + side]) || 0));
@@ -408,7 +495,7 @@ async function pictureCanvas(picture) {
 }
 
 async function withOcr(callback, progress = () => {}) {
-  progress('Loading OCR model…');
+  progress('Loading OCR…');
   const { PaddleOcrService, V6_TINY_MODEL } = await import(/* @vite-ignore */ ocrModule);
   if (!V6_TINY_MODEL) throw new Error('The V6 medium OCR model is unavailable.');
   const service = new PaddleOcrService({ model: V6_TINY_MODEL });
@@ -422,7 +509,7 @@ async function withOcr(callback, progress = () => {}) {
 }
 
 async function withVietnameseRecognizer(callback, progress) {
-  progress('Loading Vietnamese OCR model…');
+  progress('Loading OCR…');
   const moduleUrl = 'https://esm.sh/tesseract.js@6.0.1';
   const { createWorker, PSM } = await import(/* @vite-ignore */ moduleUrl);
   const worker = await createWorker('vie', 1, {
@@ -492,7 +579,7 @@ function groupAdjacentLines(boxes, aspectRatio) {
 
 export async function detectImageTextRegions(shape, progress) {
   const job = openPicture(shape.id);
-  progress('Loading OCR model…');
+  progress('Loading OCR…');
   const context = await pictureCanvas(job.picture);
   const { width, height } = context.canvas;
   const { boxes } = await withOcr(service => {
@@ -563,21 +650,90 @@ export async function extractImageText(shapes, progress, engine = 'migan') {
   return extractRegions(job, context, markers, progress, engine);
 }
 
+// A colored picture bullet can be included in the same OCR box as its
+// label. Look for a compact, differently colored block before a clear gap.
+function trimGraphicBullet(box, pixels) {
+  const { width, height, data } = pixels;
+  const { left, top, right, bottom } = pixelBounds({
+    x: box.x * width, y: box.y * height, width: box.width * width, height: box.height * height,
+  }, width, height, 0);
+  const lineHeight = bottom - top;
+  if (lineHeight < 10 || right - left < lineHeight * 3) return box;
+  const background = [0, 1, 2].map(channel => {
+    const corners = [top * width + left, top * width + right - 1,
+      (bottom - 1) * width + left, bottom * width + right - 1];
+    const values = corners.map(index => data[index * 4 + channel]).sort((a, b) => a - b);
+    return (values[1] + values[2]) / 2;
+  });
+  const columns = Array.from({ length: right - left }, () => [0, 0, 0, 0]);
+  for (let x = left; x < right; x++) for (let y = top; y < bottom; y++) {
+    const i = (y * width + x) * 4;
+    const r = data[i], g = data[i + 1], b = data[i + 2];
+    if (Math.hypot(r - background[0], g - background[1], b - background[2]) < 95) continue;
+    const column = columns[x - left];
+    column[0] += r; column[1] += g; column[2] += b; column[3]++;
+  }
+  const start = columns.findIndex(column => column[3]);
+  if (start < 0) return box;
+  let end = start;
+  while (end < columns.length && columns[end][3]) end++;
+  let next = end;
+  while (next < columns.length && !columns[next][3]) next++;
+  if (end - start < lineHeight * .45 || end - start > lineHeight * 1.4 ||
+      next - end < lineHeight * .23 || next - end > lineHeight * 1.1 ||
+      columns.length - next < lineHeight * 2) return box;
+  const color = (from, to) => {
+    const sum = [0, 0, 0, 0];
+    for (let x = from; x < to; x++) for (let c = 0; c < 4; c++) sum[c] += columns[x][c];
+    return sum.slice(0, 3).map(channel => channel / sum[3]);
+  };
+  const bullet = color(start, end), label = color(next, columns.length);
+  if (Math.max(...bullet) - Math.min(...bullet) < 40 ||
+      Math.hypot(...bullet.map((channel, index) => channel - label[index])) < 90) return box;
+  const x = (left + next) / width;
+  return { ...box, x, width: box.x + box.width - x };
+}
+
 export async function extractImageTextAt(pictureId, point, { progress, highlight, active }) {
   const job = openPicture(pictureId);
   const context = await pictureCanvas(job.picture);
   if (!active()) return false;
   const { width, height } = context.canvas;
-  const { boxes } = await withOcr(service => service.detect(context.canvas), progress);
+  const key = JSON.stringify([job.fileId, getSlidesSlideId(), pictureId, job.crop]);
+  const cached = slideLanguageScan?.key === key && slideLanguageScan.sources.has(job.source)
+    ? slideLanguageScan : undefined;
+  const { boxes, vietnamese } = await withOcr(async service => {
+    progress('Finding text regions…');
+    const detection = await service.detect(context.canvas);
+    if (cached || !active() || !detection.boxes.length)
+      return { boxes: detection.boxes, vietnamese: cached?.vietnamese ?? false };
+    progress('Checking slide language…');
+    const { text } = await service.recognize(context.canvas, { strategy: 'per-line' });
+    return { boxes: detection.boxes, vietnamese: likelyVietnamese(text.trim().normalize('NFC')) };
+  }, progress);
   if (!active()) return false;
   job.current();
+  if (!cached && boxes.length) slideLanguageScan = { key, sources: new Set([job.source]), vietnamese };
   const [l, t, r, b] = JSON.parse(job.crop).map(value => value / 100000);
-  const regions = boxes.flatMap(box => {
+  const pixels = context.getImageData(0, 0, width, height);
+  const detected = boxes.flatMap(box => {
     const x = Math.max(l, box.x / width), y = Math.max(t, box.y / height);
     const right = Math.min(1 - r, (box.x + box.width) / width);
     const bottom = Math.min(1 - b, (box.y + box.height) / height);
     return right > x && bottom > y ? [{ x, y, width: right - x, height: bottom - y }] : [];
   });
+  const regions = detected.filter(bullet => {
+    const bulletWidth = bullet.width * width;
+    const bulletHeight = bullet.height * height;
+    if (bulletWidth > bulletHeight * 1.4) return true;
+    return !detected.some(label => {
+      const gap = (label.x - bullet.x - bullet.width) * width;
+      if (gap < 0 || gap > bulletHeight * 1.1 || label.width * width < bulletHeight * 2 ||
+          Math.abs(bullet.y + bullet.height / 2 - label.y - label.height / 2) > bullet.height * .4) return false;
+      const pair = enclosingBox([bullet, label]);
+      return trimGraphicBullet(pair, pixels).x >= bullet.x + bullet.width;
+    });
+  }).map(box => trimGraphicBullet(box, pixels));
   const x = l + point.x * (1 - l - r), y = t + point.y * (1 - t - b);
   const hit = regions.filter(box => x >= box.x && x <= box.x + box.width &&
     y >= box.y && y <= box.y + box.height)
@@ -587,10 +743,14 @@ export async function extractImageTextAt(pictureId, point, { progress, highlight
   const box = enclosingBox(parts);
   highlight({ x: (box.x - l) / (1 - l - r), y: (box.y - t) / (1 - t - b),
     width: box.width / (1 - l - r), height: box.height / (1 - t - b) });
-  return extractRegions(job, context, [{ ocrRegion: { box, parts } }], progress, 'migan', active);
+  const extracted = await extractRegions(job, context, [{ ocrRegion: { box, parts } }],
+    progress, 'migan', active, vietnamese);
+  if (extracted && active() && slideLanguageScan?.key === key)
+    slideLanguageScan.sources.add(imageSource(getShapeDeep(pictureId)));
+  return extracted;
 }
 
-async function extractRegions(job, context, markers, progress, engine, active) {
+async function extractRegions(job, context, markers, progress, engine, active, slideVietnamese = false) {
   const canvas = context.canvas;
   const interactive = Boolean(active);
   const toPixels = box => ({ x: box.x * canvas.width, y: box.y * canvas.height,
@@ -670,7 +830,7 @@ async function extractRegions(job, context, markers, progress, engine, active) {
     }
   }, progress);
   const candidates = records.filter(record => record.rawLines);
-  const vietnamese = candidates.some(record => textLanguage(normalize(record.rawLines.join(' '))) === 'vi-VN');
+  const vietnamese = candidates.length > 0 && (slideVietnamese || candidates.some(record => likelyVietnamese(normalize(record.rawLines.join(' ')))));
   if (vietnamese) {
     await withVietnameseRecognizer(async recognize => {
       for (const record of candidates) {
@@ -703,10 +863,20 @@ async function extractRegions(job, context, markers, progress, engine, active) {
   const neighbors = allRegions.filter(shape => !markers.some(marker => marker.id === shape.id))
     .flatMap(shape => (shape.ocrRegion.parts || [shape.ocrRegion.box]).map(toPixels));
 
-  progress(`Cleaning ${readable.length} region${readable.length === 1 ? '' : 's'}…`);
+  progress(`Extracting…`);
   const before = context.getImageData(0, 0, canvas.width, canvas.height);
   const targetHoles = readable.flatMap(record => record.holes);
-  const cleaned = await eraseText(context, targetHoles, neighbors, engine);
+  const glyphMask = makeGlyphMask(context, targetHoles);
+  if (interactive) {
+    const glyphs = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+    for (const record of readable) {
+      const lines = record.rawLines.map(normalize);
+      const longest = lines.reduce((best, line, index) => line.length > lines[best].length ? index : best, 0);
+      record.fontMatch = matchExtractedFont(lines[longest], record.holes[longest], context, glyphMask, glyphs);
+    }
+  }
+  const cleaned = await eraseText(context, targetHoles, neighbors, engine,
+    expandGlyphMask(glyphMask, canvas.width, canvas.height));
   if (interactive && !active()) return false;
   const after = context.getImageData(0, 0, canvas.width, canvas.height);
   const media = await processImage(cleaned, { fileId: job.fileId });
@@ -735,6 +905,9 @@ async function extractRegions(job, context, markers, progress, engine, active) {
       ...(lang === 'he' ? { $_rtl: 1 } : {}),
       ...(centered ? { $_algn: 'ctr' } : {}),
     };
+    const family = record.fontMatch?.family ?? 'Arial';
+    const bold = record.fontMatch?.bold;
+    measure.font = `${bold ? 'bold ' : ''}100px "${family}"`;
     const measuredWidth = Math.max(...lines.map(line => measure.measureText(line).width));
     const lineHeight = geometry.h / lines.length;
     let size = Math.min(lineHeight * 0.8, measuredWidth > 0 ? geometry.w * 100 / measuredWidth : lineHeight);
@@ -767,7 +940,8 @@ async function extractRegions(job, context, markers, progress, engine, active) {
       txBody: {
         bodyPr: { $_wrap: 'none', $_anchor: 'ctr', $_lIns: 0, $_rIns: 0, $_tIns: 0, $_bIns: 0 },
         p: lines.map(line => ({ pPr: paragraphProperties, r: [{ t: line, rPr: {
-          $_sz: Math.max(100, Math.round(size * 75)), latin: { $_typeface: 'Arial' },
+          $_sz: Math.max(100, Math.round(size * 75)), latin: { $_typeface: family },
+          ...(bold ? { $_b: 1 } : {}),
           ...(lang ? { $_lang: lang } : {}),
           ...(ink ? { solidFill: { uniClr: { $_otag: 'srgbClr', $_val: ink } } } : {}),
         } }] })),

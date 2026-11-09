@@ -186,10 +186,12 @@ import { onMounted, watch } from "vue";
 import {
   calcShdwInfo,
   genShadowCss,
+  genGlowCss,
+  mapCssGlow,
   mapCssShdw,
 } from "shared-vuejs/api/processEffects";
 
-import { execEditorSurroundSpan } from "shared-vuejs/api/execCommand";
+import { applyTextEffect, readTextEffect } from "../Text/textboxEffectStyle";
 import { ref } from "vue";
 import { array2hex, color2array } from "shared-vuejs/api/colorUtils";
 import SlideColorPicker from "@/components/common/SlideColorPicker.vue";
@@ -197,10 +199,12 @@ import SlideColorPicker from "@/components/common/SlideColorPicker.vue";
 onMounted(() => updateShadow());
 
 watch(
-  [() => piniaSelect().selShpFormat?.id, () => piniaSelect().editingInfo?.shdw],
+  [() => piniaSelect().selShpFormat, () => piniaSelect().editingInfo,
+    () => piniaSelect().editingInfo?.shdw, () => piniaSelect().editingPendingFormats?.["--shdw"]],
   () => {
     updateShadow();
   },
+  { flush: "post" },
 );
 
 const props = defineProps({
@@ -221,7 +225,6 @@ function reset() {
 }
 
 function updateShadow() {
-  console.log("updated");
   let shadow, type;
   if (props.target == "shape") {
     const outerShdw = piniaSelect().selShpFormat?.effectLst?.outerShdw;
@@ -232,7 +235,7 @@ function updateShadow() {
 
     type = innerShdw ? "inner" : outerShdw ? "outer" : "none";
   } else {
-    const shdwStr = piniaSelect().editingInfo?.shdw;
+    const shdwStr = readTextEffect("shdw");
     shadow = mapCssShdw(shdwStr);
     type = shdwStr ? "outer" : "none";
   }
@@ -240,7 +243,7 @@ function updateShadow() {
     const shadowInfo = calcShdwInfo(
       shadow,
       getTheme(),
-      getMasterInfo().clrMap,
+      getMasterInfo()?.clrMap,
     );
 
     color.value = shadowInfo?.color || "#000000FF";
@@ -320,37 +323,17 @@ function saveProp(prop, val) {
 
 function saveShadow(val?) {
   if (props.target == "text") {
-    const existingShadow = piniaSelect().editingInfo.shdw;
-    const shadowInfo = mapCssShdw(existingShadow);
-    const shadowData = {
-      ...shadowInfo,
-      ...val,
-    };
-    const shadowCss = genShadowCss(
-      shadowData,
-      getTheme(),
-      undefined,
-    );
-    if (shdwType.value == "none") {
-      execEditorSurroundSpan(
-        {
-          "--shdw": "",
-          "text-shadow": "",
-        },
-        undefined,
-        false,
-      );
-    } else {
-      execEditorSurroundSpan(
-        {
-          "--shdw": shadowCss["--shdw"],
-          "text-shadow": shadowCss["text-shadow"],
-          "caret-color": shadowCss["caret-color"],
-        },
-        undefined,
-        false,
-      );
-    }
+    const currentEffect = readTextEffect("shdw");
+    applyTextEffect(read => {
+      const theme = getTheme();
+      const clrMap = getMasterInfo()?.clrMap;
+      const existingGlow = read("glow");
+      const glow = existingGlow ? genGlowCss(mapCssGlow(existingGlow), theme, clrMap)["text-shadow"] : "";
+      if (shdwType.value === "none") return { "--shdw": "", "text-shadow": glow };
+      const shadow = genShadowCss({ ...mapCssShdw(read("shdw") || currentEffect), ...val }, theme, clrMap);
+      return { "--shdw": shadow["--shdw"],
+        "text-shadow": [shadow["text-shadow"], glow].filter(Boolean).join(", ") };
+    });
     saveDexie();
   } else {
     const curShp = getShapeDeep(piniaSelect().selShpFormat?.id);

@@ -15,8 +15,8 @@
     <div class="field">
       <div class="subtitle1">Outline Color</div>
       <SlideColorPicker
-        :cur-color="piniaSelect().editingInfo?.strokeClr"
-        :on-change="(val) => setTextOutlineColor(val)"
+        :cur-color="lineColor"
+        :on-change="setTextOutlineColor"
         :hide-pattern="true"
       />
     </div>
@@ -47,70 +47,79 @@ import { ref, watch } from "vue";
 import { piniaSelect } from "@/lib/common/store";
 import { saveDexie } from "shared-vuejs/api/dbutils";
 import { array2hex, color2array } from "shared-vuejs/api/colorUtils";
-// import { hideTextToolbar } from "./ToolbarTextOptions";
+import { textboxEffectTargets } from "./textboxEffectStyle";
+import { updateText } from "shared-vuejs/api/updateText";
 import { execEditorSurroundSpan } from "shared-vuejs/api/execCommand.js";
 import LayoutHeader from "@/components/common/Layouts/LayoutHeader.vue";
 import { NSwitch } from "naive-ui";
 import SlideColorPicker from "@/components/common/SlideColorPicker.vue";
 
-const lineColor = ref("");
+const selection = piniaSelect();
+const defaultColor = "#000000";
+const lineColor = ref(defaultColor);
 const lineWeight = ref(0);
 
-watch(
-  () => piniaSelect().editingInfo?.strokeW,
-  () => {
-    getLineValues();
-  },
-);
-
 function getLineValues() {
-  console.log(+piniaSelect().editingInfo?.strokeW);
-  lineWeight.value = +piniaSelect().editingInfo?.strokeW || 0;
-  // strokeOpacity.value = (piniaSelect().selShpFormat?.t?.l?.opacity ?? 1) * 100;
-  lineColor.value = piniaSelect().editingInfo?.strokeClr;
+  if (selection.editingInfo) {
+    const pending = selection.editingPendingFormats;
+    lineWeight.value = Number(pending?.["--stroke-w"] ?? selection.editingInfo.strokeW) || 0;
+    lineColor.value = (pending?.["--stroke-clr"] ?? selection.editingInfo.strokeClr) || defaultColor;
+    return;
+  }
+  const styles = textboxEffectTargets().map(run => getComputedStyle(run));
+  const outlined = styles.find(style => Number(style.getPropertyValue("--stroke-w")) > 0);
+  lineWeight.value = Number(outlined?.getPropertyValue("--stroke-w")) || 0;
+  lineColor.value = outlined?.getPropertyValue("--stroke-clr").trim() || defaultColor;
 }
 
-getLineValues();
+watch([
+  () => selection.selShpFormat,
+  () => selection.editingInfo?.strokeW,
+  () => selection.editingInfo?.strokeClr,
+  () => selection.editingPendingFormats?.["--stroke-w"],
+  () => selection.editingPendingFormats?.["--stroke-clr"],
+], getLineValues, { immediate: true, flush: "post" });
 
-function saveLineWidth(val) {
-  lineWeight.value = +val;
-  if (val == 0) {
-    execEditorSurroundSpan(
-      {
-        "--stroke-w": "",
-        "--stroke-clr": "",
-      },
-      undefined,
-      false,
-    );
+function applyOutline(style: Record<string, string | number>, defaultStrokeColor?: string, defaultStrokeWidth?: number) {
+  if (selection.editingInfo) {
+    execEditorSurroundSpan(defaultStrokeWidth ? { "--stroke-w": defaultStrokeWidth, ...style } : style, undefined, false);
   } else {
-    execEditorSurroundSpan(
-      {
-        "--stroke-w": lineWeight.value,
-        "--stroke-clr": "#000000",
-      },
-      undefined,
-      false,
-    );
+    const shapeId = selection.selShpFormat?.id;
+    const targets = textboxEffectTargets();
+    if (!shapeId || !targets.length) return;
+    for (const target of targets) {
+      const current = getComputedStyle(target);
+      if (defaultStrokeWidth && !(Number(current.getPropertyValue("--stroke-w")) > 0))
+        target.style.setProperty("--stroke-w", String(defaultStrokeWidth));
+      if (defaultStrokeColor && !current.getPropertyValue("--stroke-clr").trim()) {
+        target.style.setProperty("--stroke-clr", defaultStrokeColor);
+      }
+      for (const [property, value] of Object.entries(style))
+        target.style.setProperty(property, String(value));
+    }
+    updateText(false, false, [shapeId]);
   }
   saveDexie();
 }
 
-function setTextOutlineColor(color) {
-  if (typeof color == "string") {
-    color = color2array(color);
+function saveLineWidth(value: number) {
+  if (!Number.isFinite(value) || value < 0) return;
+  const enabling = !lineWeight.value && value > 0;
+  lineWeight.value = value;
+  if (!value) {
+    applyOutline({ "--stroke-w": "0", "--stroke-clr": "" });
+  } else {
+    applyOutline({
+      "--stroke-w": value,
+      ...(enabling ? { "--stroke-clr": lineColor.value } : {}),
+    }, lineColor.value);
   }
+}
 
-  color = array2hex(color);
-
-  execEditorSurroundSpan(
-    {
-      "--stroke-clr": color,
-      "--stroke-w": lineWeight.value || 1,
-    },
-    undefined,
-    false,
-  );
+function setTextOutlineColor(color: string | number[]) {
+  const hex = array2hex(typeof color === "string" ? color2array(color) : color);
+  lineColor.value = hex;
+  applyOutline({ "--stroke-clr": hex }, undefined, lineWeight.value || 1);
 }
 </script>
 <style scoped>

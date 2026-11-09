@@ -13,14 +13,6 @@
         :disabled="disabled || !showTextItem"
       />
 
-      <ToolbarIncrement
-        label="⇦"
-        :step="-1"
-        :value="textInfo?.sz"
-        :update="updateFontSize"
-        v-if="piniaResize().windowWidth >= 800"
-        :disabled
-      />
       <div style="display: contents" @pointerdown.capture="saveFontSizeCaret">
         <ToolbarItemDropdown
           :label="textInfo?.sz"
@@ -35,13 +27,23 @@
         />
       </div>
       <ToolbarIncrement
-        label="⇨"
         :step="1"
         :value="textInfo?.sz"
         :update="updateFontSize"
         v-if="piniaResize().windowWidth >= 800"
         :disabled
+        :icon="FontIncrease24Regular"
+      
       />
+      <ToolbarIncrement
+        :step="-1"
+        :value="textInfo?.sz"
+        :update="updateFontSize"
+        v-if="piniaResize().windowWidth >= 800"
+        :disabled
+        :icon="FontDecrease24Regular"
+      />
+
       <ToolbarItem type="divider" />
       <TextToolbarPara :disabled />
       <ToolbarItem
@@ -135,7 +137,7 @@ import {
   getSelectionOffsets,
   restoreSelectionOffsets,
 } from "shared-vuejs/api/normalizeText";
-import { TextColor24Filled, TextEffects24Filled } from "@vicons/fluent";
+import { FontDecrease24Regular, FontIncrease24Regular, TextColor24Filled, TextEffects24Filled } from "@vicons/fluent";
 import {
   getStyle,
   gid,
@@ -322,11 +324,13 @@ const fontMenu = createFontNameMenu({
       saveDexie();
     }
   },
+  previewGoogleFonts: loadGoogleFont,
   openPanel: toggleTaskPane,
 });
 
 function prepareFontMenu() {
   saveFontSizeCaret();
+  fontMenu.preloadRecentFonts();
 }
 
 function fontNameOptions() {

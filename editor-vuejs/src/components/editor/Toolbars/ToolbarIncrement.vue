@@ -1,5 +1,5 @@
 <template>
-  <NButton
+  <!-- <NButton
     @pointerdown.stop="autoIncrement"
     @pointerup.stop="clickButton"
     :disabled="disabled"
@@ -12,10 +12,27 @@
     }"
   >
     <span>{{ label }}</span>
-  </NButton>
+  </NButton> -->
+  <ToolbarItem
+    @pointerdown.stop="autoIncrement"
+    @pointerup.stop="clickButton"
+    :disabled="disabled"
+    quaternary
+    size="24"
+    :style="{
+      width: '25px',
+      height: '26px',
+      alignSelf: 'center',
+    }"
+    :tooltip
+    :icon
+  >
+
+  </ToolbarItem>
 </template>
 <script setup>
 import { NButton } from "naive-ui";
+import ToolbarItem from "./ToolbarItem.vue";
 
 const props = defineProps({
   label: String,
@@ -23,6 +40,8 @@ const props = defineProps({
   value: Number,
   update: Function,
   disabled: Boolean,
+  tooltip: String,
+  icon: Object,
 });
 let timer;
 

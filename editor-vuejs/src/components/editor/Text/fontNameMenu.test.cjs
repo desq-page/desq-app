@@ -10,7 +10,7 @@ function fixture(queryLocalFonts, savedRecent = null) {
   }).outputText)(exports, require, { queryLocalFonts, localStorage: {
     getItem: () => persistedRecent, setItem: (_, value) => { persistedRecent = value; },
   } });
-  const applied = [], uploaded = [], google = [], panels = [];
+  const applied = [], uploaded = [], google = [], panels = [], previews = [];
   const menu = exports.createFontNameMenu({
     getFonts: () => [
       { family: 'Uploaded', name: 'uploaded.ttf', type: 'local' },
@@ -21,27 +21,27 @@ function fixture(queryLocalFonts, savedRecent = null) {
     getThemeFonts: () => [{ family: 'Theme Heading', role: 'Headings' }, { family: 'Theme Body', role: 'Body' }],
     applyFont: font => applied.push(font), loadUploadedFont: font => uploaded.push(font),
     loadGoogleFont: font => google.push(font),
+    previewGoogleFonts: families => previews.push(families),
     openPanel: pane => panels.push(pane),
   });
-  return { menu, applied, uploaded, google, panels, systemFonts: exports.systemFontSource, remember: exports.rememberFontFamily, recents: exports.recentFontFamilies, themeFontFamilies: exports.themeFontFamilies, createSystemFontSource: exports.createSystemFontSource, storedRecents: () => JSON.parse(persistedRecent) };
+  return { menu, applied, uploaded, google, panels, previews, systemFonts: exports.systemFontSource, remember: exports.rememberFontFamily, recents: exports.recentFontFamilies, themeFontFamilies: exports.themeFontFamilies, createSystemFontSource: exports.createSystemFontSource, storedRecents: () => JSON.parse(persistedRecent) };
 }
-test('dropdown contains theme/recent groups and three panel links without source font lists', () => {
+test('dropdown contains theme/recent groups and two panel links without source font lists', () => {
   let requests = 0;
   const f = fixture(async () => { requests++; return []; });
   assert.deepEqual(f.menu.options().filter(o => o.label).map(o => o.label),
-    ['Theme Fonts', 'Recent Fonts', 'Google Fonts…', 'Uploaded Fonts…', 'System Fonts (restricted)…']);
+    ['Google Fonts…', 'Uploaded Fonts…', 'Theme Fonts', 'Recent Fonts']);
   const options = f.menu.options();
-  assert.deepEqual(options[0].children.map(o => o.label), ['Theme Heading (Headings)', 'Theme Body (Body)']);
-  assert.equal(options[1].children[0].label, 'No recent fonts');
-  assert.ok(options.slice(3).every(o => !o.children));
+  assert.deepEqual(options.find(o => o.key === 'theme-fonts').children.map(o => o.label), ['Theme Heading (Headings)', 'Theme Body (Body)']);
+  assert.equal(options.find(o => o.key === 'recent-fonts').children[0].label, 'No recent fonts');
+  assert.ok(options.slice(0, 2).every(o => !o.children));
   assert.equal(requests, 0);
 });
-test('System Fonts link opens its panel without requesting access; the button shares the result', async () => {
+test('System Fonts stays available through its panel without appearing in the dropdown', async () => {
   let requests = 0;
   const f = fixture(async () => { requests++; return [{ family: 'Zeta' }, { family: 'Arial' }, { family: 'Arial' }]; });
-  f.menu.options().find(o => o.key === 'system-fonts').onClick();
-  assert.equal(requests, 0, 'opening the panel does not request permission');
-  assert.deepEqual(f.panels, ['systemfonts']);
+  assert.ok(!f.menu.options().some(o => o.key === 'system-fonts'));
+  assert.equal(requests, 0);
   await f.systemFonts.request();
   assert.deepEqual(f.systemFonts.families.value, ['Arial', 'Zeta']);
   await f.systemFonts.request();
@@ -67,10 +67,10 @@ test('recent choices deduplicate, use the correct loader, and retain panel links
   f.remember('Google');
   f.remember('Uploaded');
   f.remember('Google');
-  assert.deepEqual(f.menu.options()[1].children.map(o => o.label), ['Google (Google)', 'Uploaded (Uploaded)']);
-  f.menu.options()[1].children.find(o => o.label === 'Uploaded (Uploaded)').onClick();
+  assert.deepEqual(f.menu.options().find(o => o.key === 'recent-fonts').children.map(o => o.label), ['Google (Google)', 'Uploaded (Uploaded)']);
+  f.menu.options().find(o => o.key === 'recent-fonts').children.find(o => o.label === 'Uploaded (Uploaded)').onClick();
   assert.equal(f.uploaded[0].family, 'Uploaded');
-  f.menu.options()[1].children.find(o => o.label === 'Google (Google)').onClick();
+  f.menu.options().find(o => o.key === 'recent-fonts').children.find(o => o.label === 'Google (Google)').onClick();
   assert.deepEqual(f.applied, ['Uploaded', 'Google']);
   assert.deepEqual(f.google, ['Google']);
   f.menu.options().find(o => o.key === 'google-fonts').onClick();
@@ -86,9 +86,9 @@ test('theme choices apply the current heading/body family and enter recent histo
   assert.deepEqual(f.themeFontFamilies({ fontScheme: {
     majorFont: { latin: { $_typeface: 'Heading' } }, minorFont: { latin: { $_typeface: 'Body' } },
   } }), [{ family: 'Heading', role: 'Headings' }, { family: 'Body', role: 'Body' }]);
-  f.menu.options()[0].children[0].onClick();
+  f.menu.options().find(o => o.key === 'theme-fonts').children[0].onClick();
   assert.deepEqual(f.applied, ['Theme Heading']);
-  assert.equal(f.menu.options()[1].children[0].label, 'Theme Heading (System)');
+  assert.equal(f.menu.options().find(o => o.key === 'recent-fonts').children[0].label, 'Theme Heading (System)');
 });
 
 test('toolbar font callbacks tolerate a null file while the editor loads', () => {
@@ -209,20 +209,33 @@ for (const state of ['granted', 'prompt', 'denied', 'unsupported']) {
 test('recent labels retain their explicit source even when families overlap', () => {
   const f = fixture();
   f.remember('Google', 'system');
-  assert.equal(f.menu.options()[1].children[0].label, 'Google (System)');
-  f.menu.options()[1].children[0].onClick();
+  assert.equal(f.menu.options().find(o => o.key === 'recent-fonts').children[0].label, 'Google (System)');
+  f.menu.options().find(o => o.key === 'recent-fonts').children[0].onClick();
   assert.deepEqual(f.google, [], 'system choice must not trigger the Google loader');
   f.remember('Google', 'google');
   assert.equal(f.recents.value.length, 1);
-  assert.equal(f.menu.options()[1].children[0].label, 'Google (Google)');
-  f.menu.options()[1].children[0].onClick();
+  assert.equal(f.menu.options().find(o => o.key === 'recent-fonts').children[0].label, 'Google (Google)');
+  f.menu.options().find(o => o.key === 'recent-fonts').children[0].onClick();
   assert.deepEqual(f.google, ['Google']);
 });
 test('legacy recent font names migrate and source metadata survives reload', () => {
   const f = fixture(undefined, JSON.stringify(['Google', 'Uploaded', 'Google']));
-  assert.deepEqual(f.menu.options()[1].children.map(o => o.label), ['Google (Google)', 'Uploaded (Uploaded)']);
+  assert.deepEqual(f.menu.options().find(o => o.key === 'recent-fonts').children.map(o => o.label), ['Google (Google)', 'Uploaded (Uploaded)']);
   f.remember('Arial', 'system');
   assert.deepEqual(f.storedRecents()[0], { family: 'Arial', type: 'system' });
   const reopened = fixture(undefined, JSON.stringify(f.storedRecents()));
-  assert.equal(reopened.menu.options()[1].children[0].label, 'Arial (System)');
+  assert.equal(reopened.menu.options().find(o => o.key === 'recent-fonts').children[0].label, 'Arial (System)');
+});
+
+test('recent previews load font faces without applying a font', () => {
+  const f = fixture();
+  f.remember('Google', 'google');
+  f.remember('Uploaded', 'uploaded');
+  f.remember('Arial', 'system');
+  f.menu.preloadRecentFonts();
+  const recent = f.menu.options().find(o => o.key === 'recent-fonts').children;
+  assert.deepEqual(recent.map(option => option.fontFamily), ['Arial', 'Uploaded', 'Google']);
+  assert.deepEqual(f.previews, [['Google']]);
+  assert.deepEqual(f.uploaded.map(font => font.name), ['uploaded.ttf', 'uploaded-bold.ttf']);
+  assert.deepEqual(f.applied, []);
 });

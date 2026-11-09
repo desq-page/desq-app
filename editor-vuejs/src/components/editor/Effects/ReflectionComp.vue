@@ -241,7 +241,7 @@ import {
   mapCssRefl,
 } from "shared-vuejs/api/processEffects";
 
-import { execEditorSurroundSpan } from "shared-vuejs/api/execCommand";
+import { applyTextEffect, readTextEffect } from "../Text/textboxEffectStyle";
 
 const props = defineProps({
   target: String,
@@ -256,10 +256,12 @@ const blur = ref(0);
 onMounted(() => updateReflection());
 
 watch(
-  [() => piniaSelect().selShpFormat?.id, () => piniaSelect().editingInfo?.refl],
+  [() => piniaSelect().selShpFormat, () => piniaSelect().editingInfo,
+    () => piniaSelect().editingInfo?.refl, () => piniaSelect().editingPendingFormats?.["--refl"]],
   () => {
     updateReflection();
   },
+  { flush: "post" },
 );
 
 function reset() {
@@ -275,7 +277,7 @@ function updateReflection() {
     reflection = piniaSelect().selShpFormat?.effectLst?.reflection;
     type = reflection ? "refl" : "none";
   } else {
-    const reflStr = piniaSelect().editingInfo?.refl;
+    const reflStr = readTextEffect("refl");
     reflection = mapCssRefl(reflStr);
     type = reflStr ? "refl" : "none";
   }
@@ -354,37 +356,11 @@ function saveProp(prop, val) {
 
 function saveReflection(val?) {
   if (props.target == "text") {
-    const existingRefl = piniaSelect().editingInfo?.refl;
-    const reflInfo = mapCssRefl(existingRefl);
-    const reflData = {
-      ...reflInfo,
-      dist: dist.value,
-      size: size.value,
-      transparency: transparency.value,
-      blur: blur.value,
-      ...val,
-    };
-    const reflCss = buildReflection(reflData, piniaSelect().editingInfo?.sz);
-    if (reflType.value == "none") {
-      execEditorSurroundSpan(
-        {
-          "--refl": "",
-          "-webkit-box-reflect": "",
-        },
-        undefined,
-        false,
-      );
-    } else {
-      execEditorSurroundSpan(
-        {
-          "--refl": reflCss["--refl"],
-          "-webkit-box-reflect": reflCss["-webkit-box-reflect"],
-          display: "inline-block",
-        },
-        undefined,
-        false,
-      );
-    }
+    const currentEffect = readTextEffect("refl");
+    applyTextEffect(read => {
+      if (reflType.value === "none") return { "--refl": "", "-webkit-box-reflect": "", display: "" };
+      return { ...buildReflection({ ...mapCssRefl(read("refl") || currentEffect), ...val }), display: "inline-block" };
+    });
     saveDexie();
   } else {
     const curShp = getShapeDeep(piniaSelect().selShpFormat?.id);

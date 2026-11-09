@@ -232,7 +232,7 @@ function mapOption(opt: any) {
     iconOrig: opt.icon,
     icon:
       opt.icon && renderIcon(opt.icon, opt.iconColor || opt.color, opt.size),
-    label: opt.label && renderLabel(opt.label, opt.color),
+    label: opt.label && renderLabel(opt.label, opt.color, opt.fontFamily),
     children: opt.children && [...opt.children.map(mapOption)],
     toolbarProps: {
       style: {
@@ -314,7 +314,7 @@ function renderIcon(icon: any, color?: any, size?: any) {
   };
 }
 
-function renderLabel(label: any, color: any) {
+function renderLabel(label: any, color: any, fontFamily?: string) {
   return () => {
     return h(
       "span",
@@ -322,6 +322,7 @@ function renderLabel(label: any, color: any) {
         style: {
           color,
           fontSize: "14px",
+          fontFamily: fontFamily ? JSON.stringify(fontFamily) : undefined,
         },
       },
       [typeof label === "function" ? label() : label],

@@ -168,10 +168,12 @@ import { onMounted, watch, ref } from "vue";
 import {
   calcShdwInfo,
   genGlowCss,
+  genShadowCss,
+  mapCssShdw,
   mapCssGlow,
 } from "shared-vuejs/api/processEffects";
 
-import { execEditorSurroundSpan } from "shared-vuejs/api/execCommand";
+import { applyTextEffect, readTextEffect } from "../Text/textboxEffectStyle";
 import { array2hex, color2array } from "shared-vuejs/api/colorUtils";
 import SlideColorPicker from "@/components/common/SlideColorPicker.vue";
 
@@ -187,10 +189,12 @@ const color = ref("");
 onMounted(() => updateGlow());
 
 watch(
-  [() => piniaSelect().selShpFormat?.id, () => piniaSelect().editingInfo?.glow],
+  [() => piniaSelect().selShpFormat, () => piniaSelect().editingInfo,
+    () => piniaSelect().editingInfo?.glow, () => piniaSelect().editingPendingFormats?.["--glow"]],
   () => {
     updateGlow();
   },
+  { flush: "post" },
 );
 
 function reset() {
@@ -205,7 +209,7 @@ function updateGlow() {
     glow = piniaSelect().selShpFormat?.effectLst?.glow;
     type = glow ? "glow" : "none";
   } else {
-    const glowStr = piniaSelect().editingInfo?.glow;
+    const glowStr = readTextEffect("glow");
     glow = mapCssGlow(glowStr);
     type = glowStr ? "glow" : "none";
   }
@@ -214,7 +218,7 @@ function updateGlow() {
     const glowInfo = calcShdwInfo(
       glow,
       getTheme(),
-      getMasterInfo().clrMap,
+      getMasterInfo()?.clrMap,
     );
 
     color.value = glowInfo?.color || "#E67E22FF";
@@ -308,32 +312,17 @@ function saveProp(prop, val) {
 
 function saveGlow(val?) {
   if (props.target == "text") {
-    const existingGlow = piniaSelect().editingInfo?.glow;
-    const glowInfo = mapCssGlow(existingGlow);
-    const glowData = {
-      ...glowInfo,
-      ...val,
-    };
-    const glowCss = genGlowCss(glowData, getTheme(), undefined);
-    if (glowType.value == "none") {
-      execEditorSurroundSpan(
-        {
-          "--glow": "",
-          "text-shadow": "",
-        },
-        undefined,
-        false,
-      );
-    } else {
-      execEditorSurroundSpan(
-        {
-          "--glow": glowCss["--glow"],
-          "text-shadow": glowCss["fitext-shadowlter"],
-        },
-        undefined,
-        false,
-      );
-    }
+    const currentEffect = readTextEffect("glow");
+    applyTextEffect(read => {
+      const theme = getTheme();
+      const clrMap = getMasterInfo()?.clrMap;
+      const existingShadow = read("shdw");
+      const shadow = existingShadow ? genShadowCss(mapCssShdw(existingShadow), theme, clrMap)["text-shadow"] : "";
+      if (glowType.value === "none") return { "--glow": "", "text-shadow": shadow };
+      const glow = genGlowCss({ ...mapCssGlow(read("glow") || currentEffect), ...val }, theme, clrMap);
+      return { "--glow": glow["--glow"],
+        "text-shadow": [shadow, glow["text-shadow"]].filter(Boolean).join(", ") };
+    });
     saveDexie();
   } else {
     const curShp = getShapeDeep(piniaSelect().selShpFormat?.id);

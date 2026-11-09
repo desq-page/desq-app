@@ -18,16 +18,15 @@
           placeholder: 'Search font',
         }"
       />
-      <IframeInputbox
-        :on-input="updatePreview"
-        :style="{
-          width: '130px',
-          border: '1px solid #ccc',
-        }"
-        :input-attr="{
-          style: 'text-align: left; padding: 0 10px',
-          placeholder: 'Sample Text',
-        }"
+      <NSelect
+        :value="language"
+        :options="languageOptions"
+        placeholder="All languages"
+        aria-label="Filter by language or script"
+        filterable
+        clearable
+        style="width: 170px"
+        @update:value="updateLanguage"
       />
     </div>
     <div class="resultContainer" ref="fontContainer">
@@ -36,7 +35,6 @@
           <GoogleFontItem
             v-for="item in list"
             :item="{ family: item.data }"
-            :previewText="previewText"
             :key="item.data"
             :height="28"
             :on-click="updateFontFamily"
@@ -56,26 +54,38 @@ import { useVirtualList } from "@vueuse/core";
 import { piniaSelect } from "@/lib/common/store";
 import { execEditorSurroundSpan } from "shared-vuejs/api/execCommand";
 import { computed, onMounted, ref } from "vue";
+import { NSelect } from "naive-ui";
+// Google Fonts catalog coverage from https://fonts.google.com/metadata/fonts.
+
+import fontSubsets from "./googleFontSubsets.json";
 import { saveDexie } from "shared-vuejs/api/dbutils";
 import DialogBase from "@/components/common/Layouts/DialogBase.vue";
 import GoogleFontItem from "./GoogleFontItem.vue";
 import IframeInputbox from "@/components/common/IframeInputbox.vue";
-import { fontTabbarItems, hideFontPanel } from "./ToolbarTextOptions";
+import { fontTabbarItems } from "./ToolbarTextOptions";
 
 
 const search = ref("");
 const fontContainer = ref(null as any);
-const goggleFonts = ref([] as any);
-const previewText = ref("");
+const googleFontFamilies = ref<string[]>([]);
+const language = ref<string | null>(null);
+const subsets: Record<string, string[]> = fontSubsets;
+const languageOptions = Object.keys(subsets).map(value => ({
+  value,
+  label: value === 'latin' ? 'Latin (English)' :
+    value.split('-').map(word => word[0].toUpperCase() + word.slice(1)).join(' '),
+}));
 
 onMounted(async () => {
   const { googleFonts } = await import("shared-vuejs/api/googleFonts");
-  goggleFonts.value = googleFonts.map((f) => f[0]);
+  googleFontFamilies.value = googleFonts.map((f) => f[0]);
 });
 
 const filteredItems = computed(() => {
-  return goggleFonts.value.filter((i) =>
-    i.toLowerCase().startsWith(search.value.toLowerCase()),
+  const query = search.value.toLowerCase();
+  const supported = language.value ? new Set(subsets[language.value]) : undefined;
+  return googleFontFamilies.value.filter(family =>
+    family.toLowerCase().startsWith(query) && (!supported || supported.has(family)),
   );
 });
 
@@ -85,15 +95,19 @@ const { list, containerProps, wrapperProps } = useVirtualList(filteredItems, {
 });
 
 function doSearch(val) {
-  console.log(val);
   search.value = val;
+  resetScroll();
+}
+
+function updateLanguage(value: string | null) {
+  language.value = value;
+  resetScroll();
+}
+
+function resetScroll() {
   if (fontContainer.value?.firstElementChild) {
     fontContainer.value.firstElementChild.scrollTop = 0;
   }
-}
-
-function updatePreview(val) {
-  previewText.value = val;
 }
 
 function updateFontFamily(f) {

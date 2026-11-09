@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {build} from 'esbuild';
-import {mkdtempSync,writeFileSync,rmSync,existsSync} from 'node:fs';
+import {mkdtempSync,writeFileSync,rmSync,existsSync,readFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
@@ -10,6 +10,9 @@ const chrome=process.env.CHROME_BIN||['/Applications/Google Chrome.app/Contents/
 test('WordArt renders as SVG text in editor and player, and keeps normal editable text', {skip:!chrome,timeout:60000},async()=>{
  const directory=mkdtempSync(join(tmpdir(),'desq-wordart-'));
  try {
+  const storeSource=readFileSync('../desq-core/shared-vuejs/src/edlib/vanjs/vanStore.ts','utf8');
+  const revisionAccessors=storeSource.slice(storeSource.indexOf('  get modelRevision()'),storeSource.indexOf('\n',storeSource.indexOf('  set modelRevision(')))
+    .replace('value: number','value');
   await build({stdin:{resolveDir:resolve('.'),contents:`
 import van from 'vanjs-core';
 import TextView from '../desq-core/shared-vuejs/src/vanjs/TextView.tsx';
@@ -68,14 +71,15 @@ import {wordArtPresets,wordArtSvg} from '../desq-core/shared-vuejs/src/lib/text/
  focus.val=true;await new Promise(r=>setTimeout(r,30));
  check(!editor.querySelector('svg.wordart-svg'),'entering text editing hides WordArt');
  check(editor.querySelector('.textbox').style.visibility!=='hidden','entering editing reveals straight text');
- const liveShape=structuredClone(shape),revision=van.state(0);
+ const liveShape=structuredClone(shape),shapeModelRevision=van.state(0);
+ const liveStore={${revisionAccessors}};
  const live=TextView({shp:structuredClone(shape),editable:true,textFocus:van.state(false),updateLinkedText:true,
-   getTextShape:()=>liveShape,getTextRevision:()=>revision.val,fileInfo:{},theme:{},masterInfo:{}});
+   getTextShape:()=>liveShape,getTextRevision:()=>liveStore.modelRevision,fileInfo:{},theme:{},masterInfo:{}});
  document.body.append(live);
  const originalTextbox=live.querySelector('.textbox');
  const run=liveShape.txBody.p[0].r[0];
  run.rPr={...run.rPr,latin:{$_typeface:'Georgia'},$_b:0,$_i:1,solidFill:{uniClr:{$_otag:'srgbClr',$_val:'EE2244'}}};
- revision.val++;await new Promise(r=>setTimeout(r,30));
+ liveStore.modelRevision++;await new Promise(r=>setTimeout(r,30));
  let span=live.querySelector('.wordart-svg tspan, .wordart-svg text[fill]');
  check(span?.getAttribute('fill')==='#ee2244'||span?.getAttribute('fill')==='#EE2244','color changes refresh WordArt immediately');
  check(span?.getAttribute('font-family')?.includes('Georgia'),'font family changes refresh WordArt immediately');
@@ -83,10 +87,17 @@ import {wordArtPresets,wordArtSvg} from '../desq-core/shared-vuejs/src/lib/text/
  check(span?.getAttribute('font-weight')==='normal','bold changes refresh WordArt immediately');
  check(live.querySelector('.textbox')===originalTextbox,'format refresh preserves editable DOM');
  run.rPr={...run.rPr,ln:{$_w:19050,solidFill:{uniClr:{$_otag:'srgbClr',$_val:'0000FF'}}}};
- run.t='Updated WordArt';revision.val++;await new Promise(r=>setTimeout(r,30));
+ run.t='Updated WordArt';liveStore.modelRevision++;await new Promise(r=>setTimeout(r,30));
  span=live.querySelector('.wordart-svg text');
  check(live.querySelector('.wordart-svg').textContent.includes('Updated WordArt'),'text updates refresh WordArt immediately');
  check(!!live.querySelector('.wordart-svg [stroke-width="2"]'),'outline changes refresh WordArt immediately');
+ run.rPr.effectLst={
+   glow:{$_rad:38100,uniClr:{$_otag:'srgbClr',$_val:'00FF00'}},
+   outerShdw:{$_dist:19050,$_blurRad:19050,uniClr:{$_otag:'srgbClr',$_val:'111111'}},
+ };
+ liveStore.modelRevision++;await new Promise(r=>setTimeout(r,30));
+ check(live.querySelectorAll('.wordart-svg feDropShadow').length===2,'glow and shadow refresh WordArt immediately');
+ check(live.querySelector('.textbox')===originalTextbox,'effect refresh preserves editable DOM');
  live.remove();
  const el=document.createElement('pre');el.id='result';el.textContent=JSON.stringify({checks:checks.length});document.body.append(el);
 }catch(error){const el=document.createElement('pre');el.id='result';el.textContent=JSON.stringify({error:error.stack});document.body.append(el);}})();
