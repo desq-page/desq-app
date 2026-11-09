@@ -2,6 +2,14 @@
   <ToolbarItem caption="Local JavaScript…" :icon="Code24Regular" :size="30" :color="g.themeOverrides?.common?.primaryColor" :onClick="() => scriptDialogOpen = true" />
   <ScriptCodeDialog v-if="scriptDialogOpen" v-model:show="scriptDialogOpen" />
   <ToolbarItem
+    caption="Extract Text (AI)"
+    :icon="ImageEdit20Regular"
+    :size="30"
+    :color="g.themeOverrides?.common?.primaryColor"
+    :disabled="!editablePicture() || !!piniaInfo().loadingBar"
+    :onClick="() => extractPictureText(piniaInfo())"
+  />
+  <ToolbarItem
     caption="Edit In Photopea..."
     :icon="ImageEdit20Regular"
     :size="30"
@@ -59,6 +67,7 @@ import { ref } from 'vue';
 import ScriptCodeDialog from '../editor/Dialogs/ScriptCodeDialog.vue';
 const scriptDialogOpen=ref(false);
 import { getShapeImage } from "shared-vuejs/api/downloadShape";
+import { editablePicture, extractPictureText } from "shared-vuejs/api/edit-picture-text";
 import { piniaInfo, piniaSelect } from "@/lib/common/store";
 import {
   ImageEdit20Regular,

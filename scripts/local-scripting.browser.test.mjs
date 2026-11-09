@@ -22,9 +22,23 @@ test('local user modules run isolated, control imported objects and cancel runaw
    (async()=>{try{
     const calls=[];
     const host={shape:async(method,id,args)=>calls.push([method,id,...args]),wait:scriptWait,validateSlide:id=>check(id==='native-win','resolved slide'),goto:id=>calls.push(['goto',id]),animate:async id=>calls.push(['animate',id])};
-    const project={version:1,state:{score:0},modules:[{id:'game',source:'export async function checkAnswer(ctx, correct){if(typeof fetch!=="undefined"||typeof window!=="undefined")throw Error("VM escaped");ctx.state.set("score",ctx.state.get("score")+1);await ctx.shapes.show("feedback");await ctx.wait(10);await ctx.animations.play("feedback");await ctx.slides.goto(correct?"win":"lose");}',refs:{feedback:['native-feedback']},slides:{win:['native-win']}}],bindings:[{id:'answer',module:'game',function:'checkAnswer',args:[true]}]};
+    const answerSource = [
+      'export async function checkAnswer(ctx, correct) {',
+      '  if (typeof fetch !== "undefined" || typeof window !== "undefined") throw Error("VM escaped");',
+      '  const score = ctx.state.get("score") + 1;',
+      '  ctx.state.set("score", score);',
+      '  await ctx.shapes.show("feedback");',
+      '  await ctx.wait(10);',
+      '  await ctx.animations.play("feedback");',
+      '  await ctx.slides.goto(correct ? "win" : "lose");',
+      '  await ctx.shapes.text("score", "Score: " + score);',
+      '}',
+    ].join(' ');
+    const project={version:1,state:{score:0},modules:[{id:'game',source:answerSource,refs:{feedback:['native-feedback'],score:['native-score']},slides:{win:['native-win']}}],bindings:[{id:'answer',module:'game',function:'checkAnswer',args:[true]}]};
     let runtime=createScriptRuntime(project,host);await runtime.run('@run:answer');
-    check(runtime.getState().score===1,'state retained');check(JSON.stringify(calls)===JSON.stringify([['show','native-feedback'],['animate','native-feedback'],['goto','native-win']]),'ordered API actions and aliases');
+    check(runtime.getState().score===1,'state retained');
+    const expected = [['show','native-feedback'], ['animate','native-feedback'], ['text','native-score','Score: 1'], ['goto','native-win']];
+    check(JSON.stringify(calls) === JSON.stringify(expected), 'score updates before the queued slide jump');
     await runtime.run('@set:LET(score, 7)');check(runtime.getState().score===7,'literal set links');
     let rejected=false;try{await runtime.run('@set:LET(score, fetch("url"))')}catch{rejected=true}check(rejected,'set expressions cannot evaluate');runtime.dispose();
     project.modules[0].source='export function checkAnswer(ctx){while(true){}}';

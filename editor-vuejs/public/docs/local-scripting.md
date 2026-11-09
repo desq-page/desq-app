@@ -16,7 +16,7 @@ Use exported function declarations (`export function` or `export async function`
 
 ## Host API v1
 
-Await host actions in sequence. Navigation must be the last host action in a function.
+Await host actions in sequence. Each handler can request one slide jump. DESQ switches slides after the handler and its host actions finish successfully. Shape updates after `await ctx.slides.goto(id)` still run before the switch.
 
 | API | Behavior |
 | --- | --- |
@@ -28,7 +28,7 @@ Await host actions in sequence. Navigation must be the last host action in a fun
 | `await ctx.shapes.style(id, styles)` | Set `opacity` (0–1), `color`, `fill`, `stroke`, or `backgroundColor`; colors accept simple names, hex and rgb/rgba |
 | `await ctx.animations.play(id)` | Replay existing native effects for a shape on the current slide (or an effect ID); this does not compile arbitrary JavaScript into animations |
 | `await ctx.wait(milliseconds)` | Wait 0–10,000 ms |
-| `await ctx.slides.goto(id)` | Jump to a slide, including a hidden destination |
+| `await ctx.slides.goto(id)` | Queue a jump to a slide, including a hidden destination |
 
 `gotoSlide(id)` is also available directly in DESQ scripts. The importer replaces the recognized legacy HTML navigation helper with calls to this API. Browser integrations using the public player bundle can call `player.gotoSlide(id)` with a native slide ID or `player.gotoSlide(index)` with a one-based slide index.
 

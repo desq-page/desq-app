@@ -18,7 +18,7 @@
 </code></pre>
 <p>Use exported function declarations (<code>export function</code> or <code>export async function</code>). Modules can import other stored modules by ID (<code>import {helper} from &#39;helpers&#39;</code>). There are no remote imports. Each click gets a fresh JavaScript VM; use <code>ctx.state</code>, rather than module globals, for state that persists between clicks. State starts from the document&#39;s initial JSON state on each playback and is not written back to the editor.</p>
 <h2>Host API v1</h2>
-<p>Await host actions in sequence. Navigation must be the last host action in a function.</p>
+<p>Await host actions in sequence. Each handler can request one slide jump. DESQ switches slides after the handler and its host actions finish successfully. Shape updates after <code>await ctx.slides.goto(id)</code> still run before the switch.</p>
 <table>
 <thead>
 <tr>
@@ -60,7 +60,7 @@
 </tr>
 <tr>
 <td><code>await ctx.slides.goto(id)</code></td>
-<td>Jump to a slide, including a hidden destination</td>
+<td>Queue a jump to a slide, including a hidden destination</td>
 </tr>
 </tbody></table>
 <p><code>gotoSlide(id)</code> is also available directly in DESQ scripts. The importer replaces the recognized legacy HTML navigation helper with calls to this API. Browser integrations using the public player bundle can call <code>player.gotoSlide(id)</code> with a native slide ID or <code>player.gotoSlide(index)</code> with a one-based slide index.</p>

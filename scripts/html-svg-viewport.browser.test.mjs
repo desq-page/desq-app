@@ -13,7 +13,7 @@ const chrome = process.env.CHROME_BIN || [
   '/usr/bin/chromium', '/usr/bin/google-chrome',
 ].find(existsSync);
 
-test('HTML import fits inline SVG circles inside a short viewport', { skip: !chrome, timeout: 60000 }, async () => {
+test('HTML import centers a translated card and fits inline SVG circles inside it', { skip: !chrome, timeout: 60000 }, async () => {
   const directory = mkdtempSync(join(tmpdir(), 'desq-svg-viewport-'));
   try {
     await build({
@@ -31,12 +31,14 @@ test('HTML import fits inline SVG circles inside a short viewport', { skip: !chr
               '<div class="step-art" style="left:' + left + 'px">' +
               '<svg class="art-svg" width="240" height="240" viewBox="20 30 240 240"' + aspect + '>' +
               '<circle id="' + id + '" cx="140" cy="150" r="100"/></svg></div>';
-            const source = '<style>.step-art{position:absolute;top:80px;width:300px;height:124px;display:flex;align-items:center;justify-content:center;overflow:hidden}' +
+            const source = '<style>.intro-card{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);width:980px;height:284px;background:white}' +
+              '.step-art{position:absolute;top:80px;width:300px;height:124px;display:flex;align-items:center;justify-content:center;overflow:hidden}' +
               '.art-svg{width:100%;height:auto;max-width:100%;max-height:100%}</style><section class="slide">' +
+              '<div class="intro-card" id="!!intro-card">' +
               art('default', 20) +
-              art('aligned', 400, ' preserveAspectRatio="xMaxYMid meet"') +
-              art('stretch', 780, ' preserveAspectRatio="none"') +
-              '</section>';
+              art('aligned', 340, ' preserveAspectRatio="xMaxYMid meet"') +
+              art('stretch', 660, ' preserveAspectRatio="none"') +
+              '</div></section>';
             const deck = await renderScriptedFrontendSlides(source, parseFrontendSlides(source));
             let id = 0;
             const svg = htmlToSVG(deck.slides[0].html);
@@ -56,15 +58,17 @@ test('HTML import fits inline SVG circles inside a short viewport', { skip: !chr
     const output = await runBrowserFixture(chrome, pathToFileURL(fixture).href, join(directory, 'profile'));
     const match = /<pre id="result">([\s\S]*?)<\/pre>/.exec(output);
     assert.ok(match, output.slice(-1000));
-    const circles = JSON.parse(match[1]);
+    const frames = JSON.parse(match[1]);
     const diameter = 200 * 124 / 240;
+    const centerY = 720 * 0.48;
     for (const [name, expected] of Object.entries({
-      default: [170, 142, diameter, diameter],
-      aligned: [638, 142, diameter, diameter],
-      stretch: [930, 142, 250, diameter],
+      '!!intro-card:box': [640, centerY, 980, 284],
+      default: [320, centerY, diameter, diameter],
+      aligned: [728, centerY, diameter, diameter],
+      stretch: [960, centerY, 250, diameter],
     })) {
-      assert.ok(expected.every((value, index) => Math.abs(circles[name]?.[index] - value) < 0.15),
-        `${name}: expected ${expected}, got ${circles[name]}`);
+      assert.ok(expected.every((value, index) => Math.abs(frames[name]?.[index] - value) < 0.15),
+        `${name}: expected ${expected}, got ${frames[name]}`);
     }
   } finally {
     rmSync(directory, { recursive: true, force: true });
