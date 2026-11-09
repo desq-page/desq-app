@@ -152,7 +152,7 @@ import ToolbarItem from "../Toolbars/ToolbarItem.vue";
 
 import { getClipboardContents, pasteShape } from "shared-vuejs/api/clipboard.js";
 import { getAllMediaPics, loadSlideFromDexie } from "shared-vuejs/api/dbutils.js";
-import { visibleEditTextMedia } from "@/lib/main/editTextMedia.mjs";
+import { visibleEditTextMedia } from "shared-vuejs/api/edit-text-media";
 
 const props = defineProps({
   preview: Boolean,
