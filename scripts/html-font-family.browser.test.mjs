@@ -13,7 +13,7 @@ test('HTML Baloo 2 text retains its family through capture, native conversion an
  const directory=mkdtempSync(join(tmpdir(),'desq-html-font-'));
  try {
   await build({stdin:{resolveDir:resolve('.'),contents:`
-   import {agentHtmlDocument} from './editor-vuejs/src/lib/main/importAgentHtml.mjs';
+   import {agentHtmlDocument} from 'shared-vuejs/api/document-import-importAgentHtml';
    import {mapRPrStyle} from 'shared-vuejs/api/sharedMaster';
    const check=(ok,message)=>{if(!ok)throw Error(message)};
    (async()=>{try{

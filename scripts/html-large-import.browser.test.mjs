@@ -12,7 +12,7 @@ test('a 20-slide HTML file with form fields converts to an editable document', {
  const directory=mkdtempSync(join(tmpdir(),'desq-large-html-'));
  try{
   await build({stdin:{resolveDir:resolve('.'),contents:`
-   import {agentHtmlDocument} from './editor-vuejs/src/lib/main/importAgentHtml.mjs';
+   import {agentHtmlDocument} from 'shared-vuejs/api/document-import-importAgentHtml';
    (async()=>{try{
     const slides = Array.from({length:20}, (_, i) =>
       '<section data-desq-slide id="slide-'+i+'"><h1>Slide '+(i+1)+'</h1><input type=number><select><option>Choose</option></select><textarea>Answer</textarea></section>').join('');

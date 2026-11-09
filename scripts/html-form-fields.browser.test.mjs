@@ -28,7 +28,7 @@ test('exported HTML fields are interactive and their values reach local scripts'
       </form></section><section class="slide" id="correct"><h1>Correct</h1></section>
       <section class="slide" id="wrong"><h1>Try again</h1></section>`;
     await build({stdin: {resolveDir: resolve('.'), contents: `
-      import {agentHtmlDocument} from './editor-vuejs/src/lib/main/importAgentHtml.mjs';
+      import {agentHtmlDocument} from 'shared-vuejs/api/document-import-importAgentHtml';
       import {presentationHTML} from '../desq-core/shared-vuejs/src/edlib/common/export/presentation-document.mjs';
       (async () => {
         const result = document.createElement('pre');

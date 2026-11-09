@@ -48,7 +48,7 @@ export const genId = () => 'paragraph-' + ++f().sequence;
 const built = await build({ entryPoints: ['editor-vuejs/src/lib/agent/editor-adapter.ts'], bundle: true, format: 'esm', write: false,
   plugins: [presetGeometryPlugin(), { name: 'mock-public-library', setup(build) {
     build.onResolve({filter:/^paper$/},()=>({path:pathToFileURL(resolve('node_modules/paper/dist/paper-core.js')).href,external:true}));
-    build.onResolve({ filter: /^shared-vuejs\// }, args => args.path === 'shared-vuejs/api/suppliedShapes' ? undefined : ({ path: args.path, namespace: 'mock' }));
+    build.onResolve({ filter: /^shared-vuejs\// }, args => (args.path === 'shared-vuejs/api/suppliedShapes' || args.path.startsWith('shared-vuejs/api/document-compiler-')) ? undefined : ({ path: args.path, namespace: 'mock' }));
     build.onLoad({ filter: /.*/, namespace: 'mock' }, () => ({ contents: mocks, loader: 'js' }));
   } }],
 });

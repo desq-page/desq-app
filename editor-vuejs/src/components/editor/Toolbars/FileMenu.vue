@@ -10,7 +10,7 @@
   <input
     ref="openFileInput"
     type="file"
-    accept=".pptx,.pub,.docx,.html,.htm"
+    accept=".pptx,.pub,.docx,.html,.htm,.pdf"
     hidden
     @change="openSelectedFile"
   />
@@ -268,8 +268,13 @@ async function openSelectedFile(event: Event) {
     let newId: string | undefined;
     if (extension === "html" || extension === "htm") {
       piniaInfo().loadingBar = "Opening editable HTML…";
-      const { importEditableHtml } = await import("@/lib/main/importEditableHtml.mjs");
+      const { importEditableHtml } = await import("shared-vuejs/api/document-import-importEditableHtml");
       newId = await importEditableHtml(file);
+    } else if (extension === "pdf") {
+      piniaInfo().loadingBar = "Opening PDF…";
+      const { importPdf } = await import("shared-vuejs/api/document-import-importPdf");
+      const { fileId } = await importPdf(file, (message: string) => { piniaInfo().loadingBar = message; });
+      newId = fileId;
     } else if (extension === "docx") {
       piniaInfo().loadingBar = "Opening Word document…";
       const { submitDocx } = await import("shared-vuejs/api/submitDocx");
@@ -294,7 +299,7 @@ async function openSelectedFile(event: Event) {
         cbAfterProcess: true,
       });
     } else {
-      showError("Choose an editable HTML, PowerPoint (.pptx), Publisher (.pub), or Word (.docx) file");
+      showError("Choose a PDF, editable HTML, PowerPoint (.pptx), Publisher (.pub), or Word (.docx) file");
     }
 
     if (newId) {

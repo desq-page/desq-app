@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { build } from 'esbuild';
 import vm from 'node:vm';
+import {fileURLToPath} from 'node:url';
 import { blankDocument } from '../src/model.mjs';
 import { editableHTML, presentationHTML } from '../src/document.mjs';
 
@@ -18,9 +19,9 @@ test('Vue HTML import restores document records and embedded media without execu
   const html = editableHTML(doc, 'window.mustNotRun = true;', { player: 'window.player=true;', playerStyles: 'body{}',
     playerAssets: [{ name: 'font.woff', mime: 'font/woff', data: new Uint8Array([1]) }] });
   const writes = [];
-  const result = await build({ entryPoints: [new URL('../../editor-vuejs/src/lib/main/importEditableHtml.mjs', import.meta.url).pathname],
+  const result = await build({ entryPoints: [fileURLToPath(import.meta.resolve('shared-vuejs/api/document-import-importEditableHtml'))],
     bundle: true, write: false, format: 'cjs', platform: 'node', plugins: [{ name: 'storage-fixture', setup(build) {
-      build.onResolve({ filter: /^shared-vuejs\/api\// }, args => /(?:lib-text-run-text|lib-crc32|edlib-common-export-single-page-package|presentation-document|document-model)$/.test(args.path) ? undefined : ({ path: args.path, namespace: 'stub' }));
+      build.onResolve({ filter: /(?:utility|opfs|dbutils|submitHtml|importAgentHtml)\.(?:js|mjs)$/ }, args => ({ path: args.path, namespace: 'stub' }));
       build.onLoad({ filter: /.*/, namespace: 'stub' }, () => ({ contents: `
         export const genId=()=>"new-local-id";
         export const putAssetsToDexie=async value=>globalThis.writes.push(['record',value]);
@@ -32,7 +33,7 @@ test('Vue HTML import restores document records and embedded media without execu
   const context = vm.createContext({ module: { exports: {} }, exports: {}, writes, URL, fetch, Uint8Array,
     DOMParser: class { parseFromString(text) { return { getElementById: id => {
       const match = text.match(new RegExp(`<script type="application/json" id="${id}">([\\s\\S]*?)</script>`));
-      return match ? { textContent: match[1] } : null;
+      return match ? { textContent: match[1], getAttribute: () => null } : null;
     } }; } } });
   vm.runInContext(result.outputFiles[0].text, context);
   const id = await context.module.exports.importEditableHtml({ text: async () => html });
@@ -58,6 +59,6 @@ test('Vue HTML import restores document records and embedded media without execu
   assert.ok(writes.some(([kind, value]) => kind === 'record' && value.type === 'slides' && value.data.sld.timing.id === 'anim'));
   assert.equal(context.mustNotRun, undefined, 'opening presentation HTML must not execute its player');
   const count = writes.length;
-  await assert.rejects(context.module.exports.importEditableHtml({ text: async () => '<html><script>window.mustNotRun = true</script></html>' }), /does not contain editable/);
-  assert.equal(writes.length, count, 'unrelated HTML is rejected without writing records');
+  await assert.rejects(context.module.exports.importEditableHtml({ text: async () => '<html><script type="application/json" id="desq-document">{broken</script></html>' }), { name: 'SyntaxError' });
+  assert.equal(writes.length, count, 'malformed embedded JSON is rejected without writing records');
 });

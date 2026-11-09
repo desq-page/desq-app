@@ -62,7 +62,7 @@
           <input
             ref="openFileInput"
             type="file"
-            accept=".pptx,.docx,.pub,.html,.htm"
+            accept=".pptx,.docx,.pub,.html,.htm,.pdf"
             hidden
             @change="openSelectedFile"
           />
@@ -174,8 +174,13 @@ async function openSelectedFile(event: Event) {
     const extension = file.name.split(".").pop()?.toLowerCase();
     if (extension === "html" || extension === "htm") {
       piniaInfo().loadingBar = "Opening editable HTML…";
-      const { importEditableHtml } = await import("@/lib/main/importEditableHtml.mjs");
+      const { importEditableHtml } = await import("shared-vuejs/api/document-import-importEditableHtml");
       const fileId = await importEditableHtml(file);
+      location.replace("/edit/" + fileId);
+    } else if (extension === "pdf") {
+      piniaInfo().loadingBar = "Opening PDF…";
+      const { importPdf } = await import("shared-vuejs/api/document-import-importPdf");
+      const { fileId } = await importPdf(file, (message: string) => { piniaInfo().loadingBar = message; });
       location.replace("/edit/" + fileId);
     } else if (extension === "docx") {
       piniaInfo().loadingBar = "Opening Word document…";
@@ -196,7 +201,7 @@ async function openSelectedFile(event: Event) {
       await submitPPTX(file, pptxSettings);
     } else {
       showError(
-        "Choose an editable HTML, PowerPoint (.pptx), Publisher (.pub), or Word (.docx) file",
+        "Choose a PDF, editable HTML, PowerPoint (.pptx), Publisher (.pub), or Word (.docx) file",
       );
     }
   } catch (error) {

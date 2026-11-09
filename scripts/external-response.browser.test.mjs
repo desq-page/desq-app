@@ -32,7 +32,7 @@ import {createExternalResponseFile} from './editor-vuejs/src/lib/agent/external-
 `},bundle:true,format:'iife',outfile:join(directory,'fixture.js'),plugins:[{name:'response-fixture',setup(b){
   b.onResolve({filter:/.*/},args=>{
    if(args.importer.endsWith('external-response.mjs')){
-    if(args.path==='../main/importEditableHtml.mjs')return{path:'persistence',namespace:'response-mock'};
+    if(args.path==='shared-vuejs/api/document-import-importEditableHtml')return{path:'persistence',namespace:'response-mock'};
     if(args.path==='shared-vuejs/api/document-model')return{path:'document',namespace:'response-mock'};
     if(args.path==='shared-vuejs/api/utility')return{path:'ids',namespace:'response-mock'};
     if(args.path==='shared-vuejs/api/shapeImportUtils')return{path:'geometry',namespace:'response-mock'};

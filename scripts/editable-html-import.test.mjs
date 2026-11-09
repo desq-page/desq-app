@@ -2,16 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {build} from 'esbuild';
 import vm from 'node:vm';
+import {fileURLToPath} from 'node:url';
 
 test('Desq HTML restores layout/master records directly; agent HTML alone uses blank PPTX import',async()=>{
- const result=await build({entryPoints:['editor-vuejs/src/lib/main/importEditableHtml.mjs'],bundle:true,write:false,platform:'node',format:'cjs',plugins:[{name:'imports',setup(b){
-  b.onResolve({filter:/shared-vuejs\/api\/|document\.mjs$|importAgentHtml\.mjs$/},args=>({path:args.path,namespace:'stub'}));
+ const result=await build({entryPoints:[fileURLToPath(import.meta.resolve('shared-vuejs/api/document-import-importEditableHtml'))],bundle:true,write:false,platform:'node',format:'cjs',plugins:[{name:'imports',setup(b){
+  b.onResolve({filter:/(?:utility|opfs|dbutils|submitHtml|presentation-document|importAgentHtml)\.(?:js|mjs)$/},args=>({path:args.path,namespace:'stub'}));
   b.onLoad({filter:/.*/,namespace:'stub'},({path})=>({contents:
-   path.endsWith('/utility')?'export const genId=()=>"new-file";':
-   path.endsWith('/opfs')?'export const saveMediaRecordToOPFS=async()=>{};export const saveToOPFS=async()=>{};':
-   path.endsWith('/dbutils')?'export const putAssetsToDexie=async r=>globalThis.records.push(r);export const putFileInfoToDexie=async f=>globalThis.files.push(f);':
+   path.endsWith('/utility.js')?'export const genId=()=>"new-file";':
+   path.endsWith('/opfs.js')?'export const saveMediaRecordToOPFS=async()=>{};export const saveToOPFS=async()=>{};':
+   path.endsWith('/dbutils.js')?'export const putAssetsToDexie=async r=>globalThis.records.push(r);export const putFileInfoToDexie=async f=>globalThis.files.push(f);':
    path.endsWith('/pptxArchive')?'export const keepPptxArchive=async(...args)=>globalThis.packages.push(args);':
-   path.endsWith('/submitHtml')?'export const submitHtmlDocument=async(...args)=>{globalThis.seeded.push(args);return "seeded";};':
+   path.endsWith('/submitHtml.js')?'export const submitHtmlDocument=async(...args)=>{globalThis.seeded.push(args);return "seeded";};':
    path.endsWith('importAgentHtml.mjs')?'export const agentHtmlDocument=async()=>globalThis.doc;':
    'export const readDocumentAsync=async()=>globalThis.doc;export const unpackPptxArchive=()=>globalThis.archive;'}));
  }}]});

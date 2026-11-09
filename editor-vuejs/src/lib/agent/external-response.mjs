@@ -8,7 +8,7 @@ export const isHtmlResponse = text => /^(?:```(?:html)?\s*)?(?:<!doctype\s+html|
 // Dashboard generation does not load or mutate an editor document first.
 export async function createExternalResponseFile(source, deck, {signal,onProgress=()=>{}}={}) {
  signal?.throwIfAborted();
- const {importEditableHtml,importEditableDocument}=await import('../main/importEditableHtml.mjs');
+ const {importEditableHtml,importEditableDocument}=await import('shared-vuejs/api/document-import-importEditableHtml');
  if(isHtmlResponse(source)) {
   onProgress('Rendering the HTML and creating a new presentation…');
   return importEditableHtml(new File([source],'AI presentation.html',{type:'text/html'}));

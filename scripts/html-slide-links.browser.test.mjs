@@ -15,7 +15,7 @@ test('direct scripted and declarative slide jumps survive HTML capture and nativ
   await build({stdin:{resolveDir:resolve('.'),contents:`
    import {parseFrontendSlides} from '../desq-core/shared-vuejs/src/edlib/html-import/frontend-slides-import.mjs';
    import {renderScriptedFrontendSlides} from '../desq-core/shared-vuejs/src/edlib/html-import/scripted-html-render.mjs';
-   import {agentHtmlDocument} from './editor-vuejs/src/lib/main/importAgentHtml.mjs';
+   import {agentHtmlDocument} from 'shared-vuejs/api/document-import-importAgentHtml';
    import {compileDeck} from './editor-vuejs/src/lib/agent/deck-compiler.mjs';
    import {resolveHtmlSlideLinks} from './editor-vuejs/src/lib/agent/html-slide-links.mjs';
    const check=(ok,message)=>{if(!ok)throw Error(message)};

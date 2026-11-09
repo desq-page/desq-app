@@ -172,7 +172,7 @@ For custom game state, quiz popups and branching behavior, use [local JavaScript
 
 Read the source before changing the contract:
 
-- `editor-vuejs/src/lib/main/importAgentHtml.mjs` and `importEditableHtml.mjs`: document import and persistence.
+- `../desq-core/shared-vuejs/src/edlib/document-import/`: document import and persistence.
 - `../desq-core/shared-vuejs/src/edlib/html-import/`: discovery, sandbox capture and measured HTML conversion.
 - `editor-vuejs/src/lib/agent/deck-compiler.mjs`, `html-shape-groups.mjs`, `ppt-master-motion.mjs`: native objects, grouping and motion.
 - `../desq-core/shared-vuejs/src/edlib/pptx/nativeTimingXml.mjs`: existing native animation-trigger export.
