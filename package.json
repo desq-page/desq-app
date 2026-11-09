@@ -98,6 +98,7 @@
     "pica": "^9.0.1",
     "pinia": "^3.0.4",
     "points-on-curve": "^1.0.0",
+    "prism-code-editor": "^5.4.0",
     "register-service-worker": "^1.7.2",
     "svg-path-parser": "^1.1.0",
     "svg-pathdata": "6.0.3",

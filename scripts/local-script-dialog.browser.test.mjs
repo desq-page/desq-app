@@ -33,6 +33,15 @@ const input=(el,value)=>{el.value=value;el.dispatchEvent(new Event(el.tagName===
 (async()=>{try{
  const root=document.createElement('div');document.body.append(root);const app=createApp(Toolbar);app.mount(root);
  click('Local JavaScript…');await nextTick();check(document.querySelector('[role=dialog]'),'Add-Ins opens dialog');
+ const editor=document.querySelector('.script-editor textarea');
+ let leakedKeys=0;
+ const slideShortcut=event=>{leakedKeys++;event.preventDefault()};
+ for(const type of ['keydown','keypress','keyup'])document.addEventListener(type,slideShortcut);
+ for(const key of ['ArrowLeft','ArrowRight','Backspace'])for(const type of ['keydown','keypress','keyup']){
+   check(editor.dispatchEvent(new KeyboardEvent(type,{key,bubbles:true,cancelable:true})), 'editor keeps default '+key);
+ }
+ for(const type of ['keydown','keypress','keyup'])document.removeEventListener(type,slideShortcut);
+ check(leakedKeys===0,'code editor keys stay out of slide shortcuts');
  const code='export function checkAnswer(ctx, correct) { globalThis.shouldNeverRunWhileEditing = true; ctx.state.set("correct", correct); }';
  input(document.querySelector('textarea'),code);await nextTick();const functionSelect=document.querySelectorAll('select')[1];input(functionSelect,'checkAnswer');input(document.querySelector('input'),'[true]');await nextTick();
  click('Save and bind selected shape');await tick();

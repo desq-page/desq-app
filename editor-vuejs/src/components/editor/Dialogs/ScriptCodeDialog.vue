@@ -6,7 +6,7 @@
       <NButton @click="addModule">Add module</NButton>
       <NButton tag="a" href="https://desq.page/docs/local-scripting.md" target="_blank">API guide</NButton>
     </NSpace>
-    <NInput v-if="currentModule" v-model:value="currentModule.source" type="textarea" :autosize="{minRows:14,maxRows:24}" spellcheck="false" style="margin:12px 0;font-family:monospace" aria-label="JavaScript module source" />
+    <div v-if="currentModule" ref="editorHost" class="script-editor" @keydown.stop @keypress.stop @keyup.stop />
     <p>Selected shape: {{ selectedId || 'Select a shape before opening this dialog to bind a button.' }}</p>
     <NSpace align="center">
       <NSelect v-model:value="functionName" :options="functions.map(value => ({label:value,value}))" placeholder="Exported function" style="width:260px" />
@@ -25,7 +25,11 @@
 </template>
 
 <script setup lang="ts">
-import {computed,ref} from 'vue';
+import {computed,ref,watch} from 'vue';
+import {createEditor} from 'prism-code-editor';
+import 'prism-code-editor/prism/languages/javascript';
+import 'prism-code-editor/layout.css';
+import 'prism-code-editor/themes/github-light.css';
 import {NModal,NButton,NInput,NSelect,NSpace} from 'naive-ui';
 import {getFileInfo,getSlideInfo,getShapeDeep,updateFile,updateShape} from 'shared-vuejs/editor';
 import {saveDexie} from 'shared-vuejs/api/dbutils';
@@ -33,7 +37,7 @@ import {genId} from 'shared-vuejs/api/utility';
 import {validateScriptProject,moduleExports} from 'shared-vuejs/api/scripting';
 import {piniaSelect} from '@/lib/common/store';
 
-defineProps<{show:boolean}>();
+const props = defineProps<{show:boolean}>();
 const emit=defineEmits(['update:show']);
 const fileId=getFileInfo().id,slideId=getSlideInfo().id;
 const selectedId=piniaSelect().selShpFormat?.id;
@@ -44,6 +48,21 @@ const moduleId=ref(existing?.module || project.value.modules[0]?.id || '');
 const functionName=ref(existing?.function || 'onClick');
 if(existing)argsText.value=JSON.stringify(existing.args);
 const currentModule=computed(()=>project.value.modules.find(m=>m.id===moduleId.value));
+const editorHost = ref<HTMLElement | null>(null);
+watch([editorHost, currentModule, () => props.show], ([host, module, visible], _, onCleanup) => {
+  if (!host || !module || !visible) return;
+  const editor = createEditor(host, {
+    language: 'javascript',
+    value: module.source,
+    lineNumbers: true,
+    onUpdate(value) {
+      module.source = value;
+    },
+  });
+  editor.textarea.setAttribute('aria-label', 'JavaScript module source');
+  editor.textarea.spellcheck = false;
+  onCleanup(() => editor.remove());
+}, {flush: 'post'});
 const functions=computed(()=>{try{return moduleExports(currentModule.value?.source||'')}catch{return []}});
 function addModule(){
   const id='module-'+genId();project.value.modules.push({id,source:'export async function onClick(ctx) {\n  ctx.state.set("clicks", (ctx.state.get("clicks") || 0) + 1);\n  // await ctx.shapes.show("shape-id");\n}\n',refs:{},slides:{}});moduleId.value=id;functionName.value='onClick';
@@ -75,3 +94,17 @@ async function save(bind){
 }
 async function unbind(){try{checkTarget();const shape=getShapeDeep(selectedId);if(shape?.link?.startsWith('@run:')){updateShape({...shape,link:''});await saveDexie();status.value='Button binding removed.';}}catch(e){error.value=e.message||String(e);}}
 </script>
+
+
+<style scoped>
+.script-editor {
+  margin: 12px 0;
+}
+.script-editor :deep(.prism-code-editor) {
+  min-height: 16em;
+  max-height: min(26em, 45vh);
+  border: 1px solid #d1d9e0;
+  border-radius: 4px;
+  font: 14px/1.5 ui-monospace, monospace;
+}
+</style>
