@@ -35,8 +35,9 @@ test('parser and browser capture agree on slide markers, numbered IDs and scenes
           ['<section data-desq-slide><h1>First</h1></section><section data-desq-slide><h1>Second</h1></section>', ['First','Second']],
         ];
         for(const [markup,titles] of cases){
-          const source='<style>#stage{width:1280px;height:720px;position:relative}#stage>div,#stage>section{position:absolute;inset:0}.scene{display:none}.scene.active{display:block}</style><div id="stage">'+markup+'</div>';
+          const source='<style>#stage{width:1920px;height:1080px;position:relative;transform:scale(.5)}#stage>div,#stage>section{position:absolute;inset:0}.scene{display:none}.scene.active{display:block}</style><div id="stage">'+markup+'</div>';
           const parsed=parseFrontendSlides(source);
+          check(parsed.width===1920 && parsed.height===1080,'shared stage dimensions');
           check(JSON.stringify(parsed.slides.map(s=>s.title))===JSON.stringify(titles),'parser order');
           const result=await new Promise((resolve,reject)=>{
             const frame=document.createElement('iframe');
@@ -44,7 +45,7 @@ test('parser and browser capture agree on slide markers, numbered IDs and scenes
             const timer=setTimeout(()=>reject(Error('Snapshot timeout')),10000);
             const receive=event=>{if(event.source!==frame.contentWindow||event.data.token!==token)return;clearTimeout(timer);removeEventListener('message',receive);frame.remove();resolve(event.data)};
             addEventListener('message',receive);
-            frame.srcdoc=source+'<script>('+snapshot+')('+JSON.stringify(token)+',1280,'+titles.length+');<'+ '/script>';
+            frame.srcdoc=source+'<script>('+snapshot+')('+JSON.stringify(token)+',1920,1080,'+titles.length+');<'+ '/script>';
             document.body.append(frame);
           });
           check(!result.error,result.error);

@@ -1,6 +1,6 @@
 # Current implementation: local JavaScript
 
-Use [the shipped local scripting API](local-scripting.md) for editable game/app logic, button bindings, state, shape changes, existing animations and navigation. `checkAnswer` is user code, not an API. Scripts run in the HTML player; PPTX preserves them for reimport. The declarative manifest described below remains a separate proposal and must not be treated as the shipped scripting format.
+Use [the shipped local scripting API](local-scripting.md) for editable game/app logic, button bindings, state, shape changes, existing animations and navigation. The HTML author chooses the exported game handler names and binds them with `data-desq-run`. Scripts run in the HTML player; PPTX preserves them for reimport. The declarative manifest described below remains a separate proposal and must not be treated as the shipped scripting format.
 
 # Proposed public HTML interaction contract
 
@@ -31,7 +31,7 @@ Use HTML attributes for simple navigation and JSON for animation/event sequences
 
 Choose either `data-desq-goto` or `data-desq-trigger` on one control. A control with both is invalid. All referenced IDs are document-global and unique; they are not slide numbers. A runtime may change generated native IDs, but must retain the authored-ID mapping.
 
-A legacy handler can also be imported when its entire body is a literal call such as `goToSlide('slide-win')` or `return gotoSlide("slide-win");`. No handler is evaluated to discover its destination. `checkAnswer(true)`, `restartGame()`, expressions, multi-statement handlers and callbacks registered with `addEventListener` are outside this compatibility subset. Declare `data-desq-goto` on each source button instead. Missing and conflicting explicit targets are errors.
+A legacy handler can also be imported when its entire body is a literal call such as `goToSlide('slide-win')` or `return gotoSlide("slide-win");`. No handler is evaluated to discover its destination. Calls to custom game handlers, expressions, multi-statement handlers and callbacks registered with `addEventListener` are outside this direct-navigation subset. Declare `data-desq-goto` on each source button instead. Missing and conflicting explicit targets are errors.
 
 An actual HTML anchor with a same-document `href` can also represent a direct jump in a future adapter. If an adapter supports both forms, conflicting destinations must be rejected, not guessed.
 

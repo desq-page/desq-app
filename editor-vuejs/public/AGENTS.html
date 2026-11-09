@@ -112,7 +112,7 @@
 <tr>
 <td>Custom click handlers</td>
 <td>Editable user modules and inline onclick bindings run in the isolated HTML player</td>
-<td>Use <a href="docs/local-scripting.html">ctx APIs</a>; <code>checkAnswer</code> is user code, never an API</td>
+<td>Use the <a href="docs/local-scripting.html">DESQ host API</a> from author-defined handlers</td>
 </tr>
 <tr>
 <td>HTML anchors</td>
@@ -214,7 +214,7 @@ question --help--&gt; play the hint animation on this screen
 &lt;/math&gt;
 </code></pre>
 <p>For HTML intended for editable DESQ import, use readable HTML text such as <code>3/5 &lt; 2/3</code> (escape the less-than sign as <code>&amp;lt;</code>) and <code>&lt;sup&gt;</code> or <code>&lt;sub&gt;</code> for simple notation. The HTML slide parser currently rejects MathML elements. Use the native equation authoring path when the deliverable requires editable PowerPoint equations.</p>
-<p>For custom game state, quiz popups and branching behavior, use <a href="docs/local-scripting.html">local JavaScript modules</a> and the complete <a href="examples/html-slides/local-quiz.html">local quiz example</a>. Bind buttons with <code>data-desq-run</code>, <code>data-desq-module</code>, and JSON <code>data-desq-args</code>. <code>checkAnswer</code> and <code>restartGame</code> are editable user functions that call the actual <code>ctx</code> API. JavaScript runs only in the HTML player; PPTX stores code and bindings for DESQ reimport without running JavaScript in PowerPoint. Test every branch in the imported player.</p>
+<p>For custom game state, quiz popups and branching behavior, use <a href="docs/local-scripting.html">local JavaScript modules</a> and the complete <a href="examples/html-slides/local-quiz.html">local quiz example</a>. Bind buttons with <code>data-desq-run</code>, <code>data-desq-module</code>, and JSON <code>data-desq-args</code>. Choose exported handler names that fit the game. DESQ resolves the exact name in <code>data-desq-run</code>. Keep the game rules in your own functions and call DESQ’s host API for slide operations. When standalone browser playback is required, share the same game logic through a browser adapter. JavaScript runs only in the HTML player; PPTX stores code and bindings for DESQ reimport without running JavaScript in PowerPoint. Test every branch in the imported player.</p>
 <h2>Verify before delivery</h2>
 <ol>
 <li>Validate the slide IDs, action targets, element IDs, dimensions and count. Traverse every branch, restart path and same-slide trigger. Reject dangling references.</li>

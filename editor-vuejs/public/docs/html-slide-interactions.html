@@ -8,7 +8,7 @@
 <body>
 <main>
 <h1>Current implementation: local JavaScript</h1>
-<p>Use <a href="local-scripting.html">the shipped local scripting API</a> for editable game/app logic, button bindings, state, shape changes, existing animations and navigation. <code>checkAnswer</code> is user code, not an API. Scripts run in the HTML player; PPTX preserves them for reimport. The declarative manifest described below remains a separate proposal and must not be treated as the shipped scripting format.</p>
+<p>Use <a href="local-scripting.html">the shipped local scripting API</a> for editable game/app logic, button bindings, state, shape changes, existing animations and navigation. The HTML author chooses the exported game handler names and binds them with <code>data-desq-run</code>. Scripts run in the HTML player; PPTX preserves them for reimport. The declarative manifest described below remains a separate proposal and must not be treated as the shipped scripting format.</p>
 <h1>Proposed public HTML interaction contract</h1>
 <p><strong>Status: direct slide navigation implemented; manifest/animation-trigger API proposed.</strong> <code>data-desq-goto</code> and sole literal <code>goToSlide(&#39;slide-id&#39;)</code> calls now map to native links. The accompanying quiz&#39;s direct navigation is supported; its manifest-driven hint remains a standalone prototype. No host SDK is installed by the example.</p>
 <p>The objective is a single declaration that an HTML runtime can execute and an importer can map to editable slide hyperlinks and native animation triggers. The importer must not reverse-engineer arbitrary JavaScript.</p>
@@ -58,7 +58,7 @@
 </tr>
 </tbody></table>
 <p>Choose either <code>data-desq-goto</code> or <code>data-desq-trigger</code> on one control. A control with both is invalid. All referenced IDs are document-global and unique; they are not slide numbers. A runtime may change generated native IDs, but must retain the authored-ID mapping.</p>
-<p>A legacy handler can also be imported when its entire body is a literal call such as <code>goToSlide(&#39;slide-win&#39;)</code> or <code>return gotoSlide(&quot;slide-win&quot;);</code>. No handler is evaluated to discover its destination. <code>checkAnswer(true)</code>, <code>restartGame()</code>, expressions, multi-statement handlers and callbacks registered with <code>addEventListener</code> are outside this compatibility subset. Declare <code>data-desq-goto</code> on each source button instead. Missing and conflicting explicit targets are errors.</p>
+<p>A legacy handler can also be imported when its entire body is a literal call such as <code>goToSlide(&#39;slide-win&#39;)</code> or <code>return gotoSlide(&quot;slide-win&quot;);</code>. No handler is evaluated to discover its destination. Calls to custom game handlers, expressions, multi-statement handlers and callbacks registered with <code>addEventListener</code> are outside this direct-navigation subset. Declare <code>data-desq-goto</code> on each source button instead. Missing and conflicting explicit targets are errors.</p>
 <p>An actual HTML anchor with a same-document <code>href</code> can also represent a direct jump in a future adapter. If an adapter supports both forms, conflicting destinations must be rejected, not guessed.</p>
 <h2>Manifest v1 proposal</h2>
 <pre><code class="language-json">{

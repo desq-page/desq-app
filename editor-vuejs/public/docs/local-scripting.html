@@ -9,7 +9,7 @@
 <main>
 <h1>Local JavaScript for HTML slides</h1>
 <p>DESQ stores editable JavaScript modules and button bindings in the document. Open <strong>Add-Ins → Local JavaScript</strong> to edit code, choose an exported function and JSON arguments, then <strong>Save and bind selected shape</strong>. Saving and thumbnails do not execute these modules. Play the HTML presentation to run them.</p>
-<p><code>checkAnswer</code>, <code>restartGame</code> and other game functions are user code. They are not DESQ APIs. The host API is the <code>ctx</code> argument passed to the selected function:</p>
+<p>The HTML author defines and names each game handler. Bind a control to the exact exported name with <code>data-desq-run</code>. DESQ provides the host API through <code>ctx</code>, with navigation available through <code>ctx.slides.goto(id)</code> and <code>gotoSlide(id)</code>. The following example uses an author-chosen handler name.</p>
 <pre><code class="language-js">export async function checkAnswer(ctx, isCorrect) {
   ctx.state.set(&#39;score&#39;, (ctx.state.get(&#39;score&#39;) || 0) + (isCorrect ? 1 : 0));
   await ctx.shapes.hide(&#39;quiz-popup&#39;);

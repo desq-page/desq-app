@@ -48,7 +48,7 @@ This section describes the local source checkout, not every older packaged core 
 | Tiled animated backgrounds | The implemented radial-dot/linear-position subset becomes native layers | Do not infer general CSS background-animation support |
 | Native text/path precision | Imported shape paths are rounded with `round3` | Round generated path numbers to three decimals too |
 | Direct slide jumps | `data-desq-goto` and a sole literal `goToSlide('slide-id')` call are mapped before handlers are stripped | Use explicit destinations on buttons; targets must exist |
-| Custom click handlers | Editable user modules and inline onclick bindings run in the isolated HTML player | Use [ctx APIs](docs/local-scripting.md); `checkAnswer` is user code, never an API |
+| Custom click handlers | Editable user modules and inline onclick bindings run in the isolated HTML player | Use the [DESQ host API](docs/local-scripting.md) from author-defined handlers |
 | HTML anchors | Still unwrapped during capture | Use button attributes for reliable native links |
 | Interaction JSON and animation triggers | Authoring proposal and example only | Never describe the whole interaction API as shipped |
 
@@ -157,7 +157,7 @@ Use Presentation MathML for fractions and formulas in standalone browser HTML. U
 
 For HTML intended for editable DESQ import, use readable HTML text such as `3/5 < 2/3` (escape the less-than sign as `&lt;`) and `<sup>` or `<sub>` for simple notation. The HTML slide parser currently rejects MathML elements. Use the native equation authoring path when the deliverable requires editable PowerPoint equations.
 
-For custom game state, quiz popups and branching behavior, use [local JavaScript modules](docs/local-scripting.md) and the complete [local quiz example](examples/html-slides/local-quiz.html). Bind buttons with `data-desq-run`, `data-desq-module`, and JSON `data-desq-args`. `checkAnswer` and `restartGame` are editable user functions that call the actual `ctx` API. JavaScript runs only in the HTML player; PPTX stores code and bindings for DESQ reimport without running JavaScript in PowerPoint. Test every branch in the imported player.
+For custom game state, quiz popups and branching behavior, use [local JavaScript modules](docs/local-scripting.md) and the complete [local quiz example](examples/html-slides/local-quiz.html). Bind buttons with `data-desq-run`, `data-desq-module`, and JSON `data-desq-args`. Choose exported handler names that fit the game. DESQ resolves the exact name in `data-desq-run`. Keep the game rules in your own functions and call DESQ’s host API for slide operations. When standalone browser playback is required, share the same game logic through a browser adapter. JavaScript runs only in the HTML player; PPTX stores code and bindings for DESQ reimport without running JavaScript in PowerPoint. Test every branch in the imported player.
 
 ## Verify before delivery
 
