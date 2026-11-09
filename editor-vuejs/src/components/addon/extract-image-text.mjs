@@ -4,6 +4,8 @@ import { addShapeRaw } from 'shared-vuejs/api/draw';
 import { processImage } from 'shared-vuejs/api/upload';
 import { saveDexie } from 'shared-vuejs/api/dbutils';
 import { getFileInfo, getShapeDeep, getSlideInfo, getSlidesSlideId, updateShape } from 'shared-vuejs/editor';
+import { genId } from 'shared-vuejs/api/utility';
+import { editTextMediaName } from '@/lib/main/editTextMedia.mjs';
 
 const ocrModule = 'https://esm.sh/ppu-paddle-ocr@6.6.1/web';
 const inpaintModel = 'https://huggingface.co/andraniksargsyan/migan/resolve/main/migan_pipeline_v2.onnx';
@@ -879,7 +881,10 @@ async function extractRegions(job, context, markers, progress, engine, active, s
     expandGlyphMask(glyphMask, canvas.width, canvas.height));
   if (interactive && !active()) return false;
   const after = context.getImageData(0, 0, canvas.width, canvas.height);
-  const media = await processImage(cleaned, { fileId: job.fileId });
+  const media = await processImage(cleaned, {
+    fileId: job.fileId,
+    name: editTextMediaName(genId(), job.source),
+  });
   if (interactive && !active()) return false;
   if (!media?.name) throw new Error('Could not store the cleaned picture.');
   const currentPicture = job.current();

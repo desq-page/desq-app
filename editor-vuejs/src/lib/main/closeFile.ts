@@ -8,6 +8,7 @@ import { downloadFile, selectDownloadFile } from "shared-vuejs/api/downloadShape
 import { piniaInfo } from "@/lib/common/store";
 import { showError } from "@/lib/main/utils";
 import { isHtmlSaveCurrent, prepareHtml, savePreparedHtml } from "@/lib/main/saveHtml";
+import { clearEditTextMedia } from "@/lib/main/editTextMedia.mjs";
 
 /** Show the standard close confirmation and close a cached file if requested. */
 export async function confirmCloseFile(
@@ -67,6 +68,7 @@ async function closeFile(
   fileId: string,
   onClosed?: () => void | Promise<void>,
 ) {
+  await clearEditTextMedia(fileId);
   await deleteFile(fileId);
   await onClosed?.();
 }

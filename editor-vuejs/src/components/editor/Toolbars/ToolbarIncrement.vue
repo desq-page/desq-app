@@ -1,24 +1,11 @@
 <template>
-  <!-- <NButton
-    @pointerdown.stop="autoIncrement"
-    @pointerup.stop="clickButton"
-    :disabled="disabled"
-    quaternary
-    size="20"
-    :style="{
-      width: '25px',
-      height: '26px',
-      alignSelf: 'center',
-    }"
-  >
-    <span>{{ label }}</span>
-  </NButton> -->
+
   <ToolbarItem
     @pointerdown.stop="autoIncrement"
     @pointerup.stop="clickButton"
     :disabled="disabled"
     quaternary
-    size="24"
+    :size="24"
     :style="{
       width: '25px',
       height: '26px',
@@ -26,9 +13,7 @@
     }"
     :tooltip
     :icon
-  >
-
-  </ToolbarItem>
+  />
 </template>
 <script setup>
 import { NButton } from "naive-ui";

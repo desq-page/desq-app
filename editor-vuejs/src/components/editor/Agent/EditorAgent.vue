@@ -175,7 +175,8 @@ async function createExternalBrief() {
       }
       signal.throwIfAborted();
     }
-    const { sharedLayouts, scripting, ...deckArguments } = renderedDeck;
+    // Source canvas dimensions belong to the renderer. Insertion uses the open deck's size.
+    const { sharedLayouts, scripting, width: _sourceWidth, height: _sourceHeight, ...deckArguments } = renderedDeck;
     const args = { ...deckArguments, fileId, pageId };
     preflightDeckPlan({ calls: [{ name: 'desq_create_deck', arguments: args }] }, { document: documentResult.result, allowTextOverflow: true });
     signal.throwIfAborted();

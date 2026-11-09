@@ -128,7 +128,7 @@
   
 </template>
 <script setup lang="ts">
-import { getShapeDeep, getSelectSelShpFormat, getFileInfo, setPendingCurrentTaskPaneProps } from "shared-vuejs/editor";
+import { getShapeDeep, getSelectSelShpFormat, getFileInfo, getSlideInfo, setPendingCurrentTaskPaneProps } from "shared-vuejs/editor";
 
 import { NFlex, NSpin } from "naive-ui";
 import { nextTick, onMounted, ref, watch } from "vue";
@@ -151,7 +151,8 @@ import ToolbarItemDropdown from "../Toolbars/ToolbarItemDropdown.vue";
 import ToolbarItem from "../Toolbars/ToolbarItem.vue";
 
 import { getClipboardContents, pasteShape } from "shared-vuejs/api/clipboard.js";
-import { getAllMediaPics } from "shared-vuejs/api/dbutils.js";
+import { getAllMediaPics, loadSlideFromDexie } from "shared-vuejs/api/dbutils.js";
+import { visibleEditTextMedia } from "@/lib/main/editTextMedia.mjs";
 
 const props = defineProps({
   preview: Boolean,
@@ -168,19 +169,7 @@ const reloading = ref(false);
 
 onMounted(searchImages);
 
-watch(
-  () => piniaSelect().selShpFormat,
-  () => {
-    if (piniaSelect().selShpFormat?.blipFill) {
-      const previewImg = searchResultBox.value.querySelector(
-        `[data-id='${piniaSelect().selShpFormat?.blipFill.blip.$_target}']`,
-      );
-      if (!previewImg) {
-        searchImages();
-      }
-    }
-  },
-);
+watch(() => [piniaSelect().selShpFormat, piniaSlides().slideId], searchImages);
 
 function openMediaTab() {
   piniaInfo().setLastTaskPane(piniaInfo().currentTaskPane);
@@ -190,8 +179,23 @@ function openMediaTab() {
   toggleTaskPane("localmediatab");
 }
 
+let searchVersion = 0;
 async function searchImages() {
-  let mediaColl = await getAllMediaPics(getFileInfo()?.id);
+  const version = ++searchVersion;
+  const file = getFileInfo();
+  if (!file?.id) return;
+  const current = getSlideInfo();
+  const [records, pages] = await Promise.all([
+    getAllMediaPics(file.id),
+    Promise.all([
+      ...(file.slides || []).map(slide => slide.id === current?.id ? current :
+        loadSlideFromDexie(file.id, slide.id, "slides")),
+      ...(file.layouts || []).map(layout => loadSlideFromDexie(file.id, layout.id,
+        layout.parentid ? "slideLayouts" : "slideMasters")),
+    ]),
+  ]);
+  if (version !== searchVersion || getFileInfo()?.id !== file.id) return;
+  let mediaColl = visibleEditTextMedia(records || [], pages);
 
   if (props.preview) {
     mediaColl = mediaColl?.slice(0, 3);
@@ -298,11 +302,16 @@ const deleteOptions = [
     label: "Delete unused media?",
     onClick: async () => {
       reloading.value = true;
-      const { deleteUnusedMedia } = await import("shared-vuejs/api/unzipPPTX");
-      await deleteUnusedMedia(getFileInfo().id);
-      showMessage("Unused media are cleaned up.", 1000);
-      reloading.value = false;
-      searchImages();
+      try {
+        const { deleteUnusedMedia } = await import("shared-vuejs/api/unzipPPTX");
+        await deleteUnusedMedia(getFileInfo().id);
+        showMessage("Unused media are cleaned up.", 1000);
+        await searchImages();
+      } catch (error) {
+        showError(error instanceof Error ? error.message : "Could not clean up media.");
+      } finally {
+        reloading.value = false;
+      }
     },
     icon: Warning24Regular,
     color: "red",
