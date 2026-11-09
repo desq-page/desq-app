@@ -2,9 +2,11 @@
   <ToolbarItemDropdown
     quaternary
     :options="viewOptions"
-    :icon="MenuSharp"
+    label="File"
+    :size="26"
     :onClick="() => exportFile()"
     :disabled="!!piniaInfo().useGrid"
+    :style="{marginTop: '-5px'}"
   />
   <SaveHtml v-model:show="showHtmlSave" />
   <input

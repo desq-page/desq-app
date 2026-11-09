@@ -14,11 +14,11 @@
       }"
       v-model:value="selectedTab"
       ref="tabsRef"
+      tab-class="top-tab"
     >
       <template #prefix>
         <ToolbarItem type="spacing" />
         <FileMenu />
-        <ToolbarItem type="divider" v-if="piniaResize().windowWidth >= 769" />"
         <ToolbarItem
           quaternary
           :on-click="undo"
@@ -35,7 +35,8 @@
           tooltip="Redo"
           :disabled="piniaInfo().undoIndex >= getUndoHistory().length - 1"
         />
-        <ToolbarItem type="divider" v-if="piniaResize().windowWidth >= 769" />"
+        <!-- <ToolbarItem type="divider" v-if="piniaResize().windowWidth >= 769" />" -->
+          
       </template>
       <NTabPane
         name="home"
@@ -120,7 +121,7 @@
           />
         </div>
       </NTabPane>
-      <NTabPane name="insert" tab="Insert" :disabled="showSpecialTab()">
+      <NTabPane name="insert" tab="Insert" :disabled="showSpecialTab()" >
         <div :class="$style['header-left']">
           <ToolbarSlide />
 
@@ -274,7 +275,7 @@
           :active="piniaInfo().currentTaskPane == 'hyperlink'"
         />
       </NTabPane> -->
-      <NTabPane name="addins" tab="Add-ins" :disabled="showSpecialTab()">
+      <NTabPane name="addins" tab="AI✨" :disabled="showSpecialTab()">
         <div :class="$style['header-left']">
           <ToolbarAddins />
         </div>

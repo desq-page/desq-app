@@ -1,43 +1,111 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="720" height="270" viewBox="0 0 720 270" fill="none">
-  <title>From Office documents or optionally AI-generated HTML to DESQ, then editable HTML or a round-trip document</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 422" font-family="Inter, Arial, sans-serif">
   <defs>
-    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="m1 1 4 2.5L1 6" stroke="#66816b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
-    <linearGradient id="editor" x1="340" y1="55" x2="490" y2="196" gradientUnits="userSpaceOnUse"><stop stop-color="#37694b"/><stop offset="1" stop-color="#193b2b"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-30%" width="140%" height="170%">
+      <feDropShadow dx="0" dy="7" stdDeviation="10" flood-color="#193b2b" flood-opacity=".15"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="m1 1 5 3-5 3" fill="none" stroke="#789465" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <rect id="chip" width="122" height="42" rx="10" fill="#fffdf8" stroke="#ccd9bf"/>
+    <rect id="icon" x="8" y="8" width="26" height="26" rx="6"/>
   </defs>
-  <g stroke="#829a7e" stroke-width="2" marker-end="url(#arrow)">
-    <path d="M116 80h29" stroke-dasharray="5 4"/>
-    <path d="M266 80h30q18 0 18 18v16h24"/>
-    <path d="M266 190h30q18 0 18-18v-32h24"/>
-    <path d="M486 125h26q16 0 16-16V80h27"/>
-    <path d="M528 125v47q0 18 18 18h9"/>
+
+  <!-- Import paths converge on the editor from both sides of the canvas. -->
+  <g fill="none" stroke="#789465" stroke-width="1.5" stroke-dasharray="3 5" marker-end="url(#arrow)">
+    <path d="M71 58Q74 82 120 94"/>
+    <path d="M216 46Q218 73 235 93"/>
+    <path d="M373 55Q372 77 355 93"/>
+    <path d="M525 48Q522 80 483 94"/>
+    <path d="M127 368Q132 346 170 334"/>
+    <path d="M307 381V334"/>
+    <path d="M487 369Q482 346 435 334"/>
   </g>
-  <g font-family="system-ui, sans-serif" text-anchor="middle">
-    <text x="206" y="20" font-size="11" font-weight="700" letter-spacing="1.5" fill="#5a7459">START WITH</text>
-    <text x="412" y="20" font-size="11" font-weight="700" letter-spacing="1.5" fill="#5a7459">MAKE IT YOURS</text>
-    <text x="624" y="20" font-size="11" font-weight="700" letter-spacing="1.5" fill="#5a7459">TAKE IT ANYWHERE</text>
-    <rect x="4" y="42" width="112" height="77" rx="14" fill="#f0eafa" stroke="#d3c4e8"/>
-    <path d="m60 53 4 10 10 4-10 4-4 10-4-10-10-4 10-4Zm22 1 2 5 5 2-5 2-2 5-2-5-5-2 5-2Z" fill="#8761b5"/>
-    <text x="60" y="104" font-size="16" font-weight="650" fill="#61408a">AI chat</text>
-    <g fill="#fffdf6" stroke="#d0d9c4"><rect x="146" y="42" width="120" height="77" rx="14"/><rect x="146" y="152" width="120" height="94" rx="14"/></g>
-    <g stroke="#557b59" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m198 58-9 9 9 9m16-18 9 9-9 9m-5-21-6 24"/></g>
-    <text x="206" y="104" font-size="16" font-weight="650" fill="#31543a">HTML</text>
-    <g stroke="#bd683a" stroke-width="2" stroke-linejoin="round"><path d="M192 164h20l9 9v20h-29Z" fill="#fff4e9"/><path d="M212 164v9h9"/><path d="M198 184v-11h5a3 3 0 0 1 0 6h-5"/></g>
-    <text x="206" y="212" font-size="14" font-weight="650" fill="#92502e"><tspan x="206">Office</tspan><tspan x="206" dy="16">Documents</tspan></text>
-    <rect x="340" y="55" width="146" height="144" rx="20" fill="url(#editor)"/>
-    <rect x="366" y="75" width="94" height="61" rx="6" fill="#f5f7e9"/>
-    <path d="M366 89h94" stroke="#bccbb1"/><circle cx="373" cy="82" r="2" fill="#9db68a"/><circle cx="380" cy="82" r="2" fill="#9db68a"/>
-    <rect x="374" y="97" width="16" height="30" rx="2" fill="#d9e5cb"/><rect x="397" y="97" width="54" height="30" rx="2" fill="#eaf0df"/>
-    <path d="M404 104h23m-23 7h16" stroke="#799663" stroke-width="2" stroke-linecap="round"/>
-    <path d="m436 113 9 4-5 2-2 5Z" fill="#37694b"/>
-    <text x="413" y="163" font-size="24" font-weight="750" letter-spacing="1" fill="#fffdf6">DESQ</text>
-    <text x="413" y="183" font-size="12" fill="#d6e5cc">Edit · animate · present</text>
-    <rect x="557" y="42" width="138" height="90" rx="14" fill="#edf4e3" stroke="#bdd1a9"/>
-    <rect x="611" y="54" width="30" height="23" rx="3" stroke="#557b59" stroke-width="2"/><path d="M611 61h30m-19 5-4 3 4 3m8-6 4 3-4 3" stroke="#557b59" stroke-width="1.5" stroke-linecap="round"/>
-    <text x="626" y="100" font-size="14" font-weight="650" fill="#31543a"><tspan x="626">Single File</tspan><tspan x="626" dy="16">Editable HTML</tspan></text>
-    <rect x="557" y="152" width="138" height="94" rx="14" fill="#fff1e5" stroke="#e7c9ae"/>
-    <g stroke="#bd683a" stroke-width="2" stroke-linejoin="round"><path d="M612 164h20l9 9v20h-29Z"/><path d="M632 164v9h9m-23 11v-11h5a3 3 0 0 1 0 6h-5"/></g>
-    <text x="626" y="212" font-size="14" font-weight="650" fill="#92502e"><tspan x="626">Round-trip</tspan><tspan x="626" dy="16">Document</tspan></text>
-    <text x="206" y="264" font-size="11" fill="#66816b">Import your document</text>
-    <text x="626" y="264" font-size="11" fill="#66816b">Save, share, or keep editing</text>
+
+  <g filter="url(#shadow)">
+    <rect x="44" y="98" width="512" height="232" rx="12" fill="#fcfdf8" stroke="#bdceb0"/>
+  </g>
+  <path d="M44 133h512M44 155h512M44 307h512M132 155v152M466 155v152" fill="none" stroke="#d9e3d2"/>
+  <rect x="57" y="108" width="16" height="16" rx="4" fill="#315b3f"/>
+  <path d="m61 117 4 2 4-5-4-2z" fill="#d0ec9c"/>
+  <g fill="#193b2b" font-weight="700">
+    <text x="81" y="120" font-size="12">DESQ Slide Editor</text>
+    <text x="58" y="148" font-size="10">File</text>
+    <text x="88" y="148" font-size="10">Insert</text>
+    <text x="128" y="148" font-size="10">Design</text>
+    <text x="176" y="148" font-size="10">Animate</text>
+  </g>
+  <rect x="484" y="106" width="61" height="21" rx="5" fill="#315b3f"/>
+  <text x="514" y="120" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">Present</text>
+
+  <!-- Slide thumbnails, active canvas and inspector. -->
+  <g fill="#65795e" font-size="9">
+    <text x="55" y="181">1</text><text x="55" y="227">2</text><text x="55" y="273">3</text>
+    <text x="478" y="175" font-weight="700">Format</text>
+    <text x="478" y="199">Fill</text>
+    <text x="478" y="223">Outline</text>
+    <text x="478" y="247">Position</text>
+    <text x="57" y="322">Slide 2 of 3</text>
+    <text x="519" y="322">75%</text>
+  </g>
+  <rect x="67" y="165" width="54" height="33" rx="3" fill="#315b3f"/>
+  <rect x="67" y="211" width="54" height="33" rx="3" fill="#dceabf" stroke="#52774a" stroke-width="2"/>
+  <rect x="67" y="257" width="54" height="33" rx="3" fill="#eef3e6" stroke="#d9e3d2"/>
+  <path d="M76 178h25m-25 6h15" stroke="#d0ec9c" stroke-width="2"/>
+  <path d="M76 223h18m-18 6h13m-18 39h25m-25 6h15" stroke="#789465" stroke-width="2"/>
+  <circle cx="106" cy="228" r="7" fill="#52774a"/>
+  <rect x="133" y="156" width="332" height="150" fill="#e9efe4"/>
+  <rect x="181" y="165" width="236" height="133" rx="2" fill="#dceabf"/>
+  <path d="M181 278c53-26 91-26 137-6 36 16 67 14 99-2v28H181z" fill="#c6db9d"/>
+  <g fill="#193b2b">
+    <text x="200" y="196" font-size="8" font-weight="700" letter-spacing="2">FIELD NOTES</text>
+    <text x="200" y="227" font-size="23" font-weight="700">Ideas in</text>
+    <text x="200" y="252" font-size="23" font-weight="700">motion.</text>
+  </g>
+  <circle cx="358" cy="232" r="35" fill="#52774a"/>
+  <path d="M336 247l17-26 10 12 9-17 12 31z" fill="#cce99d"/>
+  <g fill="#fcfdf8" stroke="#52774a">
+    <rect x="316" y="190" width="84" height="84" fill="none"/>
+    <rect x="313" y="187" width="6" height="6"/><rect x="397" y="187" width="6" height="6"/>
+    <rect x="313" y="271" width="6" height="6"/><rect x="397" y="271" width="6" height="6"/>
+  </g>
+  <path d="m393 254 5 18 4-7 8-2z" fill="#193b2b" stroke="#fff"/>
+  <rect x="521" y="189" width="18" height="13" rx="2" fill="#52774a"/>
+  <rect x="521" y="213" width="18" height="13" rx="2" fill="#fff" stroke="#bdceb0"/>
+  <path d="M478 258h61m-61 9h47m-47 9h56" stroke="#d9e3d2" stroke-width="4" stroke-linecap="round"/>
+
+  <g font-size="14" font-weight="700" fill="#193b2b">
+    <g transform="translate(10 15)">
+      <use href="#chip"/><use href="#icon" fill="#b84e2e"/>
+      <text x="21" y="26" text-anchor="middle" fill="#fff">P</text><text x="43" y="26">PPT</text>
+    </g>
+    <g transform="translate(155 3)">
+      <use href="#chip"/><use href="#icon" fill="#13736c"/>
+      <text x="21" y="26" text-anchor="middle" fill="#fff">P</text><text x="43" y="26">Publisher</text>
+    </g>
+    <g transform="translate(312 12)">
+      <use href="#chip"/><use href="#icon" fill="#265eaa"/>
+      <text x="21" y="26" text-anchor="middle" fill="#fff">W</text><text x="43" y="26">Word</text>
+    </g>
+    <g transform="translate(464 5)">
+      <use href="#chip"/><use href="#icon" fill="#b83442"/>
+      <path d="M16 14h7l4 4v10H16zm7 0v4h4m-8 4h5m-5 3h5" fill="none" stroke="#fff" stroke-linejoin="round"/>
+      <text x="43" y="26">PDF</text>
+    </g>
+    <g transform="translate(66 367)">
+      <use href="#chip"/><use href="#icon" fill="#245c49"/>
+      <path d="M15 15h12v10h-7l-5 4z" fill="none" stroke="#fff" stroke-linejoin="round"/>
+      <text x="43" y="26">ChatGPT</text>
+    </g>
+    <g transform="translate(232 378)">
+      <rect width="150" height="42" rx="10" fill="#fffdf8" stroke="#ccd9bf"/>
+      <use href="#icon" fill="#4e55a4"/>
+      <path d="M21 12q1 7 8 9-7 2-8 9-2-7-8-9 6-2 8-9" fill="#fff"/>
+      <text x="43" y="26">Gemini Notebook</text>
+    </g>
+    <g transform="translate(426 368)">
+      <use href="#chip"/><use href="#icon" fill="#a5572d"/>
+      <path d="m17 17-4 4 4 4m8-8 4 4-4 4m-3-10-2 12" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="43" y="26">HTML</text>
+    </g>
   </g>
 </svg>

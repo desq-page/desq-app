@@ -58,9 +58,9 @@ const questions = [
               <p class="hero-note"><span aria-hidden="true">✓</span> Free to edit. Works offline in browser. Your files stay private</p>
             </div>
 
-              <figure class="hero-workflow">
-                <img src="/images/desq-workflow.svg" alt="Optionally create HTML with AI, or open an Office document. Edit in DESQ, then save as editable HTML or a round-trip document." width="720" height="270" />
-              </figure>
+            <figure class="hero-workflow">
+              <img src="/images/desq-workflow.svg" alt="PowerPoint, Publisher, Word, PDF, ChatGPT, Gemini Notebook, and HTML feed into the DESQ slide editor, shown with slide thumbnails, an editable canvas, and formatting tools." width="600" height="422" />
+            </figure>
           </div>
 
           <div id="why-desq" class="hero-values" aria-label="Why DESQ">
@@ -181,8 +181,8 @@ h2 em { font: inherit; color: #648044; }
 h1 { margin: 0; font-size: clamp(40px,4.4vw,60px); font-weight: 650; line-height: 1.08; letter-spacing: -.055em; }
 h1 em { font-style: normal; color: #496f34; }
 .hero-description { max-width: 490px; margin: 22px 0 0; color: #3d5641; font-size: 16px; line-height: 1.7; }
-.hero-workflow { width: 100%; height: 80%; margin: 0; padding: 24px; border: 1px solid #b8caa7; border-radius: 10px; background: #f7faefed; box-shadow: 0 18px 45px #193b2b1a; }
-.hero-workflow img { display: block; width: 100%; height: 100%; }
+.hero-workflow { width: 100%; margin: 0; }
+.hero-workflow img { display: block; width: 100%; height: auto; }
 .hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 20px; margin-top: 26px; }
 .hero-note { margin: 17px 0 0; font-size: 11px; color: #425e43; }
 .hero-note > span { color: #496f34; margin-right: 4px; }
@@ -258,7 +258,7 @@ h1 em { font-style: normal; color: #496f34; }
 .site-footer nav { display: flex; flex-wrap: wrap; gap: 22px; font-size: 12px; }
 @media (min-width: 1100px) and (max-height: 800px) { .hero { padding-top: 28px; } .hero-values { margin-top: 30px; } .hero-values article { padding-block: 18px; } }
 @media (max-width: 1100px) { .hero-stage { gap: 32px; } .hero-actions { gap: 14px; } .hero-values article { padding: 18px; } .hero-values h2 { font-size: 21px; } .faq-section { gap: 40px; } .other-formats { gap: 24px; } }
-@media (max-width: 760px) { .page-width { width: calc(100% - 40px); } .site-header { min-height: 72px; gap: 16px; } .site-header .nav-detail { display: none; } .site-header .button { font-size: 11px; padding: 11px 14px; gap: 12px; } .wordmark { font-size: 24px; } .wordmark img { width: 29px; height: 29px; } .hero { padding-block: 34px 24px; } .hero-stage { grid-template-columns: 1fr; gap: 32px; } h1 { font-size: clamp(38px,7.5vw,56px); } .hero-description { font-size: 15px; max-width: 540px; } .hero-note { font-size: 10px; } .hero-workflow { padding: 16px; } .demo-section { grid-template-columns: 1fr; gap: 24px; margin-top: 40px; } .presentation-preview { width: 100%; } .hero-values { grid-template-columns: 1fr; margin-top: 32px; gap: 12px; } .hero-values h2 { font-size: 23px; margin-top: 10px; } .features-section, .ownership-section { padding-block: 48px; } .section-intro { flex-direction: column; align-items: start; gap: 18px; margin-bottom: 26px; } .section-intro > p { max-width: 500px; } .feature-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 24px; } .ownership-grid { grid-template-columns: 1fr; gap: 16px; } .ownership-card { padding: 26px; } .other-formats { flex-direction: column; align-items: start; gap: 24px; } .format-links { gap: 40px; } .faq-section { grid-template-columns: 1fr; gap: 24px; padding-block: 48px; } .faq-section > div > p:not(.eyebrow) { max-width: none; } .cta-inner { flex-direction: column; align-items: start; padding-block: 40px; gap: 26px; } .cta-actions { align-items: start; } .site-footer { gap: 16px; } .site-footer p { flex-basis: 60%; } }
+@media (max-width: 760px) { .page-width { width: calc(100% - 40px); } .site-header { min-height: 72px; gap: 16px; } .site-header .nav-detail { display: none; } .site-header .button { font-size: 11px; padding: 11px 14px; gap: 12px; } .wordmark { font-size: 24px; } .wordmark img { width: 29px; height: 29px; } .hero { padding-block: 34px 24px; } .hero-stage { grid-template-columns: 1fr; gap: 32px; } h1 { font-size: clamp(38px,7.5vw,56px); } .hero-description { font-size: 15px; max-width: 540px; } .hero-note { font-size: 10px; } .demo-section { grid-template-columns: 1fr; gap: 24px; margin-top: 40px; } .presentation-preview { width: 100%; } .hero-values { grid-template-columns: 1fr; margin-top: 32px; gap: 12px; } .hero-values h2 { font-size: 23px; margin-top: 10px; } .features-section, .ownership-section { padding-block: 48px; } .section-intro { flex-direction: column; align-items: start; gap: 18px; margin-bottom: 26px; } .section-intro > p { max-width: 500px; } .feature-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 24px; } .ownership-grid { grid-template-columns: 1fr; gap: 16px; } .ownership-card { padding: 26px; } .other-formats { flex-direction: column; align-items: start; gap: 24px; } .format-links { gap: 40px; } .faq-section { grid-template-columns: 1fr; gap: 24px; padding-block: 48px; } .faq-section > div > p:not(.eyebrow) { max-width: none; } .cta-inner { flex-direction: column; align-items: start; padding-block: 40px; gap: 26px; } .cta-actions { align-items: start; } .site-footer { gap: 16px; } .site-footer p { flex-basis: 60%; } }
 @media (max-width: 420px) { .hero-actions { align-items: start; flex-direction: column; gap: 16px; } .eyebrow { font-size: 9px; } .feature-grid { grid-template-columns: 1fr; } .feature-card { padding-block: 22px; } .file-badge { font-size: 6px; } .preview-formats { font-size: 8px; } .preview-formats b { font-size: 9px; } .ownership-card { padding: 22px; } .agent-flow { gap: 6px; } .agent-flow span { padding: 8px; font-size: 10px; } }
 @media (prefers-reduced-motion: reduce) { .preview-slide *, .button { animation: none; transition: none; } .motion-toggle { display: none; } }
 </style>

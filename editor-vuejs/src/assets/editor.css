@@ -139,3 +139,7 @@ img.svg-img {
 .desq-html-placeholder {
   pointer-events: all;
 }
+
+.top-tab {
+  margin-top: 3px;
+}
