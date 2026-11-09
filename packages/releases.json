@@ -50,6 +50,15 @@
     },
     "shared-vuejs-0.2.12.tgz": {
       "sha256": "1b2fb84eff58f78ddbac2ff64a270b8c9c1989e6fdaaf9ed29b696b48db312d3"
+    },
+    "shared-vuejs-0.2.13.tgz": {
+      "sha256": "32084b2911c9b119f3bcb37fb5be03e070f4d82220cbd32e6957f53a9931f338"
+    },
+    "desq-player-1.0.9.tgz": {
+      "sha256": "3ec6da65a6a856ca73579d9b440b0fe1a3d9a5ded0f67cb59cd1fb33450eb08a"
+    },
+    "shared-vuejs-0.2.14.tgz": {
+      "sha256": "f2156ba1da7e0aa5ac56ff8a1a43cd62da8bb7c373c76115a58b9c62f68ac8d5"
     }
   }
 }

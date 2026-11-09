@@ -20,7 +20,7 @@ test('direct scripted and declarative slide jumps survive HTML capture and nativ
    import {resolveHtmlSlideLinks} from './editor-vuejs/src/lib/agent/html-slide-links.mjs';
    const check=(ok,message)=>{if(!ok)throw Error(message)};
    (async()=>{try{
-    const source='<style>.slide{position:relative;width:1280px;height:720px}body{background:#0f172a}.deck-stage{border-radius:16px;background:linear-gradient(135deg,#f8fafc,#e2e8f0)}button{background:#ffe88a;padding:20px;font-size:30px}</style><main class="deck-stage"><section class="slide" id="slide-1"><nav><button onclick="goToSlide(&quot;slide-2&quot;)">Start Chase</button><button onclick="showQuiz()">Quiz</button></nav></section><section class="slide" id="slide-2" style="background:#abc"><button data-desq-goto="slide-1">Back</button></section></main>';
+    const source='<style>.slide{position:relative;width:1280px;height:720px}body{background:#0f172a}.deck-stage{border-radius:16px;background:linear-gradient(135deg,#f8fafc,#e2e8f0)}button{background:#ffe88a;padding:20px;font-size:30px}</style><main class="deck-stage"><section class="slide" id="slide-1"><nav><button onclick="goToSlide(&quot;slide-2&quot;)">Start Chase</button><button onclick="showQuiz()">Quiz</button></nav></section><section class="slide" id="slide-2" style="background:#abc"><button data-desq-goto="slide-1">Back</button><p>Chances left: <b id="lives"><i>♥♥♥</i></b></p></section></main>';
     let invalid=false;try{parseFrontendSlides(source.replace('data-desq-goto="slide-1"','data-desq-goto="missing"'))}catch{invalid=true}check(invalid,'missing target rejected');
     const deck=await renderScriptedFrontendSlides(source,parseFrontendSlides(source));
     check(!deck.slides[0].html.includes('onclick='),'script handlers stripped after extracting links');
@@ -28,6 +28,11 @@ test('direct scripted and declarative slide jumps survive HTML capture and nativ
     check(compiled.pages[0].bg?.bgPr?.gradFill?.gsLst?.gs.length === 2, 'transparent slide keeps stage gradient');
     check(!!compiled.pages[1].bg?.bgPr?.solidFill, 'explicit slide fill takes precedence');
     const doc = await agentHtmlDocument(source, 'Shared background.html');
+    const lives = doc.file.scripting.modules.find(module => module.refs.lives).refs.lives;
+    const shapes = list => list.flatMap(shape => [shape, ...shapes(shape.children || [])]);
+    const label = shapes(doc.slides[1].shapes).find(shape => shape.id === lives[0]);
+    check(lives.length === 1 && label?.txBody && JSON.stringify(label.txBody).includes('♥♥♥') &&
+      !JSON.stringify(label.txBody).includes('Chances left'), 'inline script target has its own editable text box');
     const layout = doc.layouts.find(layout => layout.sharedHtmlLayout);
     check(layout?.shapes[0]?.gradFill?.gsLst?.gs.length === 2 && layout.shapes[0].prstGeom?.$_prst === 'roundRect', 'stage gradient lives on a rounded layout shape');
     check(doc.slides.every(slide => slide.layoutid === layout.id), 'both slides use the shared layout');
