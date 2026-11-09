@@ -32,6 +32,9 @@ import {htmlToSVG} from '../desq-core/shared-vuejs/src/edlib/html-import/html-sl
  const xml=new DOMParser().parseFromString(svg,'image/svg+xml');
  const heading=[...xml.querySelectorAll('text')].find(node=>node.textContent.includes('harvest'));
  const lines=[...heading.children].map(line=>line.textContent);
+ const titleSlide=parseFrontendSlides('<section class="slide"><h1 style="font: bold 88px/.94 Arial"><span style="color:gray">TOM</span><span style="color:red;font-size:64px;vertical-align:10px;margin:0 6px">&amp;</span><span style="color:brown">JERRY</span></h1></section>').slides[0];
+ const titleSvg=new DOMParser().parseFromString(htmlToSVG(titleSlide.html),'image/svg+xml');
+ const titleLines=[...titleSvg.querySelector('text').children].map(line=>line.textContent);
  let id=0;
  const compiled=compilePageSVG(svg,{width:1280,height:720,genId:()=>String(++id),geometry:(_,w,h)=>({d:'R0,0,'+w+','+h})});
  const comparison=compiled.shapes.find(shape=>shape.txBody?.p?.some(p=>p.r?.some(run=>run.t.includes('Compare'))));
@@ -39,7 +42,7 @@ import {htmlToSVG} from '../desq-core/shared-vuejs/src/edlib/html-import/html-sl
  const glyph=xml.querySelector('text[data-html-glyph-box]');
  const icon=compiled.shapes.find(shape=>shape.txBody?.p?.some(p=>p.r?.some(run=>run.t==='🧁')));
  const result={glyphBox:glyph?.getAttribute('data-html-glyph-box').split(' ').map(Number),
-   iconBox:icon&&[icon.x,icon.y,icon.w,icon.h],headingWrap,paragraphWrap,lines,alignment:comparison?.txBody.p[0].pPr.$_algn,fractions:runs?.filter(run=>run.docOmml).length,
+   iconBox:icon&&[icon.x,icon.y,icon.w,icon.h],headingWrap,paragraphWrap,lines,titleLines,alignment:comparison?.txBody.p[0].pPr.$_algn,fractions:runs?.filter(run=>run.docOmml).length,
    multiplication:runs?.some(run=>run.docMathML?.includes('×')),
    prose:runs?.filter(run=>!run.docOmml).map(run=>run.t).join(''),
    mathShapeCount:compiled.shapes.filter(shape=>shape.txBody?.p?.some(p=>p.r?.some(run=>run.docOmml))).length};
@@ -62,5 +65,6 @@ import {htmlToSVG} from '../desq-core/shared-vuejs/src/edlib/html-import/html-sl
   assert.equal(result.mathShapeCount,1);
   assert.match(result.prose,/Compare.*and.*\./);
   assert.deepEqual(result.lines,['The harvest is','only beginning.']);
+  assert.deepEqual(result.titleLines,['TOM&JERRY']);
  } finally {rmSync(directory,{recursive:true,force:true});}
 });

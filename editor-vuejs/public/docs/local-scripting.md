@@ -63,6 +63,8 @@ export async function checkAnswer(ctx, correct) {
 
 This declaration alone does not run in an ordinary browser. Include a small standalone controller that loads these same modules and passes a browser implementation of `ctx`. See the complete [local quiz example](../examples/html-slides/local-quiz.html). Never put both a direct `data-desq-goto` and a script binding on the same control. Use document-global unique element and slide IDs. Keep hidden feedback as authored DOM with an ID; it is imported as editable geometry and initially hidden in playback.
 
+Give feedback variants that occupy the same location a fixed slot and use absolute positioning within it. During import, DESQ measures hidden targets together. A target with `display:none` has no layout box, and its hidden style alone cannot tell the importer which message, badge, and button appear together. To repair an existing deck with stacked feedback, move the alternatives into shared slots in the source HTML and reimport it.
+
 For a simple unconditional jump, keep using `data-desq-goto="slide-id"` or a sole literal `goToSlide('slide-id')` handler. Those become ordinary native slide hyperlinks and can work in PowerPoint without scripting.
 
 ## Existing onclick HTML
