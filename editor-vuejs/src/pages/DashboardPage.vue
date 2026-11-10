@@ -49,10 +49,10 @@
           </div>
           <input ref="openFileInput" type="file" accept=".pptx,.docx,.pub,.html,.htm,.pdf" hidden @change="openSelectedFile" />
           <div class="supported-formats" aria-label="Supported file types">
+            <span class="format-type"><i class="format-icon html" aria-hidden="true">&lt;/&gt;</i> HTML <b>.html</b></span>
             <span class="format-type"><i class="format-icon powerpoint" aria-hidden="true">P</i> PowerPoint <b>.pptx</b></span>
             <span class="format-type"><i class="format-icon word" aria-hidden="true">W</i> Word <b>.docx</b></span>
             <span class="format-type"><i class="format-icon publisher" aria-hidden="true">▤</i> Publisher <b>.pub</b></span>
-            <span class="format-type"><i class="format-icon html" aria-hidden="true">&lt;/&gt;</i> HTML <b>.html</b></span>
             <span class="format-type"><i class="format-icon pdf" aria-hidden="true">PDF</i> PDF <b>.pdf</b></span>
           </div>
           <div class="supported-formats">

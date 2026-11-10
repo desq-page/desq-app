@@ -106,6 +106,9 @@
           <div
             class="caption"
             v-if="caption && piniaResize().windowWidth > 1024"
+            :style="{
+              color: buttonType == 'primary' ? 'green' : 'black',
+            }"
           >
             {{ caption }}
           </div>

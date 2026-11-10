@@ -48,9 +48,9 @@ const questions = [
         <div class="page-width hero">
           <div class="hero-stage">
             <div class="hero-copy">
-              <p class="eyebrow">THE FULL-FLEDGED AI ERA SLIDE EDITOR</p>
+              <p class="eyebrow">THE FULL-FLEDGED AI SLIDE EDITOR</p>
               <h1 id="hero-title">Your next design <br/>is in a <em>slide</em>.</h1>
-              <p class="hero-description">All formats converged. Presentation, Documents, PDF, Publishers, Powerpoint Games, all are slides. One ubiquitous format for it all: HTML. Create and open animated presentations, documents, print layouts, and interactive apps. With or without AI. Edit and share your work in a single HTML file. Because it is HTML, it just works! No additional tool needed.</p>
+              <p class="hero-description">Import various formats to slides. AI assits to create great content, or interactive games in HTML.</p>
               <div class="hero-actions">
                 <a href="/work" class="button button-lime">Continue in browser <span aria-hidden="true">↗</span></a>
                 <a href="#features" class="text-link">Explore the features <span aria-hidden="true">↓</span></a>
@@ -60,43 +60,6 @@ const questions = [
 
             <figure class="hero-workflow">
               <img src="/images/desq-workflow.svg" alt="PowerPoint, Publisher, Word, PDF, ChatGPT, Gemini Notebook, and HTML feed into the DESQ slide editor, shown with slide thumbnails, an editable canvas, and formatting tools." width="600" height="422" />
-            </figure>
-          </div>
-
-          <div id="why-desq" class="hero-values" aria-label="Why DESQ">
-            <article>
-              <div class="value-top"><span>01 / PRESENT IN HTML</span><span class="value-symbol" aria-hidden="true">↗</span></div>
-              <h2>Completely in HTML.</h2>
-              <p>Edit and view presentations and other Office documents in your browser. Share, embed, or publish a single HTML file, or work offline with AI agents.</p>
-            </article>
-            <article>
-              <div class="value-top"><span>02 / EVERY FEATURE</span><span class="value-symbol" aria-hidden="true">✳</span></div>
-              <h2>Made to move.</h2>
-              <p>All PowerPoint features preserved: charts, SmartArt, animations, sound, video, and Morph. Interactive slides that stay alive.</p>
-            </article>
-            <article>
-              <div class="value-top"><span>03 / FULL ROUND TRIP</span><span class="value-symbol" aria-hidden="true">⇄</span></div>
-              <h2>PowerPoint, both ways.</h2>
-              <p>Load PPTX. Edit every detail. Save as PPTX. Full editability, with your Master Slides and corporate themes intact.</p>
-            </article>
-          </div>
-
-          <div class="demo-section">
-            <h2 class="demo-title">See it in action.</h2>
-          <figure class="presentation-preview">
-              <div class="preview-toolbar"><span><span class="file-icon" aria-hidden="true">▱</span> christmas-2026-claude.html</span><span class="file-badge">SAMPLE HTML</span></div>
-              <iframe
-                class="sample-player"
-                src="/samples/christmas-2026-claude.html"
-                title="Christmas 2026 presentation created with Claude"
-                sandbox="allow-scripts allow-downloads"
-                allow="fullscreen"
-              ></iframe>
-              <figcaption class="sample-caption">
-                This HTML file is created by AI (free version).
-                <a href="/samples/christmas-2026-claude.html" download="christmas-2026-claude.html">Download it</a>
-                and open in <a href="/work">Desq editor</a> to turn it into editable PPTX with full animation intact.
-              </figcaption>
             </figure>
           </div>
         </div>
@@ -114,26 +77,6 @@ const questions = [
           </article>
         </div>
       </section>
-
-      <section class="ownership-section page-width" aria-labelledby="ownership-title">
-        <div class="section-intro"><div><p class="eyebrow">YOUR WORK. YOUR POSSIBILITIES.</p><h2 id="ownership-title">Your documents. Your way.</h2></div><p>One HTML file gives your presentations and other Office documents a life beyond any single app.</p></div>
-        <div class="ownership-grid">
-          <article class="ownership-card"><span class="ownership-label">01 / TAKE IT ANYWHERE</span><h3>The file is the workspace.</h3><p>Your content, media, viewer, and editor live together. Open and edit offline, keep files private on your device, or share and embed your work when you're ready.</p><div class="file-contents" aria-label="One HTML file contains slides, media, viewer, and editor"><b>presentation.html</b><div><span>Slides</span><span>Media</span><span>Viewer</span><span>Editor</span></div></div></article>
-          <article class="ownership-card agent-card"><span class="ownership-label">02 / CREATE WITH AI AGENTS</span><h3>Open for a new way to create.</h3><p>DESQ is designed to work with AI agents. Create and edit presentations and documents together, then refine every detail in your browser. Keep the result as HTML or save presentations as PowerPoint.</p><div class="agent-flow" aria-label="AI agent and browser editor work with the same presentation"><span>AI agent</span><b aria-hidden="true">⇄</b><span>Your presentation</span><b aria-hidden="true">⇄</b><span>You</span></div><p class="privacy-note">Local editing stays on your device. You choose when to use a connected AI service.</p></article>
-        </div>
-      </section>
-
-      <section id="products" class="other-formats page-width" aria-labelledby="formats-title">
-        <div><p class="eyebrow">BEYOND PRESENTATIONS</p><h2 id="formats-title">More of your Office files, welcome.</h2><p>Also import Microsoft Publisher and Word files, and convert Office content to editable HTML.</p></div>
-        <div class="format-links"><a href="/work"><b>PUB</b><span>Microsoft Publisher <span aria-hidden="true">↗</span></span></a><a href="/work"><b>DOCX</b><span>Microsoft Word <span aria-hidden="true">↗</span></span></a></div>
-      </section>
-
-      <section class="faq-section page-width" aria-labelledby="faq-title">
-        <div><p class="eyebrow">A FEW MORE DETAILS</p><h2 id="faq-title">From Office<br />to the open web.</h2><p>Convert PowerPoint and other Office documents to HTML, share your work, and keep creating.</p></div>
-        <div class="faq-list"><details v-for="question in questions" :key="question.title"><summary>{{ question.title }}<span aria-hidden="true">+</span></summary><p>{{ question.answer }}</p></details></div>
-      </section>
-
-      <section class="cta-section" aria-labelledby="cta-title"><div class="page-width cta-inner"><div><p class="eyebrow">EVERY FEATURE. ONE HTML FILE.</p><h2 id="cta-title">Your next presentation or document<br />starts in your browser.</h2></div><div class="cta-actions"><a href="/work" class="button button-lime">Continue in browser <span aria-hidden="true">↗</span></a><span>No installation. No account required to edit.</span></div></div></section>
     </main>
 
     <footer class="site-footer page-width"><a href="/" class="wordmark">DESQ</a><p>Office documents, with a life on the web.</p><nav aria-label="Footer navigation"><a href="/work">Workspace</a><a href="/terms">Terms</a><a href="/support">Support</a><a href="https://github.com/desq-page/desq-app" target="_blank" rel="noopener noreferrer">GitHub</a></nav></footer>

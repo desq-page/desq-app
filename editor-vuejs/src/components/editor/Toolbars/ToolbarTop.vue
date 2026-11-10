@@ -389,6 +389,7 @@
               :icon="ImageAltText24Regular"
               :options="textOcrOptions"
               :disabled="!piniaSelect().selShpFormat?.blipFill || !!piniaInfo().loadingBar"
+              button-type="primary"
             />
             <ToolbarItem
               caption="AI Remove BG"
@@ -396,6 +397,7 @@
               :size="30"
               :disabled="!piniaSelect().selShpFormat?.blipFill"
               :onClick="rmbgUsingXenova"
+              button-type="primary"
             />
             <ToolbarItem type="divider" />
             <ToolbarItem
@@ -505,6 +507,7 @@ import {
   ImageEdit20Regular,
   ImageAltText24Regular,
   VideoBackgroundEffect20Filled,
+  ScanText24Filled,
 } from "@vicons/fluent";
 import FileMenu from "./FileMenu.vue";
 // import ZoomToolbar from "./ZoomToolbar.vue";
@@ -548,7 +551,7 @@ const hasAnimationSelection = computed(() =>
   !!(piniaSelect().selGrpShps?.length || piniaSelect().selShps?.length),
 );
 const textOcrOptions = [
-  { key: 'extract-all', label: 'Extract All', icon: ImageEdit20Regular, onClick: () => extractPictureText(piniaInfo()) },
+  { key: 'extract-all', label: 'Extract All', icon: ScanText24Filled, onClick: () => extractPictureText(piniaInfo()) },
   { key: 'extract-region', label: 'Extract Region', icon: ImageAltText24Regular, onClick: () => selectPictureTextRegion(piniaInfo()) },
 ];
 function animationOptions(group) {

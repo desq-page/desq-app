@@ -109,6 +109,9 @@
           <div
             class="caption"
             v-if="caption && piniaResize().windowWidth > 1024"
+            :style="{
+              color: buttonType == 'primary' ? 'green' : 'black',
+            }"
           >
             {{ caption }}
           </div>
@@ -142,7 +145,7 @@
 </template>
 
 <script setup lang="ts">
-import { getTheme, getFileInfo, getMasterInfo } from "shared-vuejs/editor";
+import { getTheme, getFileInfo, getMasterInfo, globals } from "shared-vuejs/editor";
 
 import { NDivider, NTooltip } from "naive-ui";
 import { ref } from "vue";
