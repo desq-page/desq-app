@@ -173,16 +173,16 @@ export const slideOptions = computed(() => [
         key: "copy",
         icon: DocumentCopy24Regular,
         color: "#239df0",
-        label: "Copy Page",
+        label: "Copy Slide",
         onClick: (e) => {
           copySlideClipboard();
         },
-        tooltip: "Copy Page",
+        tooltip: "Copy Slide",
       },
       {
         quaternary: true,
         key: "paste",
-        label: "Paste Page",
+        label: "Paste Slide",
         icon: ClipboardPaste24Regular,
         color: "#957606",
         onClick: (e) => {
@@ -205,7 +205,7 @@ export const slideOptions = computed(() => [
         type: "divider",
       },
       {
-        label: "Export Page",
+        label: "Export Slide",
         key: "slidesave",
         icon: DownloadFilled,
         show: !getSlidesMasterView(),
@@ -243,7 +243,7 @@ export const slideOptions = computed(() => [
         type: "divider",
       },
       {
-        label: "Delete " + (!getSlidesMasterView() ? "Page" : "Layout"),
+        label: "Delete " + (!getSlidesMasterView() ? "Slide" : "Layout"),
         color: "red",
         key: "delslide",
         show: !isWordDocument(getFileInfo(), [getSlideInfo()]),

@@ -263,8 +263,7 @@
             :active="!!piniaInfo().showGuide"
           />
           <ToolbarItem
-            caption="Play"
-            tooltip="Play (Anime.js)"
+            caption="Show"
             :icon="SlideshowFilled"
             :onClick="openPreviewModal"
             :disabled="piniaSlides().masterView || !!piniaInfo().useGrid"
@@ -441,7 +440,7 @@
           :disabled="!!piniaInfo().useGrid"
           button-type="primary"
           quaternary
-          tooltip="Play (Anime.js)"
+          label="Show"
         />
       </template>
     </NTabs>
