@@ -275,7 +275,7 @@
           :active="piniaInfo().currentTaskPane == 'hyperlink'"
         />
       </NTabPane> -->
-      <NTabPane name="addins" tab="AI✨" :disabled="showSpecialTab()">
+      <NTabPane name="addins" tab="AI" :disabled="showSpecialTab()">
         <div :class="$style['header-left']">
           <ToolbarAddins />
         </div>
