@@ -86,7 +86,7 @@ const props = defineProps({
 
 const ShapeContextMenuOptions = computed(() => [
   {
-    label: "Edit Text (AI)",
+    label: "Extract Text Here",
     key: "edit-picture-text",
     icon: AutoAwesomeOutlined,
     show: !!editablePicture(),
@@ -102,10 +102,10 @@ const ShapeContextMenuOptions = computed(() => [
   //     showMessage("Press shift while right click on text to show more functions", 5000);
   //   }
   // },
-  // {
-  //   type:"divider",
-  //   show: !!piniaSelect().editingInfo,
-  // },
+  {
+    type:"divider",
+    show: !!editablePicture(),
+  },
   {
     label: "Manage",
     key: "editshape",

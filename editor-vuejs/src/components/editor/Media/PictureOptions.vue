@@ -305,7 +305,7 @@ function pasteImage() {
     <ToolbarItem
       quaternary
       v-if="piniaSelect().selShpFormat?.blipFill"
-      label="(AI) Erase Image BG"
+      label="AI Remove BG"
       labelGap="15px"
       :icon="VideoBackgroundEffect20Filled"
       :size="30"
@@ -335,16 +335,8 @@ function pasteImage() {
             traceImage(piniaSelect().selShpFormat);
           }
         "
+        tooltip="Create shape silhouette"
       />
-      <NTooltip
-        :style="{
-          maxWidth: '400px',
-        }"
-        placement="right-end"
-      >
-        <template #trigger>ℹ️</template>
-        Create shape silhouette.
-      </NTooltip>
     </div>
     <div class="guide-toolbar-item">
       <ToolbarItem
@@ -376,16 +368,8 @@ function pasteImage() {
             makeTransparent('#000000');
           }
         "
+        tooltip="Turn one color to transparent (currently only for WHITE)"
       />
-      <NTooltip
-        :style="{
-          maxWidth: '400px',
-        }"
-        placement="right-end"
-      >
-        <template #trigger>ℹ️</template>
-        Turn one color to transparent (currently only for WHITE).
-      </NTooltip>
     </div>
   </NFlex>
   <LayoutHeader label="Picture Transparency" />

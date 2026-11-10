@@ -124,7 +124,11 @@
       <NTabPane name="insert" tab="Insert" :disabled="showSpecialTab()" >
         <div :class="$style['header-left']">
           <ToolbarSlide />
-
+          <ToolbarItem
+            caption="Agent"
+            :icon="AutoAwesomeOutlined"
+            :onClick="() => piniaInfo().openEditorAgentModal = true"
+          />
           <ToolbarItem type="divider" v-if="piniaResize().windowWidth >= 769" />
           <ToolbarItemDropdown :options="TextOptions" :icon="TextT24Filled" caption="Text" />
           <ToolbarItemDropdown :options="ShapeOptions" :icon="TriangleSquareCircle" caption="Shapes" />
@@ -198,6 +202,7 @@
             scrollable
           />
           <ToolbarItem type="divider" />
+          
           <ToolbarItem
             caption="Animation Pane"
             tooltip="Animation Pane"
@@ -205,6 +210,9 @@
             :onClick="() => toggleTaskPane('animations')"
             :active="piniaInfo().currentTaskPane == 'animations'"
           />
+          <ToolbarItem type="divider" />
+          <ToolbarLocalScript />
+          
         </div>
       </NTabPane>
       <NTabPane name="design" tab="Design" :disabled="showSpecialTab()">
@@ -275,11 +283,6 @@
           :active="piniaInfo().currentTaskPane == 'hyperlink'"
         />
       </NTabPane> -->
-      <NTabPane name="addins" tab="AI" :disabled="showSpecialTab()">
-        <div :class="$style['header-left']">
-          <ToolbarAddins />
-        </div>
-      </NTabPane>
       <NTabPane
         v-if="piniaSelect().selShps.length > 0"
         name="shape-format"
@@ -316,32 +319,12 @@
             caption="Format Text"
           />
 
-          <ToolbarItem type="divider" />
           <ToolbarItem
             caption="Edit Points"
             tooltip="Edit Points"
             :icon="DataLine20Filled"
             :onClick="switchEditingPoint"
             :disabled="!showEditingPoint() || !!piniaInfo().useGrid"
-          />
-          <ToolbarItem
-            quaternary
-            :icon="Crop24Filled"
-            :size="26"
-            :onClick="
-              (e) => {
-                if (getSelectCropShp()) {
-                  // piniaSelect().cropShp = '';
-                  deactivateCropImage();
-                } else {
-                  // piniaSelect().cropShp = selShpFormat.id;
-                  activateCropImage();
-                }
-              }
-            "
-            :disabled="!showCrop()"
-            caption="Crop"
-            :active="!!piniaSelect().cropShp"
           />
           <!-- <ToolbarItemDropdown
             caption="Flip"
@@ -383,6 +366,40 @@
           <template v-if="piniaSelect().selShpFormat?.blipFill">
             <ToolbarItem type="divider" />
             <ToolbarItem
+              quaternary
+              :icon="Crop24Filled"
+              :size="26"
+              :onClick="
+                (e) => {
+                  if (getSelectCropShp()) {
+                    // piniaSelect().cropShp = '';
+                    deactivateCropImage();
+                  } else {
+                    // piniaSelect().cropShp = selShpFormat.id;
+                    activateCropImage();
+                  }
+                }
+              "
+              :disabled="!showCrop()"
+              caption="Crop"
+              :active="!!piniaSelect().cropShp"
+            />
+            
+            <ToolbarItemDropdown
+              caption="AI OCR Extract"
+              :icon="ImageAltText24Regular"
+              :options="textOcrOptions"
+              :disabled="!piniaSelect().selShpFormat?.blipFill || !!piniaInfo().loadingBar"
+            />
+            <ToolbarItem
+              caption="AI Remove BG"
+              :icon="VideoBackgroundEffect20Filled"
+              :size="30"
+              :disabled="!piniaSelect().selShpFormat?.blipFill"
+              :onClick="rmbgUsingXenova"
+            />
+            <ToolbarItem type="divider" />
+            <ToolbarItem
               caption="Picture Format"
               tooltip="Picture Format"
               :icon="Image24Regular"
@@ -401,18 +418,6 @@
         </div>
       </NTabPane> -->
       <template #suffix>
-        <ToolbarItem
-          button-type="primary"
-          button-size="small"
-          quaternary
-          :icon="AutoAwesomeOutlined"
-          :onClick="
-            (e) => {
-             piniaInfo().openEditorAgentModal = true
-            }
-          "
-          tooltip="Agent"
-        />
         <!-- <ZoomToolbar /> -->
         <!-- <ViewMode /> -->
         <ToolbarItem type="spacing" />
@@ -498,6 +503,9 @@ import {
   StarEmphasis24Regular,
   StarArrowRightEnd24Regular,
   StarEdit24Regular,
+  ImageEdit20Regular,
+  ImageAltText24Regular,
+  VideoBackgroundEffect20Filled,
 } from "@vicons/fluent";
 import FileMenu from "./FileMenu.vue";
 // import ZoomToolbar from "./ZoomToolbar.vue";
@@ -513,8 +521,9 @@ import ToolbarTransition from "./ToolbarTransition.vue";
 import { GroupObjects, Layers, StarReview } from "@vicons/carbon";
 import { toggleGroup } from "shared-vuejs/api/group";
 import ToolbarItemDropdown from "./ToolbarItemDropdown.vue";
-import { showCrop, showEditingPoint, showGroup, unionOptions } from "./ToolbarUtils";
-import ToolbarAddins from "@/components/addon/ToolbarAddins.vue";
+import { extractPictureText, selectPictureTextRegion } from "shared-vuejs/api/edit-picture-text";
+import { showCrop, showEditingPoint, showGroup, unionOptions, rmbgUsingXenova } from "./ToolbarUtils";
+import ToolbarLocalScript from "@/components/addon/ToolbarLocalScript.vue";
 import ToolbarEditPoint from "./ToolbarEditPoint.vue";
 import { switchEditingPoint } from "shared-vuejs/api/shape";
 
@@ -539,6 +548,10 @@ const animationGroups = [
 const hasAnimationSelection = computed(() =>
   !!(piniaSelect().selGrpShps?.length || piniaSelect().selShps?.length),
 );
+const textOcrOptions = [
+  { key: 'extract-all', label: 'Extract All', icon: ImageEdit20Regular, onClick: () => extractPictureText(piniaInfo()) },
+  { key: 'extract-region', label: 'Extract Region', icon: ImageAltText24Regular, onClick: () => selectPictureTextRegion(piniaInfo()) },
+];
 function animationOptions(group) {
   return Object.entries(defAnimList[group]).map(([id, effect]: [string, any]) => ({
     key: id,

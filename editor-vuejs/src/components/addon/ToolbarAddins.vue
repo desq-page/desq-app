@@ -1,22 +1,4 @@
 <template>
-  <ToolbarItem caption="Local JavaScript…" :icon="Code24Regular" :size="30" :color="g.themeOverrides?.common?.primaryColor" :onClick="() => scriptDialogOpen = true" />
-  <ScriptCodeDialog v-if="scriptDialogOpen" v-model:show="scriptDialogOpen" />
-  <ToolbarItem
-    caption="Extract Text (AI)"
-    :icon="ImageEdit20Regular"
-    :size="30"
-    :color="g.themeOverrides?.common?.primaryColor"
-    :disabled="!editablePicture() || !!piniaInfo().loadingBar"
-    :onClick="() => extractPictureText(piniaInfo())"
-  />
-  <ToolbarItem
-    caption="Extract Region (AI)"
-    :icon="ImageEdit20Regular"
-    :size="30"
-    :color="g.themeOverrides?.common?.primaryColor"
-    :disabled="!editablePicture() || !!piniaInfo().loadingBar"
-    :onClick="() => selectPictureTextRegion(piniaInfo())"
-  />
   <ToolbarItem
     caption="Edit In Photopea..."
     :icon="ImageEdit20Regular"
@@ -71,15 +53,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import ScriptCodeDialog from '../editor/Dialogs/ScriptCodeDialog.vue';
-const scriptDialogOpen=ref(false);
 import { getShapeImage } from "shared-vuejs/api/downloadShape";
 import { editablePicture, extractPictureText, selectPictureTextRegion } from "shared-vuejs/api/edit-picture-text";
 import { piniaInfo, piniaSelect } from "@/lib/common/store";
 import {
   ImageEdit20Regular,
-  Code24Regular,
   VideoBackgroundEffect20Filled,
 } from "@vicons/fluent";
 import ToolbarItem from "../editor/Toolbars/ToolbarItem.vue";
