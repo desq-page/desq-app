@@ -40,40 +40,24 @@
           </p>
         </div>
         <div class="workspace-actions">
-          <button
-            class="button button-primary"
-            @click="piniaInfo().openNewFileModal = true"
-          >
-            <span aria-hidden="true">+</span> Create new
-          </button>
+          <button class="button button-green-light" @click="createBlankPresentation"><span aria-hidden="true">▤</span> Blank Presentation</button>
+          <button class="button button-green" @click="piniaInfo().openEditorAgentModal = true"><span aria-hidden="true">✦</span> Create with AI</button>
           <div class="open-file-action">
-            <button
-              class="button button-dark"
-              :disabled="openingFile"
-              @click="openFileInput?.click()"
-              aria-describedby="open-file-privacy"
-            >
-              {{ openingFile ? "Opening file…" : "Open a file" }}
-              <span aria-hidden="true">↗</span>
+            <button class="button button-green-dark" :disabled="openingFile" @click="openFileInput?.click()" aria-describedby="open-file-privacy">
+              {{ openingFile ? "Opening file…" : "Open Existing" }} <span aria-hidden="true">↗</span>
             </button>
-            
           </div>
-          
-          <input
-            ref="openFileInput"
-            type="file"
-            accept=".pptx,.docx,.pub,.html,.htm,.pdf"
-            hidden
-            @change="openSelectedFile"
-          />
-          <p class="supported-formats">
-            PowerPoint <b>.pptx</b> <span>·</span> Word <b>.docx</b>
-            <span>·</span> Publisher <b>.pub</b>
-            <span>·</span> Editable HTML <b>.html</b>
-            <br/>
+          <input ref="openFileInput" type="file" accept=".pptx,.docx,.pub,.html,.htm,.pdf" hidden @change="openSelectedFile" />
+          <div class="supported-formats" aria-label="Supported file types">
+            <span class="format-type"><i class="format-icon powerpoint" aria-hidden="true">P</i> PowerPoint <b>.pptx</b></span>
+            <span class="format-type"><i class="format-icon word" aria-hidden="true">W</i> Word <b>.docx</b></span>
+            <span class="format-type"><i class="format-icon publisher" aria-hidden="true">▤</i> Publisher <b>.pub</b></span>
+            <span class="format-type"><i class="format-icon html" aria-hidden="true">&lt;/&gt;</i> HTML <b>.html</b></span>
+            <span class="format-type"><i class="format-icon pdf" aria-hidden="true">PDF</i> PDF <b>.pdf</b></span>
+          </div>
+          <div class="supported-formats">
             <span id="open-file-privacy" class="privacy-caption">Work offline in this browser. Your files stay private on your device.</span>
-          </p>
-          
+          </div>
         </div>
       </section>
 
@@ -144,6 +128,7 @@
 <script setup lang="ts">
 import { getAllDexie } from "shared-vuejs/api/db";
 import { markFileCreated } from "shared-vuejs/api/homeNavigation";
+import { createNewFile } from "shared-vuejs/api/load";
 import { piniaInfo } from "@/lib/common/store";
 import { computed, defineAsyncComponent, onMounted, ref } from "vue";
 import { RouterLink } from "vue-router";
@@ -164,6 +149,16 @@ import { fetchUser, refreshAccessToken } from "@/lib/common/useAuth";
 const localFiles: any = ref([]);
 const openFileInput = ref<HTMLInputElement | null>(null);
 const openingFile = ref(false);
+
+async function createBlankPresentation() {
+  piniaInfo().loadingBar = "Please wait...";
+  try {
+    await createNewFile("blank");
+  } catch (error) {
+    piniaInfo().loadingBar = "";
+    showError(error instanceof Error ? error.message : "Unable to create presentation");
+  }
+}
 
 async function openSelectedFile(event: Event) {
   const input = event.target as HTMLInputElement;
@@ -415,11 +410,11 @@ h1 span {
 }
 .workspace-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 13px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
   flex-shrink: 0;
 }
-.workspace-actions > .button { align-self: start; }
+.workspace-actions > .button, .open-file-action > .button { width: 100%; min-width: 0; align-self: stretch; padding: 10px 7px; gap: 6px; min-height: 44px; white-space: nowrap; font-size: 13px; }
 .open-file-action { display: flex; flex-direction: column; gap: 8px; }
 .privacy-caption { margin: 0; grid-column: 1/-1; text-align: center; color: #487b39; font-size: 11px; font-weight: 600; line-height: 1.5; }
 .button {
@@ -465,18 +460,30 @@ h1 span {
 }
 .supported-formats {
   grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px 14px;
   margin: 0;
-  text-align: center;
-  color: #79856f;
+  color: #627269;
   font-size: 10px;
 }
-.supported-formats b {
-  font-weight: 500;
-  color: #526443;
-}
-.supported-formats > span {
-  margin-inline: 9px;
-}
+.supported-formats b { font-weight: 600; color: #355d45; }
+.formats-caption-break { flex-basis: 100%; height: 0; }
+.format-type { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.format-icon { display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 4px; color: white; font-size: 9px; font-style: normal; font-weight: 800; }
+.format-icon.powerpoint { background: #d45b42; }
+.format-icon.word { background: #3c76b4; }
+.format-icon.publisher { background: #43876b; }
+.format-icon.html { background: #d18a35; font-size: 7px; }
+.format-icon.pdf { background: #bb4b48; font-size: 7px; }
+.button-green-light { background: #ed8b24; color: #fff; box-shadow: 0 3px 10px rgba(190, 100, 15, .28); }
+.button-green-light:hover { background: #d97816; }
+.button-green { background: #6441c6; color: #fff; box-shadow: 0 3px 10px rgba(72, 43, 157, .25); }
+.button-green:hover { background: #5434b2; }
+.button-green-dark { background: #16834d; color: #fff; box-shadow: 0 3px 10px rgba(14, 101, 57, .28); }
+.button-green-dark:hover { background: #106c3f; }
 .documents-section {
   border: 1px solid #dfe6d6;
   border-radius: 12px;
