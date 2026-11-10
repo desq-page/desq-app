@@ -96,11 +96,11 @@
       <path d="M15 15h12v10h-7l-5 4z" fill="none" stroke="#fff" stroke-linejoin="round"/>
       <text x="43" y="26">ChatGPT</text>
     </g>
-    <g transform="translate(232 378)">
-      <rect width="150" height="42" rx="10" fill="#fffdf8" stroke="#ccd9bf"/>
+    <g transform="translate(222 378)">
+      <rect width="170" height="42" rx="10" fill="#fffdf8" stroke="#ccd9bf"/>
       <use href="#icon" fill="#4e55a4"/>
       <path d="M21 12q1 7 8 9-7 2-8 9-2-7-8-9 6-2 8-9" fill="#fff"/>
-      <text x="43" y="26">Gemini Notebook</text>
+      <text x="43" y="26" font-size="12">Gemini Notebook</text>
     </g>
     <g transform="translate(426 368)">
       <use href="#chip"/><use href="#icon" fill="#a5572d"/>

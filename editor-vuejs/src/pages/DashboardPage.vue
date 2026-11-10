@@ -307,7 +307,7 @@ button:focus-visible {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 104px;
+  min-height: 80px;
   gap: 24px;
 }
 .workspace-header nav {

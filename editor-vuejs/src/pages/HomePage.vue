@@ -50,7 +50,7 @@ const questions = [
             <div class="hero-copy">
               <p class="eyebrow">THE FULL-FLEDGED AI SLIDE EDITOR</p>
               <h1 id="hero-title">Your next design <br/>is in a <em>slide</em>.</h1>
-              <p class="hero-description">Import various formats to slides. AI assits to create great content, or interactive games in HTML.</p>
+              <p class="hero-description">Import various formats to slides with all funcitons and layouts intact. Use AI to create great content, or interactive games in HTML, and import them into slide format animations for editing. Create beautiful slides in NotebookLM or other AI image generator and convert them to real text. Save output as single HTML for easy distribution, embedding or publishing.</p>
               <div class="hero-actions">
                 <a href="/work" class="button button-lime">Continue in browser <span aria-hidden="true">↗</span></a>
                 <a href="#features" class="text-link">Explore the features <span aria-hidden="true">↓</span></a>
@@ -97,8 +97,8 @@ a:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px solid
 .site-header nav { display: flex; align-items: center; gap: 28px; font-size: 12px; font-weight: 650; }
 .button { display: inline-flex; align-items: center; justify-content: space-between; gap: 22px; border-radius: 5px; padding: 14px 20px; font-size: 13px; font-weight: 750; line-height: 1.45; transition: background .2s, transform .2s; }
 .button:hover { transform: translateY(-2px); }
-.desq-home .button-dark { background: var(--ink); color: #fff; }
-.desq-home .button-lime { background: var(--lime); color: #173323; }
+.desq-home .button-dark { background: #245439; color: #fffdf5; }
+.desq-home .button-lime { background: var(--lime); color: #245439; }
 .button-lime:hover { background: #e0f5b9; }
 .desq-home .hero-actions .button-lime { background: #245439; color: #fffdf5; }
 .desq-home .hero-actions .button-lime:hover { background: #193b2b; }
