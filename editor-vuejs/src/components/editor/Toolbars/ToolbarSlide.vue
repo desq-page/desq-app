@@ -5,7 +5,7 @@
     :options="newSlideOptions"
     :size="26"
     v-if="!piniaSlides().masterView"
-    caption="New Page"
+    caption="New Slide"
     :class="{ disabled: !!piniaInfo().useGrid }"
     :onClick="
       async () => {

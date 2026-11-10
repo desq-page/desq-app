@@ -45,13 +45,13 @@ import { isWordDocument } from "shared-vuejs/api/save-document";
 
 export const newSlideOptions = [
   {
-    label: "New Page",
+    label: "New Slide",
     key: "newslide",
     icon: AddBoxOutlined,
     onClick: doInsertSlide,
   },
   {
-    label: "Duplicate Page",
+    label: "Duplicate Slide",
     key: "dupslide",
     icon: SaveCopy24Regular,
     onClick: duplicateSlide,

@@ -9,7 +9,7 @@ onMounted(() => { document.title = "Support — DESQ"; });
   <div class="support-page">
     <a class="skip-link" href="#support-content">Skip to content</a>
     <header class="site-header page-width">
-      <RouterLink to="/" class="wordmark" aria-label="DESQ home"><img src="/favicon.svg?v=desq-color" alt="" />DESQ</RouterLink>
+      <RouterLink to="/" class="wordmark" aria-label="DESQ home"><img src="/favicon.svg?v=desq-mark-v7" alt="" />DESQ</RouterLink>
       <nav aria-label="Main navigation">
         <RouterLink to="/">Back to home</RouterLink>
         <RouterLink to="/work" class="start-button">Workspace <span aria-hidden="true">↗</span></RouterLink>

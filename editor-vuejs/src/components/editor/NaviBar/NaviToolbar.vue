@@ -1,7 +1,7 @@
 <template>
   <div class="navi-toolbar">
     <div v-if="!piniaSlides().masterView">
-      <span style="font-size: 14px">Page </span>
+      <span style="font-size: 14px">Slide </span>
       <input
         :style="{
           width: '28px',
@@ -40,7 +40,7 @@
     <!-- <ToolbarItem
       quaternary
       :icon="AddSquare24Regular"
-      label="Add Page"
+      label="Add Slide"
       :options="newSlideOptions"
       v-if="!piniaSlides().masterView"
       :tooltip="'Add slide'"

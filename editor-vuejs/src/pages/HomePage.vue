@@ -35,7 +35,7 @@ const questions = [
   <div class="desq-home">
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header page-width">
-      <a href="/" class="wordmark" aria-label="DESQ home"><img src="/favicon.svg?v=desq-color" alt="" />DESQ</a>
+      <a href="/" class="wordmark" aria-label="DESQ home"><img src="/favicon.svg?v=desq-mark-v7" alt="" />DESQ</a>
       <nav aria-label="Main navigation">
         <a class="nav-detail" href="#features">Features</a>
         <a href="https://github.com/desq-page/desq-app" target="_blank" class="nav-detail">Github</a>

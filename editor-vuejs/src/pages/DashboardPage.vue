@@ -7,7 +7,7 @@
         class="wordmark"
         aria-label="DESQ home"
       >
-        <img class="brand-symbol" src="/favicon.svg?v=desq-color" alt="" />
+        <img class="brand-symbol" src="/favicon.svg?v=desq-mark-v7" alt="" />
         DESQ
       </RouterLink>
       <nav aria-label="Workspace navigation">

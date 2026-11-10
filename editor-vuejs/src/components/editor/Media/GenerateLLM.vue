@@ -91,7 +91,7 @@
           width: '200px',
         }"
       >
-        Generate {{ mode == "deck" ? `New File` : "New Page" }}
+        Generate {{ mode == "deck" ? `New File` : "New Slide" }}
       </NButton>
     </NFlex>
 
