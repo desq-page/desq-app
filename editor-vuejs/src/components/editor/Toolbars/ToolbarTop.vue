@@ -18,6 +18,15 @@
     >
       <template #prefix>
         <ToolbarItem type="spacing" />
+        <a
+          href="/work"
+          aria-label="DESQ workspace"
+          title="Workspace"
+          :class="$style['workspace-link']"
+          :style="{ color: g.themeOverrides.common.primaryColor }"
+        >
+          <span :class="$style['workspace-logo']" aria-hidden="true" />
+        </a>
         <FileMenu />
         <ToolbarItem
           quaternary
@@ -809,6 +818,28 @@ const $style = useCssModule();
 </script>
 
 <style module>
+
+.workspace-link {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+.workspace-link:hover {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+.workspace-link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
+}
+.workspace-logo {
+  width: 18px;
+  height: 18px;
+  background: currentColor;
+  mask: url("/favicon.svg?v=desq-mark-v7") center / contain no-repeat;
+}
 
 .header-container {
   /* display: flex; */

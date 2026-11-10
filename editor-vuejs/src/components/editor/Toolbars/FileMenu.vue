@@ -37,7 +37,7 @@ import {
   InsertDriveFileOutlined,
   MenuSharp,
 } from "@vicons/material";
-import { Settings, Home, Application } from "@vicons/carbon";
+import { Settings, Application } from "@vicons/carbon";
 import g from "shared-vuejs/api/global";
 import { showError, toggleTaskPane } from "@/lib/main/utils";
 import { exportFile } from "shared-vuejs/api/html";
@@ -73,17 +73,6 @@ const showHtmlSave = ref(false);
 const openFileInput = ref<HTMLInputElement | null>(null);
 function genViewOptions() {
   return [
-    {
-      label: "Workspace",
-      color: g.themeOverrides.common.primaryColor,
-      icon: Home,
-      bordered: true,
-      size: 24,
-      key: "home",
-      onClick: () => {
-        location.replace("/work"); // to ensure cleaned up?
-      },
-    },
     {
       label: "Window",
       key: "window",
