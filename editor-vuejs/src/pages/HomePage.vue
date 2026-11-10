@@ -49,7 +49,7 @@ const questions = [
           <div class="hero-stage">
             <div class="hero-copy">
               <p class="eyebrow">THE FULL-FLEDGED AI ERA SLIDE EDITOR</p>
-              <h1 id="hero-title">Your next design <br/>is <em>slide</em>.</h1>
+              <h1 id="hero-title">Your next design <br/>is in a <em>slide</em>.</h1>
               <p class="hero-description">All formats converged. Presentation, Documents, PDF, Publishers, Powerpoint Games, all are slides. One ubiquitous format for it all: HTML. Create and open animated presentations, documents, print layouts, and interactive apps. With or without AI. Edit and share your work in a single HTML file. Because it is HTML, it just works! No additional tool needed.</p>
               <div class="hero-actions">
                 <a href="/work" class="button button-lime">Continue in browser <span aria-hidden="true">↗</span></a>
