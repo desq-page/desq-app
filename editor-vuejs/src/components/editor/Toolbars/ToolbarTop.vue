@@ -27,7 +27,9 @@
         >
           <span :class="$style['workspace-logo']" aria-hidden="true" />
         </a>
-        <FileMenu />
+
+        <ToolbarItem type="divider" v-if="piniaResize().windowWidth >= 769" />"
+        
         <ToolbarItem
           quaternary
           :on-click="undo"
@@ -44,7 +46,8 @@
           tooltip="Redo"
           :disabled="piniaInfo().undoIndex >= getUndoHistory().length - 1"
         />
-        <!-- <ToolbarItem type="divider" v-if="piniaResize().windowWidth >= 769" />" -->
+        <ToolbarItem type="divider" v-if="piniaResize().windowWidth >= 769" />"
+        <FileMenu />
           
       </template>
       <NTabPane
