@@ -50,9 +50,9 @@ const questions = [
             <div class="hero-copy">
               <p class="eyebrow">THE FULL-FLEDGED AI SLIDE EDITOR</p>
               <h1 id="hero-title">Your next design <br/>is in a <em>slide</em>.</h1>
-              <p class="hero-description">Import various formats to slides with all funcitons and layouts intact. Use AI to create great content, or interactive games in HTML, and import them into slide format animations for editing. Create beautiful slides in NotebookLM or other AI image generator and convert them to real text. Save output as single HTML for easy distribution, embedding or publishing.</p>
+              <p class="hero-description">Import all formats to slides with interactivities and layouts intact. Use AI to create   games or content, then import them as true slide animations. Create beautiful slides in NotebookLM or other AI tools and turn those images into editable text. Save your work as a single HTML file for easy distribution, embedding, or publishing.</p>
               <div class="hero-actions">
-                <a href="/work" class="button button-lime">Continue in browser <span aria-hidden="true">↗</span></a>
+                <a href="/work" class="button button-lime">Create now<span aria-hidden="true">↗</span></a>
                 <a href="#features" class="text-link">Explore the features <span aria-hidden="true">↓</span></a>
               </div>
               <p class="hero-note"><span aria-hidden="true">✓</span> Free to edit. Works offline in browser. Your files stay private</p>

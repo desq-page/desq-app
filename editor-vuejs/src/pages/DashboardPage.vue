@@ -40,11 +40,11 @@
           </p>
         </div>
         <div class="workspace-actions">
-          <button class="button button-green-light" @click="createBlankPresentation"><span aria-hidden="true">▤</span> Blank Presentation</button>
-          <button class="button button-green" @click="piniaInfo().openEditorAgentModal = true"><span aria-hidden="true">✦</span> Create with AI</button>
+          <button class="button workspace-action action-blank" @click="createBlankPresentation"><span aria-hidden="true">▤</span> Blank Presentation</button>
+          <button class="button workspace-action action-ai" @click="piniaInfo().openEditorAgentModal = true"><span aria-hidden="true">✦</span> Create with AI</button>
           <div class="open-file-action">
-            <button class="button button-green-dark" :disabled="openingFile" @click="openFileInput?.click()" aria-describedby="open-file-privacy">
-              {{ openingFile ? "Opening file…" : "Open Existing" }} <span aria-hidden="true">↗</span>
+            <button class="button workspace-action action-open" :disabled="openingFile" @click="openFileInput?.click()" aria-describedby="open-file-privacy">
+              <span aria-hidden="true">↗</span> {{ openingFile ? "Opening file…" : "Open or Import" }}
             </button>
           </div>
           <input ref="openFileInput" type="file" accept=".pptx,.docx,.pub,.html,.htm,.pdf" hidden @change="openSelectedFile" />
@@ -414,8 +414,36 @@ h1 span {
   gap: 10px;
   flex-shrink: 0;
 }
-.workspace-actions > .button, .open-file-action > .button { width: 100%; min-width: 0; align-self: stretch; padding: 10px 7px; gap: 6px; min-height: 44px; white-space: nowrap; font-size: 13px; }
-.open-file-action { display: flex; flex-direction: column; gap: 8px; }
+.workspace-actions .workspace-action {
+  width: 100%;
+  min-height: 44px;
+  gap: 8px;
+  padding: 7px 10px;
+  border: 1px solid var(--action-border);
+  border-radius: 12px;
+  background: var(--action-surface);
+  color: var(--action-ink);
+  box-shadow: 0 3px 8px #243c2326;
+  font-size: 13px;
+  line-height: 1.3;
+  text-align: center;
+}
+.workspace-actions .workspace-action:hover:not(:disabled) {
+  background: var(--action-hover);
+  box-shadow: 0 5px 12px #243c2333;
+}
+.workspace-actions .workspace-action span {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: var(--action-icon);
+  color: var(--action-icon-ink);
+  font-size: 16px;
+}
+.open-file-action { display: flex; }
 .privacy-caption { margin: 0; grid-column: 1/-1; text-align: center; color: #487b39; font-size: 11px; font-weight: 600; line-height: 1.5; }
 .button {
   display: inline-flex;
@@ -472,18 +500,36 @@ h1 span {
 .supported-formats b { font-weight: 600; color: #355d45; }
 .formats-caption-break { flex-basis: 100%; height: 0; }
 .format-type { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
-.format-icon { display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 4px; color: white; font-size: 9px; font-style: normal; font-weight: 800; }
-.format-icon.powerpoint { background: #d45b42; }
-.format-icon.word { background: #3c76b4; }
-.format-icon.publisher { background: #43876b; }
-.format-icon.html { background: #d18a35; font-size: 7px; }
-.format-icon.pdf { background: #bb4b48; font-size: 7px; }
-.button-green-light { background: #ed8b24; color: #fff; box-shadow: 0 3px 10px rgba(190, 100, 15, .28); }
-.button-green-light:hover { background: #d97816; }
-.button-green { background: #6441c6; color: #fff; box-shadow: 0 3px 10px rgba(72, 43, 157, .25); }
-.button-green:hover { background: #5434b2; }
-.button-green-dark { background: #16834d; color: #fff; box-shadow: 0 3px 10px rgba(14, 101, 57, .28); }
-.button-green-dark:hover { background: #106c3f; }
+.format-icon { display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 4px; color: white; font-size: 9px; font-style: normal; font-weight: 800; opacity: 0.7;}
+.format-icon.powerpoint { background: #d45b42d9; }
+.format-icon.word { background: #3c76b4d9; }
+.format-icon.publisher { background: #43876bd9; }
+.format-icon.html { background: #d18a35d9; font-size: 7px; }
+.format-icon.pdf { background: #bb4b48d9; font-size: 7px; }
+.action-blank {
+  --action-surface: #fffaf0;
+  --action-hover: #fff0d8;
+  --action-border: #dfc9a8;
+  --action-ink: #54341b;
+  --action-icon: #f6dfbb;
+  --action-icon-ink: #834717;
+}
+.action-ai {
+  --action-surface: #f1e9fc;
+  --action-hover: #e9daf9;
+  --action-border: #cbb4e8;
+  --action-ink: #442667;
+  --action-icon: #dfccf5;
+  --action-icon-ink: #563481;
+}
+.action-open {
+  --action-surface: #f3f8ee;
+  --action-hover: #e5f1dc;
+  --action-border: #bfd1b5;
+  --action-ink: #254533;
+  --action-icon: #dcead2;
+  --action-icon-ink: #305c3e;
+}
 .documents-section {
   border: 1px solid #dfe6d6;
   border-radius: 12px;
@@ -529,9 +575,6 @@ h2 {
   align-items: center;
   gap: 7px;
   padding: 9px 12px;
-  border: 1px solid #e5c17b;
-  border-radius: 8px;
-  background: #fff3d6;
   font-size: 13px;
   font-weight: 700;
   color: #795016;
@@ -718,7 +761,7 @@ h2 {
   }
   .workspace-actions {
     width: 100%;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   .button {
     padding: 13px 15px;
