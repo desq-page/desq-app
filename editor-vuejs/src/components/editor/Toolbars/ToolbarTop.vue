@@ -402,6 +402,14 @@
               button-type="primary"
             />
             <ToolbarItem
+              v-if="canExtractObject"
+              caption="AI Extract Object"
+              :icon="Image24Regular"
+              :disabled="!!piniaInfo().loadingBar || !!getSelectCropShp()"
+              :onClick="selectObjectRegion"
+              button-type="primary"
+            />
+            <ToolbarItem
               caption="AI Remove BG"
               :icon="VideoBackgroundEffect20Filled"
               :size="30"
@@ -492,6 +500,7 @@ import { saveDexie } from "shared-vuejs/api/dbutils";
 import {
   activateCropImage,
   deactivateCropImage,
+  showMessage,
 } from "shared-vuejs/api/utils";
 
 import g from "shared-vuejs/api/global";
@@ -533,7 +542,7 @@ import ToolbarTransition from "./ToolbarTransition.vue";
 import { GroupObjects, Layers, StarReview } from "@vicons/carbon";
 import { toggleGroup } from "shared-vuejs/api/group";
 import ToolbarItemDropdown from "./ToolbarItemDropdown.vue";
-import { extractPictureText, selectPictureTextRegion } from "shared-vuejs/api/edit-picture-text";
+import { editablePicture, extractPictureText, selectPictureRegion, selectPictureTextRegion } from "shared-vuejs/api/edit-picture-text";
 import { showCrop, showEditingPoint, showGroup, unionOptions, rmbgUsingXenova } from "./ToolbarUtils";
 import ToolbarLocalScript from "@/components/addon/ToolbarLocalScript.vue";
 import ToolbarEditPoint from "./ToolbarEditPoint.vue";
@@ -560,6 +569,22 @@ const animationGroups = [
 const hasAnimationSelection = computed(() =>
   !!(piniaSelect().selGrpShps?.length || piniaSelect().selShps?.length),
 );
+const canExtractObject = computed(() => !!editablePicture());
+function selectObjectRegion() {
+  const info = piniaInfo();
+  selectPictureRegion(info, "Draw a box around the object to extract", async (pictureId, region) => {
+    const progress = message => { info.loadingBar = message; };
+    progress("Finding object…");
+    try {
+      const { extractPictureObject } = await import("shared-vuejs/api/extract-picture-object");
+      await extractPictureObject(pictureId, region, progress);
+    } catch (error) {
+      showMessage(error instanceof Error ? error.message : String(error), undefined, "error");
+    } finally {
+      progress("");
+    }
+  });
+}
 const textOcrOptions = [
   { key: 'extract-all', label: 'Extract All', icon: ScanText24Filled, onClick: () => extractPictureText(piniaInfo()) },
   { key: 'extract-region', label: 'Extract Region', icon: ImageAltText24Regular, onClick: () => selectPictureTextRegion(piniaInfo()) },
