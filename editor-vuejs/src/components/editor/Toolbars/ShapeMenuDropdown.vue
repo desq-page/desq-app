@@ -17,7 +17,7 @@ import { getHandlingHandlingInfo, getSelectCropShp, getSelectEditingInfo, getSel
 import { piniaInfo, piniaSelect } from "@/lib/common/store";
 import ToolbarItemDropdown from "./ToolbarItemDropdown.vue";
 import { useCssModule, computed, nextTick } from "vue";
-import { editablePicture, editPictureText } from "shared-vuejs/api/edit-picture-text";
+import { editablePicture, editPictureText, extractPictureText, selectPictureRegion, selectPictureTextRegion } from "shared-vuejs/api/edit-picture-text";
 
 import {
   convertSVGToShape,
@@ -42,6 +42,7 @@ import {
   GroupObjects,
   InformationFilled,
   Layers,
+  PointerText,
   StarReview,
   Svg,
   TouchInteraction,
@@ -66,9 +67,12 @@ import {
 import { detachFromGroup, toggleGroup } from "shared-vuejs/api/group";
 import { copyShape, duplicateShape, pasteShape } from "shared-vuejs/api/clipboard";
 import { addHandle } from "shared-vuejs/api/handle";
+import { showMessage } from "shared-vuejs/api/utils";
 import g from "shared-vuejs/api/global";
 
 import { toggleTaskPane } from "@/lib/main/utils.js";
+import { rmbgUsingXenova } from "./ToolbarUtils";
+import { ImageAltText24Regular, Image24Regular, ScanText24Filled, VideoBackgroundEffect20Filled } from "@vicons/fluent";
 
 const props = defineProps({
   selShps: Object,
@@ -86,22 +90,49 @@ const props = defineProps({
 
 const ShapeContextMenuOptions = computed(() => [
   {
-    label: "Extract Text Here",
-    key: "edit-picture-text",
+    label: "Editable Picture",
+    key: "editable-picture",
     icon: AutoAwesomeOutlined,
     show: !!editablePicture(),
-    onClick: () => editPictureText(piniaInfo()),
+    children: [
+      {
+        label: "Extract Text Here",
+        key: "edit-picture-text",
+        icon: PointerText,
+        onClick: () => editPictureText(piniaInfo()),
+      },
+      {
+        label: "Extract All Text In Picture",
+        key: "extract-text-all",
+        icon: ScanText24Filled,
+        onClick: () => extractPictureText(piniaInfo()),
+      },
+      {
+        label: "Extract Text By Region",
+        key: "extract-text-region",
+        icon: ImageAltText24Regular,
+        onClick: () => selectPictureTextRegion(piniaInfo()),
+      },
+      {
+        type: 'divider',
+      },
+      {
+        label: "Extract Object",
+        key: "extract-object",
+        icon: Image24Regular,
+        onClick: selectObjectRegion,
+      },
+      {
+        type: 'divider',
+      },
+      {
+        label: "Remove BG",
+        key: "remove-background",
+        icon: VideoBackgroundEffect20Filled,
+        onClick: rmbgUsingXenova,
+      },
+    ],
   },
-  // {
-  //   label: "Shift + Right Click For More",
-  //   icon: InformationFilled,
-  //   show: !!piniaSelect().editingInfo,
-  //   color: "green",
-  //   key: "shiftclick",
-  //   onClick: () => {
-  //     showMessage("Press shift while right click on text to show more functions", 5000);
-  //   }
-  // },
   {
     type:"divider",
     show: !!editablePicture(),
@@ -366,6 +397,22 @@ const ShapeContextMenuOptions = computed(() => [
   //   disabled: getSelectSelGrpShps().length > 0,
   // },
 ]);
+
+function selectObjectRegion() {
+  const info = piniaInfo();
+  selectPictureRegion(info, "Draw a box around the object and its shadow", async (pictureId, region) => {
+    const progress = (message: string) => { info.loadingBar = message; };
+    progress("Checking background…");
+    try {
+      const { extractPictureObject } = await import("shared-vuejs/api/extract-picture-object");
+      await extractPictureObject(pictureId, region, progress);
+    } catch (error) {
+      showMessage(error instanceof Error ? error.message : String(error), undefined, "error");
+    } finally {
+      progress("");
+    }
+  });
+}
 
 const isPic = () => {
   return piniaSelect().selShpFormat?.$_otag == "pic" || piniaSelect().selShpFormat?.ph?.$_type == "pic"

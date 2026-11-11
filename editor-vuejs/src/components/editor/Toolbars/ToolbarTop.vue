@@ -18,15 +18,8 @@
     >
       <template #prefix>
         <ToolbarItem type="spacing" />
-        <a
-          href="/work"
-          aria-label="DESQ workspace"
-          title="Workspace"
-          :class="$style['workspace-link']"
-          :style="{ color: g.themeOverrides.common.primaryColor }"
-        >
-          <span :class="$style['workspace-logo']" aria-hidden="true" />
-        </a>
+
+        <FileMenu />
         
         <ToolbarItem
           quaternary
@@ -45,7 +38,6 @@
           :disabled="piniaInfo().undoIndex >= getUndoHistory().length - 1"
         />
         <!-- <ToolbarItem type="divider" v-if="piniaResize().windowWidth >= 769" />" -->
-        <FileMenu />
           
       </template>
       <NTabPane
