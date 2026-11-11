@@ -17,10 +17,10 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | @breezystack/lamejs | 1.2.7 | LGPL-3.0 | git+https://github.com/shijinyu/lamejs.git |
 | @chenglou/pretext | 0.0.8 | MIT | git+https://github.com/chenglou/pretext.git |
 | @css-render/plugin-bem | 0.15.14 | MIT | https://github.com/07akioni/css-render |
-| @css-render/vue3-ssr | 0.15.14 | MIT | node_modules\@css-render\vue3-ssr |
-| @desq/player | 1.0.9 | Not specified | node_modules\@desq\player |
+| @css-render/vue3-ssr | 0.15.14 | MIT | node_modules/@css-render/vue3-ssr |
+| @desq/player | 1.0.9 | Not specified | node_modules/@desq/player |
 | @dmsnell/diff-match-patch | 1.1.0 | Apache-2.0 | git+https://github.com/dmsnell/diff-match-patch.git |
-| @emnapi/runtime | 1.11.3 | MIT | node_modules\@emnapi\runtime |
+| @emnapi/runtime | 1.11.3 | MIT | git+https://github.com/toyobayashi/emnapi.git |
 | @emotion/hash | 0.8.0 | MIT | https://github.com/emotion-js/emotion/tree/master/packages/hash |
 | @firebase/ai | 2.16.0 | Apache-2.0 | git+https://github.com/firebase/firebase-js-sdk.git |
 | @firebase/analytics-compat | 0.2.31 | Apache-2.0 | git+https://github.com/firebase/firebase-js-sdk.git |
@@ -74,56 +74,56 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | @huggingface/transformers | 3.8.1 | Apache-2.0 | git+https://github.com/huggingface/transformers.js.git |
 | @huggingface/transformers | 4.3.1 | Apache-2.0 | git+https://github.com/huggingface/transformers.js.git |
 | @img/colour | 1.1.0 | MIT | git+https://github.com/lovell/colour.git |
-| @img/sharp-darwin-arm64 | 0.34.5 | Apache-2.0 | node_modules\@bg0\browser\node_modules\@img\sharp-darwin-arm64 |
-| @img/sharp-darwin-arm64 | 0.35.5 | Apache-2.0 | node_modules\@img\sharp-darwin-arm64 |
-| @img/sharp-darwin-x64 | 0.34.5 | Apache-2.0 | node_modules\@bg0\browser\node_modules\@img\sharp-darwin-x64 |
-| @img/sharp-darwin-x64 | 0.35.5 | Apache-2.0 | node_modules\@img\sharp-darwin-x64 |
-| @img/sharp-freebsd-wasm32 | 0.35.5 | Apache-2.0 | node_modules\@img\sharp-freebsd-wasm32 |
-| @img/sharp-libvips-darwin-arm64 | 1.2.4 | LGPL-3.0-or-later | node_modules\@bg0\browser\node_modules\@img\sharp-libvips-darwin-arm64 |
-| @img/sharp-libvips-darwin-arm64 | 1.3.4 | LGPL-3.0-or-later | node_modules\@img\sharp-libvips-darwin-arm64 |
-| @img/sharp-libvips-darwin-x64 | 1.2.4 | LGPL-3.0-or-later | node_modules\@bg0\browser\node_modules\@img\sharp-libvips-darwin-x64 |
-| @img/sharp-libvips-darwin-x64 | 1.3.4 | LGPL-3.0-or-later | node_modules\@img\sharp-libvips-darwin-x64 |
-| @img/sharp-libvips-linux-arm | 1.2.4 | LGPL-3.0-or-later | node_modules\@bg0\browser\node_modules\@img\sharp-libvips-linux-arm |
-| @img/sharp-libvips-linux-arm | 1.3.4 | LGPL-3.0-or-later | node_modules\@img\sharp-libvips-linux-arm |
-| @img/sharp-libvips-linux-arm64 | 1.2.4 | LGPL-3.0-or-later | node_modules\@bg0\browser\node_modules\@img\sharp-libvips-linux-arm64 |
-| @img/sharp-libvips-linux-arm64 | 1.3.4 | LGPL-3.0-or-later | node_modules\@img\sharp-libvips-linux-arm64 |
-| @img/sharp-libvips-linux-ppc64 | 1.2.4 | LGPL-3.0-or-later | node_modules\@bg0\browser\node_modules\@img\sharp-libvips-linux-ppc64 |
-| @img/sharp-libvips-linux-ppc64 | 1.3.4 | LGPL-3.0-or-later | node_modules\@img\sharp-libvips-linux-ppc64 |
-| @img/sharp-libvips-linux-riscv64 | 1.2.4 | LGPL-3.0-or-later | node_modules\@bg0\browser\node_modules\@img\sharp-libvips-linux-riscv64 |
-| @img/sharp-libvips-linux-riscv64 | 1.3.4 | LGPL-3.0-or-later | node_modules\@img\sharp-libvips-linux-riscv64 |
-| @img/sharp-libvips-linux-s390x | 1.2.4 | LGPL-3.0-or-later | node_modules\@bg0\browser\node_modules\@img\sharp-libvips-linux-s390x |
-| @img/sharp-libvips-linux-s390x | 1.3.4 | LGPL-3.0-or-later | node_modules\@img\sharp-libvips-linux-s390x |
-| @img/sharp-libvips-linux-x64 | 1.2.4 | LGPL-3.0-or-later | node_modules\@bg0\browser\node_modules\@img\sharp-libvips-linux-x64 |
-| @img/sharp-libvips-linux-x64 | 1.3.4 | LGPL-3.0-or-later | node_modules\@img\sharp-libvips-linux-x64 |
-| @img/sharp-libvips-linuxmusl-arm64 | 1.2.4 | LGPL-3.0-or-later | node_modules\@bg0\browser\node_modules\@img\sharp-libvips-linuxmusl-arm64 |
-| @img/sharp-libvips-linuxmusl-arm64 | 1.3.4 | LGPL-3.0-or-later | node_modules\@img\sharp-libvips-linuxmusl-arm64 |
-| @img/sharp-libvips-linuxmusl-x64 | 1.2.4 | LGPL-3.0-or-later | node_modules\@bg0\browser\node_modules\@img\sharp-libvips-linuxmusl-x64 |
-| @img/sharp-libvips-linuxmusl-x64 | 1.3.4 | LGPL-3.0-or-later | node_modules\@img\sharp-libvips-linuxmusl-x64 |
-| @img/sharp-linux-arm | 0.34.5 | Apache-2.0 | node_modules\@bg0\browser\node_modules\@img\sharp-linux-arm |
-| @img/sharp-linux-arm | 0.35.5 | Apache-2.0 | node_modules\@img\sharp-linux-arm |
-| @img/sharp-linux-arm64 | 0.34.5 | Apache-2.0 | node_modules\@bg0\browser\node_modules\@img\sharp-linux-arm64 |
-| @img/sharp-linux-arm64 | 0.35.5 | Apache-2.0 | node_modules\@img\sharp-linux-arm64 |
-| @img/sharp-linux-ppc64 | 0.34.5 | Apache-2.0 | node_modules\@bg0\browser\node_modules\@img\sharp-linux-ppc64 |
-| @img/sharp-linux-ppc64 | 0.35.5 | Apache-2.0 | node_modules\@img\sharp-linux-ppc64 |
-| @img/sharp-linux-riscv64 | 0.34.5 | Apache-2.0 | node_modules\@bg0\browser\node_modules\@img\sharp-linux-riscv64 |
-| @img/sharp-linux-riscv64 | 0.35.5 | Apache-2.0 | node_modules\@img\sharp-linux-riscv64 |
-| @img/sharp-linux-s390x | 0.34.5 | Apache-2.0 | node_modules\@bg0\browser\node_modules\@img\sharp-linux-s390x |
-| @img/sharp-linux-s390x | 0.35.5 | Apache-2.0 | node_modules\@img\sharp-linux-s390x |
-| @img/sharp-linux-x64 | 0.34.5 | Apache-2.0 | node_modules\@bg0\browser\node_modules\@img\sharp-linux-x64 |
-| @img/sharp-linux-x64 | 0.35.5 | Apache-2.0 | node_modules\@img\sharp-linux-x64 |
-| @img/sharp-linuxmusl-arm64 | 0.34.5 | Apache-2.0 | node_modules\@bg0\browser\node_modules\@img\sharp-linuxmusl-arm64 |
-| @img/sharp-linuxmusl-arm64 | 0.35.5 | Apache-2.0 | node_modules\@img\sharp-linuxmusl-arm64 |
-| @img/sharp-linuxmusl-x64 | 0.34.5 | Apache-2.0 | node_modules\@bg0\browser\node_modules\@img\sharp-linuxmusl-x64 |
-| @img/sharp-linuxmusl-x64 | 0.35.5 | Apache-2.0 | node_modules\@img\sharp-linuxmusl-x64 |
-| @img/sharp-wasm32 | 0.34.5 | Apache-2.0 AND LGPL-3.0-or-later AND MIT | node_modules\@bg0\browser\node_modules\@img\sharp-wasm32 |
-| @img/sharp-wasm32 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later AND MIT | node_modules\@img\sharp-wasm32 |
-| @img/sharp-webcontainers-wasm32 | 0.35.5 | Apache-2.0 | node_modules\@img\sharp-webcontainers-wasm32 |
-| @img/sharp-win32-arm64 | 0.34.5 | Apache-2.0 AND LGPL-3.0-or-later | node_modules\@bg0\browser\node_modules\@img\sharp-win32-arm64 |
-| @img/sharp-win32-arm64 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later | node_modules\@img\sharp-win32-arm64 |
-| @img/sharp-win32-ia32 | 0.34.5 | Apache-2.0 AND LGPL-3.0-or-later | node_modules\@bg0\browser\node_modules\@img\sharp-win32-ia32 |
-| @img/sharp-win32-ia32 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later | node_modules\@img\sharp-win32-ia32 |
-| @img/sharp-win32-x64 | 0.34.5 | Apache-2.0 AND LGPL-3.0-or-later | git+https://github.com/lovell/sharp.git |
-| @img/sharp-win32-x64 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later | git+https://github.com/lovell/sharp.git |
+| @img/sharp-darwin-arm64 | 0.34.5 | Apache-2.0 | git+https://github.com/lovell/sharp.git |
+| @img/sharp-darwin-arm64 | 0.35.5 | Apache-2.0 | git+https://github.com/lovell/sharp.git |
+| @img/sharp-darwin-x64 | 0.34.5 | Apache-2.0 | node_modules/@bg0/browser/node_modules/@img/sharp-darwin-x64 |
+| @img/sharp-darwin-x64 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-darwin-x64 |
+| @img/sharp-freebsd-wasm32 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-freebsd-wasm32 |
+| @img/sharp-libvips-darwin-arm64 | 1.2.4 | LGPL-3.0-or-later | git+https://github.com/lovell/sharp-libvips.git |
+| @img/sharp-libvips-darwin-arm64 | 1.3.4 | LGPL-3.0-or-later | git+https://github.com/lovell/sharp-libvips.git |
+| @img/sharp-libvips-darwin-x64 | 1.2.4 | LGPL-3.0-or-later | node_modules/@bg0/browser/node_modules/@img/sharp-libvips-darwin-x64 |
+| @img/sharp-libvips-darwin-x64 | 1.3.4 | LGPL-3.0-or-later | node_modules/@img/sharp-libvips-darwin-x64 |
+| @img/sharp-libvips-linux-arm | 1.2.4 | LGPL-3.0-or-later | node_modules/@bg0/browser/node_modules/@img/sharp-libvips-linux-arm |
+| @img/sharp-libvips-linux-arm | 1.3.4 | LGPL-3.0-or-later | node_modules/@img/sharp-libvips-linux-arm |
+| @img/sharp-libvips-linux-arm64 | 1.2.4 | LGPL-3.0-or-later | node_modules/@bg0/browser/node_modules/@img/sharp-libvips-linux-arm64 |
+| @img/sharp-libvips-linux-arm64 | 1.3.4 | LGPL-3.0-or-later | node_modules/@img/sharp-libvips-linux-arm64 |
+| @img/sharp-libvips-linux-ppc64 | 1.2.4 | LGPL-3.0-or-later | node_modules/@bg0/browser/node_modules/@img/sharp-libvips-linux-ppc64 |
+| @img/sharp-libvips-linux-ppc64 | 1.3.4 | LGPL-3.0-or-later | node_modules/@img/sharp-libvips-linux-ppc64 |
+| @img/sharp-libvips-linux-riscv64 | 1.2.4 | LGPL-3.0-or-later | node_modules/@bg0/browser/node_modules/@img/sharp-libvips-linux-riscv64 |
+| @img/sharp-libvips-linux-riscv64 | 1.3.4 | LGPL-3.0-or-later | node_modules/@img/sharp-libvips-linux-riscv64 |
+| @img/sharp-libvips-linux-s390x | 1.2.4 | LGPL-3.0-or-later | node_modules/@bg0/browser/node_modules/@img/sharp-libvips-linux-s390x |
+| @img/sharp-libvips-linux-s390x | 1.3.4 | LGPL-3.0-or-later | node_modules/@img/sharp-libvips-linux-s390x |
+| @img/sharp-libvips-linux-x64 | 1.2.4 | LGPL-3.0-or-later | node_modules/@bg0/browser/node_modules/@img/sharp-libvips-linux-x64 |
+| @img/sharp-libvips-linux-x64 | 1.3.4 | LGPL-3.0-or-later | node_modules/@img/sharp-libvips-linux-x64 |
+| @img/sharp-libvips-linuxmusl-arm64 | 1.2.4 | LGPL-3.0-or-later | node_modules/@bg0/browser/node_modules/@img/sharp-libvips-linuxmusl-arm64 |
+| @img/sharp-libvips-linuxmusl-arm64 | 1.3.4 | LGPL-3.0-or-later | node_modules/@img/sharp-libvips-linuxmusl-arm64 |
+| @img/sharp-libvips-linuxmusl-x64 | 1.2.4 | LGPL-3.0-or-later | node_modules/@bg0/browser/node_modules/@img/sharp-libvips-linuxmusl-x64 |
+| @img/sharp-libvips-linuxmusl-x64 | 1.3.4 | LGPL-3.0-or-later | node_modules/@img/sharp-libvips-linuxmusl-x64 |
+| @img/sharp-linux-arm | 0.34.5 | Apache-2.0 | node_modules/@bg0/browser/node_modules/@img/sharp-linux-arm |
+| @img/sharp-linux-arm | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-linux-arm |
+| @img/sharp-linux-arm64 | 0.34.5 | Apache-2.0 | node_modules/@bg0/browser/node_modules/@img/sharp-linux-arm64 |
+| @img/sharp-linux-arm64 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-linux-arm64 |
+| @img/sharp-linux-ppc64 | 0.34.5 | Apache-2.0 | node_modules/@bg0/browser/node_modules/@img/sharp-linux-ppc64 |
+| @img/sharp-linux-ppc64 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-linux-ppc64 |
+| @img/sharp-linux-riscv64 | 0.34.5 | Apache-2.0 | node_modules/@bg0/browser/node_modules/@img/sharp-linux-riscv64 |
+| @img/sharp-linux-riscv64 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-linux-riscv64 |
+| @img/sharp-linux-s390x | 0.34.5 | Apache-2.0 | node_modules/@bg0/browser/node_modules/@img/sharp-linux-s390x |
+| @img/sharp-linux-s390x | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-linux-s390x |
+| @img/sharp-linux-x64 | 0.34.5 | Apache-2.0 | node_modules/@bg0/browser/node_modules/@img/sharp-linux-x64 |
+| @img/sharp-linux-x64 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-linux-x64 |
+| @img/sharp-linuxmusl-arm64 | 0.34.5 | Apache-2.0 | node_modules/@bg0/browser/node_modules/@img/sharp-linuxmusl-arm64 |
+| @img/sharp-linuxmusl-arm64 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-linuxmusl-arm64 |
+| @img/sharp-linuxmusl-x64 | 0.34.5 | Apache-2.0 | node_modules/@bg0/browser/node_modules/@img/sharp-linuxmusl-x64 |
+| @img/sharp-linuxmusl-x64 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-linuxmusl-x64 |
+| @img/sharp-wasm32 | 0.34.5 | Apache-2.0 AND LGPL-3.0-or-later AND MIT | node_modules/@bg0/browser/node_modules/@img/sharp-wasm32 |
+| @img/sharp-wasm32 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later AND MIT | git+https://github.com/lovell/sharp.git |
+| @img/sharp-webcontainers-wasm32 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-webcontainers-wasm32 |
+| @img/sharp-win32-arm64 | 0.34.5 | Apache-2.0 AND LGPL-3.0-or-later | node_modules/@bg0/browser/node_modules/@img/sharp-win32-arm64 |
+| @img/sharp-win32-arm64 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later | node_modules/@img/sharp-win32-arm64 |
+| @img/sharp-win32-ia32 | 0.34.5 | Apache-2.0 AND LGPL-3.0-or-later | node_modules/@bg0/browser/node_modules/@img/sharp-win32-ia32 |
+| @img/sharp-win32-ia32 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later | node_modules/@img/sharp-win32-ia32 |
+| @img/sharp-win32-x64 | 0.34.5 | Apache-2.0 AND LGPL-3.0-or-later | node_modules/@bg0/browser/node_modules/@img/sharp-win32-x64 |
+| @img/sharp-win32-x64 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later | node_modules/@img/sharp-win32-x64 |
 | @isaacs/fs-minipass | 4.0.1 | ISC | https://github.com/npm/fs-minipass.git |
 | @jimp/core | 1.6.1 | MIT | jimp-dev/jimp |
 | @jimp/diff | 1.6.1 | MIT | jimp-dev/jimp |
@@ -170,17 +170,17 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | @lit/reactive-element | 1.6.3 | BSD-3-Clause | https://github.com/lit/lit.git |
 | @mdi/js | 7.2.96 | Apache-2.0 | git+https://github.com/Templarian/MaterialDesign-JS.git |
 | @mediapipe/tasks-genai | 0.10.29 | Apache-2.0 | http://mediapipe.dev |
-| @napi-rs/canvas-android-arm64 | 0.1.100 | MIT | node_modules\@napi-rs\canvas-android-arm64 |
-| @napi-rs/canvas-darwin-arm64 | 0.1.100 | MIT | node_modules\@napi-rs\canvas-darwin-arm64 |
-| @napi-rs/canvas-darwin-x64 | 0.1.100 | MIT | node_modules\@napi-rs\canvas-darwin-x64 |
-| @napi-rs/canvas-linux-arm-gnueabihf | 0.1.100 | MIT | node_modules\@napi-rs\canvas-linux-arm-gnueabihf |
-| @napi-rs/canvas-linux-arm64-gnu | 0.1.100 | MIT | node_modules\@napi-rs\canvas-linux-arm64-gnu |
-| @napi-rs/canvas-linux-arm64-musl | 0.1.100 | MIT | node_modules\@napi-rs\canvas-linux-arm64-musl |
-| @napi-rs/canvas-linux-riscv64-gnu | 0.1.100 | MIT | node_modules\@napi-rs\canvas-linux-riscv64-gnu |
-| @napi-rs/canvas-linux-x64-gnu | 0.1.100 | MIT | node_modules\@napi-rs\canvas-linux-x64-gnu |
-| @napi-rs/canvas-linux-x64-musl | 0.1.100 | MIT | node_modules\@napi-rs\canvas-linux-x64-musl |
-| @napi-rs/canvas-win32-arm64-msvc | 0.1.100 | MIT | node_modules\@napi-rs\canvas-win32-arm64-msvc |
-| @napi-rs/canvas-win32-x64-msvc | 0.1.100 | MIT | git+https://github.com/Brooooooklyn/canvas.git |
+| @napi-rs/canvas-android-arm64 | 0.1.100 | MIT | node_modules/@napi-rs/canvas-android-arm64 |
+| @napi-rs/canvas-darwin-arm64 | 0.1.100 | MIT | git+https://github.com/Brooooooklyn/canvas.git |
+| @napi-rs/canvas-darwin-x64 | 0.1.100 | MIT | node_modules/@napi-rs/canvas-darwin-x64 |
+| @napi-rs/canvas-linux-arm-gnueabihf | 0.1.100 | MIT | node_modules/@napi-rs/canvas-linux-arm-gnueabihf |
+| @napi-rs/canvas-linux-arm64-gnu | 0.1.100 | MIT | node_modules/@napi-rs/canvas-linux-arm64-gnu |
+| @napi-rs/canvas-linux-arm64-musl | 0.1.100 | MIT | node_modules/@napi-rs/canvas-linux-arm64-musl |
+| @napi-rs/canvas-linux-riscv64-gnu | 0.1.100 | MIT | node_modules/@napi-rs/canvas-linux-riscv64-gnu |
+| @napi-rs/canvas-linux-x64-gnu | 0.1.100 | MIT | node_modules/@napi-rs/canvas-linux-x64-gnu |
+| @napi-rs/canvas-linux-x64-musl | 0.1.100 | MIT | node_modules/@napi-rs/canvas-linux-x64-musl |
+| @napi-rs/canvas-win32-arm64-msvc | 0.1.100 | MIT | node_modules/@napi-rs/canvas-win32-arm64-msvc |
+| @napi-rs/canvas-win32-x64-msvc | 0.1.100 | MIT | node_modules/@napi-rs/canvas-win32-x64-msvc |
 | @napi-rs/canvas | 0.1.100 | MIT | git+https://github.com/Brooooooklyn/canvas.git |
 | @pgrabovets/json-view | 2.7.5 | MIT | git+https://github.com/pgrabovets/json-view.git |
 | @protobufjs/aspromise | 1.1.2 | BSD-3-Clause | https://github.com/dcodeIO/protobuf.js.git |
@@ -195,7 +195,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | @reidjs/vue3d | 0.0.2 | MIT | git+https://github.com/reidjs/vue3d.git |
 | @revolist/revogrid | 4.11.11 | MIT | git+https://github.com/revolist/revogrid.git |
 | @revolist/vue3-datagrid | 4.11.11 | MIT | git+https://github.com/revolist/vue3-datagrid.git |
-| @sicons/fluent | 0.13.0 | MIT | node_modules\@sicons\fluent |
+| @sicons/fluent | 0.13.0 | MIT | node_modules/@sicons/fluent |
 | @tokenizer/inflate | 0.4.1 | MIT | https://github.com/Borewit/tokenizer-inflate.git |
 | @tokenizer/token | 0.3.0 | MIT | https://github.com/Borewit/tokenizer-token.git |
 | @types/body-parser | 1.19.6 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped.git |
@@ -230,12 +230,12 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | @types/web-bluetooth | 0.0.21 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped.git |
 | @types/wicg-file-system-access | 2020.9.8 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped.git |
 | @types/ws | 8.18.1 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped.git |
-| @vicons/carbon | 0.12.0 | Apache 2.0 | node_modules\@vicons\carbon |
-| @vicons/fa | 0.12.0 | CC BY 4.0 | node_modules\@vicons\fa |
-| @vicons/fluent | 0.12.0 | MIT | node_modules\@vicons\fluent |
-| @vicons/ionicons5 | 0.13.0 | MIT | node_modules\@vicons\ionicons5 |
-| @vicons/material | 0.12.0 | Apache 2.0 | node_modules\@vicons\material |
-| @vicons/tabler | 0.12.0 | MIT | node_modules\@vicons\tabler |
+| @vicons/carbon | 0.12.0 | Apache 2.0 | node_modules/@vicons/carbon |
+| @vicons/fa | 0.12.0 | CC BY 4.0 | node_modules/@vicons/fa |
+| @vicons/fluent | 0.12.0 | MIT | node_modules/@vicons/fluent |
+| @vicons/ionicons5 | 0.13.0 | MIT | node_modules/@vicons/ionicons5 |
+| @vicons/material | 0.12.0 | Apache 2.0 | node_modules/@vicons/material |
+| @vicons/tabler | 0.12.0 | MIT | node_modules/@vicons/tabler |
 | @vue/compiler-core | 3.5.43 | MIT | git+https://github.com/vuejs/core.git |
 | @vue/compiler-dom | 3.5.43 | MIT | git+https://github.com/vuejs/core.git |
 | @vue/compiler-sfc | 3.5.43 | MIT | git+https://github.com/vuejs/core.git |
@@ -359,7 +359,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | estree-walker | 2.0.2 | MIT | https://github.com/Rich-Harris/estree-walker |
 | etag | 1.8.1 | MIT | jshttp/etag |
 | eventemitter3 | 4.0.7 | MIT | git://github.com/primus/eventemitter3.git |
-| evtd | 0.2.4 | MIT | node_modules\evtd |
+| evtd | 0.2.4 | MIT | node_modules/evtd |
 | exif-parser | 0.1.12 | Not specified | http://github.com/bwindels/exif-parser.git |
 | express | 4.22.1 | MIT | expressjs/express |
 | fast-deep-equal | 3.1.3 | MIT | git+https://github.com/epoberezkin/fast-deep-equal.git |
@@ -382,7 +382,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | forwarded | 0.2.0 | MIT | jshttp/forwarded |
 | fresh | 0.5.2 | MIT | jshttp/fresh |
 | fs.realpath | 1.0.0 | ISC | git+https://github.com/isaacs/fs.realpath.git |
-| fsevents | 2.3.3 | Not specified | node_modules\fsevents |
+| fsevents | 2.3.3 | MIT | https://github.com/fsevents/fsevents.git |
 | function-bind | 1.1.2 | MIT | https://github.com/Raynos/function-bind.git |
 | get-caller-file | 2.0.5 | ISC | git+https://github.com/stefanpenner/get-caller-file.git |
 | get-intrinsic | 1.3.0 | MIT | git+https://github.com/ljharb/get-intrinsic.git |
@@ -591,7 +591,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | sax | 1.6.0 | BlueOak-1.0.0 | git+ssh://git@github.com/isaacs/sax-js.git |
 | schema-utils | 4.3.2 | MIT | webpack/schema-utils |
 | schema-utils | 4.3.3 | MIT | webpack/schema-utils |
-| seemly | 0.3.10 | MIT | node_modules\seemly |
+| seemly | 0.3.10 | MIT | node_modules/seemly |
 | select-hose | 2.0.0 | MIT | git+ssh://git@github.com/indutny/select-hose.git |
 | selfsigned | 2.4.1 | MIT | git://github.com/jfromaniello/selfsigned.git |
 | semver-compare | 1.0.0 | MIT | git://github.com/substack/semver-compare.git |
@@ -604,7 +604,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | serve-static | 1.16.2 | MIT | expressjs/serve-static |
 | setprototypeof | 1.1.0 | ISC | https://github.com/wesleytodd/setprototypeof.git |
 | setprototypeof | 1.2.0 | ISC | https://github.com/wesleytodd/setprototypeof.git |
-| shared-vuejs | 0.2.14 | ISC | node_modules\shared-vuejs |
+| shared-vuejs | 0.2.16 | ISC | node_modules/shared-vuejs |
 | sharp | 0.34.5 | Apache-2.0 | git://github.com/lovell/sharp.git |
 | sharp | 0.35.5 | Apache-2.0 | git+https://github.com/lovell/sharp.git |
 | shell-quote | 1.12.0 | MIT | http://github.com/ljharb/shell-quote.git |
@@ -666,18 +666,18 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | vanjs-ext | 0.6.3 | MIT | git+https://github.com/vanjs-org/van.git |
 | vanjs-ui | 0.11.14 | MIT | git+https://github.com/vanjs-org/van.git |
 | vary | 1.1.2 | MIT | jshttp/vary |
-| vdirs | 0.1.8 | MIT | node_modules\vdirs |
-| Vendored notices: node_modules\shared-vuejs\dist\edlib\document-import\ppt-master-resources | vendored | See supplied notice | node_modules\shared-vuejs\dist\edlib\document-import\ppt-master-resources\LICENSE |
-| Vendored notices: node_modules\shared-vuejs\dist\edlib\pptx\UDOC | vendored | See supplied notice | node_modules\shared-vuejs\dist\edlib\pptx\UDOC\LICENSE |
-| Vendored notices: node_modules\shared-vuejs\dist\vanjs\mini-van-plate | vendored | See supplied notice | node_modules\shared-vuejs\dist\vanjs\mini-van-plate\LICENSE |
+| vdirs | 0.1.8 | MIT | node_modules/vdirs |
+| Vendored notices: node_modules/shared-vuejs/dist/edlib/document-import/ppt-master-resources | vendored | See supplied notice | node_modules/shared-vuejs/dist/edlib/document-import/ppt-master-resources/LICENSE |
+| Vendored notices: Photopea UDOC | vendored | See supplied notice | node_modules/shared-vuejs/dist/edlib/pptx/UDOC/LICENSE |
+| Vendored notices: VanJS mini-van-plate | vendored | See supplied notice | node_modules/shared-vuejs/dist/vanjs/mini-van-plate/LICENSE |
 | vite-plugin-vanjs | 0.1.16 | MIT | https://github.com/thednp/vite-plugin-vanjs |
-| vooks | 0.2.12 | MIT | node_modules\vooks |
+| vooks | 0.2.12 | MIT | node_modules/vooks |
 | vue-demi | 0.14.10 | MIT | https://github.com/antfu/vue-demi.git |
 | vue-router | 4.5.1 | MIT | git+https://github.com/vuejs/router.git |
 | vue | 3.5.43 | MIT | git+https://github.com/vuejs/core.git |
 | vue3-google-login | 2.0.33 | MIT | https://github.com/devbaji/vue3-google-login |
 | vue3-icon | 2.1.0 | MIT | git+https://github.com/craigrileyuk/vue3-icon.git |
-| vueuc | 0.4.65 | MIT | node_modules\vueuc |
+| vueuc | 0.4.65 | MIT | node_modules/vueuc |
 | warpjs | 1.0.8 | MIT | git+https://github.com/benjamminf/warpjs.git |
 | wbuf | 1.7.3 | MIT | git@github.com:indutny/wbuf |
 | web-vitals | 4.2.4 | Apache-2.0 | https://github.com/GoogleChrome/web-vitals.git |
