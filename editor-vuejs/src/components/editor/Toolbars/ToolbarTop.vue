@@ -385,31 +385,6 @@
               caption="Crop"
               :active="!!piniaSelect().cropShp"
             />
-            
-            <ToolbarItemDropdown
-              caption="AI OCR Extract"
-              :icon="ImageAltText24Regular"
-              :options="textOcrOptions"
-              :disabled="!piniaSelect().selShpFormat?.blipFill || !!piniaInfo().loadingBar"
-              button-type="primary"
-            />
-            <ToolbarItem
-              v-if="canExtractObject"
-              caption="Extract Object"
-              :icon="Image24Regular"
-              :disabled="!!piniaInfo().loadingBar || !!getSelectCropShp()"
-              :onClick="selectObjectRegion"
-              button-type="primary"
-            />
-            <ToolbarItem
-              caption="AI Remove BG"
-              :icon="VideoBackgroundEffect20Filled"
-              :size="30"
-              :disabled="!piniaSelect().selShpFormat?.blipFill"
-              :onClick="rmbgUsingXenova"
-              button-type="primary"
-            />
-            <ToolbarItem type="divider" />
             <ToolbarItem
               caption="Picture Format"
               tooltip="Picture Format"

@@ -102,7 +102,7 @@ const ShapeContextMenuOptions = computed(() => [
         onClick: () => editPictureText(piniaInfo()),
       },
       {
-        label: "Extract All Text In Picture",
+        label: "Extract All Text",
         key: "extract-text-all",
         icon: ScanText24Filled,
         onClick: () => extractPictureText(piniaInfo()),

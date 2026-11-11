@@ -48,7 +48,7 @@
             </button>
           </div>
           <input ref="openFileInput" type="file" accept=".pptx,.docx,.pub,.html,.htm,.pdf" hidden @change="openSelectedFile" />
-          <div class="supported-formats" aria-label="Supported file types">
+          <div class="supported-formats" aria-label="Supported file types" style="margin-top: 15px">
             <span class="format-type"><i class="format-icon html" aria-hidden="true">&lt;/&gt;</i> HTML</span>
             <span class="format-type"><i class="format-icon powerpoint" aria-hidden="true">P</i> PowerPoint</span>
             <span class="format-type"><i class="format-icon word" aria-hidden="true">W</i> Word</span>
@@ -424,7 +424,6 @@ h1 span {
 }
 .workspace-actions .workspace-action:hover:not(:disabled) {
   background: var(--action-hover);
-  box-shadow: 0 5px 12px #243c2333;
 }
 .workspace-actions .workspace-action span {
   flex-shrink: 0;
