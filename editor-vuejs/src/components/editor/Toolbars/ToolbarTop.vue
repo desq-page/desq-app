@@ -403,7 +403,7 @@
             />
             <ToolbarItem
               v-if="canExtractObject"
-              caption="AI Extract Object"
+              caption="Extract Object"
               :icon="Image24Regular"
               :disabled="!!piniaInfo().loadingBar || !!getSelectCropShp()"
               :onClick="selectObjectRegion"
@@ -572,9 +572,9 @@ const hasAnimationSelection = computed(() =>
 const canExtractObject = computed(() => !!editablePicture());
 function selectObjectRegion() {
   const info = piniaInfo();
-  selectPictureRegion(info, "Draw a box around the object to extract", async (pictureId, region) => {
-    const progress = message => { info.loadingBar = message; };
-    progress("Finding object…");
+  selectPictureRegion(info, "Draw a box around the object and its shadow", async (pictureId, region) => {
+    const progress = (message: string) => { info.loadingBar = message; };
+    progress("Checking background…");
     try {
       const { extractPictureObject } = await import("shared-vuejs/api/extract-picture-object");
       await extractPictureObject(pictureId, region, progress);

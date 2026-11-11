@@ -62,6 +62,9 @@
     },
     "shared-vuejs-0.2.15.tgz": {
       "sha256": "22f00a866f772dca38cbf845ffedda015348995cb285bda2a4a71aedbe8c5bc9"
+    },
+    "shared-vuejs-0.2.16.tgz": {
+      "sha256": "717202fa3c613edfac915a2b42149844afae0b98a37eac8f087aa8904a97c6a5"
     }
   }
 }
