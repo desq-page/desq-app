@@ -831,7 +831,7 @@ const $style = useCssModule();
   width: 18px;
   height: 18px;
   background: currentColor;
-  mask: url("/favicon.svg?v=desq-mark-v7") center / contain no-repeat;
+  mask: url("/favicon.svg?v=desq-mark-v8") center / contain no-repeat;
 }
 
 .header-container {

@@ -9,7 +9,7 @@ onMounted(() => { document.title = "Support — DESQ"; });
   <div class="support-page">
     <a class="skip-link" href="#support-content">Skip to content</a>
     <header class="site-header page-width">
-      <RouterLink to="/" class="wordmark" aria-label="DESQ home"><img src="/favicon.svg?v=desq-mark-v7" alt="" />DESQ</RouterLink>
+      <RouterLink to="/" class="wordmark" aria-label="DESQ home"><img src="/favicon.svg?v=desq-mark-v8" alt="" />DESQ</RouterLink>
       <nav aria-label="Main navigation">
         <RouterLink to="/">Back to home</RouterLink>
         <RouterLink to="/work" class="start-button">Workspace <span aria-hidden="true">↗</span></RouterLink>
@@ -60,7 +60,7 @@ a:focus-visible { outline: 2px solid #689533; outline-offset: 5px; }
 .skip-link:focus { top: 10px; }
 .site-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-block: 28px; border-bottom: 1px solid #e3e8dc; }
 .wordmark { display: inline-flex; align-items: center; gap: 9px; font-size: 27px; font-weight: 800; letter-spacing: -1.3px; }
-.wordmark img { width: 34px; height: 34px; flex-shrink: 0; }
+.wordmark img { width: 40px; height: 40px; flex-shrink: 0; }
 .wordmark span, h1 span { color: #689533; }
 nav { display: flex; align-items: center; gap: 28px; font-size: 14px; }
 .start-button { padding: 12px 20px; background: #172923; color: white; border-radius: 7px; font-weight: 600; }

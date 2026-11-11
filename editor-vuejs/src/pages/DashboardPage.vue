@@ -7,7 +7,7 @@
         class="wordmark"
         aria-label="DESQ home"
       >
-        <img class="brand-symbol" src="/favicon.svg?v=desq-mark-v7" alt="" />
+        <img class="brand-symbol" src="/favicon.svg?v=desq-mark-v8" alt="" />
         DESQ
       </RouterLink>
       <nav aria-label="Workspace navigation">
@@ -342,12 +342,12 @@ button:focus-visible {
 .brand-symbol {
   display: block;
   flex-shrink: 0;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
 }
 @media (max-width: 760px) {
   .wordmark { font-size: 24px; gap: 6px; }
-  .brand-symbol { width: 30px; height: 30px; }
+  .brand-symbol { width: 40px; height: 40px; }
 }
 .avatar {
   display: grid;

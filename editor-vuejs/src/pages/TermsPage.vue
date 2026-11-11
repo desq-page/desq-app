@@ -3,7 +3,7 @@
     <a class="skip-link" href="#terms-content">Skip to content</a>
     <header class="site-header page-width">
       <RouterLink to="/" class="wordmark" aria-label="DESQ home">
-        <img class="brand-symbol" src="/favicon.svg?v=desq-mark-v7" alt="" />
+        <img class="brand-symbol" src="/favicon.svg?v=desq-mark-v8" alt="" />
         DESQ
       </RouterLink>
       <nav aria-label="Main navigation">
@@ -63,7 +63,7 @@ a:focus-visible { outline: 2px solid #689533; outline-offset: 5px; }
 .site-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-block: 28px; border-bottom: 1px solid #e3e8dc; }
 .wordmark { display: inline-flex; align-items: center; gap: 10px; font-size: 27px; font-weight: 800; letter-spacing: -1.3px; }
 .wordmark > span:last-child { margin-left: -10px; color: #689533; }
-.brand-symbol { display: flex; align-items: flex-end; gap: 3px; width: 26px; height: 27px; }
+.brand-symbol { display: flex; align-items: flex-end; gap: 3px; width: 34px; height: 36px; }
 .brand-symbol i { width: 6px; background: #172923; border-radius: 2px; transform: skewY(-18deg); }
 .brand-symbol i:nth-child(1) { height: 14px; }
 .brand-symbol i:nth-child(2) { height: 21px; }

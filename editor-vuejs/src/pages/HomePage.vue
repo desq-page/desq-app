@@ -35,7 +35,7 @@ const questions = [
   <div class="desq-home">
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header page-width">
-      <a href="/" class="wordmark" aria-label="DESQ home"><img src="/favicon.svg?v=desq-mark-v7" alt="" />DESQ</a>
+      <a href="/" class="wordmark" aria-label="DESQ home"><img src="/favicon.svg?v=desq-mark-v8" alt="" />DESQ</a>
       <nav aria-label="Main navigation">
         <a class="nav-detail" href="#features">Features</a>
         <a href="https://github.com/desq-page/desq-app" target="_blank" class="nav-detail">Github</a>
@@ -93,7 +93,7 @@ a:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px solid
 .skip-link:focus { top: 12px; }
 .site-header { display: flex; align-items: center; justify-content: space-between; min-height: 80px; gap: 24px; }
 .wordmark { display: inline-flex; align-items: center; gap: 9px; font-size: 27px; font-weight: 800; letter-spacing: -1.2px; }
-.wordmark img { width: 34px; height: 34px; }
+.wordmark img { width: 40px; height: 40px; }
 .site-header nav { display: flex; align-items: center; gap: 28px; font-size: 12px; font-weight: 650; }
 .button { display: inline-flex; align-items: center; justify-content: space-between; gap: 22px; border-radius: 5px; padding: 14px 20px; font-size: 13px; font-weight: 750; line-height: 1.45; transition: background .2s, transform .2s; }
 .button:hover { transform: translateY(-2px); }
