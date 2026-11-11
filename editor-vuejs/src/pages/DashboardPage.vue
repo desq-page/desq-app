@@ -49,11 +49,11 @@
           </div>
           <input ref="openFileInput" type="file" accept=".pptx,.docx,.pub,.html,.htm,.pdf" hidden @change="openSelectedFile" />
           <div class="supported-formats" aria-label="Supported file types">
-            <span class="format-type"><i class="format-icon html" aria-hidden="true">&lt;/&gt;</i> HTML <b>.html</b></span>
-            <span class="format-type"><i class="format-icon powerpoint" aria-hidden="true">P</i> PowerPoint <b>.pptx</b></span>
-            <span class="format-type"><i class="format-icon word" aria-hidden="true">W</i> Word <b>.docx</b></span>
-            <span class="format-type"><i class="format-icon publisher" aria-hidden="true">▤</i> Publisher <b>.pub</b></span>
-            <span class="format-type"><i class="format-icon pdf" aria-hidden="true">PDF</i> PDF <b>.pdf</b></span>
+            <span class="format-type"><i class="format-icon html" aria-hidden="true">&lt;/&gt;</i> HTML</span>
+            <span class="format-type"><i class="format-icon powerpoint" aria-hidden="true">P</i> PowerPoint</span>
+            <span class="format-type"><i class="format-icon word" aria-hidden="true">W</i> Word</span>
+            <span class="format-type"><i class="format-icon publisher" aria-hidden="true">▤</i> Publisher</span>
+            <span class="format-type"><i class="format-icon pdf" aria-hidden="true">PDF</i> PDF</span>
           </div>
           <div class="supported-formats">
             <span id="open-file-privacy" class="privacy-caption">Work offline in this browser. Your files stay private on your device.</span>
@@ -95,12 +95,6 @@
             Your documents will appear here as you work.<br />Create a
             presentation or open a .pptx, .docx, or .pub file to get started.
           </p>
-          <button
-            class="button button-primary"
-            @click="piniaInfo().openNewFileModal = true"
-          >
-            Create your first document <span aria-hidden="true">↗</span>
-          </button>
         </div>
       </section>
       <aside class="workspace-note">
@@ -423,7 +417,7 @@ h1 span {
   border-radius: 12px;
   background: var(--action-surface);
   color: var(--action-ink);
-  box-shadow: 0 3px 8px #243c2326;
+  box-shadow: 2px 3px 4px #243c2376;
   font-size: 13px;
   line-height: 1.3;
   text-align: center;
@@ -490,7 +484,7 @@ h1 span {
   grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: right;
   align-items: center;
   gap: 8px 14px;
   margin: 0;
