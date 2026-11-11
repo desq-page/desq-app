@@ -4,7 +4,7 @@
     arrow
     :clearBackground="false"
     @click="openMediaTab"
-    arrowLabel="Manage..."
+    arrowLabel="Uploaded..."
     v-if="preview"
   >
   </LayoutHeader>

@@ -231,6 +231,7 @@ function getTableFillTargets(tableShape) {
   <LocalMedia
     :title="title"
     preview
+    :hideSamples="!!piniaSelect().selShpFormat?.blipFill"
     :click-func="setShapePicture"
     :clipboard-func="pasteShapePicture"
   />

@@ -246,6 +246,7 @@ function pasteImage() {
     <LocalMedia
       title="Change Picture"
       preview
+      :hideSamples="!!piniaSelect().selShpFormat?.blipFill"
       :clickFunc="(_evt, img) => setImage(img.id || img?.src)"
       :clipboard-func="pasteImage"
     />
@@ -285,6 +286,7 @@ function pasteImage() {
   <LocalMedia
     title="Change Picture"
     preview
+    :hideSamples="!!piniaSelect().selShpFormat?.blipFill"
     :clickFunc="
       (evt, img) => {
         console.log(evt, img);
