@@ -48,15 +48,15 @@
             </button>
           </div>
           <input ref="openFileInput" type="file" accept=".pptx,.docx,.pub,.html,.htm,.pdf" hidden @change="openSelectedFile" />
-          <div class="supported-formats" aria-label="Supported file types" style="margin-top: 15px">
+          <div class="supported-formats" style="margin-top: 15px">
+            <span id="open-file-privacy" class="privacy-caption">Your files stay private on your device. Supported sources:</span>
+          </div>
+          <div class="supported-formats" aria-label="Supported file types" >
             <span class="format-type"><i class="format-icon html" aria-hidden="true">&lt;/&gt;</i> HTML</span>
             <span class="format-type"><i class="format-icon powerpoint" aria-hidden="true">P</i> PowerPoint</span>
             <span class="format-type"><i class="format-icon word" aria-hidden="true">W</i> Word</span>
             <span class="format-type"><i class="format-icon publisher" aria-hidden="true">▤</i> Publisher</span>
             <span class="format-type"><i class="format-icon pdf" aria-hidden="true">PDF</i> PDF</span>
-          </div>
-          <div class="supported-formats">
-            <span id="open-file-privacy" class="privacy-caption">Work offline in this browser. Your files stay private on your device.</span>
           </div>
         </div>
       </section>

@@ -90,13 +90,13 @@ const props = defineProps({
 
 const ShapeContextMenuOptions = computed(() => [
   {
-    label: "Editable Picture",
+    label: "AI Edit",
     key: "editable-picture",
     icon: AutoAwesomeOutlined,
     show: !!editablePicture(),
     children: [
       {
-        label: "Extract Text Here",
+        label: "Extract Text Under Pointer",
         key: "edit-picture-text",
         icon: PointerText,
         onClick: () => editPictureText(piniaInfo()),
@@ -117,7 +117,7 @@ const ShapeContextMenuOptions = computed(() => [
         type: 'divider',
       },
       {
-        label: "Extract Object",
+        label: "Extract Object By Region",
         key: "extract-object",
         icon: Image24Regular,
         onClick: selectObjectRegion,
