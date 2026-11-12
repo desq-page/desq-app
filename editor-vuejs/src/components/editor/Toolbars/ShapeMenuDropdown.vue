@@ -62,6 +62,7 @@ import {
   DownloadFilled,
   FlipFilled,
   LockOutlined,
+  PhotoSizeSelectLargeSharp,
   TouchAppOutlined,
 } from "@vicons/material";
 import { detachFromGroup, toggleGroup } from "shared-vuejs/api/group";
@@ -119,14 +120,14 @@ const ShapeContextMenuOptions = computed(() => [
       {
         label: "Extract Object By Region",
         key: "extract-object",
-        icon: Image24Regular,
+        icon: PhotoSizeSelectLargeSharp,
         onClick: selectObjectRegion,
       },
       {
         type: 'divider',
       },
       {
-        label: "Remove BG",
+        label: "Remove Picture BG",
         key: "remove-background",
         icon: VideoBackgroundEffect20Filled,
         onClick: rmbgUsingXenova,
