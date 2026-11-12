@@ -64,6 +64,11 @@ for(const {file,legacy} of cases)test('exported standalone HTML runs '+(legacy?'
     const doc=blankDocument();doc.slides=compiled.pages.map((page,index)=>({...page,id:'page-'+index,fileId:doc.file.id}));
     resolveHtmlSlideLinks(doc.slides,doc.slides.map(s=>s.id));
     doc.file.slides=doc.slides.map(({id,name,transition,timing})=>({id,name,transition,timing}));doc.file.scripting=resolveImportedScriptProject(deck.scripting,doc.slides,doc.slides.map(s=>s.id));
+    if (!${legacy}) {
+      const modules=doc.file.scripting.modules;
+      modules[0].source="import './native-proof.mjs';\\n"+modules[0].source;
+      modules.push({id:'native-proof',source:'globalThis.desqNativeProof = typeof window !== "undefined";'});
+    }
     const html=presentationHTML(doc,${JSON.stringify(runtime)},{playerStyles:${JSON.stringify(styles)},playerAssets:[]});
     const restored=readDocument(html,'text/html');check(restored.file.scripting.modules[0].source===doc.file.scripting.modules[0].source,'HTML retains editable code');
     const iframe=document.createElement('iframe');iframe.style.cssText='width:1280px;height:720px';iframe.srcdoc=html;
@@ -141,6 +146,7 @@ for(const {file,legacy} of cases)test('exported standalone HTML runs '+(legacy?'
     const popup=shape(current(),module.refs.feedback[0]);check(getComputedStyle(popup).display==='none','popup initially hidden');
     const correct=shape(current(),module.refs['choice-two'][0]);correct.dispatchEvent(new win.MouseEvent('click',{bubbles:true}));
     await until(()=>current()?.textContent.includes("That's right!"),'correct answer did not navigate: '+playbackError);
+    check(win.desqNativeProof===true,'local dependency executes as a native browser module');
     const restart=shape(current(),module.refs['restart-win'][0]);restart.dispatchEvent(new win.MouseEvent('click',{bubbles:true}));
     await until(()=>shape(current(),module.refs['choice-three'][0]),'restart did not return');
     check(getComputedStyle(shape(current(),module.refs.feedback[0])).display==='none','feedback resets on restart');

@@ -55,7 +55,7 @@
       "sha256": "32084b2911c9b119f3bcb37fb5be03e070f4d82220cbd32e6957f53a9931f338"
     },
     "desq-player-1.0.9.tgz": {
-      "sha256": "3ec6da65a6a856ca73579d9b440b0fe1a3d9a5ded0f67cb59cd1fb33450eb08a"
+      "sha256": "2f24c591271b0edb3e0b84344d41bebd2900db4f3431599947395bfcf6e93521"
     },
     "shared-vuejs-0.2.14.tgz": {
       "sha256": "f2156ba1da7e0aa5ac56ff8a1a43cd62da8bb7c373c76115a58b9c62f68ac8d5"
@@ -64,7 +64,7 @@
       "sha256": "22f00a866f772dca38cbf845ffedda015348995cb285bda2a4a71aedbe8c5bc9"
     },
     "shared-vuejs-0.2.16.tgz": {
-      "sha256": "4f280d47e0a97d30ac710f6efe1c0bf2bdd4a13c2651317510a96c1030776576"
+      "sha256": "e1338e2138b9000bf1192c590316496477d2a0788d21660627dd2a3c494a6f7f"
     }
   }
 }

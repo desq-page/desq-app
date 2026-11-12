@@ -1,7 +1,7 @@
 import * as renderer from './shared-renderer-entry.jsx';
 import { renderPlayerSlide, createPlayerAssetDocument } from './render.jsx';
 import { unpackDocumentAssets } from './document.mjs';
-import * as player from '@desq/player';
+import * as player from '@desq/player/native';
 
 globalThis.DesqRenderer = renderer;
 
@@ -18,6 +18,7 @@ export async function startPresentation() {
     return renderPlayerSlide(slideDoc, index);
   }, { assets: assets.assets });
   await player.initSlides({ ...doc.file,
+    scripting: doc.playbackScripting,
     slides: doc.slides.map(({ id, title, name, transition, timing, show, layoutid, showMaster }) => ({ id, title: title || name, transition, timing, show, layoutid, showMaster })),
     layouts: [...(doc.layouts || []), ...(doc.masters || [])].map(({ id, parentid, timing }) => ({ id, parentid, timing })),
     grid: doc.file.grids, publish: doc.file.publish });

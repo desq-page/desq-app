@@ -26,12 +26,14 @@ const productionMinify = process.env.PROD
 
 const require = createRequire(import.meta.url);
 const pdfWorker = require.resolve('pdfjs-dist/build/pdf.worker.min.mjs').replaceAll('\\', '/');
+const playerModule = /[\\/](?:@desq[\\/]player[\\/]dist|desq-core[\\/]player[\\/](?:dist|src))[\\/]/;
 
 const productionObfuscation = () => ({
   name: 'desq-production-obfuscation',
   apply: 'build',
   enforce: 'post',
-  renderChunk(code) {
+  renderChunk(code, chunk) {
+    if (Object.keys(chunk.modules).some(id => playerModule.test(id))) return null;
     return { code: obfuscateProductionScript(code), map: null };
   },
 });
@@ -156,6 +158,7 @@ export default defineConfig(({ command, mode }) => ({
         codeSplitting: {
           minSize: 100000,
           groups: [
+            { name: 'presentation-player', test: playerModule, priority: 100, minSize: 0 },
             {
               // PNG decoding extends IOBuffer during module initialization.
               // Isolate it so size-based splitting cannot create a cycle with

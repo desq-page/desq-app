@@ -92,7 +92,7 @@ function options(entry, filename, globalName, wrapper, kind) {
           (kind === 'editor' && /(?:^|\/)player\/src\//.test(name)) ||
           (kind === 'editor' && !name.startsWith('office-archive-disabled:') && /shared-vuejs\/dist\/edlib\/(?:common\/media\/(?:video-optimization|optimize-video\.worker)|pubbridge\/|pptx\/(?:import\/|unzipPPTX|pptxArchive|updateSlideXml|slidePackage|export\/))/.test(name)));
         if (forbidden.length) throw Error(`Renderer crossed an editor dependency boundary: ${forbidden.join(', ')}`);
-        if (process.env.PROD === '1') {
+        if (process.env.PROD === '1' && kind !== 'presentation') {
           const file = resolve(root, 'dist', filename);
           await writeFile(file, obfuscateProductionScript(await readFile(file, 'utf8')));
         }
@@ -155,6 +155,7 @@ if (published) {
   if (!localCore) await rm(resolve(root, '../editor-vuejs/public/player'), {recursive:true,force:true});
   await mkdir(resolve(root, '../editor-vuejs/public/player'), { recursive: true });
   await writeFile(resolve(root, '../editor-vuejs/public/player/player.js'), await preparePlayerScript(await readFile(resolvePackage('@desq/player/player.js'))));
+  await writeFile(resolve(root, '../editor-vuejs/public/player/native-player.js'), await preparePlayerScript(await readFile(resolvePackage('@desq/player/native-player.js'))));
   await writeFile(resolve(root, '../editor-vuejs/public/player/player.css'), playerStyles);
   await mkdir(resolve(root, '../editor-vuejs/public/player/css'), { recursive: true });
   await writeFile(resolve(root, '../editor-vuejs/public/player/css/player.css'), playerStyles);

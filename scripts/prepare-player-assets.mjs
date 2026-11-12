@@ -14,7 +14,7 @@ export async function preparePlayerAssets(core = localCoreDirectory()) {
   if (!core) await rm(target,{recursive:true,force:true});
   await mkdir(new URL('css/',target),{recursive:true});
   await Promise.all(['frame-player.js','frame-player.js.map'].map(name => rm(new URL(name,target),{force:true})));
-  for (const [name,destinations] of [['anime-player.js',['anime-player.js']],['player.js',['player.js']],['player.css',['css/player.css','player.css']]]) {
+  for (const [name,destinations] of [['anime-player.js',['anime-player.js']],['player.js',['player.js']],['native-player.js',['native-player.js']],['player.css',['css/player.css','player.css']]]) {
     const source=resolvePackage('@desq/player/'+name);
     for (const destination of destinations) {
       if (name.endsWith('.js')) await writeFile(new URL(destination,target), await preparePlayerScript(await readFile(source)));
