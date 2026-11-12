@@ -35,27 +35,27 @@
             <span class="status-dot"></span> YOUR IDEAS START HERE
           </p>
           <p class="intro-description">
-            Create something new, open an office document, or pick up where you
+            Open or import your existing office document, or create something new, or pick up where you
             left off. Editing is free.
           </p>
         </div>
         <div class="workspace-actions">
-          <button class="button workspace-action action-blank" @click="createBlankPresentation"><span aria-hidden="true">▤</span> Blank Presentation</button>
-          <button class="button workspace-action action-ai" @click="piniaInfo().openEditorAgentModal = true"><span aria-hidden="true">✦</span> Create with AI</button>
           <div class="open-file-action">
             <button class="button workspace-action action-open" :disabled="openingFile" @click="openFileInput?.click()" aria-describedby="open-file-privacy">
               <span aria-hidden="true">↗</span> {{ openingFile ? "Opening file…" : "Open or Import" }}
             </button>
           </div>
+          <button class="button workspace-action action-ai" @click="piniaInfo().openEditorAgentModal = true"><span aria-hidden="true">✦</span> Create with AI</button>
+          <button class="button workspace-action action-blank" @click="createBlankPresentation"><span aria-hidden="true">▤</span> Blank Presentation</button>
           <input ref="openFileInput" type="file" accept=".pptx,.docx,.pub,.html,.htm,.pdf" hidden @change="openSelectedFile" />
           <div class="supported-formats" style="margin-top: 15px">
             <span id="open-file-privacy" class="privacy-caption">Your files stay private on your device. Supported sources:</span>
           </div>
           <div class="supported-formats" aria-label="Supported file types" >
-            <span class="format-type"><i class="format-icon html" aria-hidden="true">&lt;/&gt;</i> HTML</span>
             <span class="format-type"><i class="format-icon powerpoint" aria-hidden="true">P</i> PowerPoint</span>
-            <span class="format-type"><i class="format-icon word" aria-hidden="true">W</i> Word</span>
+            <span class="format-type"><i class="format-icon html" aria-hidden="true">&lt;/&gt;</i> HTML</span>
             <span class="format-type"><i class="format-icon publisher" aria-hidden="true">▤</i> Publisher</span>
+            <span class="format-type"><i class="format-icon word" aria-hidden="true">W</i> Word</span>
             <span class="format-type"><i class="format-icon pdf" aria-hidden="true">PDF</i> PDF</span>
           </div>
         </div>
@@ -405,7 +405,7 @@ h1 span {
 .workspace-actions {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  gap: 6px;
   flex-shrink: 0;
 }
 .workspace-actions .workspace-action {
@@ -483,10 +483,10 @@ h1 span {
   grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
-  justify-content: right;
+  justify-content: left;
   align-items: center;
   gap: 8px 14px;
-  margin: 0;
+  margin: 0 0 0 10px;
   color: #627269;
   font-size: 10px;
 }
