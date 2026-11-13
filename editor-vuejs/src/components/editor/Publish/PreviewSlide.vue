@@ -283,7 +283,9 @@ const layoutType = ref("slide"); // getFileInfo().publish?.scroll ? "scroll" : "
 
 onMounted(() => {
   window.addEventListener("message", (e: MessageEvent) => {
-    if (e.source === ifr.value?.ifr?.contentWindow && e.data?.slideIndex) {
+    if (e.source !== ifr.value?.ifr?.contentWindow) return;
+    if (e.data?.scriptVariables) piniaInfo().openShowVarsModal = e.data.scriptVariables;
+    if (e.data?.slideIndex) {
       slideIndex.value = e.data?.slideIndex;
       // selectSlide(getFileInfo().slides[slideIndex.value - 1]);
     }
@@ -375,8 +377,7 @@ function openFullScreen() {
 }
 
 function showVariables() {
-  const vars = ifr.value?.ifr?.contentWindow.getVars();
-  piniaInfo().openShowVarsModal = vars;
+  ifr.value?.postMessage({ cmd: "getVars" });
 }
 </script>
 

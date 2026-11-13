@@ -1,6 +1,6 @@
 import van from 'vanjs-core';
 import * as vanX from 'vanjs-ext';
-import { preparePlaybackScripts } from 'shared-vuejs/api/scripting';
+import { prepareNativePlaybackScripts } from 'shared-vuejs/api/scripting';
 import { clone, normalizeDocument, blankDocument, id } from './model.mjs';
 import { openLocalDatabase } from './local-db.mjs';
 
@@ -283,23 +283,15 @@ export function createEditorStore(options = {}) {
     return read;
   }
   async function getDocument() { return (await snapshot()).document; }
-  async function presentationInfo() {
-    await tail;
-    const scriptRecords = [];
-    const scripting = header.file.scripting;
-    const slides = [];
-    for (const item of header.slides) {
-      const slide = await record('slide',item.id);
-      if (scripting) scriptRecords.push(slide);
-      slides.push({ ...item, timing:slide.timing, transition:slide.transition, show:slide.show });
-    }
-    const layouts = [];
-    for (const [kind,items] of [['layout',header.layouts],['master',header.masters]]) for (const item of items) {
-      const model = await record(kind,item.id);
-      if (scripting) scriptRecords.push(model);
-      layouts.push({id:model.id,parentid:model.parentid,timing:model.timing});
-    }
-    return {slides,layouts,scripting:preparePlaybackScripts(scripting, scriptRecords)};
+  function presentationInfo(doc) {
+    const records = [...doc.slides, ...doc.layouts, ...doc.masters];
+    return {
+      ...doc.file,
+      slides: doc.slides.map(({ id, name, title, layoutid, timing, transition, show, showMaster }) =>
+        ({ id, title: title || name, layoutid, timing, transition, show, showMaster })),
+      layouts: [...doc.layouts, ...doc.masters].map(({ id, parentid, timing }) => ({ id, parentid, timing })),
+      scripting: prepareNativePlaybackScripts(doc.file.scripting, records),
+    };
   }
   return {
     workspace, view, slides, metadata, history, loading, error, ui, ready,

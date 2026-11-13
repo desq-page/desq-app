@@ -25,7 +25,7 @@ Await host actions in sequence. Each handler can request one slide jump. DESQ sw
 | `await ctx.shapes.show(id)` / `hide(id)` | Change shape/group visibility; referenced shapes on unloaded slides update when they load |
 | `await ctx.shapes.text(id, value)` | Replace the contents of one text box with plain text; rich formatting is flattened |
 | `await ctx.shapes.move(id, x, y)` | Set a translation offset in slide coordinates, not an absolute position; each offset must be within ±10,000 |
-| `await ctx.shapes.style(id, styles)` | Set `opacity` (0–1), `color`, `fill`, `stroke`, or `backgroundColor`; colors accept simple names, hex and rgb/rgba |
+| `await ctx.shapes.style(id, styles)` | Set `opacity` (0–1), `color`, `fill`, `stroke`, `backgroundColor`, or `width` (percentage from 0% to 100%); colors accept simple names, hex and rgb/rgba |
 | `await ctx.animations.play(id)` | Replay existing native effects for a shape on the current slide (or an effect ID); this does not compile arbitrary JavaScript into animations |
 | `await ctx.wait(milliseconds)` | Wait 0–10,000 ms |
 | `await ctx.slides.goto(id)` | Queue a jump to a slide, including a hidden destination |

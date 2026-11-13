@@ -1,139 +1,47 @@
 <script setup>
-// import PlayerApp from "player-vuejs/src/lib/PlayerApp";
 import { useUrlSearchParams } from "@vueuse/core";
-import { nextTick, onMounted, ref } from "vue";
-// import SlideEdit from "@/components/editor/SlideEdit.vue";
-// import SlideThumb from "@/components/editor/SlideThumb.vue";
-// import "player-vuejs/src/player.css";
-
-// const SlideThumb = defineAsyncComponent(
-//   () => import("@/components/editor/SlideThumb.vue"),
-// );
-
-// const playerRef = ref();
-
-import * as player from "@desq/player";
-import "@desq/player/player.css";
-import { extractSld } from "@desq/player";
+import { onMounted, onUnmounted, ref } from "vue";
 import { setupDB } from "shared-vuejs/api/db";
-import { prepareExportFile } from "shared-vuejs/api/html";
-import { getMediaRecordFromOPFS } from "shared-vuejs/api/opfs";
-import { genPlayerIndexName } from "shared-vuejs/api/slideUtils";
+import { createSinglePresentationHtml } from "shared-vuejs/api/presentation-export";
 
 const params = useUrlSearchParams();
-const html = ref("");
-let fileId,
-  slideId,
-  slideData,
-  prevData,
-  fileInfo,
-  layoutInfo,
-  masterInfo,
-  theme;
-const ready = ref(false);
+const source = ref("");
+const error = ref("");
+const frame = ref();
+let closed = false;
+const relay = event => {
+  if (window.parent === window) return;
+  if (event.source === frame.value?.contentWindow && Number.isInteger(event.data?.slideIndex)) {
+    window.parent.postMessage({ slideIndex: event.data.slideIndex }, "*");
+  } else if (event.source === frame.value?.contentWindow && event.data?.scriptVariables) {
+    window.parent.postMessage({ scriptVariables: event.data.scriptVariables }, "*");
+  } else if (event.source === window.parent && ["moveForward", "moveBackward", "gotoSlide", "getVars"].includes(event.data?.cmd)) {
+    frame.value?.contentWindow.postMessage(event.data, "*");
+  }
+};
 onMounted(async () => {
-  await initInfo();
-  if (params.layoutType == "thumb" || params.layoutType == "slide") {
-    const indexName = genPlayerIndexName(Number(params.slideIndex));
-    let slideHtml;
-    try {
-      const page = await getMediaRecordFromOPFS(fileId, indexName);
-      slideHtml = typeof page.data === "string"
-        ? page.data
-        : new TextDecoder().decode(page.data);
-    } catch {
-      // Keep already-published pages working while older files migrate to OPFS.
-      slideHtml = await fetch(params.baseHref + indexName).then((res) => res.text());
-    }
-
-
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(slideHtml, "text/html");
-    const styles = Array.from(doc.head?.children ?? [])
-      .filter(c =>
-        c.tagName == 'LINK' &&
-        c.rel == 'stylesheet' &&
-        !c.href?.split('/').pop().match(/player\.css$/),
-      );
-
-    slideHtml = extractSld(slideHtml, "sld" + params.slideIndex);
-
-
-    html.value =
-      "<div id='" +
-      "sld" +
-      params.slideIndex +
-      "' class='slide'>" +
-      slideHtml +
-      "</div>";
-
-    await nextTick();
-    styles?.forEach(link => {
-      const clone = link.cloneNode(true);
-      document.head.appendChild(clone);
+  window.addEventListener("message", relay);
+  try {
+    await setupDB();
+    const html = await createSinglePresentationHtml(params.fileId, {
+      baseUrl: import.meta.env.BASE_URL,
+      initialSlide: Number(params.slideIndex) || 1,
+      layoutType: params.layoutType || "",
     });
-    player.initSlides({
-      slides: fileInfo.slides.map((sld) => ({
-        id: sld.id,
-        title: sld.title,
-        layoutid: sld.layoutid,
-        timing: sld.timing,
-        transition: sld.transition,
-        show: sld.show,
-      })),
-      layouts: fileInfo.layouts.map((lt) => ({
-        id: lt.id,
-        parent: lt.parent,
-        timing: lt.timing,
-      })),
-      width: fileInfo.width,
-      height: fileInfo.height,
-      grid: fileInfo.grids,
-      publish: fileInfo.publish,
-      scripting: fileInfo.scripting,
-    });
-  } else {
-    ready.value = true;
-    // playerRef.value?.replaceChildren(PlayerApp({}));
+    if (!closed) source.value = URL.createObjectURL(html);
+  } catch (cause) {
+    if (!closed) error.value = cause.message;
   }
 });
-
-async function initInfo() {
-  const base = document.getElementsByTagName("base")[0];
-  if (base) {
-    base.href = params.baseHref;
-  }
-
-  await setupDB();
-
-  // use this to debug rendering of exportSlideHtml, wehich is used to export video
-  fileId = params.fileId;
-  fileInfo = await prepareExportFile(fileId);
-
-  // slideId = fileInfo.slides[+params.slideIndex - 1]?.id;
-
-  // const info = await loadAllAssetsFromDexie(fileInfo, slideId);
-  // slideData = info.slideInfo;
-  // layoutInfo = info.layoutInfo;
-  // masterInfo = info.masterInfo;
-  // theme = info.theme;
-
-  return fileInfo;
-}
+onUnmounted(() => {
+  closed = true;
+  window.removeEventListener("message", relay);
+  if (source.value) URL.revokeObjectURL(source.value);
+});
 </script>
 
 <template>
-  <div id="mainframe" class="mainframe">
-    <div
-      id="viewport"
-      class="viewport"
-      v-html="html"
-      v-if="params.layoutType == 'thumb' || params.layoutType == 'slide'"
-    ></div>
-  </div>
-  <!-- <iframe
-    v-if="params.layoutType == 'slide'"
-    style="width: 100vw; height: 100%"
-    :src="`${getBaseHref(params.fileId)}media/index.html`"
-  ></iframe> -->
+  <iframe v-if="source" ref="frame" :src="source" sandbox="allow-scripts" allowfullscreen
+    title="Presentation preview" style="position:fixed;inset:0;width:100%;height:100%;border:0" />
+  <p v-else role="status">{{ error || "Preparing presentation…" }}</p>
 </template>

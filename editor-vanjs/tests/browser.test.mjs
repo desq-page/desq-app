@@ -38,7 +38,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     const host = document.querySelector('[data-desq-editor]');
     const api = DesqVanEditor.mount(host, { document: await DesqVanEditor.getEditor(host).getDocument() });
     await api.ready; await tick();
-    check(!window.DesqPlayer, 'Player is not loaded at editor startup');
+    check(!window.player, 'Player is not loaded at editor startup');
     check(host.querySelectorAll('.ve-editor').length === 1, 'Mount replaces prior instance');
     check(!host.querySelector('.ve-canvas #sld').textContent.includes('false'), 'Conditional JSX does not render boolean text');
     // Native XML conversion permits singleton paragraph and run objects.
@@ -139,23 +139,20 @@ window.addEventListener('DOMContentLoaded', async () => {
     await api.load(presentationDoc); await tick();
     const editorFont = document.documentElement.style.fontSize;
     const originalWidth = document.querySelector('#sld .shp').getBoundingClientRect().width;
-    click('Present');
-    for (let i = 0; i < 100 && !window.DesqPlayer; i++) await tick();
-    check(!!window.DesqPlayer, 'Player loads on demand');
-    for (let i = 0; i < 100 && document.documentElement.style.fontSize === editorFont; i++) await tick();
-    check(document.documentElement.style.fontSize !== editorFont, 'Player applies a different scale');
-    check(!!host.querySelector('.ve-presentation'), 'Presentation opens');
-    check([...host.querySelectorAll('.ve-presentation .textbox')].every(box => box.contentEditable === 'false'), 'Presentation text is read-only');
+    const openPreview = async () => {
+      click('Present');
+      for (let i = 0; i < 150 && !host.querySelector('.ve-presentation iframe'); i++) await tick();
+      const frame = host.querySelector('.ve-presentation iframe');
+      check(frame?.src.startsWith('blob:'), 'Presentation opens exported HTML');
+      check(frame.getAttribute('sandbox') === 'allow-scripts', 'Presentation is isolated from the editor');
+      check(!window.player && document.documentElement.style.fontSize === editorFont, 'Preview leaves editor globals and scale alone');
+    };
+    await openPreview();
     click('Exit presentation'); await tick();
-    check(document.documentElement.style.fontSize === editorFont, 'Exit restores editor root scale');
+    check(!host.querySelector('.ve-presentation iframe'), 'Exit removes the preview');
     check(Math.abs(document.querySelector('#sld .shp').getBoundingClientRect().width - originalWidth) < 1, 'Exit preserves editor shape size');
-    window.dispatchEvent(new Event('resize')); await tick();
-    check(document.documentElement.style.fontSize === editorFont, 'Resize after exit does not reactivate player scaling');
-    click('Present');
-    for (let i = 0; i < 100 && document.documentElement.style.fontSize === editorFont; i++) await tick();
-    check(document.documentElement.style.fontSize !== editorFont, 'Present reapplies its scale after reopening');
+    await openPreview();
     click('Exit presentation'); await tick();
-    check(document.documentElement.style.fontSize === editorFont, 'Second exit restores editor root scale');
     api.destroy(); check(!host.querySelector('.ve-editor'), 'Destroy removes editor');
     const report = document.createElement('pre'); report.id = 'result'; report.textContent = 'PASS:' + window.savedArchive; document.body.append(report);
   } catch (error) { const report = document.createElement('pre'); report.id = 'result'; report.textContent = 'FAIL: ' + error.stack; document.body.append(report); }

@@ -16,9 +16,8 @@ for (const name of ['shared-vuejs','@desq/player']) {
    }
  });
 }
-test('player standalone bundles expose the required browser globals', () => {
+test('the standalone player exposes the browser global', () => {
  assert.match(readFileSync(require.resolve('@desq/player/player.js'),'utf8'),/var player=/);
- assert.match(readFileSync(require.resolve('@desq/player/vanjs.js'),'utf8'),/var DesqPlayer=/);
 });
 test('the installed player includes media playback and hover controls', () => {
  assert.match(readFileSync(require.resolve('@desq/player/player.js'),'utf8'),/mediaStop/);

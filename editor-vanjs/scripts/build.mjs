@@ -142,12 +142,12 @@ await mkdir(outdir, { recursive: true });
 await Promise.all(['video-worker.txt', 'video-worker.meta.json', 'charts.html', 'charts.meta.json', 'renderer.html', 'renderer.meta.json'].map(name => rm(resolve(statsDir, name), { force: true })));
 await Promise.all(['charts.js', 'renderer.js'].map(name => rm(resolve(outdir, name), { force: true })));
 // Use released standalone assets without rebuilding the player source.
-const playerBundle = Buffer.from(await preparePlayerScript(await readFile(resolvePackage('@desq/player/vanjs.js'))));
+const playerBundle = Buffer.from(await preparePlayerScript(await readFile(resolvePackage('@desq/player/player.js'))));
 const playerStyles = await readFile(resolvePackage('@desq/player/player.css'));
 await writeFile(resolve(outdir, 'player.js'), playerBundle);
 await writeFile(resolve(outdir, 'player.css'), playerStyles);
 for (const [name, output, data] of [['player', 'dist/player.js', playerBundle], ['player-css', 'dist/player.css', playerStyles]]) {
-  const input = `@desq/player/${name === 'player' ? 'vanjs.js' : 'player.css'}`;
+  const input = `@desq/player/${name === 'player' ? 'player.js' : 'player.css'}`;
   await bundleStatsPlugin.record(name, { inputs: { [input]: { bytes: data.length, imports: [] } },
     outputs: { [output]: { bytes: data.length, inputs: { [input]: { bytesInOutput: data.length } } } } });
 }
@@ -155,7 +155,6 @@ if (published) {
   if (!localCore) await rm(resolve(root, '../editor-vuejs/public/player'), {recursive:true,force:true});
   await mkdir(resolve(root, '../editor-vuejs/public/player'), { recursive: true });
   await writeFile(resolve(root, '../editor-vuejs/public/player/player.js'), await preparePlayerScript(await readFile(resolvePackage('@desq/player/player.js'))));
-  await writeFile(resolve(root, '../editor-vuejs/public/player/native-player.js'), await preparePlayerScript(await readFile(resolvePackage('@desq/player/native-player.js'))));
   await writeFile(resolve(root, '../editor-vuejs/public/player/player.css'), playerStyles);
   await mkdir(resolve(root, '../editor-vuejs/public/player/css'), { recursive: true });
   await writeFile(resolve(root, '../editor-vuejs/public/player/css/player.css'), playerStyles);

@@ -8,7 +8,7 @@ import { Button, Field, NumberField, ColorField, SelectField, Section, Toolbar, 
 import { blankSlide, clone, createShape,
   color, colorValue, textStyle, textParagraphs, formatText, duplicateSlide, moveItem, moveEffect, effectGroups, removeShapes, id } from './model.mjs';
 import { loadDocumentFonts, renderPlayerSlide, releaseDocumentFonts } from './render.jsx';
-import { ensurePlayer, ensurePlayerStyles } from './renderer-loader.mjs';
+import { buildSinglePageHtml } from 'shared-vuejs/api/edlib-common-export-single-page-package';
 import { fileDataURL, download, embedAssets, editableHTML, compressSingleHtml } from './document.mjs';
 import { editableZip } from './package.mjs';
 
@@ -22,38 +22,44 @@ export function mountEditor(host, options = {}) {
   const getDoc = () => store.view.val;
   const getSlide = () => getDoc()?.slides[0];
   let presentationGeneration = 0;
-  let editorFontSize;
+  const presentationSource = van.state('');
+  let presentationFrame;
+  const presentationMessage = event => {
+    if (event.source === presentationFrame?.contentWindow && event.data?.cmd === 'exitPresentation') exitPresentation();
+  };
   function exitPresentation() {
     presentationGeneration++;
-    globalThis.DesqPlayer?.stopPresentation?.();
-    if (editorFontSize !== undefined) {
-      document.documentElement.style.fontSize = editorFontSize;
-      editorFontSize = undefined;
-    }
+    if (presentationSource.val) URL.revokeObjectURL(presentationSource.val);
+    presentationSource.val = '';
+    window.removeEventListener('message', presentationMessage);
     ui.presenting = false;
     root.focus();
   }
   async function present() {
     finishEditing();
-    if (editorFontSize === undefined) editorFontSize = document.documentElement.style.fontSize;
-    ui.presenting = true; root.focus();
+    ui.presenting = true;
+    window.addEventListener('message', presentationMessage);
+    root.focus();
     const generation = ++presentationGeneration;
     try {
       await store.flush();
-      await Promise.all([ensurePlayer(), ensurePlayerStyles()]);
-      if (!ui.presenting || generation !== presentationGeneration || destroyed) return;
-      await new Promise(resolve => requestAnimationFrame(resolve));
-      const viewport = document.getElementById('viewport');
-      if (!viewport) throw Error('Presentation viewport was not mounted.');
-      viewport.replaceChildren();
-      const player = globalThis.DesqPlayer;
-      const slideList = [...store.slides.rawVal];
-      // Read each presentation slide only when the player requests it.
-      player.setEmbeddedSlides(async index => renderPlayerSlide(await store.readView(slideList[index - 1].id, {objectURLs:false}), 1));
-      await player.initSlides({
-        ...await store.presentationInfo(),
-        width: getDoc().file.width, height: getDoc().file.height, grid: getDoc().file.grids, publish: getDoc().file.publish,
+      const snapshot = await store.getDocument();
+      const doc = await embedAssets(snapshot);
+      const resources = await options.getRendererResources(doc);
+      const config = await store.presentationInfo(doc);
+      const slides = [];
+      for (let i = 0; i < doc.slides.length; i++) {
+        if (generation !== presentationGeneration || destroyed) return;
+        slides.push(await renderPlayerSlide(doc, i + 1));
+      }
+      const html = await buildSinglePageHtml({
+        title: doc.file.name || 'Presentation', playerJs: resources.player,
+        playerCss: resources.playerStyles + '\n' + resources.rendererStyles,
+        slides, assets: [], config,
       });
+      if (generation === presentationGeneration && !destroyed) {
+        presentationSource.val = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+      }
     } catch (error) {
       if (!destroyed && generation === presentationGeneration) {
         exitPresentation();
@@ -332,9 +338,9 @@ export function mountEditor(host, options = {}) {
     </footer>
     {() => ui.presenting ? <div class="ve-presentation" role="dialog" aria-label="Presentation" aria-modal="true">
       <Button label="Exit presentation" action={exitPresentation}/>
-      <div id="container" data-name="player" class="container ve-player-container">
-        <div id="mainframe" class="mainframe"><div id="viewport" class="viewport"></div></div>
-      </div><p>← / → to navigate · Esc to exit</p>
+      {() => presentationSource.val
+        ? (presentationFrame = <iframe src={presentationSource.val} sandbox="allow-scripts" title="Presentation preview" style="width:100%;height:100%;border:0"/>)
+        : <p role="status">Preparing presentation…</p>}
     </div> : ''}
   </div>;
   host.append(root);
@@ -375,7 +381,7 @@ export function mountEditor(host, options = {}) {
     load, undo, redo, saveZIP: () => save(true), saveHTML: () => save(false), saveSingleEditableHTML: () => save(false),
     get dirty() { return ui.dirty; },
     destroy() {
-      if (ui.presenting || editorFontSize !== undefined) exitPresentation();
+      if (ui.presenting) exitPresentation();
       destroyed = true; resizeObserver.disconnect();
       releaseDocumentFonts(getDoc()?.file.id);
       window.removeEventListener('beforeunload', beforeUnload);

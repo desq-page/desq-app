@@ -74,12 +74,12 @@ try {
     return false;
   });
   if (!stopping) {
-    const completed = new Set();
+    const pendingPlayerOutputs = new Set(['index.js', 'player.js', 'player.css']);
     await watch(resolve(core,'player/esbuild.js'), resolve(core,'player'), ['--watch','--dev'], line => {
       if (line.startsWith('DESQ_PLAYER_BUILD_COMPLETE ')) {
-        completed.add(JSON.parse(line.slice('DESQ_PLAYER_BUILD_COMPLETE '.length)).file);
+        pendingPlayerOutputs.delete(JSON.parse(line.slice('DESQ_PLAYER_BUILD_COMPLETE '.length)).file);
         rebuilt();
-        return completed.size === 4;
+        return pendingPlayerOutputs.size === 0;
       }
       if (line) console.log(line);
       return false;

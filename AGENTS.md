@@ -163,11 +163,13 @@ For custom game state, quiz popups and branching behavior, use [local JavaScript
 
 ## Verify before delivery
 
+Use only DESQ interaction APIs documented as implemented, with their supported signatures and values. Adapt unsupported interactions using supported features.
+
 1. Validate the slide IDs, action targets, element IDs, dimensions and count. Traverse every branch, restart path and same-slide trigger. Reject dangling references.
 2. Open the standalone HTML in a real browser. Inspect every screen at its authored canvas size and at a 1280 × 720 and phone viewport. Confirm fonts, no clipping, readable text, visible focus, and correct answer/outcome routing.
 3. Import it into DESQ. Inspect every slide, including inactive alternatives. Confirm editable text and geometry, font identities, images, groups, button artwork and supported animation behavior.
 4. Generate thumbnails **without manually editing each slide first**. Check the server-rendered path, not only the live editor DOM. No XML parse, decode or rejected-promise errors are acceptable.
-5. If interaction mapping is implemented, verify button jumps and animation triggers in the DESQ player and saved/reopened HTML. Test PPTX links/triggers separately; browser success is not proof of PowerPoint behavior.
+5. For interactive content, verify every control, branch and restart in both the downloaded HTML and the imported deck in DESQ preview. Check for runtime errors in both. Test PPTX links and triggers separately.
 6. Report the actual verification performed and remaining approximations. Do not conceal missing interactions or silently replace native editability with a screenshot.
 
 ## Extending the importer

@@ -1,7 +1,7 @@
 import * as renderer from './shared-renderer-entry.jsx';
 import { renderPlayerSlide, createPlayerAssetDocument } from './render.jsx';
 import { unpackDocumentAssets } from './document.mjs';
-import * as player from '@desq/player/native';
+import * as player from '@desq/player';
 
 globalThis.DesqRenderer = renderer;
 

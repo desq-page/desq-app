@@ -217,12 +217,13 @@ question --help--&gt; play the hint animation on this screen
 <p>For HTML intended for editable DESQ import, use readable HTML text such as <code>3/5 &lt; 2/3</code> (escape the less-than sign as <code>&amp;lt;</code>) and <code>&lt;sup&gt;</code> or <code>&lt;sub&gt;</code> for simple notation. The HTML slide parser currently rejects MathML elements. Use the native equation authoring path when the deliverable requires editable PowerPoint equations.</p>
 <p>For custom game state, quiz popups and branching behavior, use <a href="docs/local-scripting.html">local JavaScript modules</a> and the complete <a href="examples/html-slides/local-quiz.html">local quiz example</a>. Bind buttons with <code>data-desq-run</code>, <code>data-desq-module</code>, and JSON <code>data-desq-args</code>. Choose exported handler names that fit the game. DESQ resolves the exact name in <code>data-desq-run</code>. Keep the game rules in your own functions and call DESQ’s host API for slide operations. When standalone browser playback is required, share the same game logic through a browser adapter. JavaScript runs only in the HTML player; PPTX stores code and bindings for DESQ reimport without running JavaScript in PowerPoint. Test every branch in the imported player.</p>
 <h2>Verify before delivery</h2>
+<p>Use only DESQ interaction APIs documented as implemented, with their supported signatures and values. Adapt unsupported interactions using supported features.</p>
 <ol>
 <li>Validate the slide IDs, action targets, element IDs, dimensions and count. Traverse every branch, restart path and same-slide trigger. Reject dangling references.</li>
 <li>Open the standalone HTML in a real browser. Inspect every screen at its authored canvas size and at a 1280 × 720 and phone viewport. Confirm fonts, no clipping, readable text, visible focus, and correct answer/outcome routing.</li>
 <li>Import it into DESQ. Inspect every slide, including inactive alternatives. Confirm editable text and geometry, font identities, images, groups, button artwork and supported animation behavior.</li>
 <li>Generate thumbnails <strong>without manually editing each slide first</strong>. Check the server-rendered path, not only the live editor DOM. No XML parse, decode or rejected-promise errors are acceptable.</li>
-<li>If interaction mapping is implemented, verify button jumps and animation triggers in the DESQ player and saved/reopened HTML. Test PPTX links/triggers separately; browser success is not proof of PowerPoint behavior.</li>
+<li>For interactive content, verify every control, branch and restart in both the downloaded HTML and the imported deck in DESQ preview. Check for runtime errors in both. Test PPTX links and triggers separately.</li>
 <li>Report the actual verification performed and remaining approximations. Do not conceal missing interactions or silently replace native editability with a screenshot.</li>
 </ol>
 <h2>Extending the importer</h2>

@@ -1,4 +1,3 @@
-const pending = new Map();
 let playerURL, playerStylesURL, playerFontsURL;
 export function setRendererURLs(runtimeURL) {
   const base = runtimeURL || document.baseURI;
@@ -13,20 +12,9 @@ export function setRendererURLs(runtimeURL) {
   }
   playerFontsURL = new URL(published ? 'fonts/' : 'assets/fonts/', base).href;
 }
-function load(globalName, url) {
-  if (globalThis[globalName]) return Promise.resolve(globalThis[globalName]);
-  if (!pending.has(globalName)) pending.set(globalName, new Promise((resolve, reject) => {
-    const script = document.createElement('script'); script.src = url;
-    script.onload = () => globalThis[globalName] ? resolve(globalThis[globalName]) : reject(Error(`Invalid shared renderer: ${url}`));
-    script.onerror = () => { pending.delete(globalName); script.remove(); reject(Error(`Unable to load ${url}. Keep the extracted ZIP files together.`)); };
-    document.head.append(script);
-  }));
-  return pending.get(globalName);
-}
 export const ensureRenderer = () => globalThis.DesqRenderer
   ? Promise.resolve(globalThis.DesqRenderer)
   : Promise.reject(Error('The editor renderer is unavailable.'));
-export const ensurePlayer = () => load('DesqPlayer', playerURL);
 export async function playerResources() {
   if (globalThis.DesqEmbeddedPlayer) {
     const embedded = globalThis.DesqEmbeddedPlayer;
@@ -42,15 +30,6 @@ export async function playerResources() {
     return { name: `assets/fonts/${name}`, mime, data: new Uint8Array(await response.arrayBuffer()) };
   }));
   return { player: await js.text(), playerStyles: await css.text(), playerAssets };
-}
-export function ensurePlayerStyles() {
-  if (document.querySelector('[data-desq-player-styles]')) return Promise.resolve();
-  return new Promise((resolve, reject) => {
-    const link = document.createElement('link'); link.rel = 'stylesheet'; link.href = playerStylesURL;
-    link.dataset.desqPlayerStyles = '';
-    link.onload = resolve; link.onerror = () => { link.remove(); reject(Error(`Unable to load ${playerStylesURL}. Keep the extracted ZIP files together.`)); };
-    document.head.append(link);
-  });
 }
 export async function rendererResources(doc) {
   const renderer = await ensureRenderer();
