@@ -40,3 +40,20 @@
 
 .ve-editor>header .ve-brand{display:inline-flex;align-items:center;gap:9px;color:#123d37;font-size:20px;font-weight:700;letter-spacing:-.8px}
 .ve-brand img{display:block;flex:none;width:30px;height:30px}
+
+.ve-presentation-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid white;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: ve-presentation-spin 0.8s linear infinite;
+}
+
+@keyframes ve-presentation-spin {
+  to { transform: rotate(1turn); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ve-presentation-spinner { animation: none; }
+}

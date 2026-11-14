@@ -340,7 +340,9 @@ export function mountEditor(host, options = {}) {
       <Button label="Exit presentation" action={exitPresentation}/>
       {() => presentationSource.val
         ? (presentationFrame = <iframe src={presentationSource.val} sandbox="allow-scripts" title="Presentation preview" style="width:100%;height:100%;border:0"/>)
-        : <p role="status">Preparing presentation…</p>}
+        : <div role="status" aria-label="Loading presentation">
+          <div class="ve-presentation-spinner" aria-hidden="true"/>
+        </div>}
     </div> : ''}
   </div>;
   host.append(root);

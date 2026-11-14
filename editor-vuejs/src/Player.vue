@@ -43,5 +43,34 @@ onUnmounted(() => {
 <template>
   <iframe v-if="source" ref="frame" :src="source" sandbox="allow-scripts" allowfullscreen
     title="Presentation preview" style="position:fixed;inset:0;width:100%;height:100%;border:0" />
-  <p v-else role="status">{{ error || "Preparing presentation…" }}</p>
+  <p v-else-if="error" role="status">{{ error }}</p>
+  <div v-else class="player-loading" role="status" aria-label="Loading presentation">
+    <span class="player-spinner" aria-hidden="true"></span>
+  </div>
 </template>
+
+<style scoped>
+.player-loading {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.player-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: player-spin 0.8s linear infinite;
+}
+
+@keyframes player-spin {
+  to { transform: rotate(1turn); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player-spinner { animation: none; }
+}
+</style>
