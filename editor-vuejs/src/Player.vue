@@ -45,7 +45,7 @@ onUnmounted(() => {
     title="Presentation preview" style="position:fixed;inset:0;width:100%;height:100%;border:0" />
   <p v-else-if="error" role="status">{{ error }}</p>
   <div v-else class="player-loading" role="status" aria-label="Loading presentation">
-    <span class="player-spinner" aria-hidden="true"></span>
+    <img class="player-spinner" src="/images/loading.svg" alt="" aria-hidden="true">
   </div>
 </template>
 
@@ -58,19 +58,7 @@ onUnmounted(() => {
 }
 
 .player-spinner {
-  width: 2rem;
-  height: 2rem;
-  border: 3px solid currentColor;
-  border-right-color: transparent;
-  border-radius: 50%;
-  animation: player-spin 0.8s linear infinite;
-}
-
-@keyframes player-spin {
-  to { transform: rotate(1turn); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .player-spinner { animation: none; }
+  width: 72px;
+  height: 72px;
 }
 </style>
