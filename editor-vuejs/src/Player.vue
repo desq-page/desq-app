@@ -26,6 +26,7 @@ onMounted(async () => {
     const html = await createSinglePresentationHtml(params.fileId, {
       baseUrl: import.meta.env.BASE_URL,
       initialSlide: Number(params.slideIndex) || 1,
+      transitionProgress: typeof params.transPct === "string" ? params.transPct : undefined,
       layoutType: params.layoutType || "",
     });
     if (!closed) source.value = URL.createObjectURL(html);

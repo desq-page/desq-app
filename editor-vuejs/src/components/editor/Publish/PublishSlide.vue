@@ -16,6 +16,18 @@
     <template #icon>
       <NIcon><Globe24Regular /></NIcon>
     </template>
+    <NFlex align="center">
+      <NCheckbox :checked="!!getFileInfo()?.publish?.webPage"
+        @update:checked="value => updateWebLayout('webPage', value)">
+        Scrolling webpage
+      </NCheckbox>
+      <label for="publish-max-width">Max width</label>
+      <NSelect id="publish-max-width" style="width: 110px" size="small"
+        :value="getFileInfo()?.publish?.maxWidth || '1290px'"
+        :disabled="!getFileInfo()?.publish?.webPage"
+        :options="maxWidthOptions"
+        @update:value="value => updateWebLayout('maxWidth', value)" />
+    </NFlex>
     <CloudflarePublish v-if="publishTarget === 'cloudflare'" :disabled="disabled" />
     <NFlex class="publishInfo" vertical v-else-if="!piniaSession().uid">
       <NFlex>Sign in to publish</NFlex>
@@ -179,20 +191,22 @@ import dayjs from "dayjs";
 import { packageFile } from "shared-vuejs/api/export-zip";
 import { CloudUpload } from "@vicons/carbon";
 import { round2 } from "shared-vuejs/api/utility";
-import { computed, nextTick, ref, watch } from "vue";
-import { NModal, NButton, NFlex, NIcon } from "naive-ui";
+import { computed, ref, watch } from "vue";
+import { NModal, NButton, NFlex, NIcon, NCheckbox, NSelect } from "naive-ui";
 import { publishBackend } from "shared-vuejs/api/backend-config";
 import CloudflarePublish from "./CloudflarePublish.vue";
 import { Globe24Regular } from "@vicons/fluent";
 import { saveDexie } from "shared-vuejs/api/dbutils";
+import { exportFile } from "shared-vuejs/api/html";
+import { flushPendingTextSave } from "shared-vuejs/api/updateText";
 import g from "shared-vuejs/api/global";
 import { CloudOffOutlined, CopyAllSharp } from "@vicons/material";
 import ToolbarItem from "../Toolbars/ToolbarItem.vue";
 import { showError } from "shared-vuejs/api/utils";
 
 
-const downloadBlobUrl = ref("");
 const publishTarget = publishBackend === "cloudflare" ? "cloudflare" : "server";
+const maxWidthOptions = ["1290px", "1600px", "100%"].map(value => ({ label: value, value }));
 
 // const dialog = useDialog();
 
@@ -214,22 +228,15 @@ defineProps({
 
 watch(
   () => piniaInfo().openPublishModal,
-  () => {
-    if (piniaInfo().openPublishModal && publishTarget === "server") {
-      loadServerFiles();
-      nextTick(async () => {
-        const blob = await packageFile(
-          getFileInfo().id,
-          true, // hide loading
-        );
-        piniaInfo().loadingBar = "";
-        downloadBlobUrl.value = URL.createObjectURL(blob);
-      });
-    } else {
-      URL.revokeObjectURL(downloadBlobUrl.value);
-    }
+  open => {
+    if (open && publishTarget === "server") loadServerFiles();
   },
 );
+
+async function updateWebLayout(key: "webPage" | "maxWidth", value: boolean | string) {
+  updateFile({ publish: { ...getFileInfo().publish, [key]: value } });
+  await saveDexie();
+}
 
 watch(
   () => piniaSession().uid,
@@ -269,36 +276,45 @@ async function publishFile() {
     return;
   }
   piniaInfo().loadingBar = "Preparing...";
-  const output = await packageFile(getFileInfo().id, false);
-  piniaInfo().loadingBar = "Publishing...";
+  try {
+    const fileId = getFileInfo().id;
+    await flushPendingTextSave();
+    await saveDexie();
+    await exportFile(fileId);
+    const output = await packageFile(fileId, false);
+    piniaInfo().loadingBar = "Publishing...";
 
-  await uploadFile(
-    getFileInfo().id + ".zip",
-    output,
-    getFileInfo().id,
-    {
-      filename: serverPath.value,
-      title: getFileInfo().title,
-      slides: getFileInfo().slides.length,
-      publish: true, // mark for publish
-    },
-  );
-  piniaInfo().loadingBar = "Please wait...";
-  // await new Promise((resolve) => {
-  //   setTimeout(() => resolve(true), 3000);
-  // });
-  // openPlayerWindow(getFileInfo().publish?.scroll);
-  updateFile({
-    publish: {
-      ...getFileInfo().publish,
-      path: newPath,
-    },
-  });
+    await uploadFile(
+      fileId + ".zip",
+      output,
+      fileId,
+      {
+        filename: serverPath.value,
+        title: getFileInfo().title,
+        slides: getFileInfo().slides.length,
+        publish: true, // mark for publish
+      },
+    );
+    piniaInfo().loadingBar = "Please wait...";
+    // await new Promise((resolve) => {
+    //   setTimeout(() => resolve(true), 3000);
+    // });
+    // openPlayerWindow(getFileInfo().publish?.scroll);
+    updateFile({
+      publish: {
+        ...getFileInfo().publish,
+        path: newPath,
+      },
+    });
 
-  // serverPath.value = fileTitle.value;
-  await saveDexie();
-  await loadServerFiles();
-  piniaInfo().loadingBar = "";
+    // serverPath.value = fileTitle.value;
+    await saveDexie();
+    await loadServerFiles();
+  } catch (error) {
+    showError(error instanceof Error ? error.message : String(error));
+  } finally {
+    piniaInfo().loadingBar = "";
+  }
 }
 
 // function openLink() {

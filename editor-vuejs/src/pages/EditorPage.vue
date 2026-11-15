@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.designermain" @dragover.self.prevent>
-    <ToolbarTop />
+    <ToolbarTop @present="presentation?.start()" />
     <StatusBar />
     <div
       ref="loadingBarTargetRef"
@@ -20,7 +20,8 @@
     <ToolbarBottom />
   </div>
   <GenerateLLM />
-  <PreviewSlide />
+  <PresentSlide ref="presentation" />
+  <PublishSlide />
   <DataEditor />
   <ChangeLayout v-if="piniaSlides().changeLayout" />
   <PhotopeaIframe />
@@ -50,7 +51,8 @@ import StatusBar from "@/components/editor/Toolbars/StatusBar.vue";
 import g from "shared-vuejs/api/global";
 import { genId, gid } from "shared-vuejs/api/utility";
 import { loadFile } from "shared-vuejs/api/load";
-import PreviewSlide from "@/components/editor/Publish/PreviewSlide.vue";
+import PresentSlide from "@/components/editor/Publish/PresentSlide.vue";
+import PublishSlide from "@/components/editor/Publish/PublishSlide.vue";
 import PhotopeaIframe from "@/components/editor/Dialogs/PhotopeaIframe.vue";
 
 import { useRoute } from "vue-router";
@@ -75,6 +77,7 @@ const NewFile = defineAsyncComponent(
   () => import("@/components/editor/Dialogs/NewFile.vue"),
 );
 
+const presentation = ref<InstanceType<typeof PresentSlide> | null>(null);
 const loadingBarTargetRef = ref(null);
 g.globalDialog = useDialog();
 

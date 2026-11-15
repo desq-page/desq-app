@@ -265,9 +265,15 @@
             :active="!!piniaInfo().showGuide"
           />
           <ToolbarItem
-            caption="Show"
+            caption="Present"
             :icon="SlideshowFilled"
-            :onClick="openPreviewModal"
+            :onClick="() => emit('present')"
+            :disabled="piniaSlides().masterView || !!piniaInfo().useGrid"
+          />
+          <ToolbarItem
+            caption="Publish"
+            :icon="Globe24Regular"
+            :onClick="() => (piniaInfo().openPublishModal = true)"
             :disabled="piniaSlides().masterView || !!piniaInfo().useGrid"
           />
         </div>
@@ -423,11 +429,21 @@
           v-if="!piniaSlides().masterView"
           :icon="SlideshowFilled"
           :size="28"
-          :onClick="openPreviewModal"
+          :onClick="() => emit('present')"
           :disabled="!!piniaInfo().useGrid"
           button-type="primary"
           quaternary
-          label="Show"
+          label="Present"
+        />
+        <ToolbarItem
+          v-if="!piniaSlides().masterView"
+          :icon="Globe24Regular"
+          :size="28"
+          :onClick="() => (piniaInfo().openPublishModal = true)"
+          :disabled="!!piniaInfo().useGrid"
+          button-type="primary"
+          quaternary
+          label="Publish"
         />
       </template>
     </NTabs>
@@ -437,7 +453,9 @@
 <script setup lang="ts">
 import { resolveToolbarTab } from "@/lib/main/toolbarSelection.mjs";
 import { editorAdapter } from '@/lib/agent/editor-adapter';
-import { openPreviewModal } from "@/lib/main/previewPresentation";
+import { Globe24Regular } from "@vicons/fluent";
+
+const emit = defineEmits<{ present: [] }>();
 import { getShapeDeep, updateShape, getInfoShowGuide, getRulerWidth, getSelectCropShp, getUndoHistory, setInfoShowGuide, setRulerWidth } from "shared-vuejs/editor";
 
 import {
