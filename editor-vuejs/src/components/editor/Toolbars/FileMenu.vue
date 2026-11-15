@@ -22,7 +22,7 @@ import { getFileInfo, getSlideInfo } from "shared-vuejs/editor";
 
 import { FilePdfRegular, FilePowerpointRegular, FileWordRegular } from "@vicons/fa";
 import { piniaInfo, piniaSlides } from "@/lib/common/store";
-import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from "vue";
+import { computed, ref } from "vue";
 import ToolbarItemDropdown from "./ToolbarItemDropdown.vue";
 import SaveHtml from "../Dialogs/SaveHtml.vue";
 import { BrandHtml5 } from "@vicons/tabler";
@@ -30,14 +30,13 @@ import {
   FolderOpen24Regular,
   Print24Regular,
   Save24Filled,
-  Open24Regular,
 } from "@vicons/fluent";
 import {
   CloseOutlined,
   InsertDriveFileOutlined,
   MenuSharp,
 } from "@vicons/material";
-import { Settings, Application, Home } from "@vicons/carbon";
+import { Home } from "@vicons/carbon";
 import g from "shared-vuejs/api/global";
 import { showError, toggleTaskPane } from "@/lib/main/utils";
 import { exportFile } from "shared-vuejs/api/html";
@@ -45,23 +44,6 @@ import { exportFile } from "shared-vuejs/api/html";
 import { genId } from "shared-vuejs/api/utility";
 import { confirmCloseFile } from "@/lib/main/closeFile";
 import { isWordDocument, saveDocument } from "shared-vuejs/api/save-document";
-import { getAllDexie } from "shared-vuejs/api/db";
-
-const localFiles = shallowRef<any[]>([]);
-
-async function loadLocalFiles() {
-  const files = [...(await getAllDexie("files"))];
-  localFiles.value = files.sort(
-    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
-  );
-}
-
-const refreshOnFocus = () => void loadLocalFiles();
-onMounted(() => {
-  void loadLocalFiles();
-  window.addEventListener("focus", refreshOnFocus);
-});
-onBeforeUnmount(() => window.removeEventListener("focus", refreshOnFocus));
 
 // const disabled = ref(false);
 const viewOptions = computed(() => {
@@ -80,24 +62,6 @@ function genViewOptions() {
       size: 24,
       color: 'green',
       onClick: () => location.replace("/work"),
-    },
-    {
-      type: "divider",
-    },
-    {
-      label: "Window",
-      key: "window",
-      icon: Application,
-      size: 24,
-      onOpen: () => void loadLocalFiles(),
-      children: [
-        ...localFiles.value.map((file) => ({
-          label: `${!file.name || file.name === "No name" ? "Blank" : file.name} (${String(file.id).slice(-4)})${file.id === getFileInfo()?.id ? " — current" : ""}`,
-          key: `file:${file.id}`,
-          icon: Open24Regular,
-          onClick: () => location.replace("/edit/" + file.id),
-        })),
-      ],
     },
     {
       type: "divider",
@@ -190,17 +154,6 @@ function genViewOptions() {
       key: "print",
       onClick: () => doPrintPdf(),
     },
-    {
-      label: "Settings",
-      icon: Settings,
-      bordered: true,
-      size: 24,
-      key: "settings",
-      onClick: () => {
-        toggleTaskPane("settings");
-      },
-    },
-
     // {
     //   label: "Formula Reference...",
     //   icon: MathFormula24Regular,

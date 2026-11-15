@@ -20,23 +20,6 @@
         <ToolbarItem type="spacing" />
 
         <FileMenu />
-        
-        <ToolbarItem
-          quaternary
-          :on-click="undo"
-          :on-pointer-down="(e) => e.stopPropagation()"
-          :icon="UndoFilled"
-          tooltip="Undo"
-          :disabled="piniaInfo().undoIndex < 0"
-        />
-        <ToolbarItem
-          quaternary
-          :on-click="redo"
-          :on-pointer-down="(e) => e.stopPropagation()"
-          :icon="RedoFilled"
-          tooltip="Redo"
-          :disabled="piniaInfo().undoIndex >= getUndoHistory().length - 1"
-        />
         <!-- <ToolbarItem type="divider" v-if="piniaResize().windowWidth >= 769" />" -->
           
       </template>
@@ -270,12 +253,6 @@
             :onClick="() => emit('present')"
             :disabled="piniaSlides().masterView || !!piniaInfo().useGrid"
           />
-          <ToolbarItem
-            caption="Publish"
-            :icon="Globe24Regular"
-            :onClick="() => (piniaInfo().openPublishModal = true)"
-            :disabled="piniaSlides().masterView || !!piniaInfo().useGrid"
-          />
         </div>
       </NTabPane>
       <!-- <NTabPane name="data" tab="Data" :disabled="showSpecialTab()">
@@ -399,6 +376,12 @@
               :active="piniaInfo().currentTaskPane == 'pictureoptions'"
             />
           </template>
+          <ToolbarItem
+            caption="Layers"
+            :icon="Layers"
+            :onClick="() => toggleTaskPane('arrange')"
+            :active="piniaInfo().currentTaskPane == 'arrange'"
+          />
         </div>
         <div :class="$style['edit-point-toolbar']" v-else>
           <ToolbarEditPoint />
@@ -412,6 +395,24 @@
       <template #suffix>
         <!-- <ZoomToolbar /> -->
         <!-- <ViewMode /> -->
+        <WindowMenu />
+        <ToolbarItem type="spacing" />
+        <ToolbarItem
+          quaternary
+          :on-click="undo"
+          :on-pointer-down="(e) => e.stopPropagation()"
+          :icon="UndoFilled"
+          tooltip="Undo"
+          :disabled="piniaInfo().undoIndex < 0"
+        />
+        <ToolbarItem
+          quaternary
+          :on-click="redo"
+          :on-pointer-down="(e) => e.stopPropagation()"
+          :icon="RedoFilled"
+          tooltip="Redo"
+          :disabled="piniaInfo().undoIndex >= getUndoHistory().length - 1"
+        />
         <ToolbarItem type="spacing" />
         <ToolbarItem
           button-type="primary"
@@ -427,24 +428,20 @@
         <ToolbarItem type="spacing" />
         <ToolbarItem
           v-if="!piniaSlides().masterView"
-          :icon="SlideshowFilled"
-          :size="28"
+          :icon="ProjectionScreen24Regular"
           :onClick="() => emit('present')"
           :disabled="!!piniaInfo().useGrid"
           button-type="primary"
           quaternary
           label="Present"
         />
-        <ToolbarItem
+        <ToolbarItemDropdown
           v-if="!piniaSlides().masterView"
-          :icon="Globe24Regular"
-          :size="28"
-          :onClick="() => (piniaInfo().openPublishModal = true)"
+          :options="presentationOptions"
+          :icon="Settings"
           :disabled="!!piniaInfo().useGrid"
-          button-type="primary"
-          quaternary
-          label="Publish"
         />
+        <ToolbarItem type="spacing" />
       </template>
     </NTabs>
   </div>
@@ -453,7 +450,8 @@
 <script setup lang="ts">
 import { resolveToolbarTab } from "@/lib/main/toolbarSelection.mjs";
 import { editorAdapter } from '@/lib/agent/editor-adapter';
-import { Globe24Regular } from "@vicons/fluent";
+import { Settings } from "@vicons/carbon";
+import { Globe24Regular, ProjectionScreen24Regular } from "@vicons/fluent";
 
 const emit = defineEmits<{ present: [] }>();
 import { getShapeDeep, updateShape, getInfoShowGuide, getRulerWidth, getSelectCropShp, getUndoHistory, setInfoShowGuide, setRulerWidth } from "shared-vuejs/editor";
@@ -514,6 +512,7 @@ import {
   ScanText24Filled,
 } from "@vicons/fluent";
 import FileMenu from "./FileMenu.vue";
+import WindowMenu from "./WindowMenu.vue";
 // import ZoomToolbar from "./ZoomToolbar.vue";
 import { ChartBar, Ruler, TriangleSquareCircle } from "@vicons/tabler";
 import { changeLayout, editMaster } from "shared-vuejs/api/master";
@@ -526,7 +525,6 @@ import ToolbarDesign from "./ToolbarDesign.vue";
 import ToolbarTransition from "./ToolbarTransition.vue";
 import { GroupObjects, Layers, StarReview } from "@vicons/carbon";
 import { toggleGroup } from "shared-vuejs/api/group";
-import ToolbarItemDropdown from "./ToolbarItemDropdown.vue";
 import { editablePicture, extractPictureText, selectPictureRegion, selectPictureTextRegion } from "shared-vuejs/api/edit-picture-text";
 import { showCrop, showEditingPoint, showGroup, unionOptions, rmbgUsingXenova } from "./ToolbarUtils";
 import ToolbarLocalScript from "@/components/addon/ToolbarLocalScript.vue";
@@ -544,6 +542,20 @@ import { array2hex } from "shared-vuejs/api/colorUtils.js";
 import defAnimList from "../Animation/arrAnimList";
 import { addEffect } from "../Animation/addAnimation";
 import { startFreehandMotion } from "shared-vuejs/editor";
+import ToolbarItemDropdown from "./ToolbarItemDropdown.vue";
+
+const presentationOptions = [
+  {
+    label: "Publish",
+    icon: Globe24Regular,
+    onClick: () => (piniaInfo().openPublishModal = true),
+  },
+  {
+    label: "File Settings",
+    icon: Settings,
+    onClick: () => toggleTaskPane("settings"),
+  },
+];
 
 const animationGroups = [
   { value: "0", label: "Entrance", icon: StarArrowRightStart24Regular, color: "green" },
