@@ -307,7 +307,7 @@ function pasteImage() {
     <ToolbarItem
       quaternary
       v-if="piniaSelect().selShpFormat?.blipFill"
-      label="AI Remove BG"
+      label="AI Erase Background"
       labelGap="15px"
       :icon="VideoBackgroundEffect20Filled"
       :size="30"

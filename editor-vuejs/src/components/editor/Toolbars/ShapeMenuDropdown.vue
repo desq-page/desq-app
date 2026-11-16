@@ -127,7 +127,7 @@ const ShapeContextMenuOptions = computed(() => [
         type: 'divider',
       },
       {
-        label: "Remove Picture BG",
+        label: "Erase Background",
         key: "remove-background",
         icon: VideoBackgroundEffect20Filled,
         onClick: rmbgUsingXenova,
