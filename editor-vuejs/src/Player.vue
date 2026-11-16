@@ -11,7 +11,9 @@ const frame = ref();
 let closed = false;
 const relay = event => {
   if (window.parent === window) return;
-  if (event.source === frame.value?.contentWindow && Number.isInteger(event.data?.slideIndex)) {
+  if (event.source === frame.value?.contentWindow && event.data?.cmd === "exitPresentation") {
+    window.parent.postMessage({ cmd: "exitPresentation" }, "*");
+  } else if (event.source === frame.value?.contentWindow && Number.isInteger(event.data?.slideIndex)) {
     window.parent.postMessage({ slideIndex: event.data.slideIndex }, "*");
   } else if (event.source === frame.value?.contentWindow && event.data?.scriptVariables) {
     window.parent.postMessage({ scriptVariables: event.data.scriptVariables }, "*");
@@ -19,8 +21,14 @@ const relay = event => {
     frame.value?.contentWindow.postMessage(event.data, "*");
   }
 };
+const exitOnEscape = event => {
+  if (event.key === "Escape" && window.parent !== window) {
+    window.parent.postMessage({ cmd: "exitPresentation" }, "*");
+  }
+};
 onMounted(async () => {
   window.addEventListener("message", relay);
+  window.addEventListener("keydown", exitOnEscape);
   try {
     await setupDB();
     const html = await createSinglePresentationHtml(params.fileId, {
@@ -37,6 +45,7 @@ onMounted(async () => {
 onUnmounted(() => {
   closed = true;
   window.removeEventListener("message", relay);
+  window.removeEventListener("keydown", exitOnEscape);
   if (source.value) URL.revokeObjectURL(source.value);
 });
 </script>

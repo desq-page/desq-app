@@ -337,7 +337,6 @@ export function mountEditor(host, options = {}) {
       <Button label="Fit" action={() => { ui.fit = true; refit(); }}/>
     </footer>
     {() => ui.presenting ? <div class="ve-presentation" role="dialog" aria-label="Presentation" aria-modal="true">
-      <Button label="Exit presentation" action={exitPresentation}/>
       {() => presentationSource.val
         ? (presentationFrame = <iframe src={presentationSource.val} sandbox="allow-scripts" title="Presentation preview" style="width:100%;height:100%;border:0"/>)
         : <div role="status" aria-label="Loading presentation">

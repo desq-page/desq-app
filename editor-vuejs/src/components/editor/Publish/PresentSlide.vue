@@ -1,8 +1,7 @@
 <template>
-  <div ref="surface" class="presentation" hidden>
+  <div ref="surface" class="presentation" tabindex="-1" hidden @keydown.esc="close">
     <iframe v-if="url" :src="url" title="Presentation" allowfullscreen @load="focusPlayer" />
     <p v-else role="status">{{ error || "Loading presentation…" }}</p>
-    <button class="exit" type="button" @click="close">Exit presentation</button>
   </div>
 </template>
 
@@ -33,6 +32,7 @@ async function start() {
     if (current !== request && document.fullscreenElement === element)
       void document.exitFullscreen().catch(() => {});
   }).catch(() => { /* The presentation stays in a viewport-sized overlay. */ });
+  element.focus();
   try {
     await flushPendingTextSave();
     await saveDexie();
@@ -61,9 +61,18 @@ function focusPlayer(event: Event) {
   (event.currentTarget as HTMLIFrameElement).focus();
 }
 
-onMounted(() => document.addEventListener("fullscreenchange", fullscreenChanged));
+function receivePlayerMessage(event: MessageEvent) {
+  const frame = surface.value?.querySelector("iframe");
+  if (frame && event.source === frame.contentWindow && event.data?.cmd === "exitPresentation") close();
+}
+
+onMounted(() => {
+  document.addEventListener("fullscreenchange", fullscreenChanged);
+  window.addEventListener("message", receivePlayerMessage);
+});
 onBeforeUnmount(() => {
   document.removeEventListener("fullscreenchange", fullscreenChanged);
+  window.removeEventListener("message", receivePlayerMessage);
   close();
 });
 defineExpose({ start });
@@ -85,16 +94,5 @@ iframe {
   width: 100%;
   height: 100%;
   border: 0;
-}
-.exit {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  padding: 6px 10px;
-  border: 0;
-  border-radius: 4px;
-  background: #202938;
-  color: white;
-  cursor: pointer;
 }
 </style>
