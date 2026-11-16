@@ -6,23 +6,17 @@
     }"
     @contextmenu.prevent
   >
-    <NTabs
-      size="small"
-      justify-content="start"
-      :style="{
-        '--n-pane-padding-top': '4px',
-      }"
-      v-model:value="selectedTab"
-      ref="tabsRef"
-      tab-class="top-tab"
-    >
-      <template #prefix>
-        <ToolbarItem type="spacing" />
-
-        <FileMenu />
-        <!-- <ToolbarItem type="divider" v-if="piniaResize().windowWidth >= 769" />" -->
-          
-      </template>
+    <div :class="$style['toolbar-left']">
+      <FileMenu />
+      <NTabs
+        :class="$style['toolbar-tabs']"
+        size="small"
+        justify-content="start"
+        :style="{ '--n-pane-padding-top': '4px' }"
+        v-model:value="selectedTab"
+        ref="tabsRef"
+        tab-class="top-tab"
+      >
       <NTabPane
         name="home"
         tab="Home"
@@ -392,11 +386,12 @@
           <UseGridToolbar />
         </div>
       </NTabPane> -->
-      <template #suffix>
-        <!-- <ZoomToolbar /> -->
-        <!-- <ViewMode /> -->
-        <WindowMenu />
-        <ToolbarItem type="spacing" />
+        <template v-if="piniaResize().windowWidth >= 768" #suffix>
+          <WindowMenu />
+        </template>
+      </NTabs>
+    </div>
+    <div :class="$style['toolbar-middle']">
         <ToolbarItem
           quaternary
           :on-click="undo"
@@ -413,7 +408,8 @@
           tooltip="Redo"
           :disabled="piniaInfo().undoIndex >= getUndoHistory().length - 1"
         />
-        <ToolbarItem type="spacing" />
+    </div>
+    <div :class="$style['toolbar-right']">
         <ToolbarItem
           button-type="primary"
           button-size="small"
@@ -442,8 +438,7 @@
           :disabled="!!piniaInfo().useGrid"
         />
         <ToolbarItem type="spacing" />
-      </template>
-    </NTabs>
+    </div>
   </div>
 </template>
 
@@ -865,8 +860,8 @@ const $style = useCssModule();
 }
 
 .header-container {
-  /* display: flex; */
-  align-items: center;
+  display: flex;
+  align-items: flex-start;
   justify-content: space-between;
   /* padding: 0 8px 0 0; */
   /* background: #c9f7c9; */
@@ -877,6 +872,53 @@ const $style = useCssModule();
   user-select: none;
   -webkit-user-select: none;
   top: 0;
+}
+
+.toolbar-left,
+.toolbar-middle,
+.toolbar-right {
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.toolbar-tabs {
+  display: block;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+/* Keep the pane below the tab headers and span the entire toolbar. */
+.toolbar-tabs > :global(.n-tab-pane) {
+  position: absolute;
+  top: 36px;
+  inset-inline: 0;
+}
+
+.toolbar-tabs :global(.n-tabs-nav-scroll-wrapper) {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.toolbar-tabs :global(.n-tabs-nav__suffix) {
+  flex-shrink: 0;
+  padding-left: 36px;
+}
+
+.toolbar-left {
+  flex: 1 1 0;
+  justify-content: flex-start;
+  gap: 24px;
+}
+
+.toolbar-middle {
+  flex: 0 0 auto;
+  justify-content: center;
+}
+
+.toolbar-right {
+  flex: 1 1 0;
+  justify-content: flex-end;
 }
 
 .file-menu {

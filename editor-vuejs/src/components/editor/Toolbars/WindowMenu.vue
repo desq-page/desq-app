@@ -22,14 +22,14 @@ import ToolbarItemDropdown from "./ToolbarItemDropdown.vue";
 
 const localFiles = shallowRef<any[]>([]);
 const windowOptions = computed(() => [
-  { label: "Layers", key: "layers", icon: Layers, onClick: () => toggleTaskPane("arrange") },
-  {
-    label: "Page Master",
-    key: "master",
-    icon: SlideLayout24Regular,
-    onClick: () => { if (!piniaSlides().masterView) editMaster(); },
-  },
-  { type: "divider", key: "files-divider" },
+  // { label: "Layers", key: "layers", icon: Layers, onClick: () => toggleTaskPane("arrange") },
+  // {
+  //   label: "Page Master",
+  //   key: "master",
+  //   icon: SlideLayout24Regular,
+  //   onClick: () => { if (!piniaSlides().masterView) editMaster(); },
+  // },
+  // { type: "divider", key: "files-divider" },
   ...localFiles.value.map((file) => ({
     label: `${!file.name || file.name === "No name" ? "Blank" : file.name} (${String(file.id).slice(-4)})${file.id === getFileInfo()?.id ? " — current" : ""}`,
     key: `file:${file.id}`,
