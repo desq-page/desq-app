@@ -97,6 +97,12 @@ const ShapeContextMenuOptions = computed(() => [
     show: !!editablePicture(),
     children: [
       {
+        label: "Extract Text By Region",
+        key: "extract-text-region",
+        icon: ImageAltText24Regular,
+        onClick: () => selectPictureTextRegion(piniaInfo()),
+      },
+      {
         label: "Extract Text Under Pointer",
         key: "edit-picture-text",
         icon: PointerText,
@@ -107,12 +113,6 @@ const ShapeContextMenuOptions = computed(() => [
         key: "extract-text-all",
         icon: ScanText24Filled,
         onClick: () => extractPictureText(piniaInfo()),
-      },
-      {
-        label: "Extract Text By Region",
-        key: "extract-text-region",
-        icon: ImageAltText24Regular,
-        onClick: () => selectPictureTextRegion(piniaInfo()),
       },
       {
         type: 'divider',

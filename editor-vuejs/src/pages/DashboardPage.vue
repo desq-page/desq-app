@@ -49,7 +49,7 @@
           <button class="button workspace-action action-blank" @click="createBlankPresentation"><span aria-hidden="true">▤</span> Blank Presentation</button>
           <input ref="openFileInput" type="file" accept=".pptx,.docx,.pub,.html,.htm,.pdf" hidden @change="openSelectedFile" />
           <div class="supported-formats" style="margin-top: 15px">
-            <span id="open-file-privacy" class="privacy-caption">Your files stay private on your device. Supported sources:</span>
+            <span id="open-file-privacy" class="privacy-caption">Open various formats as slides. Your files stay private on your device.</span>
           </div>
           <div class="supported-formats" aria-label="Supported file types" >
             <span class="format-type"><i class="format-icon powerpoint" aria-hidden="true">P</i> PowerPoint</span>
