@@ -48,8 +48,10 @@ test('direct scripted and declarative slide jumps survive HTML capture and nativ
     const solidParent = source.replace('border-radius:16px;background:linear-gradient(135deg,#f8fafc,#e2e8f0)', 'background:#f8fafc')
       .replace('id="slide-1">', 'id="slide-1" style="background:#def">');
     const explicit = await agentHtmlDocument(solidParent, 'Square parent.html');
-    check(explicit.layouts[0]?.shapes[0]?.prstGeom?.$_prst === 'rect' &&
-      explicit.slides.every(slide => slide.shapes[0]?.name === 'Slide background'), 'solid parent stays on layout even when every slide has its own background');
+    check(explicit.layouts[0]?.bg?.bgPr?.solidFill?.uniClr?.$_val === 'F8FAFC' &&
+      !explicit.layouts[0].shapes.some(shape => shape.name === 'Parent background') &&
+      explicit.slides.map(slide => slide.bg?.bgPr?.solidFill?.uniClr?.$_val).join() === 'DDEEFF,AABBCC',
+      'square stage uses a native layout background and preserves explicit slide fills');
     resolveHtmlSlideLinks(compiled.pages,compiled.pages.map((_,i)=>'imported-'+i));
     const links=shapes=>shapes.flatMap(shape=>[...(shape.link?[shape.link]:[]),...(shape.children?links(shape.children):[])]);
     check(links(compiled.pages[0].shapes).includes('@sld:imported-1'),'Start links to second imported slide');

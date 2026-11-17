@@ -1,0 +1,552 @@
+[
+  {
+    "slug": "editorial-ivory",
+    "name": "Editorial Ivory",
+    "description": "Literary reports and thoughtful editorial storytelling",
+    "background": "#F6F1E7",
+    "surface": "#E9E1D3",
+    "foreground": "#252923",
+    "accent": "#97613B",
+    "headingFont": "Source Serif 4",
+    "bodyFont": "Source Sans 3",
+    "generated": true,
+    "composition": 0,
+    "variants": [
+      {
+        "label": "Opening statement",
+        "role": "editorial-ivory-cover"
+      },
+      {
+        "label": "Text and takeaway",
+        "role": "editorial-ivory-text"
+      },
+      {
+        "label": "Three key ideas",
+        "role": "editorial-ivory-cards"
+      },
+      {
+        "label": "Photo story",
+        "role": "editorial-ivory-photo"
+      },
+      {
+        "label": "Photo and talking points (3–5)",
+        "role": "editorial-ivory-photo-points"
+      },
+      {
+        "label": "Chart and interpretation",
+        "role": "editorial-ivory-chart"
+      },
+      {
+        "label": "Connected process diagram",
+        "role": "editorial-ivory-flow"
+      },
+      {
+        "label": "Bullet points (2–5)",
+        "role": "editorial-ivory-points"
+      },
+      {
+        "label": "Summary and key takeaways",
+        "role": "editorial-ivory-summary"
+      },
+      {
+        "label": "Closing / thank you",
+        "role": "editorial-ivory-closing"
+      }
+    ]
+  },
+  {
+    "slug": "midnight-signal",
+    "name": "Midnight Signal",
+    "description": "Technology launches and bold product narratives",
+    "background": "#111827",
+    "surface": "#253147",
+    "foreground": "#F3F6FC",
+    "accent": "#66E3C4",
+    "headingFont": "Space Grotesk",
+    "bodyFont": "Inter",
+    "generated": true,
+    "composition": 1,
+    "variants": [
+      {
+        "label": "Opening statement",
+        "role": "midnight-signal-cover"
+      },
+      {
+        "label": "Text and takeaway",
+        "role": "midnight-signal-text"
+      },
+      {
+        "label": "Three key ideas",
+        "role": "midnight-signal-cards"
+      },
+      {
+        "label": "Photo story",
+        "role": "midnight-signal-photo"
+      },
+      {
+        "label": "Photo and talking points (3–5)",
+        "role": "midnight-signal-photo-points"
+      },
+      {
+        "label": "Chart and interpretation",
+        "role": "midnight-signal-chart"
+      },
+      {
+        "label": "Connected process diagram",
+        "role": "midnight-signal-flow"
+      },
+      {
+        "label": "Bullet points (2–5)",
+        "role": "midnight-signal-points"
+      },
+      {
+        "label": "Summary and key takeaways",
+        "role": "midnight-signal-summary"
+      },
+      {
+        "label": "Closing / thank you",
+        "role": "midnight-signal-closing"
+      }
+    ]
+  },
+  {
+    "slug": "terracotta-studio",
+    "name": "Terracotta Studio",
+    "description": "Warm creative portfolios and studio proposals",
+    "background": "#FFF3E9",
+    "surface": "#F1D9C6",
+    "foreground": "#472D28",
+    "accent": "#AC442B",
+    "headingFont": "Fraunces",
+    "bodyFont": "Manrope",
+    "generated": true,
+    "composition": 2,
+    "variants": [
+      {
+        "label": "Opening statement",
+        "role": "terracotta-studio-cover"
+      },
+      {
+        "label": "Text and takeaway",
+        "role": "terracotta-studio-text"
+      },
+      {
+        "label": "Three key ideas",
+        "role": "terracotta-studio-cards"
+      },
+      {
+        "label": "Photo story",
+        "role": "terracotta-studio-photo"
+      },
+      {
+        "label": "Photo and talking points (3–5)",
+        "role": "terracotta-studio-photo-points"
+      },
+      {
+        "label": "Chart and interpretation",
+        "role": "terracotta-studio-chart"
+      },
+      {
+        "label": "Connected process diagram",
+        "role": "terracotta-studio-flow"
+      },
+      {
+        "label": "Bullet points (2–5)",
+        "role": "terracotta-studio-points"
+      },
+      {
+        "label": "Summary and key takeaways",
+        "role": "terracotta-studio-summary"
+      },
+      {
+        "label": "Closing / thank you",
+        "role": "terracotta-studio-closing"
+      }
+    ]
+  },
+  {
+    "slug": "botanical-notes",
+    "name": "Botanical Notes",
+    "description": "Sustainability research and natural growth stories",
+    "background": "#F0F5ED",
+    "surface": "#DFE9D7",
+    "foreground": "#203C2D",
+    "accent": "#46794B",
+    "headingFont": "Lora",
+    "bodyFont": "DM Sans",
+    "generated": true,
+    "composition": 3,
+    "variants": [
+      {
+        "label": "Opening statement",
+        "role": "botanical-notes-cover"
+      },
+      {
+        "label": "Text and takeaway",
+        "role": "botanical-notes-text"
+      },
+      {
+        "label": "Three key ideas",
+        "role": "botanical-notes-cards"
+      },
+      {
+        "label": "Photo story",
+        "role": "botanical-notes-photo"
+      },
+      {
+        "label": "Photo and talking points (3–5)",
+        "role": "botanical-notes-photo-points"
+      },
+      {
+        "label": "Chart and interpretation",
+        "role": "botanical-notes-chart"
+      },
+      {
+        "label": "Connected process diagram",
+        "role": "botanical-notes-flow"
+      },
+      {
+        "label": "Bullet points (2–5)",
+        "role": "botanical-notes-points"
+      },
+      {
+        "label": "Summary and key takeaways",
+        "role": "botanical-notes-summary"
+      },
+      {
+        "label": "Closing / thank you",
+        "role": "botanical-notes-closing"
+      }
+    ]
+  },
+  {
+    "slug": "electric-violet",
+    "name": "Electric Violet",
+    "description": "Expressive campaigns and innovative product pitches",
+    "background": "#211637",
+    "surface": "#39264F",
+    "foreground": "#FBF6FF",
+    "accent": "#CEA2FF",
+    "headingFont": "Syne",
+    "bodyFont": "Outfit",
+    "generated": true,
+    "composition": 4,
+    "variants": [
+      {
+        "label": "Opening statement",
+        "role": "electric-violet-cover"
+      },
+      {
+        "label": "Text and takeaway",
+        "role": "electric-violet-text"
+      },
+      {
+        "label": "Three key ideas",
+        "role": "electric-violet-cards"
+      },
+      {
+        "label": "Photo story",
+        "role": "electric-violet-photo"
+      },
+      {
+        "label": "Photo and talking points (3–5)",
+        "role": "electric-violet-photo-points"
+      },
+      {
+        "label": "Chart and interpretation",
+        "role": "electric-violet-chart"
+      },
+      {
+        "label": "Connected process diagram",
+        "role": "electric-violet-flow"
+      },
+      {
+        "label": "Bullet points (2–5)",
+        "role": "electric-violet-points"
+      },
+      {
+        "label": "Summary and key takeaways",
+        "role": "electric-violet-summary"
+      },
+      {
+        "label": "Closing / thank you",
+        "role": "electric-violet-closing"
+      }
+    ]
+  },
+  {
+    "slug": "swiss-red",
+    "name": "Swiss Red",
+    "description": "Direct strategy presentations with strong asymmetric hierarchy",
+    "background": "#FAF8F4",
+    "surface": "#ECE7E0",
+    "foreground": "#202020",
+    "accent": "#C62F30",
+    "headingFont": "Archivo",
+    "bodyFont": "Inter",
+    "generated": true,
+    "composition": 5,
+    "variants": [
+      {
+        "label": "Opening statement",
+        "role": "swiss-red-cover"
+      },
+      {
+        "label": "Text and takeaway",
+        "role": "swiss-red-text"
+      },
+      {
+        "label": "Three key ideas",
+        "role": "swiss-red-cards"
+      },
+      {
+        "label": "Photo story",
+        "role": "swiss-red-photo"
+      },
+      {
+        "label": "Photo and talking points (3–5)",
+        "role": "swiss-red-photo-points"
+      },
+      {
+        "label": "Chart and interpretation",
+        "role": "swiss-red-chart"
+      },
+      {
+        "label": "Connected process diagram",
+        "role": "swiss-red-flow"
+      },
+      {
+        "label": "Bullet points (2–5)",
+        "role": "swiss-red-points"
+      },
+      {
+        "label": "Summary and key takeaways",
+        "role": "swiss-red-summary"
+      },
+      {
+        "label": "Closing / thank you",
+        "role": "swiss-red-closing"
+      }
+    ]
+  },
+  {
+    "slug": "coastal-blue",
+    "name": "Coastal Blue",
+    "description": "Clear education and accessible business explainers",
+    "background": "#EDF6FA",
+    "surface": "#D7EAF2",
+    "foreground": "#173B51",
+    "accent": "#156B9B",
+    "headingFont": "Plus Jakarta Sans",
+    "bodyFont": "Source Sans 3",
+    "generated": true,
+    "composition": 6,
+    "variants": [
+      {
+        "label": "Opening statement",
+        "role": "coastal-blue-cover"
+      },
+      {
+        "label": "Text and takeaway",
+        "role": "coastal-blue-text"
+      },
+      {
+        "label": "Three key ideas",
+        "role": "coastal-blue-cards"
+      },
+      {
+        "label": "Photo story",
+        "role": "coastal-blue-photo"
+      },
+      {
+        "label": "Photo and talking points (3–5)",
+        "role": "coastal-blue-photo-points"
+      },
+      {
+        "label": "Chart and interpretation",
+        "role": "coastal-blue-chart"
+      },
+      {
+        "label": "Connected process diagram",
+        "role": "coastal-blue-flow"
+      },
+      {
+        "label": "Bullet points (2–5)",
+        "role": "coastal-blue-points"
+      },
+      {
+        "label": "Summary and key takeaways",
+        "role": "coastal-blue-summary"
+      },
+      {
+        "label": "Closing / thank you",
+        "role": "coastal-blue-closing"
+      }
+    ]
+  },
+  {
+    "slug": "copper-ledger",
+    "name": "Copper Ledger",
+    "description": "Financial reviews and measured executive analysis",
+    "background": "#F5EFE8",
+    "surface": "#E7DBCD",
+    "foreground": "#3F3027",
+    "accent": "#9E592F",
+    "headingFont": "Libre Baskerville",
+    "bodyFont": "IBM Plex Sans",
+    "generated": true,
+    "composition": 7,
+    "variants": [
+      {
+        "label": "Opening statement",
+        "role": "copper-ledger-cover"
+      },
+      {
+        "label": "Text and takeaway",
+        "role": "copper-ledger-text"
+      },
+      {
+        "label": "Three key ideas",
+        "role": "copper-ledger-cards"
+      },
+      {
+        "label": "Photo story",
+        "role": "copper-ledger-photo"
+      },
+      {
+        "label": "Photo and talking points (3–5)",
+        "role": "copper-ledger-photo-points"
+      },
+      {
+        "label": "Chart and interpretation",
+        "role": "copper-ledger-chart"
+      },
+      {
+        "label": "Connected process diagram",
+        "role": "copper-ledger-flow"
+      },
+      {
+        "label": "Bullet points (2–5)",
+        "role": "copper-ledger-points"
+      },
+      {
+        "label": "Summary and key takeaways",
+        "role": "copper-ledger-summary"
+      },
+      {
+        "label": "Closing / thank you",
+        "role": "copper-ledger-closing"
+      }
+    ]
+  },
+  {
+    "slug": "citrus-workshop",
+    "name": "Citrus Workshop",
+    "description": "Collaborative workshops and energetic action plans",
+    "background": "#FAF8E9",
+    "surface": "#EEEAC9",
+    "foreground": "#30351A",
+    "accent": "#73781D",
+    "headingFont": "Bricolage Grotesque",
+    "bodyFont": "DM Sans",
+    "generated": true,
+    "composition": 8,
+    "variants": [
+      {
+        "label": "Opening statement",
+        "role": "citrus-workshop-cover"
+      },
+      {
+        "label": "Text and takeaway",
+        "role": "citrus-workshop-text"
+      },
+      {
+        "label": "Three key ideas",
+        "role": "citrus-workshop-cards"
+      },
+      {
+        "label": "Photo story",
+        "role": "citrus-workshop-photo"
+      },
+      {
+        "label": "Photo and talking points (3–5)",
+        "role": "citrus-workshop-photo-points"
+      },
+      {
+        "label": "Chart and interpretation",
+        "role": "citrus-workshop-chart"
+      },
+      {
+        "label": "Connected process diagram",
+        "role": "citrus-workshop-flow"
+      },
+      {
+        "label": "Bullet points (2–5)",
+        "role": "citrus-workshop-points"
+      },
+      {
+        "label": "Summary and key takeaways",
+        "role": "citrus-workshop-summary"
+      },
+      {
+        "label": "Closing / thank you",
+        "role": "citrus-workshop-closing"
+      }
+    ]
+  },
+  {
+    "slug": "mono-architecture",
+    "name": "Mono Architecture",
+    "description": "Minimal architectural portfolios and structured systems",
+    "background": "#F4F4F4",
+    "surface": "#E0E0E0",
+    "foreground": "#222222",
+    "accent": "#5C5C5C",
+    "headingFont": "Manrope",
+    "bodyFont": "IBM Plex Sans",
+    "generated": true,
+    "composition": 9,
+    "variants": [
+      {
+        "label": "Opening statement",
+        "role": "mono-architecture-cover"
+      },
+      {
+        "label": "Text and takeaway",
+        "role": "mono-architecture-text"
+      },
+      {
+        "label": "Three key ideas",
+        "role": "mono-architecture-cards"
+      },
+      {
+        "label": "Photo story",
+        "role": "mono-architecture-photo"
+      },
+      {
+        "label": "Photo and talking points (3–5)",
+        "role": "mono-architecture-photo-points"
+      },
+      {
+        "label": "Chart and interpretation",
+        "role": "mono-architecture-chart"
+      },
+      {
+        "label": "Connected process diagram",
+        "role": "mono-architecture-flow"
+      },
+      {
+        "label": "Bullet points (2–5)",
+        "role": "mono-architecture-points"
+      },
+      {
+        "label": "Summary and key takeaways",
+        "role": "mono-architecture-summary"
+      },
+      {
+        "label": "Closing / thank you",
+        "role": "mono-architecture-closing"
+      }
+    ]
+  }
+]

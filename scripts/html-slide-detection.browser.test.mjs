@@ -20,16 +20,27 @@ test('parser and browser capture agree on slide markers, numbered IDs and scenes
       import {parseFrontendSlides} from '../desq-core/shared-vuejs/src/edlib/html-import/frontend-slides-import.mjs';
       import snapshot from '../desq-core/shared-vuejs/src/edlib/html-import/snapshot-slides-source.mjs';
       import {detectSlideElements} from '../desq-core/shared-vuejs/src/edlib/html-import/slide-detection.mjs';
+      import {readGoogleFontRequests,googleFontStylesheet} from '../desq-core/shared-vuejs/src/lib/google-font-css.mjs';
       const check=(ok,message)=>{if(!ok)throw Error(message)};
       const parse=html=>{const t=document.createElement('template');t.innerHTML=html;return detectSlideElements(t.content)};
       (async()=>{try {
         check(parse('<div class="slide-container"><section class="slide">A</section><section class="slide">B</section></div>').length===2,'standard nested slides');
         check(parse('<div data-desq-slide>A</div><div data-desq-slide>B</div><div class="slide">decoy</div>').length===2,'explicit markers take precedence');
         check(parse('<section><h1>Article</h1></section><section>Content</section>').length===0,'ordinary sections are not slides');
+        check(parse('<deck-stage><section data-screen-label="Cover"><h1>Cover</h1></section><section data-label="Body"><h1>Body</h1></section></deck-stage>').length===2,'source template labels');
+        const sourceTemplate=parseFrontendSlides('<style>deck-stage > section{width:1920px;height:1080px}</style><deck-stage><section data-screen-label="Cover"><h1>Cover</h1></section></deck-stage>');
+        const spec='Source Serif 4:opsz,wght@8..60,300;8..60,400;8..60,500';
+        const requests=readGoogleFontRequests('<link href="https://fonts.googleapis.com/css2?family='+encodeURIComponent(spec)+'&amp;display=swap" rel="stylesheet">',document);
+        check(requests.get('source serif 4')===spec,'original optical font request retained');
+        check(new URL(googleFontStylesheet({family:'Source Serif 4',googleFontSpec:requests.get('source serif 4')})).searchParams.get('family')===spec,'font loader retains template axes and weights');
+        check(sourceTemplate.width===1920 && sourceTemplate.height===1080,'source template CSS canvas');
+        const explicitStage=parseFrontendSlides('<deck-stage width="1600" height="1000"><section data-screen-label="Cover"><h1>Cover</h1></section></deck-stage>');
+        check(explicitStage.width===1600 && explicitStage.height===1000,'custom stage dimension attributes');
         check(parse('<div id="slide-1">one</div>').length===0,'single arbitrary numbered element is not a deck');
         let ambiguous=false;try{parse('<div><i class="scene"></i><i class="scene"></i></div><div><i class="scene"></i><i class="scene"></i></div>')}catch{ambiguous=true}
         check(ambiguous,'ambiguous groups rejected');
         const cases=[
+          ['<section data-screen-label="Cover"><h1>Cover</h1></section><section data-label="Body"><h1>Body</h1></section>', ['Cover','Body']],
           ['<div id="slide-10"><h1>Ten</h1></div><div id="slide-2"><h1>Two</h1></div><div id="slide_1"><h1>One</h1></div>', ['One','Two','Ten']],
           ['<section class="scene active" id="intro"><h1>Intro</h1></section><section class="scene" id="question"><h1>Question</h1></section><section class="scene" id="win"><h1>Win</h1></section><section class="scene" id="lose"><h1>Lose</h1></section>', ['Intro','Question','Win','Lose']],
           ['<section data-desq-slide><h1>First</h1></section><section data-desq-slide><h1>Second</h1></section>', ['First','Second']],

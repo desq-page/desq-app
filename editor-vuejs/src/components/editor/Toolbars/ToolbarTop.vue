@@ -206,6 +206,14 @@
             :disabled="piniaSlides().masterView || !!piniaInfo().useGrid"
           />
           <ToolbarItem
+            caption="Design Ideas"
+            tooltip="Suggest layouts for this slide"
+            :icon="AutoAwesomeOutlined"
+            :onClick="() => toggleTaskPane('designideas')"
+            :active="piniaInfo().currentTaskPane === 'designideas'"
+            :disabled="piniaSlides().masterView || !!piniaInfo().useGrid || !!piniaInfo().loadingBar"
+          />
+          <ToolbarItem
             caption="Slide Size"
             tooltip="Slide Size"
             :icon="SlideSize24Regular"

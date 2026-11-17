@@ -20,6 +20,7 @@
         <SettingsPanel v-if="piniaInfo().currentTaskPane == 'settings'" />
         <SizingPanel v-if="piniaInfo().currentTaskPane == 'sizingpanel'" />
         <SizingPanel v-if="piniaInfo().currentTaskPane == 'slidesize'" />
+        <DesignIdeas v-if="piniaInfo().currentTaskPane === 'designideas'" />
         <FormatSlide v-if="piniaInfo().currentTaskPane == 'formatslide'" />
         <TransitionPanel v-if="piniaInfo().currentTaskPane == 'transition'" />
 
@@ -95,6 +96,7 @@ import TranslateTextLLM from "@/components/editor/Media/TranslateTextLLM.vue";
 import ShapeAnimations from "@/components/editor/Animation/ShapeAnimations.vue";
 import ShapeFill from "@/components/editor/Selection/ShapeFill.vue";
 import ShapeEffects from "@/components/editor/Effects/ShapeEffects.vue";
+import DesignIdeas from "../Dialogs/DesignIdeas.vue";
 import FormatSlide from "@/components/editor/Dialogs/FormatSlide.vue";
 import HyperlinkDialog from "@/components/editor/Dialogs/HyperlinkDialog.vue";
 import HideTaskPaneBtn from "./HideTaskPaneBtn.vue";

@@ -11,7 +11,7 @@ test('master design composes palettes, fonts, variants and backgrounds without c
  const dir=mkdtempSync(join(tmpdir(),'desq-design-'));
  try{
   await build({stdin:{resolveDir:resolve('.'),contents:`
-import {buildMasterDesignPatch} from './shared-vuejs/src/edlib/pptx/design-theme.mjs';
+import {buildMasterDesignPatch} from '../desq-core/shared-vuejs/src/edlib/pptx/design-theme.mjs';
 import {OFFICE_COLOR_SCHEMES} from './editor-vuejs/src/lib/agent/office-color-schemes.mjs';
 import {ZipReader,Uint8ArrayReader,Uint8ArrayWriter} from '@zip.js/zip.js';
 const check=(v,m)=>{if(!v)throw Error(m)},decode=b=>new TextDecoder().decode(b);
@@ -39,6 +39,18 @@ const check=(v,m)=>{if(!v)throw Error(m)},decode=b=>new TextDecoder().decode(b);
  for(const path of Object.keys(original).filter(p=>p.includes('otherMaster')||p.includes('/theme/')))check(decode(original[path])===decode(archive[path]),'unrelated master/theme changed: '+path);
  check(decode(archive['ppt/slideMasters/_rels/slideMaster1.xml.rels']).includes('/'+last.themePath),'master private theme relationship missing');
  apply({background:'auto'});check(decode(archive['ppt/slideMasters/slideMaster1.xml']).includes('val="dk2"'),'auto background did not follow dark variant');
+ const [sharedLayout, normalLayout] = last.layoutPaths;
+ for (const path of [sharedLayout, normalLayout]) {
+   const doc = new DOMParser().parseFromString(decode(archive[path]),'application/xml');
+   const content = doc.getElementsByTagNameNS('*','cSld')[0];
+   const backdrop = new DOMParser().parseFromString('<p:bg xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><p:bgPr><a:solidFill><a:srgbClr val="ABCDEF"/></a:solidFill></p:bgPr></p:bg>','application/xml').documentElement;
+   content.getElementsByTagNameNS('*','bg')[0]?.remove();
+   content.prepend(doc.importNode(backdrop,true));
+   archive[path] = new TextEncoder().encode(new XMLSerializer().serializeToString(doc));
+ }
+ const sharedPatch = buildMasterDesignPatch(archive,{masterId:'slideMaster1',state,change:{background:'accent1'},sharedLayoutPaths:[sharedLayout]});
+ check(backgroundRole(sharedPatch.parts[sharedLayout])==='accent1','design background did not update the shared layout');
+ check(backgroundRole(sharedPatch.parts[normalLayout])===undefined && decode(sharedPatch.parts[normalLayout]).includes('ABCDEF'),'unrelated layout background changed');
  document.body.innerHTML='<pre id="result">PASS</pre>';
 })().catch(e=>document.body.innerHTML='<pre id="result">'+e.stack+'</pre>');`},bundle:true,format:'esm',outfile:join(dir,'fixture.js'),logLevel:'silent'});
   writeFileSync(join(dir,'index.html'),'<script type="module" src="fixture.js"></script>');

@@ -1,0 +1,1891 @@
+[
+  {
+    "slug": "8-bit-orbit",
+    "name": "8-Bit Orbit",
+    "description": "Pixel-art neon arcade aesthetic on a deep navy void.; gaming pitch, hackathon demo, web3 / crypto deck, indie product launch, developer tools, synthwave brand; geeky, neon, rebellious, sci-fi",
+    "background": "#0F1B3D",
+    "surface": "#0A0E27",
+    "foreground": "#E2D5F2",
+    "accent": "#5EDCF4",
+    "headingFont": "Tektur",
+    "bodyFont": "Chakra Petch",
+    "variants": [
+      {
+        "label": "8-BIT ORBIT",
+        "role": "cover"
+      },
+      {
+        "label": "Rewiring How We Share Ideas",
+        "role": "features"
+      },
+      {
+        "label": "Four Engines Running",
+        "role": "features"
+      },
+      {
+        "label": "Quarterly Growth Metrics",
+        "role": "features"
+      },
+      {
+        "label": "Resource Allocation",
+        "role": "features"
+      },
+      {
+        "label": "Development Roadmap",
+        "role": "steps"
+      },
+      {
+        "label": "Platform Vitals",
+        "role": "features"
+      },
+      {
+        "label": "Slide 8",
+        "role": "features"
+      },
+      {
+        "label": "Choose Your Loadout",
+        "role": "features"
+      },
+      {
+        "label": "Ready Player One?",
+        "role": "features"
+      }
+    ]
+  },
+  {
+    "slug": "biennale-yellow",
+    "name": "Biennale Yellow",
+    "description": "Solar yellow on warm parchment with deep indigo serif and atmospheric sun-glow gradients.; exhibition or biennale, arts institution programme, design or typography conference, literary or curatorial publication, studio annual report, museum season announcement; literary, considered, contemplative, warm-modern, Dutch-editorial",
+    "background": "#E9E5DB",
+    "surface": "#E9E5DB",
+    "foreground": "#1B2566",
+    "accent": "#F1EE2E",
+    "headingFont": "Instrument Serif",
+    "bodyFont": "Archivo",
+    "variants": [
+      {
+        "label": "Aurora Programme",
+        "role": "cover"
+      },
+      {
+        "label": "Slide 2",
+        "role": "quote"
+      },
+      {
+        "label": "Slow Atmospheres",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 4",
+        "role": "section"
+      },
+      {
+        "label": "Slide 5",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 6",
+        "role": "quote"
+      },
+      {
+        "label": "Slide 7",
+        "role": "editorial"
+      },
+      {
+        "label": "With thanks to the slow readers.",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "block-frame",
+    "name": "BlockFrame",
+    "description": "Neobrutalist deck with pastel-neon color blocks and chunky black borders.; creative agency pitch, indie SaaS launch, designer portfolio, brand redesign, modern startup deck; confident, graphic, pop, design-led",
+    "background": "#FFDC8B",
+    "surface": "#FFFDF5",
+    "foreground": "#000000",
+    "accent": "#FE90E8",
+    "headingFont": "Space Grotesk",
+    "bodyFont": "Inter",
+    "flexiblePanels": ["#FE90E8", "#C0F7FE", "#99E885", "#F7CB46"],
+    "variants": [
+      {
+        "label": "NEO- BRUTALISM STYLE",
+        "role": "cover"
+      },
+      {
+        "label": "What We Deliver",
+        "role": "editorial"
+      },
+      {
+        "label": "Modular Layouts",
+        "role": "editorial"
+      },
+      {
+        "label": "Quarterly Growth Metrics",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 5",
+        "role": "editorial"
+      },
+      {
+        "label": "How We Structure Every Project",
+        "role": "editorial"
+      },
+      {
+        "label": "Project Timeline",
+        "role": "steps"
+      },
+      {
+        "label": "Impact at a Glance",
+        "role": "editorial"
+      },
+      {
+        "label": "Meet the Crew",
+        "role": "editorial"
+      },
+      {
+        "label": "Let's Build Something Bold",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "blue-professional",
+    "name": "Blue Professional",
+    "description": "Cream paper background with electric cobalt blue accents; clean modern professional.; B2B SaaS pitch, consulting deliverable, internal review, advisory pitch, investor update; clean, considered, polished, neutral",
+    "background": "#FDFAE7",
+    "surface": "#FDFAE7",
+    "foreground": "#111111",
+    "accent": "#1E2BFA",
+    "headingFont": "Space Grotesk",
+    "bodyFont": "Inter",
+    "variants": [
+      {
+        "label": "Market Outlook & Strategic Priorities",
+        "role": "cover"
+      },
+      {
+        "label": "Executive Summary",
+        "role": "blue-agenda"
+      },
+      {
+        "label": "Sentiment has shifted measurably from the prior quarter",
+        "role": "editorial"
+      },
+      {
+        "label": "Current perspectives on the economy and markets",
+        "role": "editorial"
+      },
+      {
+        "label": "What investors want companies to focus on right now",
+        "role": "features"
+      },
+      {
+        "label": "Most important macroeconomic concerns among investors",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 7",
+        "role": "quote"
+      },
+      {
+        "label": "Recommended approach to navigating the current cycle",
+        "role": "steps"
+      },
+      {
+        "label": "Changes in investment practices and valuation frameworks",
+        "role": "blue-detail"
+      },
+      {
+        "label": "Thank You",
+        "role": "section"
+      }
+    ]
+  },
+  {
+    "slug": "bold-poster",
+    "name": "Bold Poster",
+    "description": "Editorial poster aesthetic with massive Shrikhand display and a single fire-engine red accent.; brand manifesto, creative-led pitch, magazine / editorial, founder vision deck, art / culture; dramatic, graphic, sharp, intentional",
+    "background": "#FFFFFF",
+    "surface": "#F5F2EF",
+    "foreground": "#1C1410",
+    "accent": "#D8000F",
+    "headingFont": "Shrikhand",
+    "bodyFont": "Space Grotesk",
+    "variants": [
+      {
+        "label": "Slide 1",
+        "role": "cover"
+      },
+      {
+        "label": "Slide 2",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 3",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 4",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 5",
+        "role": "editorial"
+      },
+      {
+        "label": "Service Lines",
+        "role": "poster-services"
+      },
+      {
+        "label": "Slide 7",
+        "role": "steps"
+      },
+      {
+        "label": "Slide 8",
+        "role": "features"
+      },
+      {
+        "label": "Slide 9",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 10",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "broadside",
+    "name": "Broadside",
+    "description": "Dark editorial canvas with a single fire orange accent and bilingual Latin/Chinese type stack.; brand manifesto, founder vision deck, magazine / cultural pitch, design talk, bilingual EN/CN deck, campaign launch; graphic, punchy, literary, considered",
+    "background": "#111111",
+    "surface": "#1A1A18",
+    "foreground": "#F0ECE5",
+    "accent": "#E85D26",
+    "headingFont": "Barlow",
+    "bodyFont": "Barlow",
+    "variants": [
+      {
+        "label": "this is the broadside style",
+        "role": "cover"
+      },
+      {
+        "label": "the next chapter begins here",
+        "role": "section"
+      },
+      {
+        "label": "orange is not an accent. it is the room.",
+        "role": "quote"
+      },
+      {
+        "label": "when content needs image support",
+        "role": "visual"
+      },
+      {
+        "label": "Slide 5",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 6",
+        "role": "editorial"
+      },
+      {
+        "label": "what separates signal from noise",
+        "role": "broadside-list"
+      },
+      {
+        "label": "Slide 8",
+        "role": "quote"
+      },
+      {
+        "label": "six-month build cycles",
+        "role": "steps"
+      },
+      {
+        "label": "revenue by quarter",
+        "role": "editorial"
+      },
+      {
+        "label": "how it works",
+        "role": "editorial"
+      },
+      {
+        "label": "where the market sits",
+        "role": "editorial"
+      },
+      {
+        "label": "what actually matters",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 14",
+        "role": "steps"
+      },
+      {
+        "label": "build \u00b7 measure \u00b7 learn",
+        "role": "steps"
+      },
+      {
+        "label": "let's talk.",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "capsule",
+    "name": "Capsule",
+    "description": "Modular pill-shaped cards on warm bone with a full pastel-pop palette.; lifestyle brand, creator portfolio, DTC product launch, wellness or beauty pitch, Y2K-tinged brand work; upbeat, graphic, approachable, cool",
+    "background": "#F5F5F0",
+    "surface": "#F5F5F0",
+    "foreground": "#1A1A1A",
+    "accent": "#E85D4E",
+    "headingFont": "Bodoni Moda",
+    "bodyFont": "Space Grotesk",
+    "variants": [
+      {
+        "label": "CAPSULE A Framework for Bold Ideas",
+        "role": "cover"
+      },
+      {
+        "label": "Every Great Endeavor Begins with a Single Thought",
+        "role": "editorial"
+      },
+      {
+        "label": "The Foundation of Every Decision",
+        "role": "editorial"
+      },
+      {
+        "label": "Performance Indicators",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 5",
+        "role": "editorial"
+      },
+      {
+        "label": "Phased Implementation",
+        "role": "steps"
+      },
+      {
+        "label": "Key Metrics at a Glance",
+        "role": "editorial"
+      },
+      {
+        "label": "System Architecture Overview",
+        "role": "editorial"
+      },
+      {
+        "label": "Where Vision Meets Execution",
+        "role": "editorial"
+      },
+      {
+        "label": "Thank You for Your Attention",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "cartesian",
+    "name": "Cartesian",
+    "description": "Quiet warm-neutral palette with classical Playfair serifs; tasteful and unhurried.; investment thesis, white paper, advisory deliverable, research report, book / longform pitch, gallery / cultural; classical, literary, restrained, confident-quiet",
+    "background": "#EDE8E0",
+    "surface": "#E2DBD1",
+    "foreground": "#1A1A1A",
+    "accent": "#8A8178",
+    "headingFont": "Playfair Display",
+    "bodyFont": "Inter",
+    "variants": [
+      {
+        "label": "Cartesian",
+        "role": "cover"
+      },
+      {
+        "label": "Session Agenda",
+        "role": "steps"
+      },
+      {
+        "label": "Precision in approach defines the boundary between noise and signal.",
+        "role": "quote"
+      },
+      {
+        "label": "Quarterly Metrics",
+        "role": "editorial"
+      },
+      {
+        "label": "Structural Overview",
+        "role": "editorial"
+      },
+      {
+        "label": "Core Competencies",
+        "role": "features"
+      },
+      {
+        "label": "Growth Projection",
+        "role": "editorial"
+      },
+      {
+        "label": "Implementation Phases",
+        "role": "steps"
+      },
+      {
+        "label": "Key Contributors",
+        "role": "features"
+      },
+      {
+        "label": "Thank You",
+        "role": "section"
+      }
+    ]
+  },
+  {
+    "slug": "cobalt-grid",
+    "name": "Cobalt Grid",
+    "description": "Electric cobalt serifs on a graph-paper canvas, anchored by stair-stepped pixel-glitch decorations and slim hairline rules.; design trend or research report, studio annual or seasonal bulletin, creative agency capabilities deck, art or architecture publication, academic / curatorial publication, newsletter or zine pitch; considered, literary, studious, quietly-modern, editorial",
+    "background": "#F0EBDE",
+    "surface": "#F0EBDE",
+    "foreground": "#1F2BE0",
+    "accent": "#1F2BE0",
+    "headingFont": "Newsreader",
+    "bodyFont": "Hanken Grotesk",
+    "variants": [
+      {
+        "label": "Index with picture rail",
+        "role": "picture-rail"
+      },
+      {
+        "label": "Index with picture strip",
+        "role": "picture-strip"
+      },
+      {
+        "label": "Index 2026",
+        "role": "cover"
+      },
+      {
+        "label": "Slide 2",
+        "role": "quote"
+      },
+      {
+        "label": "Slow software",
+        "role": "steps"
+      },
+      {
+        "label": "Software is a room, and rooms are designed to be lived in slowly.",
+        "role": "section"
+      },
+      {
+        "label": "Slide 5",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 6",
+        "role": "quote"
+      },
+      {
+        "label": "Slide 7",
+        "role": "editorial"
+      },
+      {
+        "label": "See you in the autumn issue.",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "coral",
+    "name": "Coral",
+    "description": "Cream and coral on near-black, set in oversized Bebas Neue.; fashion / beauty pitch, fitness brand, F&B brand deck, lifestyle launch, creative agency; graphic, punchy, magazine",
+    "background": "#F5F0E8",
+    "surface": "#E8E0D4",
+    "foreground": "#1A1A1A",
+    "accent": "#E85D5D",
+    "headingFont": "Bebas Neue",
+    "bodyFont": "Inter",
+    "variants": [
+      {
+        "label": "Slide 1",
+        "role": "cover"
+      },
+      {
+        "label": "Slide 2",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 3",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 4",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 5",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 6",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 7",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 8",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 9",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 10",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "creative-mode",
+    "name": "Creative Mode",
+    "description": "Cream paper canvas with confident multi-color (green, pink, orange, yellow) accents and Archivo Black display.; creative agency pitch, design studio deck, ad shop credentials, brand creative review, concept presentation; graphic, expressive, modern",
+    "background": "#EFE9D9",
+    "surface": "#E4DCC4",
+    "foreground": "#0F0F0F",
+    "accent": "#1F8A4C",
+    "headingFont": "Archivo Black",
+    "bodyFont": "Space Grotesk",
+    "variants": [
+      {
+        "label": "01 Title",
+        "role": "cover"
+      },
+      {
+        "label": "02 Intro",
+        "role": "editorial"
+      },
+      {
+        "label": "03 Stats",
+        "role": "editorial"
+      },
+      {
+        "label": "04 Diagram",
+        "role": "editorial"
+      },
+      {
+        "label": "05 Chart",
+        "role": "editorial"
+      },
+      {
+        "label": "06 Process",
+        "role": "steps"
+      },
+      {
+        "label": "07 Compare",
+        "role": "features"
+      },
+      {
+        "label": "08 Closing",
+        "role": "section"
+      }
+    ]
+  },
+  {
+    "slug": "daisy-days",
+    "name": "Daisy Days",
+    "description": "Cheerful pastel deck with hand-drawn daisies, stars, and rainbows. Friendly, soft, and warm.; education / classroom, kids product launch, wellness program, community workshop, creator portfolio (craft / illustration), team kickoff, wedding / baby shower planning; friendly, soft, encouraging, approachable, lighthearted",
+    "background": "#F5F0E6",
+    "surface": "#F5F0E6",
+    "foreground": "#2D2D2D",
+    "accent": "#F8635F",
+    "headingFont": "Fredoka One",
+    "bodyFont": "Quicksand",
+    "variants": [
+      {
+        "label": "Daisy Days",
+        "role": "cover"
+      },
+      {
+        "label": "Welcome to Today",
+        "role": "editorial"
+      },
+      {
+        "label": "A Look at the Week",
+        "role": "editorial"
+      },
+      {
+        "label": "Today's Schedule",
+        "role": "steps"
+      },
+      {
+        "label": "Activity Breakdown",
+        "role": "editorial"
+      },
+      {
+        "label": "Key Focus Areas",
+        "role": "features"
+      },
+      {
+        "label": "Slide 7",
+        "role": "quote"
+      },
+      {
+        "label": "Our Team",
+        "role": "features"
+      },
+      {
+        "label": "How It Works",
+        "role": "steps"
+      },
+      {
+        "label": "Topic Distribution",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "editorial-forest",
+    "name": "Editorial Forest",
+    "description": "Forest green, dusty pink, and warm cream meet Source Serif 4 in a quiet, intentional quarterly-review deck.; quarterly review, internal readout, studio update, creative agency deck, research recap; literary, thoughtful, warm, low-pressure",
+    "background": "#EFE7D4",
+    "surface": "#EFE7D4",
+    "foreground": "#1A1A17",
+    "accent": "#2E4A2A",
+    "headingFont": "Source Serif 4",
+    "bodyFont": "Source Serif 4",
+    "variants": [
+      {
+        "label": "01 Cover",
+        "role": "cover"
+      },
+      {
+        "label": "02 Agenda",
+        "role": "steps"
+      },
+      {
+        "label": "03 Statement",
+        "role": "quote"
+      },
+      {
+        "label": "04 Two Column",
+        "role": "features"
+      },
+      {
+        "label": "05 Data",
+        "role": "editorial"
+      },
+      {
+        "label": "06 Framework",
+        "role": "features"
+      },
+      {
+        "label": "07 Stats",
+        "role": "editorial"
+      },
+      {
+        "label": "08 Summary",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "editorial-tri-tone",
+    "name": "Editorial Tri-Tone",
+    "description": "Three-color editorial system: dusty pink, mustard cream, and deep burgundy, set in Bricolage + Instrument Serif.; editorial / magazine pitch, fashion brand deck, lifestyle media, literary / cultural, art direction review; literary, warm, considered, stylish",
+    "background": "#F2B6C6",
+    "surface": "#F2B6C6",
+    "foreground": "#7A1F35",
+    "accent": "#7A1F35",
+    "headingFont": "Bricolage Grotesque",
+    "bodyFont": "Instrument Serif",
+    "variants": [
+      {
+        "label": "01 Cover",
+        "role": "cover"
+      },
+      {
+        "label": "02 Manifesto",
+        "role": "quote"
+      },
+      {
+        "label": "03 Principles",
+        "role": "features"
+      },
+      {
+        "label": "04 Headline figure",
+        "role": "editorial"
+      },
+      {
+        "label": "05 Trajectory",
+        "role": "steps"
+      },
+      {
+        "label": "06 Composition",
+        "role": "editorial"
+      },
+      {
+        "label": "07 In their words",
+        "role": "quote"
+      },
+      {
+        "label": "08 Colophon",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "emerald-editorial",
+    "name": "Emerald Editorial",
+    "description": "A magazine-cover business deck: emerald + navy + paper, double-rule masthead ornaments, and a bold Bodoni-style display serif.; leadership presentation, quarterly review, strategy readout, planning office deck, executive briefing; literary, authoritative, warm, designed",
+    "background": "#F1E9D6",
+    "surface": "#F1E9D6",
+    "foreground": "#0F1A5C",
+    "accent": "#3CD896",
+    "headingFont": "Bodoni Moda",
+    "bodyFont": "Manrope",
+    "variants": [
+      {
+        "label": "01 Cover",
+        "role": "cover"
+      },
+      {
+        "label": "02 Agenda",
+        "role": "steps"
+      },
+      {
+        "label": "03 Section Opener",
+        "role": "section"
+      },
+      {
+        "label": "04 Statement And Three",
+        "role": "quote"
+      },
+      {
+        "label": "05 Data Study",
+        "role": "editorial"
+      },
+      {
+        "label": "06 Process Diagram",
+        "role": "steps"
+      },
+      {
+        "label": "07 KPI Grid",
+        "role": "features"
+      },
+      {
+        "label": "08 Closing",
+        "role": "section"
+      }
+    ]
+  },
+  {
+    "slug": "grove",
+    "name": "Grove",
+    "description": "Forest-green canvas with cream type, classical Playfair serifs, and a single rust accent.; sustainability brand, wellness brand, outdoor / nature product, winery or restaurant, literary or arts deck, advisory deliverable, bilingual EN/CN deck; classical, warm, considered, patient",
+    "background": "#192B1B",
+    "surface": "#1E3221",
+    "foreground": "#D4CFBF",
+    "accent": "#C8524A",
+    "headingFont": "Playfair Display",
+    "bodyFont": "Jost",
+    "variants": [
+      {
+        "label": "[Presentation Title Goes Here]",
+        "role": "cover"
+      },
+      {
+        "label": "The landscape has shifted. Now we must decide where to stand.",
+        "role": "section"
+      },
+      {
+        "label": "The brands that will lead the next decade are not the ones with the best product. They are the ones ",
+        "role": "quote"
+      },
+      {
+        "label": "Audiences have outgrown the stories being told about them",
+        "role": "features"
+      },
+      {
+        "label": "Three numbers that define the opportunity",
+        "role": "editorial"
+      },
+      {
+        "label": "Five principles that reframe how we think about brand",
+        "role": "features"
+      },
+      {
+        "label": "Slide 7",
+        "role": "quote"
+      },
+      {
+        "label": "Brand as broadcaster \u2014 pushing messages outward",
+        "role": "features"
+      },
+      {
+        "label": "What we propose \u2014 and why we believe it will work",
+        "role": "section"
+      },
+      {
+        "label": "Stop managing perception. Start deserving it.",
+        "role": "quote"
+      },
+      {
+        "label": "Consumer trust by category",
+        "role": "editorial"
+      },
+      {
+        "label": "The work begins when the presentation ends.",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "long-table",
+    "name": "Long Table",
+    "description": "Warm cream and rust-red supper-club aesthetic with bold uppercase grotesk headlines, Fraunces serifs, and pill-shaped outlined buttons.; supper club or dinner series, event or community gathering, small hospitality / restaurant brand, creative studio open house, membership or subscription pitch, wine or food brand catalogue, modern lifestyle brand; warm, playful, considered, social, magazine-friendly, modern-editorial",
+    "background": "#FAF1E2",
+    "surface": "#FAF1E2",
+    "foreground": "#B53D2A",
+    "accent": "#8E2D1F",
+    "headingFont": "Bricolage Grotesque",
+    "bodyFont": "Fraunces",
+    "variants": [
+      {
+        "label": "Long Table",
+        "role": "cover"
+      },
+      {
+        "label": "A note before we sit.",
+        "role": "quote"
+      },
+      {
+        "label": "Slide 3",
+        "role": "steps"
+      },
+      {
+        "label": "An evening for the rain.",
+        "role": "features"
+      },
+      {
+        "label": "December \u00b7 Lisbon",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 6",
+        "role": "quote"
+      },
+      {
+        "label": "Slide 7",
+        "role": "editorial"
+      },
+      {
+        "label": "See you at the table.",
+        "role": "section"
+      }
+    ]
+  },
+  {
+    "slug": "mat",
+    "name": "Mat",
+    "description": "Dark sage canvas with bone paper and burnt-orange accent; mid-century modern with wood undertones.; design studio credentials, architecture / interior brand, ceramics or craft brand, furniture pitch, advisory deliverable, bilingual EN/CN deck; warm, design-led, intentional, considered",
+    "background": "#232E26",
+    "surface": "#2E3D30",
+    "foreground": "#F0E8D2",
+    "accent": "#C07030",
+    "headingFont": "Bricolage Grotesque",
+    "bodyFont": "DM Sans",
+    "variants": [
+      {
+        "label": "Craft Matters",
+        "role": "cover"
+      },
+      {
+        "label": "Every surface is a decision.",
+        "role": "quote"
+      },
+      {
+        "label": "[A one-line description of what this product does.]",
+        "role": "features"
+      },
+      {
+        "label": "The numbers that define the [product category].",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 5",
+        "role": "quote"
+      },
+      {
+        "label": "What a studio tool should do for the maker.",
+        "role": "editorial"
+      },
+      {
+        "label": "Generic [product category] from a supply catalog.",
+        "role": "features"
+      },
+      {
+        "label": "Lifespan by material category.",
+        "role": "editorial"
+      },
+      {
+        "label": "Start with the right surface.",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "monochrome",
+    "name": "Monochrome",
+    "description": "Ivory ledger paper with all-black type; Lora serif headlines, Jost body, no color at all.; user research synthesis, white paper, longform report, academic deck, policy brief, advisory deliverable, bilingual EN/CN deck; literary, considered, neutral, honest",
+    "background": "#FAFADF",
+    "surface": "#F2F2D2",
+    "foreground": "#1A1A16",
+    "accent": "#5E5E54",
+    "headingFont": "Lora",
+    "bodyFont": "Jost",
+    "variants": [
+      {
+        "label": "User Research Synthesis",
+        "role": "cover"
+      },
+      {
+        "label": "Why we went back to users",
+        "role": "section"
+      },
+      {
+        "label": "Users don't leave because they lose interest. They leave because they don't know what to do next.",
+        "role": "quote"
+      },
+      {
+        "label": "The first 48 hours determine everything",
+        "role": "features"
+      },
+      {
+        "label": "What the data showed",
+        "role": "editorial"
+      },
+      {
+        "label": "Five changes, ordered by impact",
+        "role": "editorial"
+      },
+      {
+        "label": "9-step setup, any order",
+        "role": "features"
+      },
+      {
+        "label": "Slide 8",
+        "role": "quote"
+      },
+      {
+        "label": "Why onboarding problems compound over time",
+        "role": "editorial"
+      },
+      {
+        "label": "90-day retention by onboarding cohort",
+        "role": "editorial"
+      },
+      {
+        "label": "How this research was conducted",
+        "role": "editorial"
+      },
+      {
+        "label": "Who we spoke with",
+        "role": "editorial"
+      },
+      {
+        "label": "From research to recommendation",
+        "role": "steps"
+      },
+      {
+        "label": "The design thinking cycle",
+        "role": "steps"
+      },
+      {
+        "label": "Analysis Hierarchy",
+        "role": "editorial"
+      },
+      {
+        "label": "Questions, feedback, and next steps",
+        "role": "steps"
+      }
+    ]
+  },
+  {
+    "slug": "neo-grid-bold",
+    "name": "Neo-Grid Bold",
+    "description": "Editorial neo-brutalism with a single neon yellow accent on off-white paper.; product launch, design review, founder pitch, brand deck, consulting findings, conference talk; bold, minimal, design-led, graphic",
+    "background": "#ECECE8",
+    "surface": "#F5F4EF",
+    "foreground": "#0A0A0A",
+    "accent": "#E6FF3D",
+    "headingFont": "Space Grotesk",
+    "bodyFont": "Space Grotesk",
+    "variants": [
+      {
+        "label": "01 Cover",
+        "role": "cover"
+      },
+      {
+        "label": "02 Contents",
+        "role": "steps"
+      },
+      {
+        "label": "03 Digits in Numbers",
+        "role": "editorial"
+      },
+      {
+        "label": "04 Key Features",
+        "role": "features"
+      },
+      {
+        "label": "05 Market Penetration",
+        "role": "editorial"
+      },
+      {
+        "label": "06 Section \u00b7 Vision",
+        "role": "section"
+      },
+      {
+        "label": "07 Client Voice",
+        "role": "quote"
+      },
+      {
+        "label": "08 Next Steps",
+        "role": "steps"
+      },
+      {
+        "label": "09 Findings \u00b7 Detail",
+        "role": "editorial"
+      },
+      {
+        "label": "10 Retention Curve",
+        "role": "editorial"
+      },
+      {
+        "label": "11 Process",
+        "role": "steps"
+      },
+      {
+        "label": "12 Comparison",
+        "role": "features"
+      }
+    ]
+  },
+  {
+    "slug": "peoples-platform",
+    "name": "People's Platform (Block & Bold)",
+    "description": "Activist poster energy: blue, orange, red on cream, with Alfa Slab + Caveat Brush.; cultural commentary, manifesto, community / civic deck, design talk, campaign pitch, founder vision; punchy, direct, expressive, warm-bold",
+    "background": "#F4E9D6",
+    "surface": "#F4E9D6",
+    "foreground": "#0E0E14",
+    "accent": "#2C2CDC",
+    "headingFont": "Alfa Slab One",
+    "bodyFont": "Archivo Narrow",
+    "variants": [
+      {
+        "label": "01 Cover",
+        "role": "cover"
+      },
+      {
+        "label": "02 Contents",
+        "role": "steps"
+      },
+      {
+        "label": "03 Big Idea",
+        "role": "quote"
+      },
+      {
+        "label": "04 Pillars",
+        "role": "numbered-pillars"
+      },
+      {
+        "label": "05 Stat",
+        "role": "editorial"
+      },
+      {
+        "label": "06 Plan",
+        "role": "steps"
+      },
+      {
+        "label": "07 Quote",
+        "role": "quote"
+      },
+      {
+        "label": "08 Roadmap",
+        "role": "timeline"
+      },
+      {
+        "label": "09 Compare",
+        "role": "features"
+      },
+      {
+        "label": "10 Close",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "pin-and-paper",
+    "name": "Pin & Paper",
+    "description": "Yellow paper with safety-pin illustrations, ink-blue handwritten Caveat, paper-grain texture.; research findings with personality, qualitative report, founder reflection, creator essay deck, workshop debrief; literary, intimate, warm, grounded",
+    "background": "#EFE56A",
+    "surface": "#EFE56A",
+    "foreground": "#1F3A8A",
+    "accent": "#C2342B",
+    "headingFont": "Caveat",
+    "bodyFont": "Space Grotesk",
+    "variants": [
+      {
+        "label": "01 Cover",
+        "role": "cover"
+      },
+      {
+        "label": "02 Agenda",
+        "role": "steps"
+      },
+      {
+        "label": "03 Principles",
+        "role": "features"
+      },
+      {
+        "label": "04 Section \u00b7 Direction",
+        "role": "section"
+      },
+      {
+        "label": "05 Findings \u00b7 Detail",
+        "role": "editorial"
+      },
+      {
+        "label": "06 Retention Curve",
+        "role": "editorial"
+      },
+      {
+        "label": "07 Process",
+        "role": "steps"
+      },
+      {
+        "label": "08 Comparison",
+        "role": "features"
+      },
+      {
+        "label": "09 In Numbers",
+        "role": "editorial"
+      },
+      {
+        "label": "10 Voice",
+        "role": "quote"
+      },
+      {
+        "label": "11 Next",
+        "role": "steps"
+      }
+    ]
+  },
+  {
+    "slug": "pink-script",
+    "name": "Pink Script \u2014 After Hours",
+    "description": "Black canvas, hot pink accent, pearl-cream paper, Instrument Serif headlines: late-night editorial luxury.; fashion brand deck, creator personal brand, after-hours product (nightlife / dating / spirits), luxury launch, editorial feature; literary, sultry, considered, magazine",
+    "background": "#F5EDF1",
+    "surface": "#F5EDF1",
+    "foreground": "#060507",
+    "accent": "#ED3D8C",
+    "headingFont": "DM Serif Display",
+    "bodyFont": "Inter",
+    "variants": [
+      {
+        "label": "01 Cover",
+        "role": "cover"
+      },
+      {
+        "label": "02 The Index",
+        "role": "steps"
+      },
+      {
+        "label": "03 By the Numbers",
+        "role": "editorial"
+      },
+      {
+        "label": "04 Movements",
+        "role": "section"
+      },
+      {
+        "label": "05 The Curve",
+        "role": "editorial"
+      },
+      {
+        "label": "06 Process",
+        "role": "steps"
+      },
+      {
+        "label": "07 The Field",
+        "role": "editorial"
+      },
+      {
+        "label": "08 Voices",
+        "role": "quote"
+      },
+      {
+        "label": "09 Encore",
+        "role": "steps"
+      }
+    ]
+  },
+  {
+    "slug": "playful",
+    "name": "Playful",
+    "description": "Sun-warm peach background with Syne display: a friendly indie launch deck.; creator portfolio, indie product launch, lifestyle brand, small-business pitch, newsletter / community; upbeat, informal, welcoming",
+    "background": "#F0C8A0",
+    "surface": "#E8B88E",
+    "foreground": "#1A1A1A",
+    "accent": "#1A1A1A",
+    "headingFont": "Syne",
+    "bodyFont": "Space Grotesk",
+    "variants": [
+      {
+        "label": "Slide 1",
+        "role": "cover"
+      },
+      {
+        "label": "Slide 2",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 3",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 4",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 5",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 6",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 7",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 8",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 9",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 10",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "raw-grid",
+    "name": "Raw Grid",
+    "description": "Neo-brutalist deck with thick borders, offset shadows, and a pink/sage/ink palette.; startup pitch, accelerator demo day, founder pitch, indie product launch, brand deck, creator portfolio; direct, modern, no-nonsense, graphic",
+    "background": "#F5F5F5",
+    "surface": "#F5F5F5",
+    "foreground": "#0A0A0A",
+    "accent": "#F2D4CF",
+    "headingFont": "Segoe UI / system-ui",
+    "bodyFont": "Segoe UI / system-ui",
+    "variants": [
+      {
+        "label": "Slide 1",
+        "role": "cover"
+      },
+      {
+        "label": "Slide 2",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 3",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 4",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 5",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 6",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 7",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 8",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 9",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 10",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "retro-windows",
+    "name": "Retro Windows",
+    "description": "Windows 95 chrome: gray title bars, MS Sans Serif, pixel typography, full nostalgia.; retro gaming pitch, Y2K brand, creator portfolio (90s aesthetic), tech-history talk, shitpost-but-make-it-fancy deck; winking, nostalgic, geeky, fun",
+    "background": "#C0C0C0",
+    "surface": "#D4D0C8",
+    "foreground": "#000000",
+    "accent": "#000080",
+    "headingFont": "Press Start 2P",
+    "bodyFont": "MS Sans Serif",
+    "variants": [
+      {
+        "label": "QUARTERLY OVERVIEW",
+        "role": "cover"
+      },
+      {
+        "label": "Slide 2",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 3",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 4",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 5",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 6",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 7",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 8",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 9",
+        "role": "editorial"
+      },
+      {
+        "label": "THANK YOU FOR WATCHING",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "retro-zine",
+    "name": "Retro Zine",
+    "description": "Beige paper with green accent and Bebas Neue + Caveat: a riso-printed zine in HTML form.; indie zine / publication, music or arts brand, creator portfolio, small-batch / craft launch, cultural / community deck; scrappy, warm, intentional, DIY",
+    "background": "#C8B99A",
+    "surface": "#F4EFE6",
+    "foreground": "#1A1A1A",
+    "accent": "#008F4D",
+    "headingFont": "Bebas Neue",
+    "bodyFont": "Space Grotesk",
+    "variants": [
+      {
+        "label": "Slide 1",
+        "role": "cover"
+      },
+      {
+        "label": "Slide 2",
+        "role": "features"
+      },
+      {
+        "label": "Slide 3",
+        "role": "quote"
+      },
+      {
+        "label": "Slide 4",
+        "role": "features"
+      },
+      {
+        "label": "Q3 Target",
+        "role": "visual"
+      },
+      {
+        "label": "Product Roadmap",
+        "role": "steps"
+      },
+      {
+        "label": "Slide 7",
+        "role": "editorial"
+      },
+      {
+        "label": "Strategy",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 9",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 10",
+        "role": "section"
+      }
+    ]
+  },
+  {
+    "slug": "sakura-chroma",
+    "name": "Sakura Chroma",
+    "description": "Vintage Japanese cassette-package aesthetic: cream paper, diagonal rainbow ribbons, condensed bold type, JIS-style spec checkboxes.; product launch or catalogue, indie hardware or analog studio brand, music label or release schedule, creative studio annual report, magazine or zine pitch, vintage-flavored brand campaign; playful, confident, warm, tactile, 80s-Japanese-tech",
+    "background": "#F1E6CB",
+    "surface": "#F1E6CB",
+    "foreground": "#3A2516",
+    "accent": "#E5392A",
+    "headingFont": "Big Shoulders Display",
+    "bodyFont": "Albert Sans",
+    "variants": [
+      {
+        "label": "Slide 1",
+        "role": "cover"
+      },
+      {
+        "label": "We make small analog things for the people who keep tape recorders on their desks.",
+        "role": "quote"
+      },
+      {
+        "label": "Slide 3",
+        "role": "editorial"
+      },
+      {
+        "label": "Build the thing first, then write the spec sheet.",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 5",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 6",
+        "role": "quote"
+      },
+      {
+        "label": "Slide 7",
+        "role": "editorial"
+      },
+      {
+        "label": "See you in volume eight.",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "scatterbrain",
+    "name": "Scatterbrain",
+    "description": "Post-it inspired: pastel sticky notes, Caveat handwriting, Shrikhand and Zilla Slab type stack.; brainstorm / workshop, creative agency credentials, design-thinking session, ideation pitch, art-direction review; informal, warm, expressive, human",
+    "background": "#F7F5F0",
+    "surface": "#F7F5F0",
+    "foreground": "#2D2A26",
+    "accent": "#FFC9C9",
+    "headingFont": "Shrikhand",
+    "bodyFont": "Zilla Slab",
+    "variants": [
+      {
+        "label": "Scatterbrain",
+        "role": "cover"
+      },
+      {
+        "label": "\"The best ideas start as scattered thoughts on sticky corners.\"",
+        "role": "editorial"
+      },
+      {
+        "label": "Finding the Problem",
+        "role": "editorial"
+      },
+      {
+        "label": "Quarterly Growth",
+        "role": "editorial"
+      },
+      {
+        "label": "Strategy",
+        "role": "editorial"
+      },
+      {
+        "label": "Phase One",
+        "role": "steps"
+      },
+      {
+        "label": "Capturing the Moment",
+        "role": "editorial"
+      },
+      {
+        "label": "Distribution Overview",
+        "role": "editorial"
+      },
+      {
+        "label": "Before",
+        "role": "editorial"
+      },
+      {
+        "label": "Thanks for Sticking Around",
+        "role": "cover"
+      }
+    ]
+  },
+  {
+    "slug": "signal",
+    "name": "Signal",
+    "description": "Deep navy canvas with bone paper and a single muted-gold accent; institutional with quiet weight.; investor deck, consulting deliverable, board presentation, legal / policy brief, academic deck, advisory pitch, bilingual EN/CN deck; sober, polished, established, literary",
+    "background": "#1C2644",
+    "surface": "#232F55",
+    "foreground": "#E2DCD0",
+    "accent": "#C8A870",
+    "headingFont": "Source Serif 4",
+    "bodyFont": "DM Sans",
+    "variants": [
+      {
+        "label": "[Presentation] Title",
+        "role": "cover"
+      },
+      {
+        "label": "Section headline with one emphasized idea",
+        "role": "section"
+      },
+      {
+        "label": "A concise statement that frames the main argument in one memorable sentence.",
+        "role": "quote"
+      },
+      {
+        "label": "Main headline for a split-layout slide",
+        "role": "features"
+      },
+      {
+        "label": "Three metrics that summarize the current state",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 6",
+        "role": "quote"
+      },
+      {
+        "label": "Five principles that shape the recommended approach",
+        "role": "features"
+      },
+      {
+        "label": "Headline describing the current state",
+        "role": "features"
+      },
+      {
+        "label": "Editorial headline with one accented word for emphasis.",
+        "role": "editorial"
+      },
+      {
+        "label": "Long-form headline that frames the central tradeoff",
+        "role": "editorial"
+      },
+      {
+        "label": "A second statement slide can reinforce the argument with a sharper closing line.",
+        "role": "section"
+      },
+      {
+        "label": "Closing headline with one emphasized phrase.",
+        "role": "section"
+      },
+      {
+        "label": "Chart headline with emphasis",
+        "role": "editorial"
+      },
+      {
+        "label": "Four-step process with emphasis",
+        "role": "steps"
+      },
+      {
+        "label": "Breakdown by category",
+        "role": "editorial"
+      },
+      {
+        "label": "The priority hierarchy",
+        "role": "editorial"
+      },
+      {
+        "label": "From starting point to current state",
+        "role": "steps"
+      },
+      {
+        "label": "The operating cycle",
+        "role": "steps"
+      }
+    ]
+  },
+  {
+    "slug": "soft-editorial",
+    "name": "Soft Editorial",
+    "description": "Cormorant Garamond serif on warm paper with sage, blush, and lemon accents.; editorial feature, longform brand story, gallery or museum, literary pitch, advisory deliverable, wedding / lifestyle media; literary, considered, warm, magazine",
+    "background": "#F2EEDF",
+    "surface": "#F2EEDF",
+    "foreground": "#2A241B",
+    "accent": "#E1A4C2",
+    "headingFont": "Cormorant Garamond",
+    "bodyFont": "Work Sans",
+    "variants": [
+      {
+        "label": "01 Cover",
+        "role": "cover"
+      },
+      {
+        "label": "02 Foreword",
+        "role": "editorial"
+      },
+      {
+        "label": "03 The Method",
+        "role": "steps"
+      },
+      {
+        "label": "04 Insights",
+        "role": "editorial"
+      },
+      {
+        "label": "05 A Closer Look",
+        "role": "editorial"
+      },
+      {
+        "label": "06 By the Numbers",
+        "role": "editorial"
+      },
+      {
+        "label": "07 In Their Words",
+        "role": "quote"
+      },
+      {
+        "label": "08 What's Next",
+        "role": "editorial"
+      },
+      {
+        "label": "09 Findings \u00b7 Detail",
+        "role": "editorial"
+      },
+      {
+        "label": "10 Retention Curve",
+        "role": "editorial"
+      },
+      {
+        "label": "11 Process",
+        "role": "steps"
+      },
+      {
+        "label": "12 Comparison",
+        "role": "features"
+      }
+    ]
+  },
+  {
+    "slug": "stencil-tablet",
+    "name": "Stencil & Tablet",
+    "description": "Bone paper with stencil-cut headlines and a six-color earth palette: archaeology meets brand.; museum / cultural institution, art / architecture brand, longform research, heritage / craft brand, manifesto; weighty, considered, tactile, literary",
+    "background": "#E2DCC9",
+    "surface": "#F4EFE0",
+    "foreground": "#0A0A0A",
+    "accent": "#A06A3C",
+    "headingFont": "Bowlby One",
+    "bodyFont": "Inter",
+    "markerFont": "Stardos Stencil",
+    "variants": [
+      {
+        "label": "01 Cover",
+        "role": "cover"
+      },
+      {
+        "label": "02 Agenda",
+        "role": "steps"
+      },
+      {
+        "label": "03 Our Principles",
+        "role": "features"
+      },
+      {
+        "label": "04 Section \u00b7 Direction",
+        "role": "section"
+      },
+      {
+        "label": "05 Findings \u00b7 Detail",
+        "role": "editorial"
+      },
+      {
+        "label": "06 Retention Curve",
+        "role": "editorial"
+      },
+      {
+        "label": "07 Process",
+        "role": "steps"
+      },
+      {
+        "label": "08 Comparison",
+        "role": "features"
+      },
+      {
+        "label": "09 In Numbers",
+        "role": "editorial"
+      },
+      {
+        "label": "10 Voice",
+        "role": "quote"
+      },
+      {
+        "label": "11 Next",
+        "role": "steps"
+      }
+    ]
+  },
+  {
+    "slug": "studio",
+    "name": "Studio",
+    "description": "Black canvas with electric-yellow type; high-voltage design studio aesthetic.; design studio credentials, creative agency pitch, brand showcase, art-direction review, fashion / sneaker brand, bilingual EN/CN deck; graphic, loud, modern, intentional",
+    "background": "#1C1C1C",
+    "surface": "#242422",
+    "foreground": "#F5D200",
+    "accent": "#F5D200",
+    "headingFont": "Barlow",
+    "bodyFont": "Barlow",
+    "variants": [
+      {
+        "label": "PROPOSAL",
+        "role": "cover"
+      },
+      {
+        "label": "WHO WE ARE",
+        "role": "section"
+      },
+      {
+        "label": "GREAT WORK DOESN'T HAPPEN BY ACCIDENT",
+        "role": "quote"
+      },
+      {
+        "label": "WE BUILD WHAT OTHERS PLAN",
+        "role": "steps"
+      },
+      {
+        "label": "THE STUDIO",
+        "role": "editorial"
+      },
+      {
+        "label": "WHAT WE OFFER",
+        "role": "editorial"
+      },
+      {
+        "label": "Slide 7",
+        "role": "quote"
+      },
+      {
+        "label": "GENERIC IDENTITY, FORGETTABLE CAMPAIGNS",
+        "role": "features"
+      },
+      {
+        "label": "THE WORK",
+        "role": "section"
+      },
+      {
+        "label": "BOLD IDEAS DESERVE BOLD EXECUTION",
+        "role": "quote"
+      },
+      {
+        "label": "PROJECTS BY YEAR",
+        "role": "editorial"
+      },
+      {
+        "label": "ANY QUESTIONS OR THOUGHTS?",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "vellum",
+    "name": "Vellum",
+    "description": "Deep navy canvas with warm-yellow Cormorant serifs and a single dusty teal accent. A quiet, scholarly aesthetic.; research findings, white paper or longform report, academic or university deck, advisory deliverable, literary or editorial pitch, founder reflection / vision deck, bilingual EN/CN deck; literary, considered, patient, intelligent",
+    "background": "#2A3870",
+    "surface": "#343F80",
+    "foreground": "#E8D85C",
+    "accent": "#3A7878",
+    "headingFont": "Cormorant Garamond",
+    "bodyFont": "DM Sans",
+    "variants": [
+      {
+        "label": "On Restraint",
+        "role": "cover"
+      },
+      {
+        "label": "Most design problems are removed, not solved.",
+        "role": "quote"
+      },
+      {
+        "label": "What you remove is louder than what you keep.",
+        "role": "editorial"
+      },
+      {
+        "label": "Three findings from a year of editing.",
+        "role": "editorial"
+      },
+      {
+        "label": "Four rules that hold.",
+        "role": "vellum-list"
+      },
+      {
+        "label": "Slide 6",
+        "role": "quote"
+      },
+      {
+        "label": "The unfocused draft",
+        "role": "features"
+      },
+      {
+        "label": "How drafts shrink during editing.",
+        "role": "editorial"
+      },
+      {
+        "label": "Edit until it stops looking edited.",
+        "role": "editorial"
+      }
+    ]
+  },
+  {
+    "slug": "builtin-ocean",
+    "name": "Built-in",
+    "description": "Native editable opening, photo stories, comparison and detailed picture list.",
+    "background": "#F7FAFC",
+    "surface": "#E6EFF3",
+    "foreground": "#142D43",
+    "accent": "#087F8C",
+    "headingFont": "Arial",
+    "bodyFont": "Arial",
+    "variants": [
+      {
+        "label": "Bold Opening",
+        "role": "builtin-cover"
+      },
+      {
+        "label": "Photo Story",
+        "role": "builtin-photo-story"
+      },
+      {
+        "label": "Photo-led Story",
+        "role": "builtin-photo-left"
+      },
+      {
+        "label": "Two-way Comparison",
+        "role": "builtin-comparison"
+      },
+      {
+        "label": "Picture with Detailed List",
+        "role": "builtin-photo-list"
+      }
+    ]
+  }
+]
