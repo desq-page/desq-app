@@ -1,9 +1,9 @@
 <template>
-  <DialogBase title="Design Ideas">
+  <DialogBase title="Suggest Design">
     <div class="design-ideas">
       <p class="instruction">{{ unavailable ? "Open a presentation in slide view to apply a family." :
         "Click Apply beside a family to apply it to all slides." }}</p>
-      <p v-if="status" class="status" role="status">{{ status }}</p>
+      <!-- <p v-if="status" class="status" role="status">{{ status }}</p> -->
       <div class="families" :aria-busy="!!applyingFamily">
         <div v-for="family in families" :key="family.slug" class="family">
           <div class="family-header">

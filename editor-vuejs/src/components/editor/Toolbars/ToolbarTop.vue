@@ -206,7 +206,7 @@
             :disabled="piniaSlides().masterView || !!piniaInfo().useGrid"
           />
           <ToolbarItem
-            caption="Design Ideas"
+            caption="Suggest Design"
             tooltip="Suggest layouts for this slide"
             :icon="AutoAwesomeOutlined"
             :onClick="() => toggleTaskPane('designideas')"
