@@ -1193,5 +1193,120 @@
     "清理…",
     "Dọn dẹp…",
     "Bersihkan…"
+  ],
+  "Please wait...": [
+    "请稍候…",
+    "Vui lòng chờ…",
+    "Harap tunggu…"
+  ],
+  "Loading...": [
+    "正在加载…",
+    "Đang tải…",
+    "Memuat…"
+  ],
+  "Opening file...": [
+    "正在打开文件…",
+    "Đang mở tệp…",
+    "Membuka file…"
+  ],
+  "Opening editable HTML…": [
+    "正在打开可编辑的 HTML…",
+    "Đang mở HTML có thể chỉnh sửa…",
+    "Membuka HTML yang dapat diedit…"
+  ],
+  "Opening PDF…": [
+    "正在打开 PDF…",
+    "Đang mở PDF…",
+    "Membuka PDF…"
+  ],
+  "Opening Word document…": [
+    "正在打开 Word 文档…",
+    "Đang mở tài liệu Word…",
+    "Membuka dokumen Word…"
+  ],
+  "Opening Publisher document…": [
+    "正在打开 Publisher 文档…",
+    "Đang mở tài liệu Publisher…",
+    "Membuka dokumen Publisher…"
+  ],
+  "Saving...": [
+    "正在保存…",
+    "Đang lưu…",
+    "Menyimpan…"
+  ],
+  "Saving file...": [
+    "正在保存文件…",
+    "Đang lưu tệp…",
+    "Menyimpan file…"
+  ],
+  "Exporting...": [
+    "正在导出…",
+    "Đang xuất…",
+    "Mengekspor…"
+  ],
+  "Packaging content...": [
+    "正在打包内容…",
+    "Đang đóng gói nội dung…",
+    "Mengemas konten…"
+  ],
+  "Preparing single-page HTML...": [
+    "正在准备单页 HTML…",
+    "Đang chuẩn bị HTML một trang…",
+    "Menyiapkan HTML satu halaman…"
+  ],
+  "Preparing HTML…": [
+    "正在准备 HTML…",
+    "Đang chuẩn bị HTML…",
+    "Menyiapkan HTML…"
+  ],
+  "Ready to save.": [
+    "可以保存了。",
+    "Đã sẵn sàng lưu.",
+    "Siap disimpan."
+  ],
+  "Preparing Word document…": [
+    "正在准备 Word 文档…",
+    "Đang chuẩn bị tài liệu Word…",
+    "Menyiapkan dokumen Word…"
+  ],
+  "Packaging Word document…": [
+    "正在打包 Word 文档…",
+    "Đang đóng gói tài liệu Word…",
+    "Mengemas dokumen Word…"
+  ],
+  "Importing PDF page {page} of {total}…": [
+    "正在导入 PDF 第 {page} 页，共 {total} 页…",
+    "Đang nhập trang PDF {page}/{total}…",
+    "Mengimpor halaman PDF {page} dari {total}…"
+  ],
+  "Importing {format}...": [
+    "正在导入 {format}…",
+    "Đang nhập {format}…",
+    "Mengimpor {format}…"
+  ],
+  "Saving {format} slides...": [
+    "正在保存 {format} 幻灯片…",
+    "Đang lưu trang chiếu {format}…",
+    "Menyimpan slide {format}…"
+  ],
+  "Reading Word document…": [
+    "正在读取 Word 文档…",
+    "Đang đọc tài liệu Word…",
+    "Membaca dokumen Word…"
+  ],
+  "Loading document fonts…": [
+    "正在加载文档字体…",
+    "Đang tải phông chữ của tài liệu…",
+    "Memuat font dokumen…"
+  ],
+  "Laying out Word pages…": [
+    "正在排版 Word 页面…",
+    "Đang dàn trang tài liệu Word…",
+    "Menata halaman Word…"
+  ],
+  "Saving Word source…": [
+    "正在保存 Word 源文件…",
+    "Đang lưu tệp Word gốc…",
+    "Menyimpan file sumber Word…"
   ]
 }

@@ -3,13 +3,13 @@
     <div :class="$style.loading">
       <n-spin stroke="white" v-if="typeof piniaInfo().loadingBar == 'string'">
         <template #description>
-          <span style="color: white" v-html="piniaInfo().loadingBar"></span>
+          <span style="color: white" v-html="translateProgress(piniaInfo().loadingBar)"></span>
         </template>
       </n-spin>
       <div v-else>
         <div
           :class="$style.progress"
-          v-html="piniaInfo().loadingBar.desc"
+          v-html="translateProgress(piniaInfo().loadingBar.desc)"
         ></div>
         <n-progress
           :percentage="piniaInfo().loadingBar.pct"
@@ -22,6 +22,7 @@
   </n-modal>
 </template>
 <script setup lang="ts">
+import { translateProgress } from "@/lib/i18n";
 import { NModal, NSpin, NProgress } from "naive-ui";
 import { piniaInfo } from "@/lib/common/store";
 import { useCssModule } from "vue";

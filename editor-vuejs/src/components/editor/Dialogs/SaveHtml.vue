@@ -32,7 +32,7 @@
         <p class="editor-description">{{ embedEditor ? 'Include the editor so the file can be edited offline in a browser.' : 'Save a presentation for viewing, without the editor.' }}</p>
       </div> -->
     </div>
-    <p class="preparation-status" role="status" aria-live="polite">{{ preparationMessage }}</p>
+    <p class="preparation-status" role="status" aria-live="polite">{{ translate(preparationMessage) }}</p>
     <NButton v-if="preparationError" size="small" @click="prepare">Try again</NButton>
     <template #action>
       <NSpace justify="end">
@@ -44,6 +44,7 @@
 </template>
 
 <script setup lang="ts">
+import { translate } from "@/lib/i18n";
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue';
 import { NModal, NRadioGroup, NRadio, NSpace, NButton } from 'naive-ui';
 import { BrandHtml5 } from '@vicons/tabler';
