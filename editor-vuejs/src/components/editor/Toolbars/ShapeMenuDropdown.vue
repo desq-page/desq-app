@@ -74,6 +74,7 @@ import g from "shared-vuejs/api/global";
 import { toggleTaskPane } from "@/lib/main/utils.js";
 import { rmbgUsingXenova } from "./ToolbarUtils";
 import { ImageAltText24Regular, Image24Regular, ScanText24Filled, VideoBackgroundEffect20Filled } from "@vicons/fluent";
+import { aiEditOptions } from "./shapeContextMenuOptions";
 
 const props = defineProps({
   selShps: Object,
@@ -90,54 +91,7 @@ const props = defineProps({
 // );
 
 const ShapeContextMenuOptions = computed(() => [
-  {
-    label: "AI Edit",
-    key: "editable-picture",
-    icon: AutoAwesomeOutlined,
-    show: !!editablePicture(),
-    children: [
-      {
-        label: "Extract Text By Region",
-        key: "extract-text-region",
-        icon: ImageAltText24Regular,
-        onClick: () => selectPictureTextRegion(piniaInfo()),
-      },
-      {
-        label: "Extract Text Under Pointer",
-        key: "edit-picture-text",
-        icon: PointerText,
-        onClick: () => editPictureText(piniaInfo()),
-      },
-      {
-        label: "Extract All Text",
-        key: "extract-text-all",
-        icon: ScanText24Filled,
-        onClick: () => extractPictureText(piniaInfo()),
-      },
-      {
-        type: 'divider',
-      },
-      {
-        label: "Extract Object By Region",
-        key: "extract-object",
-        icon: PhotoSizeSelectLargeSharp,
-        onClick: selectObjectRegion,
-      },
-      {
-        type: 'divider',
-      },
-      {
-        label: "Erase Background",
-        key: "remove-background",
-        icon: VideoBackgroundEffect20Filled,
-        onClick: rmbgUsingXenova,
-      },
-    ],
-  },
-  {
-    type:"divider",
-    show: !!editablePicture(),
-  },
+  ...aiEditOptions.value,
   {
     label: "Manage",
     key: "editshape",

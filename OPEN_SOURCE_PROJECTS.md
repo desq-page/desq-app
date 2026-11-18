@@ -667,6 +667,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | vanjs-ui | 0.11.14 | MIT | git+https://github.com/vanjs-org/van.git |
 | vary | 1.1.2 | MIT | jshttp/vary |
 | vdirs | 0.1.8 | MIT | node_modules/vdirs |
+| Vendored notices: editor-vuejs/public/templates/design-families | vendored | See supplied notice | editor-vuejs/public/templates/design-families/LICENSE.txt |
 | Vendored notices: node_modules/shared-vuejs/dist/edlib/document-import/ppt-master-resources | vendored | See supplied notice | node_modules/shared-vuejs/dist/edlib/document-import/ppt-master-resources/LICENSE |
 | Vendored notices: Photopea UDOC | vendored | See supplied notice | node_modules/shared-vuejs/dist/edlib/pptx/UDOC/LICENSE |
 | Vendored notices: VanJS mini-van-plate | vendored | See supplied notice | node_modules/shared-vuejs/dist/vanjs/mini-van-plate/LICENSE |

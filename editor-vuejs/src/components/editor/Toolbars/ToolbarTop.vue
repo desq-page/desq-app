@@ -276,6 +276,7 @@
         :disabled="!!piniaInfo().useGrid"
       >
         <div :class="$style['header-left']" v-if="!showPointTab()">
+
           <ToolbarShapeStyle
             :disabled="
               !(
@@ -377,7 +378,14 @@
               :onClick="() => toggleTaskPane('pictureoptions')"
               :active="piniaInfo().currentTaskPane == 'pictureoptions'"
             />
+            <ToolbarItemDropdown
+              caption="AI Edits"
+              :icon="AutoAwesomeOutlined"
+              :options="aiEditActions"
+              :disabled="!editablePicture() || !!piniaInfo().useGrid"
+            />
           </template>
+          <ToolbarItem type="divider" />
           <ToolbarItem
             caption="Layers"
             :icon="Layers"
@@ -407,6 +415,7 @@
           :icon="UndoFilled"
           tooltip="Undo"
           :disabled="piniaInfo().undoIndex < 0"
+          color="green"
         />
         <ToolbarItem
           quaternary
@@ -415,6 +424,7 @@
           :icon="RedoFilled"
           tooltip="Redo"
           :disabled="piniaInfo().undoIndex >= getUndoHistory().length - 1"
+          color="green"
         />
     </div>
     <div :class="$style['toolbar-right']">
@@ -546,6 +556,7 @@ import defAnimList from "../Animation/arrAnimList";
 import { addEffect } from "../Animation/addAnimation";
 import { startFreehandMotion } from "shared-vuejs/editor";
 import ToolbarItemDropdown from "./ToolbarItemDropdown.vue";
+import { aiEditActions } from "./shapeContextMenuOptions";
 
 const presentationOptions = [
   {
