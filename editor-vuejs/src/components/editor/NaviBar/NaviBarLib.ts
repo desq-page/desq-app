@@ -464,19 +464,14 @@ export async function doDeleteSlides() {
     (sld) => sld.id == toDelete[0],
   );
 
-  for (const id of toDelete) {
-    await deleteSlide(id);
+  try {
+    await deleteSlide(toDelete);
+    const slides = getFileInfo().slides;
+    const newIdx = Math.min(Math.max(0, oldIdx - 1), slides.length - 1);
+    await selectSlide(slides[newIdx]?.id);
+  } finally {
+    piniaInfo().loadingBar = "";
   }
-
-  let newIdx = oldIdx - 1;
-  if (newIdx < 0) {
-    newIdx = 0;
-  }
-  await selectSlide(getFileInfo().slides[newIdx].id);
-  setTimeout(() => {
-    saveDexie({ forceGenThumb: false });
-  }, 300);
-  piniaInfo().loadingBar = "";
 }
 
 export async function doDeleteLayout() {
