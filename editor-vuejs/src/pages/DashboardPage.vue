@@ -10,20 +10,25 @@
         <img class="brand-symbol" src="/favicon.svg?v=desq-mark-v8" alt="" />
         DESQ
       </RouterLink>
-      <nav aria-label="Workspace navigation">
+      <nav :aria-label="translate('Workspace navigation')">
         <RouterLink
           to="/"
           class="home-link"
-          >Back to home <span aria-hidden="true">↗</span></RouterLink
+          >{{ translate('Back to home') }} <span aria-hidden="true">↗</span></RouterLink
         >
-        <span class="workspace-badge">Workspace</span>
+        <span class="workspace-badge">{{ translate('Workspace') }}</span>
         <template v-if="isDockerBackend">
           <div v-if="user" class="avatar" :aria-label="user.name">
             <img v-if="avatarUrl" :src="avatarUrl" alt="" />
             <span v-else>{{ initial }}</span>
           </div>
-          <RouterLink v-else to="/login" class="login-link">Log in</RouterLink>
+          <RouterLink v-else to="/login" class="login-link">{{ translate('Log in') }}</RouterLink>
         </template>
+        <select class="language-select" :aria-label="translate('Language')" :value="language" @change="changeLanguage">
+          <option v-for="option in languages" :key="option.code" :value="option.code" :lang="option.code">
+            {{ option.name }}
+          </option>
+        </select>
       </nav>
     </header>
     </div>
@@ -31,27 +36,26 @@
     <main class="page-width">
       <section class="workspace-intro" aria-labelledby="workspace-title">
         <div>
-          <p class="eyebrow">
-            <span class="status-dot"></span> YOUR IDEAS START HERE
+          <p id="workspace-title" class="eyebrow">
+            <span class="status-dot"></span> {{ translate('YOUR IDEAS START HERE') }}
           </p>
           <p class="intro-description">
-            Open or import your existing office document, or create something new, or pick up where you
-            left off. Editing is free.
+            {{ translate('Open or import your existing office document, or create something new, or pick up where you left off. Editing is free.') }}
           </p>
         </div>
         <div class="workspace-actions">
           <div class="open-file-action">
             <button class="button workspace-action action-open" :disabled="openingFile" @click="openFileInput?.click()" aria-describedby="open-file-privacy">
-              <span aria-hidden="true">↗</span> {{ openingFile ? "Opening file…" : "Open or Import" }}
+              <span aria-hidden="true">↗</span> {{ translate(openingFile ? "Opening file…" : "Open or Import") }}
             </button>
           </div>
-          <button class="button workspace-action action-ai" @click="piniaInfo().openEditorAgentModal = true"><span aria-hidden="true">✦</span> Create with AI</button>
-          <button class="button workspace-action action-blank" @click="createBlankPresentation"><span aria-hidden="true">▤</span> Blank Presentation</button>
+          <button class="button workspace-action action-ai" @click="piniaInfo().openEditorAgentModal = true"><span aria-hidden="true">✦</span> {{ translate('Create with AI') }}</button>
+          <button class="button workspace-action action-blank" @click="createBlankPresentation"><span aria-hidden="true">▤</span> {{ translate('Blank Presentation') }}</button>
           <input ref="openFileInput" type="file" accept=".pptx,.docx,.pub,.html,.htm,.pdf" hidden @change="openSelectedFile" />
           <div class="supported-formats" style="margin-top: 15px">
-            <span id="open-file-privacy" class="privacy-caption">Open various formats as slides. Your files stay private on your device.</span>
+            <span id="open-file-privacy" class="privacy-caption">{{ translate('Open various formats as slides. Your files stay private on your device.') }}</span>
           </div>
-          <div class="supported-formats" aria-label="Supported file types" >
+          <div class="supported-formats" :aria-label="translate('Supported file types')" >
             <span class="format-type"><i class="format-icon powerpoint" aria-hidden="true">P</i> PowerPoint</span>
             <span class="format-type"><i class="format-icon html" aria-hidden="true">&lt;/&gt;</i> HTML</span>
             <span class="format-type"><i class="format-icon publisher" aria-hidden="true">▤</i> Publisher</span>
@@ -68,52 +72,47 @@
       >
         <div class="documents-heading">
           <div>
-            <p class="eyebrow">PICK UP WHERE YOU LEFT OFF</p>
+            <p class="eyebrow">{{ translate('PICK UP WHERE YOU LEFT OFF') }}</p>
             <h2 id="documents-title">
-              Loaded documents
+              {{ translate('Loaded documents') }}
               <span v-if="!loadingFiles" class="document-count">{{
                 localFiles.length
               }}</span>
             </h2>
           </div>
           <span class="storage-label"
-            ><i aria-hidden="true"></i> Stored in cache memory of this
-            browser</span
+            ><i aria-hidden="true"></i> {{ translate('Stored in cache memory of this browser') }}</span
           >
         </div>
         <div v-if="loadingFiles" class="loading-state" role="status">
-          <span class="loading-ring" aria-hidden="true"></span> Loading your
-          documents…
+          <span class="loading-ring" aria-hidden="true"></span> {{ translate('Loading your documents…') }}
         </div>
         <DashboardFiles v-else-if="localFiles.length" :localFiles :loadFiles />
         <div v-else class="empty-state">
           <div class="empty-document" aria-hidden="true">
             <span></span><i></i><i></i><i></i><b>+</b>
           </div>
-          <h3>A fresh start. A world of possibilities.</h3>
+          <h3>{{ translate('A fresh start. A world of possibilities.') }}</h3>
           <p>
-            Your documents will appear here as you work.<br />Create a
-            presentation or open a .pptx, .docx, or .pub file to get started.
+            {{ translate('Your documents will appear here as you work.') }}<br />{{ translate('Create a presentation or open a .pptx, .docx, or .pub file to get started.') }}
           </p>
         </div>
       </section>
       <aside class="workspace-note">
         <span class="note-icon" aria-hidden="true">◎</span>
         <div>
-          <strong>Save a file to keep your work.</strong>
+          <strong>{{ translate('Save a file to keep your work.') }}</strong>
           <p>
-            Your documents are held in this browser cache. Edits are not saved
-            back to the original file. Use Save as to download a copy and keep
-            your work outside the browser. Cache stays after browser shutdown, but not guaranteed to keep permanently.
+            {{ translate('Your documents are held in this browser cache. Edits are not saved back to the original file. Use Save as to download a copy and keep your work outside the browser. Cache stays after browser shutdown, but not guaranteed to keep permanently.') }}
           </p>
         </div>
       </aside>
     </main>
     <footer class="workspace-footer page-width">
-      <span>DESQ — Office documents, with a life on the web.</span>
-      <nav aria-label="Footer navigation">
-        <RouterLink to="/terms">Terms &amp; Privacy</RouterLink>
-        <RouterLink to="/support">Support</RouterLink>
+      <span>{{ translate('DESQ — Office documents, with a life on the web.') }}</span>
+      <nav :aria-label="translate('Footer navigation')">
+        <RouterLink to="/terms">{{ translate('Terms & Privacy') }}</RouterLink>
+        <RouterLink to="/support">{{ translate('Support') }}</RouterLink>
         <a href="https://github.com/desq-page/desq-app" target="_blank" rel="noopener noreferrer">GitHub</a>
       </nav>
     </footer>
@@ -124,8 +123,14 @@ import { getAllDexie } from "shared-vuejs/api/db";
 import { markFileCreated } from "shared-vuejs/api/homeNavigation";
 import { createNewFile } from "shared-vuejs/api/load";
 import { piniaInfo } from "@/lib/common/store";
-import { computed, defineAsyncComponent, onMounted, ref } from "vue";
+import { computed, defineAsyncComponent, onMounted, ref, watchEffect } from "vue";
 import { RouterLink } from "vue-router";
+import { language, languages, setLanguage, translate } from "@/lib/i18n";
+
+function changeLanguage(event: Event) {
+  const selected = languages.find(({ code }) => code === (event.target as HTMLSelectElement).value);
+  if (selected) setLanguage(selected.code);
+}
 
 const loadDashboardFiles = () => import("./DashboardFiles.vue");
 const DashboardFiles = defineAsyncComponent(loadDashboardFiles);
@@ -222,6 +227,10 @@ const initial = computed(() => (user.value?.name || "?")[0].toUpperCase());
 
 const loadingFiles = ref(true);
 
+onMounted(() => {
+  watchEffect(() => { document.title = translate("Your workspace — DESQ"); });
+});
+
 onMounted(async () => {
   let loggedIn = isDockerBackend ? await fetchUser() : null;
 
@@ -238,7 +247,6 @@ onMounted(async () => {
   setTimeout(() => {
     loadFiles();
   }, 500);
-  document.title = "Your workspace — DESQ";
 });
 
 async function loadFiles() {
@@ -310,6 +318,20 @@ button:focus-visible {
   gap: 25px;
   font-size: 13px;
   font-weight: 600;
+}
+.language-select {
+  max-width: 100%;
+  min-height: 34px;
+  padding: 4px 8px;
+  border: 1px solid #bbd8c5;
+  border-radius: 6px;
+  background: #f7fcf8;
+  color: var(--ink);
+  font: inherit;
+}
+.language-select:focus-visible {
+  outline: 3px solid #598d24;
+  outline-offset: 2px;
 }
 .home-link span {
   margin-left: 9px;
@@ -731,11 +753,12 @@ h2 {
   }
   .workspace-header {
     min-height: 82px;
+    gap: 8px;
   }
   .workspace-header nav {
     gap: 12px;
   }
-  .home-link {
+  .home-link, .workspace-badge {
     display: none;
   }
   .workspace-intro {

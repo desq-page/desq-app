@@ -33,7 +33,7 @@
       hideContent() /*shapeOnly && !textOnly && !piniaSelect().selShpFormat*/
     "
   >
-    <n-empty description="No shape selected or not applicable"></n-empty>
+    <n-empty :description="translate('No shape selected or not applicable')"></n-empty>
   </div>
 
   <div
@@ -45,7 +45,7 @@
       piniaSelect().selShpFormat?.type !== 'table'
     "
   >
-    <n-empty description="No text selected or not applicable"></n-empty>
+    <n-empty :description="translate('No text selected or not applicable')"></n-empty>
   </div>
 
   <div
@@ -72,7 +72,7 @@
         :options="fillOptions"
         :disabled="disableTab"
         size="small"
-        aria-label="Fill type"
+        :aria-label="translate('Fill type')"
         @update:value="selectFill"
       />
       <template v-else>
@@ -82,7 +82,7 @@
         :checked="sel.isChecked()"
         @click="sel.onClick"
       >
-        {{ sel.label }}
+        {{ translate(sel.label) }}
       </NRadio>
       </template>
     </div>
@@ -91,6 +91,7 @@
 </template>
 
 <script setup lang="ts">
+import { translate } from "@/lib/i18n";
 import { piniaInfo, piniaSelect, piniaResize } from "@/lib/common/store";
 import { computed, onMounted } from "vue";
 import { NEmpty, NIcon, NRadio, NSelect } from "naive-ui";
@@ -125,7 +126,7 @@ const selectedFill = computed(() => {
   return index >= 0 ? index : null;
 });
 const fillOptions = computed(() => (props.fillSelectors || []).map((selector, index) => ({
-  label: selector.label,
+  label: translate(selector.label),
   value: index,
 })));
 function selectFill(index: number) {

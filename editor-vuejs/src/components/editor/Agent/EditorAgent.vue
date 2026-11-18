@@ -1,32 +1,32 @@
 <template>
-  <NModal v-model:show="open" preset="card" :title="mode === 'new' ? '✨ Create with external AI' : '✨ Insert slides with external AI'"
+  <NModal v-model:show="open" preset="card" :title="mode === 'new' ? translate('✨ Create with external AI') : translate('✨ Insert slides with external AI')"
     :mask-closable="!busy" :close-on-esc="!busy" :closable="!busy"
     :style="{ width: '900px', maxWidth: 'calc(100vw - 32px)', maxHeight: 'calc(100dvh - 40px)' }">
   <div class="editor-agent" @pointerdown.stop="rememberCursor" @pointerup.stop @contextmenu.stop>
-    <section id="agent-taskpane" class="agent-panel" aria-label="AI presentation response">
+    <section id="agent-taskpane" class="agent-panel" :aria-label="translate('AI presentation response')">
       <section class="external-brief">
-        <label for="external-description">What would you like to build?</label>
-        <textarea id="external-description" v-model="externalDescription" rows="4" :disabled="busy" placeholder="Describe your app, game or presentation, its audience, content and how it should work…" @keydown.stop @keyup.stop @keypress.stop @paste.stop />
+        <label for="external-description">{{ translate('What would you like to build?') }}</label>
+        <textarea id="external-description" v-model="externalDescription" rows="4" :disabled="busy" :placeholder="translate('Describe your app, game or presentation, its audience, content and how it should work…')" @keydown.stop @keyup.stop @keypress.stop @paste.stop />
         <div class="prompt-heading">
-          <label for="external-prompt">Generated prompt</label>
-          <button class="copy-button" type="button" :disabled="!externalFullPrompt" aria-label="Copy prompt" title="Copy prompt" @click="copyPrompt"><DocumentCopy24Regular aria-hidden="true" /></button>
+          <label for="external-prompt">{{ translate('Generated prompt') }}</label>
+          <button class="copy-button" type="button" :disabled="!externalFullPrompt" :aria-label="translate('Copy prompt')" :title="translate('Copy prompt')" @click="copyPrompt"><DocumentCopy24Regular aria-hidden="true" /></button>
         </div>
-        <textarea id="external-prompt" readonly rows="6" :value="externalFullPrompt" placeholder="Your prompt will appear here." aria-describedby="external-prompt-note" @keydown.stop @keyup.stop @keypress.stop @paste.stop />
-        <p id="external-prompt-note" class="model-note">Copy the generated prompt above into your AI chat / NotebookLM, then download HTML response and upload here.</p>
+        <textarea id="external-prompt" readonly rows="6" :value="externalFullPrompt" :placeholder="translate('Your prompt will appear here.')" aria-describedby="external-prompt-note" @keydown.stop @keyup.stop @keypress.stop @paste.stop />
+        <p id="external-prompt-note" class="model-note">{{ translate('Copy the generated prompt above into your AI chat / NotebookLM, then download HTML response and upload here.') }}</p>
         <input ref="responseFileInput" type="file" accept=".html,.htm,text/html" hidden :disabled="busy || loadingResponse" @click="clearSelectedResponseFile" @change="loadExternalHtml" />
-        <button class="response-file-button" type="button" :disabled="busy || loadingResponse" @click="responseFileInput?.click()">{{ loadingResponse ? 'Reading HTML…' : 'Upload HTML response file' }}</button>
-        <p v-if="selectedResponseFile" class="selected-response-file" role="status">Loaded: {{ selectedResponseFile }}</p>
-        <p v-if="externalBriefError" role="alert">{{ externalBriefError }}</p>
-        <p v-if="externalBriefDeck" class="response-summary">{{ externalBriefDeck.title }} · {{ externalBriefDeck.slides.length }} slides</p>
-        <button class="primary-button create-button" type="button" :disabled="busy || loadingResponse || !externalBriefDeck" @click="createExternalBrief">{{ busy ? (mode === 'new' ? 'Creating presentation…' : 'Inserting slides…') : (mode === 'new' ? 'Create new presentation' : 'Insert slides into this presentation') }}</button>
+        <button class="response-file-button" type="button" :disabled="busy || loadingResponse" @click="responseFileInput?.click()">{{ loadingResponse ? translate('Reading HTML…') : translate('Upload HTML response file') }}</button>
+        <p v-if="selectedResponseFile" class="selected-response-file" role="status">{{ translate('Loaded:') }} {{ selectedResponseFile }}</p>
+        <p v-if="externalBriefError" role="alert">{{ translate(externalBriefError) }}</p>
+        <p v-if="externalBriefDeck" class="response-summary">{{ externalBriefDeck.title }} · {{ externalBriefDeck.slides.length }} {{ translate('slides') }}</p>
+        <button class="primary-button create-button" type="button" :disabled="busy || loadingResponse || !externalBriefDeck" @click="createExternalBrief">{{ busy ? (mode === 'new' ? translate('Creating presentation…') : translate('Inserting slides…')) : (mode === 'new' ? translate('Create new presentation') : translate('Insert slides into this presentation')) }}</button>
       </section>
-      <section v-if="mode === 'insert' && currentTemplateUsage" class="agent-template-usage" aria-label="Current slide design">
-        <strong>Current slide design</strong>
-        <p v-if="currentNativeTemplate" class="model-note">Native template · master and layout linked</p>
+      <section v-if="mode === 'insert' && currentTemplateUsage" class="agent-template-usage" :aria-label="translate('Current slide design')">
+        <strong>{{ translate('Current slide design') }}</strong>
+        <p v-if="currentNativeTemplate" class="model-note">{{ translate('Native template · master and layout linked') }}</p>
         <p>{{ currentTemplateUsage.family }} · {{ currentTemplateUsage.layout }}</p>
         <p v-for="note in currentTemplateUsage.notes" :key="note" class="model-note">{{ note }}</p>
       </section>
-      <p role="status" class="agent-result">{{ status }}</p>
+      <p role="status" class="agent-result">{{ translate(status) }}</p>
     </section>
   </div>
   </NModal>
@@ -34,6 +34,7 @@
 
 <script setup lang="ts">
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
+import { translate } from '@/lib/i18n';
 import { NModal } from 'naive-ui';
 import { DocumentCopy24Regular } from '@vicons/fluent';
 import { piniaInfo, piniaSlides } from '@/lib/common/store';

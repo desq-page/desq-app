@@ -30,19 +30,20 @@
             <component :is="icon"></component>
           </NIcon>
 
-          <span class="label">{{ label }}</span>
+          <span class="label">{{ translate(label) }}</span>
         </div>
         <slot name="extra"></slot>
         <div class="arrow" v-if="arrow && !disabled">
-          <NButton text type="primary">{{ arrowLabel }} </NButton>
+          <NButton text type="primary">{{ translate(arrowLabel) }} </NButton>
           <NIcon size="22" color="var(--n-primary-color)"><KeyboardArrowRightFilled /></NIcon>
         </div>
       </div>
     </template>
-    <span style="pointer-events: none">{{ tooltip }}</span>
+    <span style="pointer-events: none">{{ translate(tooltip) }}</span>
   </NTooltip>
 </template>
 <script setup lang="ts">
+import { translate } from "@/lib/i18n";
 import ToolbarItem from "@/components/editor/Toolbars/ToolbarItem.vue";
 import { KeyboardArrowRightFilled } from "@vicons/material";
 import { NButton, NIcon, NTooltip } from "naive-ui";

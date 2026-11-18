@@ -2,15 +2,15 @@
   <div v-if="localFiles?.length" class="document-list">
     <table class="documents-table">
       <caption class="sr-only">
-        Documents in memory — save a copy to keep your work as a file
+        {{ translate('Documents in memory — save a copy to keep your work as a file') }}
       </caption>
       <thead>
         <tr>
-          <th scope="col">Document</th>
-          <th scope="col" class="slides-column">Pages</th>
-          <th scope="col" class="modified-column">Last modified</th>
+          <th scope="col">{{ translate('Document') }}</th>
+          <th scope="col" class="slides-column">{{ translate('Pages') }}</th>
+          <th scope="col" class="modified-column">{{ translate('Last modified') }}</th>
           <th scope="col" class="actions-column">
-            <span class="sr-only">Actions</span>
+            <span class="sr-only">{{ translate('Actions') }}</span>
           </th>
         </tr>
       </thead>
@@ -27,20 +27,20 @@
               /></span>
               <span class="document-details"
                 ><span class="document-title">{{
-                  file.name || file.title || "Untitled"
+                  file.name || file.title || translate("Untitled")
                 }}</span
                 ><span class="document-type"
                   ><span class="type-dot"></span
                   >{{
                     file.sourceFormat === "docx" || /\.docx$/i.test(file.name || "")
-                      ? "Word document · (Saves as DOCX)"
+                      ? translate("Word document · (Saves as DOCX)")
                       : file.sourceFormat === "pub" || /\.pub$/i.test(file.name || "")
-                      ? "Publisher document"
+                      ? translate("Publisher document")
                       : /\.pptx$/i.test(file.name || "")
-                        ? "PowerPoint presentation"
-                        : "Presentation"
+                        ? translate("PowerPoint presentation")
+                        : translate("Presentation")
                   }}<span class="mobile-slides">
-                    · {{ file.slides?.length || 0 }} slides</span
+                    · {{ file.slides?.length || 0 }} {{ translate("slides") }}</span
                   ></span
                 ></span
               >
@@ -60,10 +60,10 @@
           <td class="actions-column">
             <button
               class="close-document"
-              :aria-label="`Close ${file.name || file.title || 'Untitled'}`"
+              :aria-label="`${translate('Close')} ${file.name || file.title || translate('Untitled')}`"
               @click="closeDashboardFile(file.id)"
             >
-              <span class="close-label">Unload</span
+              <span class="close-label">{{ translate("Unload") }}</span
               ><span class="close-icon" aria-hidden="true">×</span>
             </button>
           </td>
@@ -71,13 +71,14 @@
       </tbody>
     </table>
     <div class="list-note">
-      Save a copy of your work before unloading a document.
+      {{ translate("Save a copy of your work before unloading a document.") }}
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { piniaInfo } from "@/lib/common/store";
 import dayjs from "dayjs";
+import { translate } from "@/lib/i18n";
 
 //@ts-ignore //?raw to import assets as string
 import { confirmCloseFile } from "@/lib/main/closeFile";

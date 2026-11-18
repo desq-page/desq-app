@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { translate } from "@/lib/i18n";
 import { getShapeDeep, updateShape, getSelectEditingTextObject, getSelectSelShpFormat } from "shared-vuejs/editor";
 
 import { applyGroupFill } from "shared-vuejs/api/selection";
@@ -240,11 +241,11 @@ function getTableFillTargets(tableShape) {
   <!-- <DetachPicture /> -->
 
   <ToolbarItemSwitch
-    label="Tile Picture As Texture"
+    :label="translate('Tile Picture As Texture')"
     :defaultVal="pictureTileEnabled"
     :onClick="(val) => setImageTile(val)"
     :disabled="!pictureTarget"
   />
-  <div class="taskpane-guide">Crop picture to adjust tile position</div>
+  <div class="taskpane-guide">{{ translate('Crop picture to adjust tile position') }}</div>
 
 </template>

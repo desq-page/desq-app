@@ -1,0 +1,1197 @@
+{
+  "Language": [
+    "语言",
+    "Ngôn ngữ",
+    "Bahasa"
+  ],
+  "Settings": [
+    "设置",
+    "Cài đặt",
+    "Pengaturan"
+  ],
+  "Publish": [
+    "发布",
+    "Xuất bản",
+    "Publikasikan"
+  ],
+  "File Settings": [
+    "文件设置",
+    "Cài đặt tệp",
+    "Pengaturan File"
+  ],
+  "File": [
+    "文件",
+    "Tệp",
+    "File"
+  ],
+  "Home": [
+    "开始",
+    "Trang đầu",
+    "Beranda"
+  ],
+  "Insert": [
+    "插入",
+    "Chèn",
+    "Sisipkan"
+  ],
+  "Transition": [
+    "切换",
+    "Chuyển tiếp",
+    "Transisi"
+  ],
+  "Animation": [
+    "动画",
+    "Hoạt hình",
+    "Animasi"
+  ],
+  "Design": [
+    "设计",
+    "Thiết kế",
+    "Desain"
+  ],
+  "View": [
+    "视图",
+    "Xem",
+    "Tampilan"
+  ],
+  "Shape Format": [
+    "形状格式",
+    "Định dạng hình",
+    "Format Bentuk"
+  ],
+  "AI Edits": [
+    "AI 编辑",
+    "Chỉnh sửa bằng AI",
+    "Edit dengan AI"
+  ],
+  "AI Edit": [
+    "AI 编辑",
+    "Chỉnh sửa bằng AI",
+    "Edit dengan AI"
+  ],
+  "Agent": [
+    "智能助手",
+    "Trợ lý",
+    "Asisten"
+  ],
+  "Animation Pane": [
+    "动画窗格",
+    "Ngăn hoạt hình",
+    "Panel Animasi"
+  ],
+  "Change Layout": [
+    "更改版式",
+    "Đổi bố cục",
+    "Ubah Tata Letak"
+  ],
+  "Clipboard": [
+    "剪贴板",
+    "Bảng tạm",
+    "Papan Klip"
+  ],
+  "Close Master": [
+    "关闭母版",
+    "Đóng bản cái",
+    "Tutup Master"
+  ],
+  "Crop": [
+    "裁剪",
+    "Cắt xén",
+    "Pangkas"
+  ],
+  "Edit Points": [
+    "编辑顶点",
+    "Sửa điểm",
+    "Edit Titik"
+  ],
+  "Flip": [
+    "翻转",
+    "Lật",
+    "Balik"
+  ],
+  "Format Text": [
+    "设置文字格式",
+    "Định dạng văn bản",
+    "Format Teks"
+  ],
+  "Layers": [
+    "图层",
+    "Lớp",
+    "Lapisan"
+  ],
+  "Link": [
+    "链接",
+    "Liên kết",
+    "Tautan"
+  ],
+  "Media": [
+    "媒体",
+    "Đa phương tiện",
+    "Media"
+  ],
+  "Merge": [
+    "合并",
+    "Hợp nhất",
+    "Gabungkan"
+  ],
+  "Page Master": [
+    "页面母版",
+    "Trang cái",
+    "Master Halaman"
+  ],
+  "Picture Format": [
+    "图片格式",
+    "Định dạng ảnh",
+    "Format Gambar"
+  ],
+  "Present": [
+    "放映",
+    "Trình chiếu",
+    "Presentasikan"
+  ],
+  "Set Placeholder": [
+    "设置占位符",
+    "Đặt chỗ dành sẵn",
+    "Atur Placeholder"
+  ],
+  "Shapes": [
+    "形状",
+    "Hình dạng",
+    "Bentuk"
+  ],
+  "Show Guide": [
+    "显示参考线",
+    "Hiện đường dẫn",
+    "Tampilkan Panduan"
+  ],
+  "Show Ruler": [
+    "显示标尺",
+    "Hiện thước",
+    "Tampilkan Penggaris"
+  ],
+  "Slide Size": [
+    "幻灯片大小",
+    "Kích thước trang chiếu",
+    "Ukuran Slide"
+  ],
+  "Suggest Design": [
+    "建议设计",
+    "Gợi ý thiết kế",
+    "Sarankan Desain"
+  ],
+  "Suggest layouts for this slide": [
+    "为此幻灯片推荐版式",
+    "Gợi ý bố cục cho trang chiếu này",
+    "Sarankan tata letak untuk slide ini"
+  ],
+  "Table": [
+    "表格",
+    "Bảng",
+    "Tabel"
+  ],
+  "Insert Table": [
+    "插入表格",
+    "Chèn bảng",
+    "Sisipkan Tabel"
+  ],
+  "Text": [
+    "文字",
+    "Văn bản",
+    "Teks"
+  ],
+  "Text Color": [
+    "文字颜色",
+    "Màu văn bản",
+    "Warna Teks"
+  ],
+  "Wrap Text": [
+    "文字环绕",
+    "Ngắt dòng văn bản",
+    "Bungkus Teks"
+  ],
+  "Undo": [
+    "撤销",
+    "Hoàn tác",
+    "Urungkan"
+  ],
+  "Redo": [
+    "重做",
+    "Làm lại",
+    "Ulangi"
+  ],
+  "Copy": [
+    "复制",
+    "Sao chép",
+    "Salin"
+  ],
+  "Paste": [
+    "粘贴",
+    "Dán",
+    "Tempel"
+  ],
+  "Cut": [
+    "剪切",
+    "Cắt",
+    "Potong"
+  ],
+  "Delete": [
+    "删除",
+    "Xóa",
+    "Hapus"
+  ],
+  "Duplicate": [
+    "创建副本",
+    "Nhân bản",
+    "Duplikat"
+  ],
+  "Cancel": [
+    "取消",
+    "Hủy",
+    "Batal"
+  ],
+  "Close": [
+    "关闭",
+    "Đóng",
+    "Tutup"
+  ],
+  "Save": [
+    "保存",
+    "Lưu",
+    "Simpan"
+  ],
+  "Open": [
+    "打开",
+    "Mở",
+    "Buka"
+  ],
+  "New Slide": [
+    "新建幻灯片",
+    "Trang chiếu mới",
+    "Slide Baru"
+  ],
+  "Delete Slide": [
+    "删除幻灯片",
+    "Xóa trang chiếu",
+    "Hapus Slide"
+  ],
+  "Remove Background": [
+    "移除背景",
+    "Xóa nền",
+    "Hapus Latar Belakang"
+  ],
+  "Erase Background": [
+    "擦除背景",
+    "Xóa nền",
+    "Hapus Latar Belakang"
+  ],
+  "Extract Text By Region": [
+    "按区域提取文字",
+    "Trích xuất văn bản theo vùng",
+    "Ekstrak Teks Berdasarkan Area"
+  ],
+  "Extract Text Under Pointer": [
+    "提取指针下的文字",
+    "Trích xuất văn bản dưới con trỏ",
+    "Ekstrak Teks di Bawah Penunjuk"
+  ],
+  "Extract All Text": [
+    "提取所有文字",
+    "Trích xuất toàn bộ văn bản",
+    "Ekstrak Semua Teks"
+  ],
+  "Extract Object By Region": [
+    "按区域提取对象",
+    "Tách đối tượng theo vùng",
+    "Ekstrak Objek Berdasarkan Area"
+  ],
+  "Review object cutout": [
+    "检查对象抠图",
+    "Kiểm tra đối tượng đã tách",
+    "Tinjau potongan objek"
+  ],
+  "Extract": [
+    "提取",
+    "Trích xuất",
+    "Ekstrak"
+  ],
+  "At least one slide is required": [
+    "至少需要一张幻灯片",
+    "Cần ít nhất một trang chiếu",
+    "Diperlukan setidaknya satu slide"
+  ],
+  "Workspace": [
+    "工作区",
+    "Không gian làm việc",
+    "Ruang Kerja"
+  ],
+  "New...": [
+    "新建…",
+    "Tạo mới…",
+    "Baru…"
+  ],
+  "Open...": [
+    "打开…",
+    "Mở…",
+    "Buka…"
+  ],
+  "Save As": [
+    "另存为",
+    "Lưu dưới dạng",
+    "Simpan Sebagai"
+  ],
+  "Export PDF": [
+    "导出 PDF",
+    "Xuất PDF",
+    "Ekspor PDF"
+  ],
+  "Unload": [
+    "关闭文件",
+    "Đóng tệp",
+    "Tutup File"
+  ],
+  "Print": [
+    "打印",
+    "In",
+    "Cetak"
+  ],
+  "Error": [
+    "错误",
+    "Lỗi",
+    "Kesalahan"
+  ],
+  "OK": [
+    "确定",
+    "Đồng ý",
+    "OK"
+  ],
+  "Deleting...": [
+    "正在删除…",
+    "Đang xóa…",
+    "Menghapus…"
+  ],
+  "Back to home": [
+    "返回首页",
+    "Về trang chủ",
+    "Kembali ke beranda"
+  ],
+  "Log in": [
+    "登录",
+    "Đăng nhập",
+    "Masuk"
+  ],
+  "YOUR IDEAS START HERE": [
+    "创意从这里开始",
+    "Ý TƯỞNG BẮT ĐẦU TỪ ĐÂY",
+    "IDE ANDA DIMULAI DI SINI"
+  ],
+  "Open or import your existing office document, or create something new, or pick up where you left off. Editing is free.": [
+    "打开或导入现有办公文档，创建新文档，或继续上次的工作。编辑免费。",
+    "Mở hoặc nhập tài liệu văn phòng, tạo tài liệu mới hoặc tiếp tục công việc đang làm. Chỉnh sửa miễn phí.",
+    "Buka atau impor dokumen kantor, buat dokumen baru, atau lanjutkan pekerjaan sebelumnya. Pengeditan gratis."
+  ],
+  "Opening file…": [
+    "正在打开文件…",
+    "Đang mở tệp…",
+    "Membuka file…"
+  ],
+  "Open or Import": [
+    "打开或导入",
+    "Mở hoặc nhập",
+    "Buka atau impor"
+  ],
+  "Create with AI": [
+    "使用 AI 创建",
+    "Tạo bằng AI",
+    "Buat dengan AI"
+  ],
+  "Blank Presentation": [
+    "空白演示文稿",
+    "Bản trình chiếu trắng",
+    "Presentasi kosong"
+  ],
+  "Open various formats as slides. Your files stay private on your device.": [
+    "将多种格式的文件打开为幻灯片。文件保留在您的设备上。",
+    "Mở nhiều định dạng dưới dạng trang chiếu. Tệp của bạn được giữ riêng tư trên thiết bị.",
+    "Buka berbagai format sebagai slide. File Anda tetap privat di perangkat."
+  ],
+  "PICK UP WHERE YOU LEFT OFF": [
+    "继续上次的工作",
+    "TIẾP TỤC CÔNG VIỆC ĐANG LÀM",
+    "LANJUTKAN PEKERJAAN ANDA"
+  ],
+  "Loaded documents": [
+    "已加载的文档",
+    "Tài liệu đã tải",
+    "Dokumen yang dimuat"
+  ],
+  "Stored in cache memory of this browser": [
+    "存储在此浏览器的缓存中",
+    "Lưu trong bộ nhớ đệm của trình duyệt này",
+    "Disimpan di cache browser ini"
+  ],
+  "Loading your documents…": [
+    "正在加载您的文档…",
+    "Đang tải tài liệu của bạn…",
+    "Memuat dokumen Anda…"
+  ],
+  "A fresh start. A world of possibilities.": [
+    "全新开始，无限可能。",
+    "Một khởi đầu mới với nhiều khả năng.",
+    "Awal baru dengan banyak kemungkinan."
+  ],
+  "Your documents will appear here as you work.": [
+    "您编辑的文档将显示在这里。",
+    "Tài liệu của bạn sẽ xuất hiện ở đây khi bạn làm việc.",
+    "Dokumen Anda akan muncul di sini saat Anda bekerja."
+  ],
+  "Create a presentation or open a .pptx, .docx, or .pub file to get started.": [
+    "创建演示文稿，或打开 .pptx、.docx 或 .pub 文件以开始。",
+    "Hãy tạo bản trình chiếu hoặc mở tệp .pptx, .docx hay .pub để bắt đầu.",
+    "Buat presentasi atau buka file .pptx, .docx, atau .pub untuk memulai."
+  ],
+  "Save a file to keep your work.": [
+    "保存文件以保留您的工作。",
+    "Lưu tệp để giữ lại công việc của bạn.",
+    "Simpan file untuk menyimpan pekerjaan Anda."
+  ],
+  "Your documents are held in this browser cache. Edits are not saved back to the original file. Use Save as to download a copy and keep your work outside the browser. Cache stays after browser shutdown, but not guaranteed to keep permanently.": [
+    "文档保存在此浏览器的缓存中，原始文件不会更新。使用“另存为”下载副本。关闭浏览器后缓存仍会保留，但可能被清除。",
+    "Tài liệu được giữ trong bộ nhớ đệm của trình duyệt. Các chỉnh sửa không được ghi vào tệp gốc. Dùng Lưu dưới dạng để tải bản sao. Bộ nhớ đệm vẫn còn sau khi đóng trình duyệt nhưng có thể bị xóa.",
+    "Dokumen disimpan di cache browser ini. Perubahan tidak ditulis ke file asli. Gunakan Simpan Sebagai untuk mengunduh salinan. Cache tetap ada setelah browser ditutup, tetapi dapat terhapus."
+  ],
+  "DESQ — Office documents, with a life on the web.": [
+    "DESQ，让办公文档在网页上焕发生机。",
+    "DESQ đưa tài liệu văn phòng lên web.",
+    "DESQ menghadirkan dokumen kantor ke web."
+  ],
+  "Terms & Privacy": [
+    "条款与隐私",
+    "Điều khoản và quyền riêng tư",
+    "Ketentuan dan Privasi"
+  ],
+  "Support": [
+    "支持",
+    "Hỗ trợ",
+    "Dukungan"
+  ],
+  "Workspace navigation": [
+    "工作区导航",
+    "Điều hướng không gian làm việc",
+    "Navigasi ruang kerja"
+  ],
+  "Footer navigation": [
+    "页脚导航",
+    "Điều hướng chân trang",
+    "Navigasi bagian bawah"
+  ],
+  "Supported file types": [
+    "支持的文件类型",
+    "Loại tệp được hỗ trợ",
+    "Jenis file yang didukung"
+  ],
+  "Your workspace — DESQ": [
+    "您的工作区 — DESQ",
+    "Không gian làm việc của bạn — DESQ",
+    "Ruang kerja Anda — DESQ"
+  ],
+  "Documents in memory — save a copy to keep your work as a file": [
+    "内存中的文档。保存副本以保留您的工作。",
+    "Tài liệu trong bộ nhớ. Lưu bản sao để giữ lại công việc của bạn.",
+    "Dokumen dalam memori. Simpan salinan untuk menyimpan pekerjaan Anda."
+  ],
+  "Document": [
+    "文档",
+    "Tài liệu",
+    "Dokumen"
+  ],
+  "Pages": [
+    "页数",
+    "Số trang",
+    "Halaman"
+  ],
+  "Last modified": [
+    "上次修改",
+    "Sửa lần cuối",
+    "Terakhir diubah"
+  ],
+  "Actions": [
+    "操作",
+    "Thao tác",
+    "Tindakan"
+  ],
+  "Untitled": [
+    "无标题",
+    "Không có tiêu đề",
+    "Tanpa judul"
+  ],
+  "Word document · (Saves as DOCX)": [
+    "Word 文档（保存为 DOCX）",
+    "Tài liệu Word (lưu dưới dạng DOCX)",
+    "Dokumen Word (disimpan sebagai DOCX)"
+  ],
+  "Publisher document": [
+    "Publisher 文档",
+    "Tài liệu Publisher",
+    "Dokumen Publisher"
+  ],
+  "PowerPoint presentation": [
+    "PowerPoint 演示文稿",
+    "Bản trình chiếu PowerPoint",
+    "Presentasi PowerPoint"
+  ],
+  "Presentation": [
+    "演示文稿",
+    "Bản trình chiếu",
+    "Presentasi"
+  ],
+  "slides": [
+    "张幻灯片",
+    "trang chiếu",
+    "slide"
+  ],
+  "Save a copy of your work before unloading a document.": [
+    "关闭文档之前，请保存副本。",
+    "Lưu một bản sao trước khi đóng tài liệu.",
+    "Simpan salinan sebelum menutup dokumen."
+  ],
+  "✨ Create with external AI": [
+    "✨ 使用外部 AI 创建",
+    "✨ Tạo bằng AI bên ngoài",
+    "✨ Buat dengan AI eksternal"
+  ],
+  "✨ Insert slides with external AI": [
+    "✨ 使用外部 AI 插入幻灯片",
+    "✨ Chèn trang chiếu bằng AI bên ngoài",
+    "✨ Sisipkan slide dengan AI eksternal"
+  ],
+  "AI presentation response": [
+    "AI 演示文稿响应",
+    "Phản hồi AI cho bản trình chiếu",
+    "Respons AI untuk presentasi"
+  ],
+  "What would you like to build?": [
+    "您想创建什么？",
+    "Bạn muốn tạo gì?",
+    "Apa yang ingin Anda buat?"
+  ],
+  "Describe your app, game or presentation, its audience, content and how it should work…": [
+    "描述您的应用、游戏或演示文稿，包括受众、内容及其工作方式…",
+    "Mô tả ứng dụng, trò chơi hoặc bản trình chiếu, đối tượng, nội dung và cách hoạt động…",
+    "Jelaskan aplikasi, gim, atau presentasi Anda, audiens, isi, dan cara kerjanya…"
+  ],
+  "Generated prompt": [
+    "生成的提示词",
+    "Câu lệnh đã tạo",
+    "Prompt yang dihasilkan"
+  ],
+  "Copy prompt": [
+    "复制提示词",
+    "Sao chép câu lệnh",
+    "Salin prompt"
+  ],
+  "Your prompt will appear here.": [
+    "您的提示词将显示在这里。",
+    "Câu lệnh của bạn sẽ xuất hiện ở đây.",
+    "Prompt Anda akan muncul di sini."
+  ],
+  "Copy the generated prompt above into your AI chat / NotebookLM, then download HTML response and upload here.": [
+    "将上方的提示词复制到 AI 聊天工具或 NotebookLM，然后下载 HTML 响应并上传到这里。",
+    "Sao chép câu lệnh vào công cụ trò chuyện AI hoặc NotebookLM, rồi tải phản hồi HTML xuống và tải lên tại đây.",
+    "Salin prompt ke chat AI atau NotebookLM, lalu unduh respons HTML dan unggah di sini."
+  ],
+  "Reading HTML…": [
+    "正在读取 HTML…",
+    "Đang đọc HTML…",
+    "Membaca HTML…"
+  ],
+  "Upload HTML response file": [
+    "上传 HTML 响应文件",
+    "Tải lên tệp phản hồi HTML",
+    "Unggah file respons HTML"
+  ],
+  "Loaded:": [
+    "已加载：",
+    "Đã tải:",
+    "Dimuat:"
+  ],
+  "Creating presentation…": [
+    "正在创建演示文稿…",
+    "Đang tạo bản trình chiếu…",
+    "Membuat presentasi…"
+  ],
+  "Inserting slides…": [
+    "正在插入幻灯片…",
+    "Đang chèn trang chiếu…",
+    "Menyisipkan slide…"
+  ],
+  "Create new presentation": [
+    "创建新演示文稿",
+    "Tạo bản trình chiếu mới",
+    "Buat presentasi baru"
+  ],
+  "Insert slides into this presentation": [
+    "将幻灯片插入此演示文稿",
+    "Chèn trang chiếu vào bản trình chiếu này",
+    "Sisipkan slide ke presentasi ini"
+  ],
+  "Current slide design": [
+    "当前幻灯片设计",
+    "Thiết kế trang chiếu hiện tại",
+    "Desain slide saat ini"
+  ],
+  "Native template · master and layout linked": [
+    "原生模板 · 已链接母版和版式",
+    "Mẫu gốc · đã liên kết bản master và bố cục",
+    "Templat asli · master dan tata letak tertaut"
+  ],
+  "Choose a complete HTML response file (.html or .htm).": [
+    "请选择完整的 HTML 响应文件（.html 或 .htm）。",
+    "Chọn tệp phản hồi HTML hoàn chỉnh (.html hoặc .htm).",
+    "Pilih file respons HTML lengkap (.html atau .htm)."
+  ],
+  "Choose an HTML response file (.html or .htm).": [
+    "请选择 HTML 响应文件（.html 或 .htm）。",
+    "Chọn tệp phản hồi HTML (.html hoặc .htm).",
+    "Pilih file respons HTML (.html atau .htm)."
+  ],
+  "Response files must be under 50 MB.": [
+    "响应文件必须小于 50 MB。",
+    "Tệp phản hồi phải nhỏ hơn 50 MB.",
+    "File respons harus kurang dari 50 MB."
+  ],
+  "Prompt copied. Paste it into your AI chat / NotebookLM, then download the HTML response and upload here.": [
+    "已复制提示词。将其粘贴到 AI 聊天工具或 NotebookLM，然后下载 HTML 响应并上传到这里。",
+    "Đã sao chép câu lệnh. Dán vào công cụ trò chuyện AI hoặc NotebookLM, rồi tải phản hồi HTML xuống và tải lên tại đây.",
+    "Prompt disalin. Tempel ke chat AI atau NotebookLM, lalu unduh respons HTML dan unggah di sini."
+  ],
+  "Could not copy automatically. Select and copy the prompt above.": [
+    "无法自动复制。请选择并复制上方的提示词。",
+    "Không thể sao chép tự động. Hãy chọn và sao chép câu lệnh ở trên.",
+    "Tidak bisa menyalin otomatis. Pilih dan salin prompt di atas."
+  ],
+  "Open a presentation and select a slide first.": [
+    "请先打开演示文稿并选择一张幻灯片。",
+    "Trước tiên, hãy mở bản trình chiếu rồi chọn một trang chiếu.",
+    "Buka presentasi dan pilih slide terlebih dahulu."
+  ],
+  "Checking the slide content and layouts…": [
+    "正在检查幻灯片内容和版式…",
+    "Đang kiểm tra nội dung và bố cục trang chiếu…",
+    "Memeriksa isi dan tata letak slide…"
+  ],
+  "Rendering the HTML…": [
+    "正在渲染 HTML…",
+    "Đang kết xuất HTML…",
+    "Merender HTML…"
+  ],
+  "The selected slide changed. Please try again.": [
+    "所选幻灯片已更改。请重试。",
+    "Trang chiếu đã chọn đã thay đổi. Vui lòng thử lại.",
+    "Slide yang dipilih berubah. Silakan coba lagi."
+  ],
+  "Creating editable slides…": [
+    "正在创建可编辑的幻灯片…",
+    "Đang tạo trang chiếu có thể chỉnh sửa…",
+    "Membuat slide yang dapat diedit…"
+  ],
+  "Format Shape": [
+    "设置形状格式",
+    "Định dạng hình",
+    "Format Bentuk"
+  ],
+  "Format Picture": [
+    "设置图片格式",
+    "Định dạng ảnh",
+    "Format Gambar"
+  ],
+  "Solid Fill": [
+    "纯色填充",
+    "Tô màu đơn",
+    "Isian Solid"
+  ],
+  "Fill Opacity": [
+    "填充不透明度",
+    "Độ mờ của màu tô",
+    "Opasitas Isian"
+  ],
+  "No Fill": [
+    "无填充",
+    "Không tô",
+    "Tanpa Isian"
+  ],
+  "Gradient Fill": [
+    "渐变填充",
+    "Tô chuyển màu",
+    "Isian Gradien"
+  ],
+  "Picture Fill": [
+    "图片填充",
+    "Tô bằng ảnh",
+    "Isian Gambar"
+  ],
+  "Pattern Fill": [
+    "图案填充",
+    "Tô họa tiết",
+    "Isian Pola"
+  ],
+  "Page Background Fill": [
+    "页面背景填充",
+    "Tô nền trang",
+    "Isian Latar Halaman"
+  ],
+  "Fill type": [
+    "填充类型",
+    "Kiểu tô",
+    "Jenis Isian"
+  ],
+  "Fill": [
+    "填充",
+    "Tô màu",
+    "Isian"
+  ],
+  "Line": [
+    "线条",
+    "Đường nét",
+    "Garis"
+  ],
+  "Effect": [
+    "效果",
+    "Hiệu ứng",
+    "Efek"
+  ],
+  "Size": [
+    "大小",
+    "Kích thước",
+    "Ukuran"
+  ],
+  "Picture": [
+    "图片",
+    "Ảnh",
+    "Gambar"
+  ],
+  "No shape selected or not applicable": [
+    "未选择形状或此设置不适用",
+    "Chưa chọn hình hoặc tùy chọn không áp dụng",
+    "Tidak ada bentuk yang dipilih atau opsi tidak berlaku"
+  ],
+  "No text selected or not applicable": [
+    "未选择文字或此设置不适用",
+    "Chưa chọn văn bản hoặc tùy chọn không áp dụng",
+    "Tidak ada teks yang dipilih atau opsi tidak berlaku"
+  ],
+  "Gradient Type": [
+    "渐变类型",
+    "Kiểu chuyển màu",
+    "Jenis Gradien"
+  ],
+  "Linear": [
+    "线性",
+    "Tuyến tính",
+    "Linear"
+  ],
+  "Radial": [
+    "径向",
+    "Tỏa tròn",
+    "Radial"
+  ],
+  "Stop Colors": [
+    "色标颜色",
+    "Màu tại các điểm dừng",
+    "Warna Titik Gradien"
+  ],
+  "Direction": [
+    "方向",
+    "Hướng",
+    "Arah"
+  ],
+  "Tile": [
+    "平铺",
+    "Xếp ô",
+    "Ubin"
+  ],
+  "Tile Picture As Texture": [
+    "将图片平铺为纹理",
+    "Xếp ảnh làm họa tiết",
+    "Susun Gambar sebagai Tekstur"
+  ],
+  "Crop picture to adjust tile position": [
+    "裁剪图片以调整平铺位置",
+    "Cắt ảnh để điều chỉnh vị trí ô",
+    "Pangkas gambar untuk menyesuaikan posisi ubin"
+  ],
+  "Placeholder Type": [
+    "占位符类型",
+    "Loại chỗ dành sẵn",
+    "Jenis Placeholder"
+  ],
+  "Data Container": [
+    "数据容器",
+    "Vùng chứa dữ liệu",
+    "Wadah Data"
+  ],
+  "Use As Container": [
+    "用作容器",
+    "Dùng làm vùng chứa",
+    "Gunakan sebagai Wadah"
+  ],
+  "No scroll:": [
+    "禁止滚动：",
+    "Không cuộn:",
+    "Tanpa gulir:"
+  ],
+  "Selection Pane": [
+    "选择窗格",
+    "Ngăn lựa chọn",
+    "Panel Seleksi"
+  ],
+  "Video Options": [
+    "视频选项",
+    "Tùy chọn video",
+    "Opsi Video"
+  ],
+  "Autoplay": [
+    "自动播放",
+    "Tự động phát",
+    "Putar Otomatis"
+  ],
+  "Show Controls": [
+    "显示控件",
+    "Hiện điều khiển",
+    "Tampilkan Kontrol"
+  ],
+  "Download Selected Shapes": [
+    "下载所选形状",
+    "Tải các hình đã chọn",
+    "Unduh Bentuk Terpilih"
+  ],
+  "Iframe Source": [
+    "Iframe 来源",
+    "Nguồn iframe",
+    "Sumber Iframe"
+  ],
+  "Add-ons": [
+    "加载项",
+    "Tiện ích bổ sung",
+    "Add-on"
+  ],
+  "Edit In Photopea...": [
+    "在 Photopea 中编辑…",
+    "Sửa trong Photopea…",
+    "Edit di Photopea…"
+  ],
+  "Manage": [
+    "管理",
+    "Quản lý",
+    "Kelola"
+  ],
+  "Lock Shape": [
+    "锁定形状",
+    "Khóa hình",
+    "Kunci Bentuk"
+  ],
+  "Save as Picture": [
+    "另存为图片",
+    "Lưu dưới dạng ảnh",
+    "Simpan sebagai Gambar"
+  ],
+  "Delete Shape": [
+    "删除形状",
+    "Xóa hình",
+    "Hapus Bentuk"
+  ],
+  "Arrange": [
+    "排列",
+    "Sắp xếp",
+    "Atur"
+  ],
+  "Group": [
+    "组合",
+    "Nhóm",
+    "Kelompokkan"
+  ],
+  "Ungroup": [
+    "取消组合",
+    "Bỏ nhóm",
+    "Pisahkan Grup"
+  ],
+  "Detach": [
+    "分离",
+    "Tách",
+    "Lepaskan"
+  ],
+  "Change Shape...": [
+    "更改形状…",
+    "Đổi hình…",
+    "Ubah Bentuk…"
+  ],
+  "Convert to shape": [
+    "转换为形状",
+    "Chuyển thành hình",
+    "Ubah menjadi Bentuk"
+  ],
+  "Animations...": [
+    "动画…",
+    "Hoạt hình…",
+    "Animasi…"
+  ],
+  "Link...": [
+    "链接…",
+    "Liên kết…",
+    "Tautan…"
+  ],
+  "Format Shape...": [
+    "设置形状格式…",
+    "Định dạng hình…",
+    "Format Bentuk…"
+  ],
+  "Format Picture...": [
+    "设置图片格式…",
+    "Định dạng ảnh…",
+    "Format Gambar…"
+  ],
+  "Format Text...": [
+    "设置文字格式…",
+    "Định dạng văn bản…",
+    "Format Teks…"
+  ],
+  "Flip Horizontal": [
+    "水平翻转",
+    "Lật ngang",
+    "Balik Horizontal"
+  ],
+  "Flip Vertical": [
+    "垂直翻转",
+    "Lật dọc",
+    "Balik Vertikal"
+  ],
+  "Union": [
+    "联合",
+    "Hợp",
+    "Gabungkan"
+  ],
+  "Combine": [
+    "组合",
+    "Kết hợp",
+    "Kombinasikan"
+  ],
+  "Substract": [
+    "相减",
+    "Trừ",
+    "Kurangi"
+  ],
+  "Intersect": [
+    "相交",
+    "Giao",
+    "Irisan"
+  ],
+  "Fragment": [
+    "拆分",
+    "Phân mảnh",
+    "Pecah"
+  ],
+  "Merge Cells": [
+    "合并单元格",
+    "Gộp ô",
+    "Gabungkan Sel"
+  ],
+  "Split Cells": [
+    "拆分单元格",
+    "Tách ô",
+    "Pisahkan Sel"
+  ],
+  "Insert row": [
+    "插入行",
+    "Chèn hàng",
+    "Sisipkan Baris"
+  ],
+  "Delete row": [
+    "删除行",
+    "Xóa hàng",
+    "Hapus Baris"
+  ],
+  "Insert column": [
+    "插入列",
+    "Chèn cột",
+    "Sisipkan Kolom"
+  ],
+  "Delete column": [
+    "删除列",
+    "Xóa cột",
+    "Hapus Kolom"
+  ],
+  "Bring To Front": [
+    "置于顶层",
+    "Đưa lên trên cùng",
+    "Bawa ke Paling Depan"
+  ],
+  "BringForward": [
+    "上移一层",
+    "Đưa lên một lớp",
+    "Majukan Satu Lapisan"
+  ],
+  "Send Backward": [
+    "下移一层",
+    "Đưa xuống một lớp",
+    "Mundurkan Satu Lapisan"
+  ],
+  "Send To Back": [
+    "置于底层",
+    "Đưa xuống dưới cùng",
+    "Kirim ke Paling Belakang"
+  ],
+  "Layers Pane": [
+    "图层窗格",
+    "Ngăn lớp",
+    "Panel Lapisan"
+  ],
+  "Duplicate Slide": [
+    "复制幻灯片",
+    "Nhân bản trang chiếu",
+    "Duplikat Slide"
+  ],
+  "Duplicate Page": [
+    "复制页面",
+    "Nhân bản trang",
+    "Duplikat Halaman"
+  ],
+  "Copy Slide": [
+    "复制幻灯片",
+    "Sao chép trang chiếu",
+    "Salin Slide"
+  ],
+  "Paste Slide": [
+    "粘贴幻灯片",
+    "Dán trang chiếu",
+    "Tempel Slide"
+  ],
+  "Hide/Unhide": [
+    "隐藏或取消隐藏",
+    "Ẩn hoặc hiện",
+    "Sembunyikan atau Tampilkan"
+  ],
+  "Export Slide": [
+    "导出幻灯片",
+    "Xuất trang chiếu",
+    "Ekspor Slide"
+  ],
+  "Delete Layout": [
+    "删除版式",
+    "Xóa bố cục",
+    "Hapus Tata Letak"
+  ],
+  "Change Layout...": [
+    "更改版式…",
+    "Đổi bố cục…",
+    "Ubah Tata Letak…"
+  ],
+  "Transition...": [
+    "切换…",
+    "Chuyển tiếp…",
+    "Transisi…"
+  ],
+  "Hide": [
+    "隐藏",
+    "Ẩn",
+    "Sembunyikan"
+  ],
+  "Add Master": [
+    "添加母版",
+    "Thêm bản master",
+    "Tambahkan Master"
+  ],
+  "Add Layout": [
+    "添加版式",
+    "Thêm bố cục",
+    "Tambahkan Tata Letak"
+  ],
+  "Format Background": [
+    "设置背景格式",
+    "Định dạng nền",
+    "Format Latar Belakang"
+  ],
+  "Format Background...": [
+    "设置背景格式…",
+    "Định dạng nền…",
+    "Format Latar Belakang…"
+  ],
+  "Background": [
+    "背景",
+    "Nền",
+    "Latar Belakang"
+  ],
+  "Show Master Graphics": [
+    "显示母版图形",
+    "Hiện đồ họa bản master",
+    "Tampilkan Grafis Master"
+  ],
+  "Background Color": [
+    "背景颜色",
+    "Màu nền",
+    "Warna Latar Belakang"
+  ],
+  "Solid Background": [
+    "纯色背景",
+    "Nền màu đơn",
+    "Latar Warna Solid"
+  ],
+  "Gradient Background": [
+    "渐变背景",
+    "Nền chuyển màu",
+    "Latar Gradien"
+  ],
+  "Picture Background": [
+    "图片背景",
+    "Nền ảnh",
+    "Latar Gambar"
+  ],
+  "Change Picture": [
+    "更改图片",
+    "Đổi ảnh",
+    "Ganti Gambar"
+  ],
+  "Picture Transparency": [
+    "图片透明度",
+    "Độ trong suốt của ảnh",
+    "Transparansi Gambar"
+  ],
+  "Brightness": [
+    "亮度",
+    "Độ sáng",
+    "Kecerahan"
+  ],
+  "Contrast": [
+    "对比度",
+    "Độ tương phản",
+    "Kontras"
+  ],
+  "Duotone...": [
+    "双色调…",
+    "Hai tông màu…",
+    "Duotone…"
+  ],
+  "No picture in clipboard": [
+    "剪贴板中没有图片",
+    "Không có ảnh trong bảng tạm",
+    "Tidak ada gambar di papan klip"
+  ],
+  "Upload...": [
+    "上传…",
+    "Tải lên…",
+    "Unggah…"
+  ],
+  "Online...": [
+    "在线…",
+    "Trực tuyến…",
+    "Daring…"
+  ],
+  "📋 Clipboard": [
+    "📋 剪贴板",
+    "📋 Bảng tạm",
+    "📋 Papan Klip"
+  ],
+  "Clean up...": [
+    "清理…",
+    "Dọn dẹp…",
+    "Bersihkan…"
+  ]
+}

@@ -15,13 +15,13 @@
       <LayoutHeader label="Data Container" />
       <div>
         <ToolbarItemSwitch
-          label="Use As Container"
+          :label="translate('Use As Container')"
           :defaultVal="!!piniaSelect().selShpFormat?.container"
           :onClick="(checked) => updateField(checked, 'container')"
         />
       </div>
       <!-- <div>
-          <span>No scroll:</span>
+          <span>{{ translate('No scroll:') }}</span>
           <input
             type="checkbox"
             class="dim-field"
@@ -72,7 +72,7 @@
     </template>
     <template v-else>
       <ToolbarItemSwitch
-        label="Autoplay"
+        :label="translate('Autoplay')"
         :defaultVal="!!piniaSelect().selShpFormat?.blipFill?.autoplay"
         :onClick="(val) => updateVideo('autoplay', val)"
         v-if="
@@ -90,7 +90,7 @@
         ⚠️ autoplay video on first slide is muted due to web security
       </div>
       <ToolbarItemSwitch
-        label="Show Controls"
+        :label="translate('Show Controls')"
         :defaultVal="!!piniaSelect().selShpFormat?.blipFill?.controls"
         :onClick="(val) => updateVideo('controls', val)"
         v-if="
@@ -101,7 +101,7 @@
     </template>
     <!-- <NFlex vertical>
         <ToolbarItem
-          label="Download Selected Shapes"
+          :label="translate('Download Selected Shapes')"
           labelGap="15px"
           :icon="CloudDownload"
           :size="30"
@@ -128,7 +128,7 @@
     <NFlex vertical>
       <ToolbarItem
         text
-        label="Edit In Photopea..."
+        :label="translate('Edit In Photopea...')"
         labelGap="15px"
         :icon="ImageEdit20Regular"
         :size="30"
@@ -150,6 +150,7 @@
 </template>
 
 <script setup lang="ts">
+import { translate } from "@/lib/i18n";
 import { getShapeDeep, updateShape } from "shared-vuejs/editor";
 
 import LinkedTextboxOptions from "../Text/LinkedTextboxOptions.vue";

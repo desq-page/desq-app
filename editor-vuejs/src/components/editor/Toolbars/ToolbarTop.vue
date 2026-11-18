@@ -19,7 +19,7 @@
       >
       <NTabPane
         name="home"
-        tab="Home"
+        :tab="translate('Home')"
         :style="{
           display: 'flex',
         }"
@@ -100,7 +100,7 @@
           />
         </div>
       </NTabPane>
-      <NTabPane name="insert" tab="Insert" :disabled="showSpecialTab()" >
+      <NTabPane name="insert" :tab="translate('Insert')" :disabled="showSpecialTab()" >
         <div :class="$style['header-left']">
           <ToolbarSlide />
           <ToolbarItem
@@ -164,10 +164,10 @@
           />
         </div>
       </NTabPane>
-      <NTabPane name="transition" tab="Transition" :disabled="showSpecialTab() || piniaSlides().masterView">
+      <NTabPane name="transition" :tab="translate('Transition')" :disabled="showSpecialTab() || piniaSlides().masterView">
         <ToolbarTransition />
       </NTabPane>
-      <NTabPane name="animation" tab="Animation" :disabled="showSpecialTab()">
+      <NTabPane name="animation" :tab="translate('Animation')" :disabled="showSpecialTab()">
         <div :class="$style['header-left']">
           <ToolbarItemDropdown
             v-for="group in animationGroups"
@@ -194,7 +194,7 @@
           
         </div>
       </NTabPane>
-      <NTabPane name="design" tab="Design" :disabled="showSpecialTab()">
+      <NTabPane name="design" :tab="translate('Design')" :disabled="showSpecialTab()">
         <div :class="$style['header-left']">
           <ToolbarDesign />
           <ToolbarItem type="divider" />
@@ -223,7 +223,7 @@
           />
         </div>
       </NTabPane>
-      <NTabPane name="view" tab="View" :disabled="showSpecialTab()">
+      <NTabPane name="view" :tab="translate('View')" :disabled="showSpecialTab()">
         <div :class="$style['header-left']">
           <ToolbarItem
             caption="Page Master"
@@ -272,7 +272,7 @@
       <NTabPane
         v-if="piniaSelect().selShps.length > 0"
         name="shape-format"
-        tab="Shape Format"
+        :tab="translate('Shape Format')"
         :disabled="!!piniaInfo().useGrid"
       >
         <div :class="$style['header-left']" v-if="!showPointTab()">
@@ -463,7 +463,7 @@
 <script setup lang="ts">
 import { resolveToolbarTab } from "@/lib/main/toolbarSelection.mjs";
 import { editorAdapter } from '@/lib/agent/editor-adapter';
-import { Settings } from "@vicons/carbon";
+import { Settings, Translate } from "@vicons/carbon";
 import { Globe24Regular, ProjectionScreen24Regular } from "@vicons/fluent";
 
 const emit = defineEmits<{ present: [] }>();
@@ -558,7 +558,9 @@ import { startFreehandMotion } from "shared-vuejs/editor";
 import ToolbarItemDropdown from "./ToolbarItemDropdown.vue";
 import { aiEditActions } from "./shapeContextMenuOptions";
 
-const presentationOptions = [
+import { language, languages, setLanguage, translate } from "@/lib/i18n";
+
+const presentationOptions = computed(() => [
   {
     label: "Publish",
     icon: Globe24Regular,
@@ -569,7 +571,17 @@ const presentationOptions = [
     icon: Settings,
     onClick: () => toggleTaskPane("settings"),
   },
-];
+  {
+    label: "Language",
+    icon: Translate,
+    key: "language",
+    children: languages.map(({ code, name }) => ({
+      label: language.value === code ? `✓ ${name}` : name,
+      key: code,
+      onClick: () => setLanguage(code),
+    })),
+  },
+]);
 
 const animationGroups = [
   { value: "0", label: "Entrance", icon: StarArrowRightStart24Regular, color: "green" },

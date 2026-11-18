@@ -43,11 +43,12 @@
     <template #icon v-if="item.icon">
       <NIcon :size="18"><component :is="item.icon" /></NIcon>
     </template>
-    {{ item.label }}
+    {{ translate(item.label) }}
   </NButton>
 </template>
 
 <script setup lang="ts">
+import { translate } from "@/lib/i18n";
 import { piniaInfo, piniaSelect } from "@/lib/common/store";
 // import ToolbarItem from "@/components/editor/Toolbars/ToolbarItem.vue";
 import { toggleTaskPane } from "@/lib/main/utils";

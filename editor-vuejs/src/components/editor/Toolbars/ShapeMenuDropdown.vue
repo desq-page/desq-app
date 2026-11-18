@@ -316,7 +316,7 @@ const ShapeContextMenuOptions = computed(() => [
     type: "divider",
   },
   {
-    label: "Format " + (isPic() ? "Picture" : "Shape") + "...",
+    label: isPic() ? "Format Picture..." : "Format Shape...",
     icon: PaintBucket24Filled,
     key: "formatshape",
     // show: !piniaSelect().editingTextObject,

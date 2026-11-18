@@ -7,8 +7,8 @@
       name="radiogroup"
       :on-update:value="changeGradType"
     >
-      <n-radio value="L" label="Linear" />
-      <n-radio value="R" label="Radial" />
+      <n-radio value="L" :label="translate('Linear')" />
+      <n-radio value="R" :label="translate('Radial')" />
     </n-radio-group>
 
     <LayoutHeader label="Stop Colors" />
@@ -103,6 +103,7 @@
   </div>
 </template>
 <script setup lange="ts">
+import { translate } from "@/lib/i18n";
 import { getTheme } from "shared-vuejs/editor";
 
 import { piniaSelect, piniaShapes, piniaSlides } from "@/lib/common/store";

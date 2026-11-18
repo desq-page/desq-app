@@ -1,3 +1,4 @@
+import { translate } from "@/lib/i18n";
 import {  } from "shared-vuejs/editor";
 import { nextTick } from "vue";
 import g from "shared-vuejs/api/global";
@@ -50,7 +51,7 @@ export function showMessage(text, time?, type?) {
     piniaInfo().statusMessage = null;
   } else {
     piniaInfo().statusMessage = {
-      text,
+      text: typeof text === "string" ? translate(text) : text,
       type: type || "info",
     };
     if (time) {
@@ -68,9 +69,9 @@ export function showError(text, title?) {
   nextTick(() => {
     g.globalDialog.destroyAll();
     g.globalDialog.error({
-      title: title || "Error",
-      content: text,
-      positiveText: "OK",
+      title: translate(title || "Error"),
+      content: typeof text === "string" ? translate(text) : text,
+      positiveText: translate("OK"),
       closable: false,
     });
   });

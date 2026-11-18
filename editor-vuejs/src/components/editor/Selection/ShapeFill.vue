@@ -29,7 +29,7 @@
           :shp-id="piniaSelect().selShpFormat?.id"
           :use-system-picker="false && !ue.android"
         /> -->
-        <div class="subtitle">Fill Opacity</div>
+        <div class="subtitle">{{ translate('Fill Opacity') }}</div>
         <RangeSlider
           :value="shpOpacity"
           :on-input="updateOpacity"
@@ -57,6 +57,7 @@
 </template>
 
 <script setup lang="ts">
+import { translate } from "@/lib/i18n";
 import { getShapeDeep, updateShape, getSelectEditingTextObject, getSelectSelShpFormat, getTheme, getFileInfo, getMasterInfo } from "shared-vuejs/editor";
 
 import { piniaSelect } from "@/lib/common/store";

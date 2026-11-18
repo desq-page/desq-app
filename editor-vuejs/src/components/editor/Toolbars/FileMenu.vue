@@ -2,7 +2,7 @@
   <ToolbarItemDropdown
     quaternary
     :options="viewOptions"
-    label="File"
+    :label="translate('File')"
     :size="26"
     :onClick="() => exportFile()"
     :disabled="!!piniaInfo().useGrid"
@@ -18,6 +18,7 @@
   />
 </template>
 <script setup lang="ts">
+import { translate } from "@/lib/i18n";
 import { getFileInfo, getSlideInfo } from "shared-vuejs/editor";
 
 import { FilePdfRegular, FilePowerpointRegular, FileWordRegular } from "@vicons/fa";

@@ -110,16 +110,17 @@
               color: buttonType == 'primary' ? 'green' : 'black',
             }"
           >
-            {{ caption }}
+            {{ translate(caption) }}
           </div>
         </div>
       </template>
-      <span v-if="tooltip">{{ tooltip }}</span>
+      <span v-if="tooltip">{{ translate(tooltip) }}</span>
     </NTooltip>
   </NDropdown>
 </template>
 
 <script setup lang="ts">
+import { translate } from "@/lib/i18n";
 import {  } from "shared-vuejs/editor";
 
 import IframeInputbox from "@/components/common/IframeInputbox.vue";
@@ -328,7 +329,7 @@ function renderLabel(label: any, color: any, fontFamily?: string) {
           fontFamily: fontFamily ? JSON.stringify(fontFamily) : undefined,
         },
       },
-      [typeof label === "function" ? label() : label],
+      [typeof label === "function" ? label() : typeof label === "string" ? translate(label) : label],
     );
   };
 }

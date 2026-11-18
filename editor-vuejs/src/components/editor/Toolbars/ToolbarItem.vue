@@ -102,7 +102,7 @@
                 :style="{
                   marginLeft: labelGap || (label ? '3px' : undefined),
                 }"
-                >{{ label }}</span
+                >{{ typeof label === "string" ? translate(label) : label }}</span
               >
             </template>
           </NButton>
@@ -113,11 +113,11 @@
               color: buttonType == 'primary' ? 'green' : 'black',
             }"
           >
-            {{ caption }}
+            {{ translate(caption) }}
           </div>
         </div>
       </template>
-      <span>{{ tooltip }}</span>
+      <span>{{ translate(tooltip) }}</span>
     </NTooltip>
     <!-- <ToolbarItemButton
       v-if="type !== 'divider' && type !== 'spacing' && !tooltip"
@@ -145,6 +145,7 @@
 </template>
 
 <script setup lang="ts">
+import { translate } from "@/lib/i18n";
 import { getTheme, getFileInfo, getMasterInfo, globals } from "shared-vuejs/editor";
 
 import { NDivider, NTooltip } from "naive-ui";

@@ -243,7 +243,7 @@ export const slideOptions = computed(() => [
         type: "divider",
       },
       {
-        label: "Delete " + (!getSlidesMasterView() ? "Slide" : "Layout"),
+        label: getSlidesMasterView() ? "Delete Layout" : "Delete Slide",
         color: "red",
         key: "delslide",
         show: !isWordDocument(getFileInfo(), [getSlideInfo()]),

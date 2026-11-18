@@ -12,7 +12,7 @@
     /> -->
 
     <NCheckbox
-      label="Show Master Graphics"
+      :label="translate('Show Master Graphics')"
       :checked="!!getSlideInfo()?.showMaster"
       :on-update:checked="(val) => setShowMaster(val)"
     />
@@ -74,6 +74,7 @@
   </DialogBase>
 </template>
 <script setup lang="ts">
+import { translate } from "@/lib/i18n";
 import { updateSlide, getSlidesMasterView, getSlidesMultiSelected, getSlidesSlideId, getTheme, getFileInfo, getLayoutInfo, getMasterInfo, getSlideInfo } from "shared-vuejs/editor";
 
 // import DialogBase from "@/components/common/Layouts/DialogBase.vue";
