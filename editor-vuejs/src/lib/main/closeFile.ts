@@ -5,6 +5,7 @@ import { deleteFile, flushPendingDexieSaves } from "shared-vuejs/api/dbutils";
 import { createSinglePresentationHtml } from "shared-vuejs/api/presentation-export";
 import { downloadFile, selectDownloadFile } from "shared-vuejs/api/downloadShape";
 
+import { translate } from "@/lib/i18n";
 import { piniaInfo } from "@/lib/common/store";
 import { showError } from "@/lib/main/utils";
 import { isHtmlSaveCurrent, prepareHtml, savePreparedHtml } from "@/lib/main/saveHtml";
@@ -22,12 +23,12 @@ export async function confirmCloseFile(
     : Boolean(fileInfo?.dirty);
 
   const d = g.globalDialog.warning({
-    title: dirty ? "Unsaved changes" : "Unload file?",
-    content: dirty
+    title: translate(dirty ? "Unsaved changes" : "Unload file?"),
+    content: translate(dirty
       ? "This file has unsaved changes which will be lost if you unload without saving. Save a single HTML file to keep your work."
-      : "Unload this file to remove its in-memory cache. Save a single HTML file if you want to reopen it later.",
-    positiveText: "Save and unload",
-    negativeText: dirty ? "⚠️ Unload without saving" : "Unload",
+      : "Unload this file to remove its in-memory cache. Save a single HTML file if you want to reopen it later."),
+    positiveText: translate("Save and unload"),
+    negativeText: translate(dirty ? "⚠️ Unload without saving" : "Unload"),
     positiveButtonProps: { type: "success" },
     negativeButtonProps: { type: "error" },
     onPositiveClick: async () => {

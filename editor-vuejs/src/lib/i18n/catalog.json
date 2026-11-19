@@ -299,6 +299,31 @@
     "Tách toàn bộ văn bản",
     "Ekstrak Semua Teks"
   ],
+  "Cut out region": [
+    "剪出区域",
+    "Cắt vùng ảnh",
+    "Potong area"
+  ],
+  "Cutting out region…": [
+    "正在剪出区域…",
+    "Đang cắt vùng ảnh…",
+    "Memotong area…"
+  ],
+  "Draw a rectangle to cut out": [
+    "绘制要剪出的矩形",
+    "Vẽ hình chữ nhật quanh vùng cần cắt",
+    "Gambar persegi panjang di area yang ingin dipotong"
+  ],
+  "Smart Extract Object By Region": [
+    "按区域智能提取对象",
+    "Tách đối tượng thông minh theo vùng",
+    "Ekstrak Objek Cerdas berdasarkan Area"
+  ],
+  "Erasing the cutout background…": [
+    "正在移除剪出图像的背景…",
+    "Đang xóa nền của vùng ảnh đã cắt…",
+    "Menghapus latar belakang hasil potongan…"
+  ],
   "Extract Object By Region": [
     "按区域提取对象",
     "Tách đối tượng theo vùng",
@@ -311,7 +336,7 @@
   ],
   "Extract": [
     "提取",
-    "Trích xuất",
+    "Tách",
     "Ekstrak"
   ],
   "At least one slide is required": [
@@ -428,6 +453,51 @@
     "存储在此浏览器的缓存中",
     "Lưu trong bộ nhớ đệm của trình duyệt này",
     "Disimpan di cache browser ini"
+  ],
+  "Unsaved changes": [
+    "未保存的更改",
+    "Thay đổi chưa lưu",
+    "Perubahan belum disimpan"
+  ],
+  "Unload file?": [
+    "关闭文件？",
+    "Đóng tệp?",
+    "Tutup file?"
+  ],
+  "This file has unsaved changes which will be lost if you unload without saving. Save a single HTML file to keep your work.": [
+    "此文件有未保存的更改。如果不保存就从缓存中移除文件，这些更改将丢失。请保存为单个 HTML 文件以保留您的工作。",
+    "Tệp này có thay đổi chưa lưu. Nếu xóa tệp khỏi bộ nhớ đệm mà không lưu, các thay đổi sẽ bị mất. Hãy lưu thành một tệp HTML để giữ lại công việc của bạn.",
+    "File ini memiliki perubahan yang belum disimpan. Jika Anda menghapus file dari cache tanpa menyimpannya, perubahan tersebut akan hilang. Simpan sebagai satu file HTML untuk menyimpan pekerjaan Anda."
+  ],
+  "Unload this file to remove its in-memory cache. Save a single HTML file if you want to reopen it later.": [
+    "此操作将从浏览器缓存中移除文件。如果之后还想打开此文件，请先保存为单个 HTML 文件。",
+    "Thao tác này sẽ xóa tệp khỏi bộ nhớ đệm của trình duyệt. Nếu muốn mở lại sau, hãy lưu thành một tệp HTML.",
+    "Tindakan ini akan menghapus file dari cache browser. Jika ingin membukanya lagi nanti, simpan sebagai satu file HTML."
+  ],
+  "Save and unload": [
+    "保存并关闭",
+    "Lưu và đóng",
+    "Simpan dan tutup"
+  ],
+  "⚠️ Unload without saving": [
+    "⚠️ 不保存并关闭",
+    "⚠️ Đóng mà không lưu",
+    "⚠️ Tutup tanpa menyimpan"
+  ],
+  "The open file changed. Please try again.": [
+    "当前打开的文件已更改。请重试。",
+    "Tệp đang mở đã thay đổi. Vui lòng thử lại.",
+    "File yang sedang dibuka telah berubah. Silakan coba lagi."
+  ],
+  "The file changed while saving. Please save it again before unloading.": [
+    "文件在保存期间已更改。请重新保存后再从缓存中移除。",
+    "Tệp đã thay đổi trong khi lưu. Vui lòng lưu lại trước khi xóa khỏi bộ nhớ đệm.",
+    "File berubah saat disimpan. Simpan kembali sebelum menghapusnya dari cache."
+  ],
+  "Unable to save HTML": [
+    "无法保存 HTML 文件",
+    "Không thể lưu tệp HTML",
+    "Tidak dapat menyimpan file HTML"
   ],
   "Loading your documents…": [
     "正在加载您的文档…",
