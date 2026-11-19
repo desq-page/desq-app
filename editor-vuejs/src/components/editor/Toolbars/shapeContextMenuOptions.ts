@@ -15,8 +15,8 @@ export const aiEditOptions = [
     children: [
       // { label: "Extract Object By Region", key: "extract-object", icon: GroupObjects, onClick: () => selectObjectRegion() },
       
-      { label: "Extract Object By Region", key: "smart-extract-object", icon: GroupObjects, onClick: () => selectObjectRegion("smartExtractPictureObject") },
-      // { label: "Cut Out Image", key: "cut-out-region", icon: PhotoSizeSelectLargeSharp, onClick: () => selectObjectRegion("cutOutPictureRegion") },
+      // { label: "Extract Object By Region", key: "smart-extract-object", icon: GroupObjects, onClick: () => selectObjectRegion("smartExtractPictureObject") },
+      { label: "Cut Out Image Region", key: "cut-out-region", icon: PhotoSizeSelectLargeSharp, onClick: () => selectObjectRegion("cutOutPictureRegion") },
       { type: "divider" },
       { label: "Extract Text By Region", key: "extract-text-region", icon: TextCreation, onClick: () => selectPictureTextRegion(piniaInfo()) },
       { label: "Extract Text Under Pointer", key: "edit-picture-text", icon: PointerText, onClick: () => editPictureText(piniaInfo()) },

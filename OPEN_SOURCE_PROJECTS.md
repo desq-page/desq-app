@@ -20,7 +20,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | @css-render/vue3-ssr | 0.15.14 | MIT | node_modules/@css-render/vue3-ssr |
 | @desq/player | 1.0.9 | Not specified | node_modules/@desq/player |
 | @dmsnell/diff-match-patch | 1.1.0 | Apache-2.0 | git+https://github.com/dmsnell/diff-match-patch.git |
-| @emnapi/runtime | 1.11.3 | MIT | git+https://github.com/toyobayashi/emnapi.git |
+| @emnapi/runtime | 1.11.3 | MIT | node_modules/@emnapi/runtime |
 | @emotion/hash | 0.8.0 | MIT | https://github.com/emotion-js/emotion/tree/master/packages/hash |
 | @firebase/ai | 2.16.0 | Apache-2.0 | git+https://github.com/firebase/firebase-js-sdk.git |
 | @firebase/analytics-compat | 0.2.31 | Apache-2.0 | git+https://github.com/firebase/firebase-js-sdk.git |
@@ -116,7 +116,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | @img/sharp-linuxmusl-x64 | 0.34.5 | Apache-2.0 | node_modules/@bg0/browser/node_modules/@img/sharp-linuxmusl-x64 |
 | @img/sharp-linuxmusl-x64 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-linuxmusl-x64 |
 | @img/sharp-wasm32 | 0.34.5 | Apache-2.0 AND LGPL-3.0-or-later AND MIT | node_modules/@bg0/browser/node_modules/@img/sharp-wasm32 |
-| @img/sharp-wasm32 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later AND MIT | git+https://github.com/lovell/sharp.git |
+| @img/sharp-wasm32 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later AND MIT | node_modules/@img/sharp-wasm32 |
 | @img/sharp-webcontainers-wasm32 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-webcontainers-wasm32 |
 | @img/sharp-win32-arm64 | 0.34.5 | Apache-2.0 AND LGPL-3.0-or-later | node_modules/@bg0/browser/node_modules/@img/sharp-win32-arm64 |
 | @img/sharp-win32-arm64 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later | node_modules/@img/sharp-win32-arm64 |
