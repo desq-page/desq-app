@@ -600,7 +600,7 @@ function selectObjectRegion() {
     progress("Checking background…");
     try {
       const { extractPictureObject } = await import("shared-vuejs/api/extract-picture-object");
-      await extractPictureObject(pictureId, region, progress);
+      await extractPictureObject(pictureId, region, progress, translate);
     } catch (error) {
       showMessage(error instanceof Error ? error.message : String(error), undefined, "error");
     } finally {

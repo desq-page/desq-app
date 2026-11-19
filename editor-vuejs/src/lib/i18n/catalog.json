@@ -286,17 +286,17 @@
   ],
   "Extract Text By Region": [
     "按区域提取文字",
-    "Trích xuất văn bản theo vùng",
+    "Tách văn bản theo vùng",
     "Ekstrak Teks Berdasarkan Area"
   ],
   "Extract Text Under Pointer": [
     "提取指针下的文字",
-    "Trích xuất văn bản dưới con trỏ",
+    "Tách văn bản dưới con trỏ",
     "Ekstrak Teks di Bawah Penunjuk"
   ],
   "Extract All Text": [
     "提取所有文字",
-    "Trích xuất toàn bộ văn bản",
+    "Tách toàn bộ văn bản",
     "Ekstrak Semua Teks"
   ],
   "Extract Object By Region": [
@@ -1308,5 +1308,35 @@
     "正在保存 Word 源文件…",
     "Đang lưu tệp Word gốc…",
     "Menyimpan file sumber Word…"
+  ],
+  "Cutout preview": [
+    "抠图预览",
+    "Xem trước phần tách",
+    "Pratinjau potongan"
+  ],
+  "Click a colored area to remove it or a gray area to add it. Click-drag to edit multiple points. Cancel discards your edits.": [
+    "点击彩色区域将其移除，或点击灰色区域将其加入。拖动可编辑多个点。取消会放弃修改。",
+    "Bấm vùng có màu để loại bỏ hoặc vùng xám để thêm. Kéo để chỉnh sửa nhiều điểm. Chọn Hủy để bỏ các thay đổi.",
+    "Klik area berwarna untuk menghapusnya atau area abu-abu untuk menambahkannya. Seret untuk mengedit beberapa titik. Pilih Batal untuk membuang perubahan."
+  ],
+  "No matching region found. Try another point.": [
+    "未找到匹配的区域。请尝试其他位置。",
+    "Không tìm thấy vùng phù hợp. Hãy thử điểm khác.",
+    "Tidak ditemukan area yang sesuai. Coba titik lain."
+  ],
+  "Could not refine this region. Try another stroke.": [
+    "无法优化此区域。请尝试重新拖动。",
+    "Không thể tinh chỉnh vùng này. Hãy thử kéo lại.",
+    "Area ini tidak dapat disempurnakan. Coba goresan lain."
+  ],
+  "Updating the preview to add this area…": [
+    "正在更新预览以加入此区域…",
+    "Đang cập nhật bản xem trước để thêm vùng này…",
+    "Memperbarui pratinjau untuk menambahkan area ini…"
+  ],
+  "Updating the preview to remove this area…": [
+    "正在更新预览以移除此区域…",
+    "Đang cập nhật bản xem trước để loại bỏ vùng này…",
+    "Memperbarui pratinjau untuk menghapus area ini…"
   ]
 }

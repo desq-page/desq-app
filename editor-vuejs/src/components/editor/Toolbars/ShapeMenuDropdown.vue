@@ -12,6 +12,7 @@
 </template>
 
 <script setup lang="ts">
+import { translate } from "@/lib/i18n";
 import { getHandlingHandlingInfo, getSelectCropShp, getSelectEditingInfo, getSelectEditingPoint, getSelectSelGrpShps, getSelectSelShpFormat } from "shared-vuejs/editor";
 
 import { piniaInfo, piniaSelect } from "@/lib/common/store";
@@ -91,7 +92,7 @@ const props = defineProps({
 // );
 
 const ShapeContextMenuOptions = computed(() => [
-  ...aiEditOptions.value,
+  ...(piniaInfo().curPopupId === "shape-toolbar-popup" && editablePicture() ? aiEditOptions : []),
   {
     label: "Manage",
     key: "editshape",
@@ -360,7 +361,7 @@ function selectObjectRegion() {
     progress("Checking background…");
     try {
       const { extractPictureObject } = await import("shared-vuejs/api/extract-picture-object");
-      await extractPictureObject(pictureId, region, progress);
+      await extractPictureObject(pictureId, region, progress, translate);
     } catch (error) {
       showMessage(error instanceof Error ? error.message : String(error), undefined, "error");
     } finally {
