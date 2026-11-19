@@ -23,7 +23,7 @@ export const aiEditOptions = [
       { type: "divider" },
       { label: "Extract Text By Region", key: "extract-text-region", icon: TextCreation, onClick: () => selectPictureTextRegion(piniaInfo()) },
       { label: "Extract Text Under Pointer", key: "edit-picture-text", icon: PointerText, onClick: () => editPictureText(piniaInfo()) },
-      { label: "Extract All Text", key: "extract-text-all", icon: ScanText24Filled, onClick: () => extractPictureText(piniaInfo()) },
+      // { label: "Extract All Text", key: "extract-text-all", icon: ScanText24Filled, onClick: () => extractPictureText(piniaInfo()) },
       
       
  
