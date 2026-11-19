@@ -279,6 +279,11 @@
     "Xóa nền",
     "Hapus Latar Belakang"
   ],
+  "Extract Foreground Object": [
+    "提取前景对象",
+    "Tách đối tượng tiền cảnh",
+    "Ekstrak Objek Latar Depan"
+  ],
   "Extract Object": [
     "提取对象",
     "Tách đối tượng",
