@@ -40,6 +40,12 @@ export function translate(source: string | undefined): string {
 
 export function translateProgress(message: string | undefined): string {
   if (!message) return "";
+  const ocr = /^Reading box (\d+) of (\d+) · line (\d+) of (\d+)…$/.exec(message);
+  if (ocr) {
+    return translate("Reading box {box} of {boxes} · line {line} of {lines}…")
+      .replace("{box}", ocr[1]).replace("{boxes}", ocr[2])
+      .replace("{line}", ocr[3]).replace("{lines}", ocr[4]);
+  }
   const pdf = /^Importing PDF page (\d+) of (\d+)…$/.exec(message);
   if (pdf) {
     return translate("Importing PDF page {page} of {total}…")

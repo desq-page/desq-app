@@ -1,6 +1,6 @@
 import { translate } from "@/lib/i18n";
 import { piniaInfo } from "@/lib/common/store";
-import { editPictureText, extractPictureText, selectPictureTextRegion, selectPictureRegion } from "shared-vuejs/api/edit-picture-text";
+import { editablePicture, editPictureText, extractPictureText, selectPictureTextRegion, selectPictureRegion } from "shared-vuejs/api/edit-picture-text";
 import { rmbgUsingXenova } from "./ToolbarUtils";
 import { GroupObjects, PointerText, TextCreation } from "@vicons/carbon";
 import { AutoAwesomeOutlined, PhotoSizeSelectLargeSharp } from "@vicons/material";
@@ -16,15 +16,17 @@ export const aiEditOptions = [
       // { label: "Extract Object By Region", key: "extract-object", icon: GroupObjects, onClick: () => selectObjectRegion() },
       
       // { label: "Extract Object By Region", key: "smart-extract-object", icon: GroupObjects, onClick: () => selectObjectRegion("smartExtractPictureObject") },
-      { label: "Cut Out Image Region", key: "cut-out-region", icon: PhotoSizeSelectLargeSharp, onClick: () => selectObjectRegion("cutOutPictureRegion") },
+      { label: "Cut Out Image Region", key: "cut-out-region", icon: GroupObjects, onClick: () => selectObjectRegion("cutOutPictureRegion") },
+      { type: "divider" },
+      { label: "Extract Foreground Object", key: "extract-object-auto", icon: PhotoSizeSelectLargeSharp, onClick: () => extractObjectAutomatically() },
+      { label: "Erase Background", key: "remove-background", icon: VideoBackgroundEffect20Filled, onClick: rmbgUsingXenova },
       { type: "divider" },
       { label: "Extract Text By Region", key: "extract-text-region", icon: TextCreation, onClick: () => selectPictureTextRegion(piniaInfo()) },
       { label: "Extract Text Under Pointer", key: "edit-picture-text", icon: PointerText, onClick: () => editPictureText(piniaInfo()) },
       { label: "Extract All Text", key: "extract-text-all", icon: ScanText24Filled, onClick: () => extractPictureText(piniaInfo()) },
       
       
-      { type: "divider" },
-      { label: "Erase Background", key: "remove-background", icon: VideoBackgroundEffect20Filled, onClick: rmbgUsingXenova },
+ 
     ],
   },
   { type: "divider" },
@@ -38,7 +40,7 @@ function selectObjectRegion(
   const info = piniaInfo();
   const rectangle = action === "cutOutPictureRegion";
   const instruction = rectangle ? "Draw a rectangle to cut out" : "Draw a box around the object and its shadow";
-  selectPictureRegion(info, instruction, async (pictureId, region) => {
+  selectPictureRegion(info, translate(instruction), async (pictureId, region) => {
     const progress = (message: string) => { info.loadingBar = message; };
     progress(rectangle ? "Cutting out region…" : "Checking background…");
     try {
@@ -51,4 +53,22 @@ function selectObjectRegion(
       progress("");
     }
   });
+}
+
+function extractObjectAutomatically() {
+  const info = piniaInfo();
+  const picture = editablePicture();
+  if (!picture || info.loadingBar) return;
+  const progress = (message: string) => { info.loadingBar = message; };
+  progress("Finding object…");
+  void (async () => {
+    try {
+      const { extractPictureObjectAutomatically } = await import("shared-vuejs/api/extract-picture-object");
+      await extractPictureObjectAutomatically(picture.id, progress, translate);
+    } catch (error) {
+      showMessage(error instanceof Error ? error.message : String(error), undefined, "error");
+    } finally {
+      progress("");
+    }
+  })();
 }

@@ -279,6 +279,126 @@
     "Xóa nền",
     "Hapus Latar Belakang"
   ],
+  "Extract Object": [
+    "提取对象",
+    "Tách đối tượng",
+    "Ekstrak Objek"
+  ],
+  "Finding object…": [
+    "正在查找对象…",
+    "Đang tìm đối tượng…",
+    "Mencari objek…"
+  ],
+  "Checking background…": [
+    "正在检查背景…",
+    "Đang kiểm tra nền…",
+    "Memeriksa latar belakang…"
+  ],
+  "Finding text…": [
+    "正在查找文字…",
+    "Đang tìm văn bản…",
+    "Mencari teks…"
+  ],
+  "Loading OCR…": [
+    "正在加载文字识别模型…",
+    "Đang tải mô hình OCR…",
+    "Memuat model OCR…"
+  ],
+  "OCR model ready…": [
+    "文字识别模型已就绪…",
+    "Mô hình OCR đã sẵn sàng…",
+    "Model OCR siap…"
+  ],
+  "Detecting text regions…": [
+    "正在检测文字区域…",
+    "Đang phát hiện vùng văn bản…",
+    "Mendeteksi area teks…"
+  ],
+  "Finding text regions…": [
+    "正在查找文字区域…",
+    "Đang tìm vùng văn bản…",
+    "Mencari area teks…"
+  ],
+  "Checking slide language…": [
+    "正在检查幻灯片语言…",
+    "Đang xác định ngôn ngữ của trang chiếu…",
+    "Memeriksa bahasa slide…"
+  ],
+  "Reading box {box} of {boxes} · line {line} of {lines}…": [
+    "正在识别第 {box}/{boxes} 个区域 · 第 {line}/{lines} 行…",
+    "Đang đọc vùng {box}/{boxes} · dòng {line}/{lines}…",
+    "Membaca area {box} dari {boxes} · baris {line} dari {lines}…"
+  ],
+  "Extracting…": [
+    "正在提取…",
+    "Đang tách…",
+    "Mengekstrak…"
+  ],
+  "Loading model…": [
+    "正在加载模型…",
+    "Đang tải mô hình…",
+    "Memuat model…"
+  ],
+  "Detecting foreground…": [
+    "正在检测前景…",
+    "Đang phát hiện tiền cảnh…",
+    "Mendeteksi latar depan…"
+  ],
+  "Refining the cutout…": [
+    "正在优化抠图…",
+    "Đang tinh chỉnh vùng tách…",
+    "Menyempurnakan hasil potongan…"
+  ],
+  "Review the cutout…": [
+    "请检查抠图结果…",
+    "Hãy kiểm tra vùng đã tách…",
+    "Tinjau hasil potongan…"
+  ],
+  "Extracting object and shadow…": [
+    "正在提取对象及其阴影…",
+    "Đang tách đối tượng và bóng đổ…",
+    "Mengekstrak objek dan bayangannya…"
+  ],
+  "Inpainting the original picture…": [
+    "正在修补原图…",
+    "Đang lấp vùng đã cắt trên ảnh gốc…",
+    "Mengisi area yang dipotong pada gambar asli…"
+  ],
+  "Click a selected area to remove it or a darkened area to add it. Click-drag to edit multiple points. Cancel discards your edits.": [
+    "点击选中区域可将其移除，点击变暗区域可将其加入选区。点击并拖动可编辑多个点。取消将放弃修改。",
+    "Nhấp vào vùng đã chọn để bỏ chọn hoặc vùng tối để thêm vào vùng chọn. Nhấp và kéo để sửa nhiều điểm. Chọn Hủy để bỏ các thay đổi.",
+    "Klik area terpilih untuk menghapusnya dari pilihan atau area gelap untuk menambahkannya. Klik dan seret untuk mengedit beberapa titik. Pilih Batal untuk membuang perubahan."
+  ],
+  "Draw a box around the object and its shadow": [
+    "在对象及其阴影周围画一个框",
+    "Vẽ khung quanh đối tượng và bóng đổ",
+    "Gambar kotak di sekeliling objek dan bayangannya"
+  ],
+  "Loading model, may take a while the first time...": [
+    "正在加载模型，首次加载可能需要一些时间…",
+    "Đang tải mô hình. Lần đầu có thể mất một lúc…",
+    "Memuat model. Pemuatan pertama mungkin memerlukan waktu…"
+  ],
+  "Updating the preview to add this area…": [
+    "正在将此区域加入预览…",
+    "Đang thêm vùng này vào bản xem trước…",
+    "Menambahkan area ini ke pratinjau…"
+  ],
+  "Updating the preview to remove this area…": [
+    "正在从预览中移除此区域…",
+    "Đang bỏ vùng này khỏi bản xem trước…",
+    "Menghapus area ini dari pratinjau…"
+  ],
+  "No matching region found. Try another point.": [
+    "未找到匹配的区域。请尝试另一个点。",
+    "Không tìm thấy vùng phù hợp. Hãy thử điểm khác.",
+    "Area yang cocok tidak ditemukan. Coba titik lain."
+  ],
+  "Could not refine this region. Try another stroke.": [
+    "无法优化此区域。请尝试另一笔。",
+    "Không thể tinh chỉnh vùng này. Hãy thử kéo lại.",
+    "Area ini tidak dapat disempurnakan. Coba goresan lain."
+  ],
   "Erase Background": [
     "擦除背景",
     "Xóa nền",
