@@ -13,7 +13,7 @@ export const aiEditOptions = [
     key: "editable-picture",
     icon: AutoAwesomeOutlined,
     children: [
-      { label: "Extract Stand-out Image Region", key: "cut-out-region", icon: GroupObjects, onClick: () => selectObjectRegion("cutOutPictureRegion") },
+      { label: "Extract Standalone Image Region", key: "cut-out-region", icon: GroupObjects, onClick: () => selectObjectRegion("cutOutPictureRegion") },
       { label: "Extract Mixed-up Image Region", key: "extract-object", icon: GroupAccount, onClick: () => selectObjectRegion() },
       { type: "divider" },
       { label: "Re-extract Foreground Object", key: "extract-object-auto", icon: PhotoSizeSelectLargeSharp, onClick: () => extractObjectAutomatically() },

@@ -116,12 +116,10 @@
               (target == 'text' && !piniaSelect().editingInfo?.selectionText),
           }"
         />
-        <input
+        <IframeInputbox
           :value="size"
-          :size="3"
-          @change="
-            (e) => saveProp('size', +(e.target as HTMLInputElement)?.value)
-          "
+          :on-change="(value) => saveProp('size', +value)"
+          :input-attr="{ type: 'number', style: 'width: 40px', min: 0, max: 50 }"
         />
       </template>
     </LayoutHeader>
@@ -144,13 +142,10 @@
               (target == 'text' && !piniaSelect().editingInfo?.selectionText),
           }"
         />
-        <input
+        <IframeInputbox
           :value="transparency"
-          :size="3"
-          @change="
-            (e) =>
-              saveProp('transparency', +(e.target as HTMLInputElement)?.value)
-          "
+          :on-change="(value) => saveProp('transparency', +value)"
+          :input-attr="{ type: 'number', style: 'width: 40px', min: 0, max: 100 }"
         />
       </template>
     </LayoutHeader>
@@ -161,6 +156,7 @@
 import { getShapeDeep, updateShape, getTheme, getMasterInfo } from "shared-vuejs/editor";
 
 import LayoutHeader from "@/components/common/Layouts/LayoutHeader.vue";
+import IframeInputbox from "@/components/common/IframeInputbox.vue";
 import { saveDexie } from "shared-vuejs/api/dbutils";
 import { piniaSelect } from "@/lib/common/store";
 import { EMU, ue } from "shared-vuejs/api/globalUtility";

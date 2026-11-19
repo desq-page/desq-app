@@ -294,6 +294,11 @@
     "Tách vùng ảnh nổi bật",
     "Ekstrak Area Gambar yang Menonjol"
   ],
+  "Extract Standalone Image Region": [
+    "提取独立图像区域",
+    "Tách vùng ảnh đứng riêng",
+    "Ekstrak Area Gambar Mandiri"
+  ],
   "Extract Mixed-up Image Region": [
     "提取与背景混杂的图像区域",
     "Tách vùng ảnh lẫn với nền",
