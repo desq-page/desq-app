@@ -284,6 +284,21 @@
     "Tách đối tượng tiền cảnh",
     "Ekstrak Objek Latar Depan"
   ],
+  "Re-extract Foreground Object": [
+    "重新提取前景对象",
+    "Tách lại đối tượng tiền cảnh",
+    "Ekstrak Ulang Objek Latar Depan"
+  ],
+  "Extract Stand-out Image Region": [
+    "提取显眼的图像区域",
+    "Tách vùng ảnh nổi bật",
+    "Ekstrak Area Gambar yang Menonjol"
+  ],
+  "Extract Mixed-up Image Region": [
+    "提取与背景混杂的图像区域",
+    "Tách vùng ảnh lẫn với nền",
+    "Ekstrak Area Gambar yang Bercampur dengan Latar Belakang"
+  ],
   "Extract Object": [
     "提取对象",
     "Tách đối tượng",

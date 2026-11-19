@@ -2,7 +2,7 @@ import { translate } from "@/lib/i18n";
 import { piniaInfo } from "@/lib/common/store";
 import { editablePicture, editPictureText, extractPictureText, selectPictureTextRegion, selectPictureRegion } from "shared-vuejs/api/edit-picture-text";
 import { rmbgUsingXenova } from "./ToolbarUtils";
-import { GroupObjects, PointerText, TextCreation } from "@vicons/carbon";
+import { GroupAccount, GroupObjects, PointerText, TextCreation } from "@vicons/carbon";
 import { AutoAwesomeOutlined, PhotoSizeSelectLargeSharp } from "@vicons/material";
 import { ImageAltText24Regular, ScanText24Filled, VideoBackgroundEffect20Filled } from "@vicons/fluent";
 import { showMessage } from "shared-vuejs/api/utils";
@@ -13,12 +13,10 @@ export const aiEditOptions = [
     key: "editable-picture",
     icon: AutoAwesomeOutlined,
     children: [
-      // { label: "Extract Object By Region", key: "extract-object", icon: GroupObjects, onClick: () => selectObjectRegion() },
-      
-      // { label: "Extract Object By Region", key: "smart-extract-object", icon: GroupObjects, onClick: () => selectObjectRegion("smartExtractPictureObject") },
-      { label: "Cut Out Image Region", key: "cut-out-region", icon: GroupObjects, onClick: () => selectObjectRegion("cutOutPictureRegion") },
+      { label: "Extract Stand-out Image Region", key: "cut-out-region", icon: GroupObjects, onClick: () => selectObjectRegion("cutOutPictureRegion") },
+      { label: "Extract Mixed-up Image Region", key: "extract-object", icon: GroupAccount, onClick: () => selectObjectRegion() },
       { type: "divider" },
-      { label: "Extract Foreground Object", key: "extract-object-auto", icon: PhotoSizeSelectLargeSharp, onClick: () => extractObjectAutomatically() },
+      { label: "Re-extract Foreground Object", key: "extract-object-auto", icon: PhotoSizeSelectLargeSharp, onClick: () => extractObjectAutomatically() },
       { label: "Erase Background", key: "remove-background", icon: VideoBackgroundEffect20Filled, onClick: rmbgUsingXenova },
       { type: "divider" },
       { label: "Extract Text By Region", key: "extract-text-region", icon: TextCreation, onClick: () => selectPictureTextRegion(piniaInfo()) },
