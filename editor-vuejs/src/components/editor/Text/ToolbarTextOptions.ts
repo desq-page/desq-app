@@ -122,56 +122,23 @@ export const textToolbarOptions: any = [
 ];
 
 function updateFontStyle(e, setObject, unsetObject) {
-  if (piniaSelect().editingInfo) {
+  const selection = piniaSelect();
+  const shape = selection.selShpFormat;
+  if (selection.editingInfo || (shape?.txBody && shape.type !== "input")) {
     execEditorSurroundSpan(setObject, unsetObject);
     e.preventDefault();
-  } else if (
-    piniaSelect().selShpFormat?.txBody ||
-    piniaSelect().selShpFormat?.type == "input"
-  ) {
-    // setting for whole textbox
-    const styleKey = Object.keys(setObject)[0];
-    // if (!key.startsWith("--")) {
-    //   key = camelCase(key);
-    // }
-
-    const val = Object.values(setObject)[0];
-
-    let updatedVal;
-    let key;
-    if (styleKey == "font-weight") {
-      key = "b";
-      updatedVal = val == "bold" ? 1 : 0;
-    } else if (styleKey == "font-style") {
-      key = "i";
-      updatedVal = val == "italic" ? 1 : 0;
-    } else if (styleKey == "text-decoration") {
-      key = "u";
-      updatedVal = val == "underline" ? "sng" : "none";
-    }
-
-    if (
-      piniaSelect().selShpFormat?.txBody?.bodyPr?.defRPr?.[key] == updatedVal ||
-      piniaSelect().selShpFormat[key] == updatedVal
-    ) {
-      // already has this value, likely trying to toggle
-      updatedVal = Object.values(unsetObject)[0];
-      // setting individuals to unsetObject
-      execEditorSurroundSpan(unsetObject, undefined);
-    } else {
-      // setting individuals to setObject
-      execEditorSurroundSpan(setObject, undefined);
-    }
-    if (piniaSelect().selShpFormat?.type == "input") {
-      const shp = getShapeDeep(piniaSelect().selShpFormat?.id);
-      shp[key] = updatedVal;
-      updateShape(shp);
-      saveDexie();
-    } else {
-      piniaSelect().selShpFormat.txBody.bodyPr.defRPr = {
-        ...piniaSelect().selShpFormat.txBody?.bodyPr?.defRPr,
-        [key]: updatedVal,
-      };
-    }
+  } else if (shape?.type === "input") {
+    const [styleKey] = Object.keys(setObject);
+    const [key, on, off] = {
+      "font-weight": ["b", 1, 0],
+      "font-style": ["i", 1, 0],
+      "text-decoration": ["u", "sng", "none"],
+    }[styleKey];
+    const input = getShapeDeep(shape.id);
+    if (!input) return;
+    input[key] = input[key] == on ? off : on;
+    updateShape(input);
+    saveDexie();
+    e.preventDefault();
   }
 }

@@ -289,20 +289,15 @@
     "Tách lại đối tượng tiền cảnh",
     "Ekstrak Ulang Objek Latar Depan"
   ],
-  "Extract Stand-out Image Region": [
-    "提取显眼的图像区域",
-    "Tách vùng ảnh nổi bật",
-    "Ekstrak Area Gambar yang Menonjol"
+  "Cut Out Standalone Image Region": [
+    "剪出独立图像区域",
+    "Cắt rời vùng ảnh đứng riêng",
+    "Potong Area Gambar Terpisah"
   ],
-  "Extract Standalone Image Region": [
-    "提取独立图像区域",
-    "Tách vùng ảnh đứng riêng",
-    "Ekstrak Area Gambar Mandiri"
-  ],
-  "Extract Mixed-up Image Region": [
-    "提取与背景混杂的图像区域",
-    "Tách vùng ảnh lẫn với nền",
-    "Ekstrak Area Gambar yang Bercampur dengan Latar Belakang"
+  "Cut Out Mixed-up Image Region": [
+    "剪出与背景混杂的图像区域",
+    "Cắt rời vùng ảnh lẫn với nền",
+    "Potong Area Gambar yang Bercampur dengan Latar Belakang"
   ],
   "Extract Object": [
     "提取对象",
@@ -479,10 +474,10 @@
     "Kiểm tra đối tượng đã tách",
     "Tinjau potongan objek"
   ],
-  "Extract": [
-    "提取",
-    "Tách",
-    "Ekstrak"
+  "Cut Out": [
+    "剪出",
+    "Cắt Rời",
+    "Potong"
   ],
   "At least one slide is required": [
     "至少需要一张幻灯片",

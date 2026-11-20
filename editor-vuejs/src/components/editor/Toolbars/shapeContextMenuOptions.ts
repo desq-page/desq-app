@@ -13,8 +13,8 @@ export const aiEditOptions = [
     key: "editable-picture",
     icon: AutoAwesomeOutlined,
     children: [
-      { label: "Extract Standalone Image Region", key: "cut-out-region", icon: GroupObjects, onClick: () => selectObjectRegion("cutOutPictureRegion") },
-      { label: "Extract Mixed-up Image Region", key: "extract-object", icon: GroupAccount, onClick: () => selectObjectRegion() },
+      { label: "Cut Out Standalone Image Region", key: "cut-out-region", icon: GroupObjects, onClick: () => selectObjectRegion("cutOutPictureRegion") },
+      { label: "Cut Out Mixed-up Image Region", key: "extract-object", icon: GroupAccount, onClick: () => selectObjectRegion() },
       { type: "divider" },
       { label: "Re-extract Foreground Object", key: "extract-object-auto", icon: PhotoSizeSelectLargeSharp, onClick: () => extractObjectAutomatically() },
       { label: "Erase Background", key: "remove-background", icon: VideoBackgroundEffect20Filled, onClick: rmbgUsingXenova },
@@ -50,7 +50,7 @@ function selectObjectRegion(
     } finally {
       progress("");
     }
-  }, { extract: translate("Extract"), deletePoint: translate("Delete Point") });
+  }, { extract: translate("Cut Out"), deletePoint: translate("Delete Point") });
 }
 
 function extractObjectAutomatically() {
