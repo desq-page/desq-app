@@ -9,7 +9,7 @@ import "shared-vuejs/api/main.css";
 import "../src/assets/editor.css";
 // import "../src/assets/navi.css";
 import "../src/assets/toolbar.css";
-import "../src/assets/handle.css";
+import "shared-vuejs/canvas.css";
 import "../src/assets/text.css";
 import "../src/assets/table.css";
 

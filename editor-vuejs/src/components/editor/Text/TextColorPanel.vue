@@ -182,7 +182,7 @@ const fillSelectors = [
 watch(
   [() => piniaSelect().selShpFormat, () => piniaSelect().editingInfo,
     () => piniaSelect().editingInfo?.color,
-    () => piniaSelect().editingPendingFormats?.["--clr"],
+    () => piniaSelect().editingPendingFormats,
     () => piniaSelect().editingInfo?.grad,
     () => piniaSelect().editingInfo?.img],
   updateCurrentColor,
@@ -195,7 +195,8 @@ function updateCurrentColor() {
   }
 
   if (piniaSelect().editingInfo) {
-    const currentColor = piniaSelect().editingPendingFormats?.["--clr"] ?? piniaSelect().editingInfo?.color;
+    const pending = piniaSelect().editingPendingFormats;
+    const currentColor = pending?.["--clr"] ?? piniaSelect().editingInfo.color;
     const rgba = color2array(
       currentColor
       //  ||
@@ -204,9 +205,9 @@ function updateCurrentColor() {
     );
     textOpacity.value = Math.round(colorOpacity(currentColor) * 100);
     textColor.value = array2hex(rgba.slice(0, 3)) || "#000000";
-    textGradient.value = piniaSelect().editingInfo?.["grad"];
+    textGradient.value = (pending && "--grad" in pending ? pending["--grad"] : piniaSelect().editingInfo.grad) || "";
 
-    if (piniaSelect().editingInfo?.["grad"]) {
+    if (textGradient.value) {
       textInfo.value = {
         type: 'gradFill'
       }

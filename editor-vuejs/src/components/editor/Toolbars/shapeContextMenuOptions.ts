@@ -50,7 +50,7 @@ function selectObjectRegion(
     } finally {
       progress("");
     }
-  });
+  }, { extract: translate("Extract"), deletePoint: translate("Delete Point") });
 }
 
 function extractObjectAutomatically() {
