@@ -136,8 +136,9 @@ function updateFontStyle(e, setObject, unsetObject) {
     }[styleKey];
     const input = getShapeDeep(shape.id);
     if (!input) return;
-    input[key] = input[key] == on ? off : on;
-    updateShape(input);
+    const active = input[key] == on;
+    execEditorSurroundSpan(active ? unsetObject : setObject);
+    updateShape({ ...getShapeDeep(shape.id), id: shape.id, [key]: active ? off : on });
     saveDexie();
     e.preventDefault();
   }
