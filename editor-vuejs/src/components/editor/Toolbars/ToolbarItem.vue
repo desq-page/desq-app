@@ -31,8 +31,8 @@
             active,
           }"
           :style="{
-            minWidth:
-              piniaResize().windowWidth > 769 && !!caption ? '40px' : '20px',
+            // minWidth:
+            //   piniaResize().windowWidth > 769 && !!caption ? '40px' : '20px',
             padding: !!caption ? '0 6px' : null,
             margin: !!caption ? '0 4px' : null,
           }"

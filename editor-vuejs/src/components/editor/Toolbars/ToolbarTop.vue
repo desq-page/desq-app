@@ -923,6 +923,8 @@ const $style = useCssModule();
   position: absolute;
   top: 36px;
   inset-inline: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .toolbar-tabs :global(.n-tabs-nav-scroll-wrapper) {
@@ -950,7 +952,12 @@ const $style = useCssModule();
   flex: 1 1 0;
   justify-content: flex-end;
   max-width: 150px;
-  margin-right: 10px;
+}
+
+@media only screen and (max-width: 767px) {
+  .toolbar-right {
+    max-width: 80px;
+  }
 }
 
 .file-menu {
