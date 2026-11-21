@@ -950,6 +950,7 @@ const $style = useCssModule();
   flex: 1 1 0;
   justify-content: flex-end;
   max-width: 150px;
+  margin-right: 10px;
 }
 
 .file-menu {
