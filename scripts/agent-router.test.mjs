@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createRouter } from '../cloudflare-publisher/src/agent/router.mjs';
+import { createRouter } from '../../cloudflare-publisher/src/agent/router.mjs';
 
 test('Fetch router streams progress before the handler completes', async () => {
   const app = createRouter();
@@ -48,7 +48,7 @@ test('Fetch router preserves buffered JSON responses', async () => {
 });
 
 test('credential proxy relays provider bytes without decoding or corrupting UTF-8', async () => {
-  const { relayProviderResponse } = await import('../cloudflare-publisher/src/agent/proxy.mjs');
+  const { relayProviderResponse } = await import('../../cloudflare-publisher/src/agent/proxy.mjs');
   const bytes = new TextEncoder().encode('预算\n');
   const app = createRouter();
   app.get('/raw', (req, res) => relayProviderResponse(new Response(bytes, { headers: { 'Content-Type': 'text/event-stream' } }), res, { maxBytes: 100, version: 'test' }));
@@ -58,7 +58,7 @@ test('credential proxy relays provider bytes without decoding or corrupting UTF-
 });
 
 test('credential proxy interrupts oversized responses instead of forwarding beyond the limit', async () => {
-  const { relayProviderResponse } = await import('../cloudflare-publisher/src/agent/proxy.mjs');
+  const { relayProviderResponse } = await import('../../cloudflare-publisher/src/agent/proxy.mjs');
   const app = createRouter();
   app.get('/raw', (req, res) => relayProviderResponse(new Response('too large'), res, { maxBytes: 2, version: 'test' }));
   const response = await app.fetch(new Request('https://localhost/raw'));

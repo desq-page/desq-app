@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {fetchSourceHTML,publicSourceURL} from '../cloudflare-publisher/src/agent/source-url.mjs';
+import {fetchSourceHTML,publicSourceURL} from '../../cloudflare-publisher/src/agent/source-url.mjs';
 import {ingestUrl} from '../editor-vuejs/src/lib/agent/source-intake.mjs';
-import {createAgentService} from '../cloudflare-publisher/src/agent/service.mjs';
+import {createAgentService} from '../../cloudflare-publisher/src/agent/service.mjs';
 const html='<title>Article</title><nav>Noise</nav><main><h2>History</h2><p>This full article contains enough historical evidence to become a useful factual source for a presentation.</p><img src="/photo.jpg" alt="Historical photo"></main><footer>Noise</footer>';
 test('URL intake preserves full article, provenance, original HTML and relative images', async()=>{
  const source=await ingestUrl('https://en.wikipedia.org/wiki/Example',{fetchImpl:async(path,options)=>{assert.equal(path,'/api/agent/sources/url');assert.equal(JSON.parse(options.body).url,'https://en.wikipedia.org/wiki/Example');return Response.json({html,url:'https://en.wikipedia.org/wiki/Example'});}});
@@ -24,7 +24,7 @@ test('source endpoint accepts same-origin requests and rejects cross-origin requ
 });
 
 test('Node address validation accepts public IPv4/IPv6 and rejects private and mapped private addresses', async()=>{
- const {validateSourceHost}=await import('../cloudflare-publisher/src/agent/node.mjs');
+ const {validateSourceHost}=await import('../../cloudflare-publisher/src/agent/node.mjs');
  for (const [address,family] of [['103.102.166.224',4],['208.80.154.224',4],['2606:4700:4700::1111',6],['::ffff:208.80.154.224',6]]) {
    await validateSourceHost('en.wikipedia.org',async()=>[{address,family}]);
  }

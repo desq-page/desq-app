@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generateKeyPairSync } from 'node:crypto';
 import jwt from 'jsonwebtoken';
-import { hostedOAuthConfiguration } from '../cloudflare-publisher/src/agent/hosted-oauth.mjs';
-import { createAgentService } from '../cloudflare-publisher/src/agent/service.mjs';
-import { agentRequest } from '../cloudflare-publisher/src/agent.js';
+import { hostedOAuthConfiguration } from '../../cloudflare-publisher/src/agent/hosted-oauth.mjs';
+import { createAgentService } from '../../cloudflare-publisher/src/agent/service.mjs';
+import { agentRequest } from '../../cloudflare-publisher/src/agent.js';
 const origin = 'https://desq.example';
 const env = { OPENAI_OAUTH_CLIENT_ID: 'oaiapp_hosted', OPENAI_OAUTH_PLAN_ENABLED: 'true' };
 

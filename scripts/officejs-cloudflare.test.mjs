@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import worker from '../cloudflare-publisher/src/worker.js';
+import worker from '../../cloudflare-publisher/src/worker.js';
 import { isPublishedPath, reservedUsernames } from 'shared-vuejs/api/lib-published-path';
 
 test('PowerPoint add-in paths are reserved and served as application assets', async () => {

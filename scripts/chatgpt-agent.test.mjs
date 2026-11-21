@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { generateKeyPairSync } from 'node:crypto';
 import jwt from 'jsonwebtoken';
 import express from 'express';
-import { createChatGPTProvider, verifyIdentity, connectionError } from '../cloudflare-publisher/src/agent/chatgpt.mjs';
+import { createChatGPTProvider, verifyIdentity, connectionError } from '../../cloudflare-publisher/src/agent/chatgpt.mjs';
 import { chatgptRequest, createChatGPTAgent } from '../editor-vuejs/src/lib/agent/chatgpt-agent.mjs';
 import { createEditorTools } from '../editor-vuejs/src/lib/agent/editor-tools.mjs';
 

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { geminiAPIError } from '../cloudflare-publisher/src/agent/gemini-errors.mjs';
-import { createAgentService } from '../cloudflare-publisher/src/agent/service.mjs';
+import { geminiAPIError } from '../../cloudflare-publisher/src/agent/gemini-errors.mjs';
+import { createAgentService } from '../../cloudflare-publisher/src/agent/service.mjs';
 const rejection = (reason, status = 400, message = 'private-key and private-project') => Response.json({ error: {
   status: 'INVALID_ARGUMENT', message, details: [{ '@type': 'type.googleapis.com/google.rpc.ErrorInfo', reason, metadata: { key: 'private-key' } }],
 } }, { status });

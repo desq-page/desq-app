@@ -20,6 +20,10 @@ The build command prepares the standalone editor and player files used by HTML e
 
 Run the standalone editor build command again after changing its source files. The required compiled packages are included in the repository and installed by `npm ci`.
 
+For the local agent host or Cloudflare deployment, put `cloudflare-publisher`
+beside this repository and run `npm --prefix ../cloudflare-publisher ci`. The
+publisher README documents the sibling checkout layout and deploy commands.
+
 ## License
 
 DESQ application code is licensed under the GNU Affero General Public License

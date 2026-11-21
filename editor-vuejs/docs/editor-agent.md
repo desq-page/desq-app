@@ -6,12 +6,13 @@ integration and are not available as panel options.
 
 ## Shared agent host
 
-Run only `npm run dev` for development. Vite hosts both
+Install dependencies in the sibling `cloudflare-publisher` checkout, then run
+`npm run dev` from `desq-app`. Vite hosts both
 `/api/agent/chatgpt/*` and `/api/agent/gemini/*` directly in its process;
 there are no provider proxy targets or separate agent-server commands.
 Restart Vite after changing server code. `vite preview` also includes the host.
 
-Production agent services live in `cloudflare-publisher/src/agent/`. The local
+Production agent services live in the sibling `cloudflare-publisher/src/agent/`. The local
 Fetch/Vite adapter stays there for development and preview only. There is no
 separate production Node server or agent-host bundle.
 

@@ -9,7 +9,7 @@ test('sample HTML routes to static assets rather than publication storage', asyn
   for (const path of ['/samples/christmas-2026-claude.html', '/Samples/example.html', '/%73amples/example.html'])
     assert.equal(isPublishedPath(path), false);
   assert.equal(isPublishedPath('/hong/christmas-2026/'), true);
-  const result = await build({entryPoints:[resolve(import.meta.dirname, '../cloudflare-publisher/src/worker.js')],bundle:true,write:false,platform:'node',format:'esm',plugins:[{name:'routing-test',setup(build){
+  const result = await build({entryPoints:[resolve(import.meta.dirname, '../../cloudflare-publisher/src/worker.js')],bundle:true,write:false,platform:'node',format:'esm',plugins:[{name:'routing-test',setup(build){
     build.onResolve({filter:/^shared-vuejs\/api\/lib-published-path$/},()=>({path:resolve(import.meta.dirname,'../../desq-core/shared-vuejs/src/lib/published-path.js')}));
     build.onResolve({filter:/^\.\/agent\.js$/},()=>({path:'agent',namespace:'stub'}));
     build.onLoad({filter:/.*/,namespace:'stub'},()=>({contents:'export class AgentSession {} export function agentRequest() { throw Error("Unexpected agent request"); }'}));

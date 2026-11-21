@@ -8,9 +8,9 @@
     "test:agent-images": "node --test scripts/agent-image-generation.test.mjs",
     "test:deck-agent": "node --test scripts/deck-compiler.test.mjs scripts/deck-design.test.mjs",
     "test:chatgpt-agent": "node --test scripts/chatgpt-agent.test.mjs scripts/chatgpt-persistence.test.mjs scripts/hosted-oauth.test.mjs",
-    "deploy:cloudflare": "npm --prefix cloudflare-publisher run deploy",
-    "deploy:cloudflare:worker": "npm --prefix cloudflare-publisher run deploy:worker",
-    "deploy:cloudflare:app": "npm --prefix cloudflare-publisher run deploy:app",
+    "deploy:cloudflare": "npm --prefix ../cloudflare-publisher run deploy",
+    "deploy:cloudflare:worker": "npm --prefix ../cloudflare-publisher run deploy:worker",
+    "deploy:cloudflare:app": "npm --prefix ../cloudflare-publisher run deploy:app",
     "test": "echo \"Error: no test specified\" && exit 1",
     "notices": "node scripts/generate-notices.mjs",
     "dev": "npm --prefix editor-vuejs run editor:dev",
@@ -34,8 +34,7 @@
   "license": "AGPL-3.0-only",
   "workspaces": [
     "editor-vuejs",
-    "editor-vanjs",
-    "cloudflare-publisher"
+    "editor-vanjs"
   ],
   "dependencies": {
     "@agilie/canvas-image-cover-position": "^1.1.1",

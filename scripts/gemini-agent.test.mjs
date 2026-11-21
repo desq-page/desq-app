@@ -3,7 +3,7 @@ import { readGeminiPlan } from '../editor-vuejs/src/lib/agent/gemini-response.mj
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import express from 'express';
-import { createGeminiProvider } from '../cloudflare-publisher/src/agent/gemini.mjs';
+import { createGeminiProvider } from '../../cloudflare-publisher/src/agent/gemini.mjs';
 import { geminiRequest, createGeminiAgent } from '../editor-vuejs/src/lib/agent/gemini-agent.mjs';
 import { createEditorTools } from '../editor-vuejs/src/lib/agent/editor-tools.mjs';
 

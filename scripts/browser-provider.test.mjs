@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createAgentService } from '../cloudflare-publisher/src/agent/service.mjs';
+import { createAgentService } from '../../cloudflare-publisher/src/agent/service.mjs';
 import { chatgptRequest, createChatGPTAgent } from '../editor-vuejs/src/lib/agent/chatgpt-agent.mjs';
 import { geminiRequest, createGeminiAgent } from '../editor-vuejs/src/lib/agent/gemini-agent.mjs';
 import { createEditorTools } from '../editor-vuejs/src/lib/agent/editor-tools.mjs';
 import { DECK_AUTHORING_VERSION } from '../editor-vuejs/src/lib/agent/deck-authoring.mjs';
-import { validateProviderPayload } from '../cloudflare-publisher/src/agent/proxy.mjs';
+import { validateProviderPayload } from '../../cloudflare-publisher/src/agent/proxy.mjs';
 const origin = 'https://editor.test';
 const context = { document: { fileId: 'file' }, page: { pageId: 'page', shapes: [] } };
 const text = JSON.stringify({ message: 'Renamed', calls: [{ name: 'desq_rename_document', arguments: { name: '预算' } }] });

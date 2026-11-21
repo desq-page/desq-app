@@ -1,7 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { build } from 'esbuild';
-import { videoSettings, MAX_VIDEO_BYTES, MIN_VIDEO_BYTES } from '../shared-vuejs/src/edlib/common/media/video-policy.mjs';
+import { fileURLToPath } from 'node:url';
+import { videoSettings, MAX_VIDEO_BYTES, MIN_VIDEO_BYTES } from '../../desq-core/shared-vuejs/src/edlib/common/media/video-policy.mjs';
+
+const optimizationSource = fileURLToPath(new URL('../../desq-core/shared-vuejs/src/edlib/common/media/video-optimization.ts', import.meta.url));
 
 test('video policy preserves aspect ratio, avoids upscaling, and budgets audio', () => {
   assert.deepEqual(videoSettings(1920,1080,60),{width:1280,height:720,bitrate:2_000_000});
@@ -16,7 +19,7 @@ test('video policy preserves aspect ratio, avoids upscaling, and budgets audio',
 
 for (const name of ['video.mp4', 'video.m4v', 'video.M4V', 'video.mov', 'video.MOV', 'video.avi', 'video.AVI']) {
 test(`${name}: preserves originals, deduplicates jobs, caches results and rejects stale/larger copies`, async () => {
-  const result = await build({entryPoints:['shared-vuejs/src/edlib/common/media/video-optimization.ts'],bundle:true,format:'esm',platform:'browser',write:false,
+  const result = await build({entryPoints:[optimizationSource],bundle:true,format:'esm',platform:'browser',write:false,
     plugins:[{name:'opfs',setup(b){
       b.onResolve({filter:/\/db\/opfs$/},() => ({path:'opfs',namespace:'mock'}));
       b.onLoad({filter:/.*/,namespace:'mock'},() => ({contents:`
@@ -87,7 +90,7 @@ test(`${name}: preserves originals, deduplicates jobs, caches results and reject
 test('published optimized videos use MP4 MIME regardless of original extension', async () => {
   const {readFile} = await import('node:fs/promises');
   const vm = await import('node:vm');
-  const source = await readFile('cloudflare-publisher/src/worker.js','utf8');
+  const source = await readFile(new URL('../../cloudflare-publisher/src/worker.js', import.meta.url), 'utf8');
   const fn = source.slice(source.indexOf('function contentType('),source.indexOf('async function publicContent('));
   const contentType = vm.runInNewContext(fn+';contentType',{TextDecoder});
   const mp4 = new TextEncoder().encode('\0\0\0\x18ftypisom');

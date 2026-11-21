@@ -6,9 +6,9 @@ import { createServer } from 'node:http';
 import { createServer as createHTTP2Server, connect as connectHTTP2 } from 'node:http2';
 import { generateKeyPairSync } from 'node:crypto';
 import jwt from 'jsonwebtoken';
-import { createAgentService, snapshotAgentState, restoreAgentState } from '../cloudflare-publisher/src/agent/service.mjs';
-import { createNodeAgentHost } from '../cloudflare-publisher/src/agent/node.mjs';
-import worker, { AgentSession } from '../cloudflare-publisher/src/worker.js';
+import { createAgentService, snapshotAgentState, restoreAgentState } from '../../cloudflare-publisher/src/agent/service.mjs';
+import { createNodeAgentHost } from '../../cloudflare-publisher/src/agent/node.mjs';
+import worker, { AgentSession } from '../../cloudflare-publisher/src/worker.js';
 
 const origin = 'https://desq.example';
 const context = { document: { fileId: 'f' }, page: { pageId: 'p' } };

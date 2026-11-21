@@ -1,6 +1,5 @@
 import { obfuscateProductionScript } from '../scripts/obfuscate-production.mjs';
-import { mkdirSync, writeFileSync } from 'node:fs';
-import { agentHostPlugin } from '../cloudflare-publisher/src/agent/node.mjs';
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import path from "node:path";
 import { join } from "node:path";
 import { createRequire } from "node:module";
@@ -39,7 +38,9 @@ const productionObfuscation = () => ({
 });
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command, mode }) => ({
+const publisherHost = new URL('../../cloudflare-publisher/src/agent/node.mjs', import.meta.url);
+
+export default defineConfig(async ({ command, mode }) => ({
   customLogger: process.env.DESQ_LOCAL_CORE === '1' ? undefined
     : suppressPackagedSourcemapWarnings(createLogger(), path.resolve(import.meta.dirname, '..')),
   assetsInclude: ["**/input.html"],
@@ -70,7 +71,8 @@ export default defineConfig(({ command, mode }) => ({
   },
   plugins: [
     localCorePlugin(),
-    agentHostPlugin(),
+    ...(command === 'serve' && existsSync(publisherHost)
+      ? [(await import(publisherHost.href)).agentHostPlugin()] : []),
     vanEditorDevPlugin(),
     vanRuntimeGuard(),
     staticHomePagePlugin(),

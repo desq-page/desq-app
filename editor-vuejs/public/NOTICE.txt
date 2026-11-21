@@ -77848,7 +77848,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 ==============================================================================
 buffer-equal-constant-time (1.0.1)
 License: BSD-3-Clause
-Source: node_modules/buffer-equal-constant-time
+Source: ../cloudflare-publisher/node_modules/buffer-equal-constant-time
 Project: git@github.com:goinstant/buffer-equal-constant-time.git
 
 --- LICENSE.txt ---
@@ -80450,7 +80450,7 @@ SOFTWARE.
 ==============================================================================
 ecdsa-sig-formatter (1.0.11)
 License: Apache-2.0
-Source: node_modules/ecdsa-sig-formatter
+Source: ../cloudflare-publisher/node_modules/ecdsa-sig-formatter
 Project: git+ssh://git@github.com/Brightspace/node-ecdsa-sig-formatter.git
 
 --- LICENSE ---
@@ -83909,7 +83909,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND ISC DISCLAIMS ALL WARRANTIES WITH REGARD TO
 ==============================================================================
 jsonwebtoken (9.0.2)
 License: MIT
-Source: node_modules/jsonwebtoken
+Source: ../cloudflare-publisher/node_modules/jsonwebtoken
 Project: https://github.com/auth0/node-jsonwebtoken
 
 --- LICENSE ---
@@ -83968,7 +83968,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ==============================================================================
 jwa (1.4.2)
 License: MIT
-Source: node_modules/jsonwebtoken/node_modules/jwa
+Source: ../cloudflare-publisher/node_modules/jsonwebtoken/node_modules/jwa
 Project: git://github.com/brianloveswords/node-jwa.git
 
 --- LICENSE ---
@@ -83993,7 +83993,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 ==============================================================================
 jws (3.2.3)
 License: MIT
-Source: node_modules/jsonwebtoken/node_modules/jws
+Source: ../cloudflare-publisher/node_modules/jsonwebtoken/node_modules/jws
 Project: git://github.com/brianloveswords/node-jws.git
 
 --- LICENSE ---
@@ -84282,7 +84282,7 @@ terms above.
 ==============================================================================
 lodash.includes (4.3.0)
 License: MIT
-Source: node_modules/lodash.includes
+Source: ../cloudflare-publisher/node_modules/lodash.includes
 Project: lodash/lodash
 
 --- LICENSE ---
@@ -84337,7 +84337,7 @@ terms above.
 ==============================================================================
 lodash.isboolean (3.0.3)
 License: MIT
-Source: node_modules/lodash.isboolean
+Source: ../cloudflare-publisher/node_modules/lodash.isboolean
 Project: lodash/lodash
 
 --- LICENSE ---
@@ -84367,7 +84367,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ==============================================================================
 lodash.isinteger (4.0.4)
 License: MIT
-Source: node_modules/lodash.isinteger
+Source: ../cloudflare-publisher/node_modules/lodash.isinteger
 Project: lodash/lodash
 
 --- LICENSE ---
@@ -84422,7 +84422,7 @@ terms above.
 ==============================================================================
 lodash.isnumber (3.0.3)
 License: MIT
-Source: node_modules/lodash.isnumber
+Source: ../cloudflare-publisher/node_modules/lodash.isnumber
 Project: lodash/lodash
 
 --- LICENSE ---
@@ -84452,7 +84452,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ==============================================================================
 lodash.isplainobject (4.0.6)
 License: MIT
-Source: node_modules/lodash.isplainobject
+Source: ../cloudflare-publisher/node_modules/lodash.isplainobject
 Project: lodash/lodash
 
 --- LICENSE ---
@@ -84507,7 +84507,7 @@ terms above.
 ==============================================================================
 lodash.isstring (4.0.1)
 License: MIT
-Source: node_modules/lodash.isstring
+Source: ../cloudflare-publisher/node_modules/lodash.isstring
 Project: lodash/lodash
 
 --- LICENSE ---
@@ -84537,7 +84537,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ==============================================================================
 lodash.once (4.1.1)
 License: MIT
-Source: node_modules/lodash.once
+Source: ../cloudflare-publisher/node_modules/lodash.once
 Project: lodash/lodash
 
 --- LICENSE ---
@@ -86401,7 +86401,7 @@ SOFTWARE.
 ==============================================================================
 ms (2.1.2)
 License: MIT
-Source: node_modules/ms
+Source: ../cloudflare-publisher/node_modules/ms
 Project: zeit/ms
 
 --- license.md ---

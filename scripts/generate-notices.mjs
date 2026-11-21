@@ -38,7 +38,10 @@ function collect(lockDirectory, workspacePaths) {
     if (visited.has(location)) return;
     visited.add(location);
     const metadata = packages[location];
-    if (metadata.link) return visit(metadata.resolved);
+    if (metadata.link) {
+      if (!metadata.resolved.startsWith('../')) visit(metadata.resolved);
+      return;
+    }
     const directory = path.join(lockDirectory, location);
     const manifestPath = path.join(directory, 'package.json');
     const manifest = fs.existsSync(manifestPath) ? readJson(manifestPath) : metadata;
@@ -67,7 +70,9 @@ function collect(lockDirectory, workspacePaths) {
   for (const workspace of workspacePaths) visit(workspace);
 }
 
-collect(root, ['', 'editor-vuejs', 'editor-vanjs', 'cloudflare-publisher']);
+collect(root, ['', 'editor-vuejs', 'editor-vanjs']);
+const publisher = path.resolve(root, '../cloudflare-publisher');
+if (fs.existsSync(path.join(publisher, 'package-lock.json'))) collect(publisher, ['']);
 // Player dependencies are included through the application lockfile.
 
 // Public assets are copied verbatim by Vite and may contain their own bundled
