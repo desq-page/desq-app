@@ -10,13 +10,14 @@
         <img class="brand-symbol" src="/favicon.svg?v=desq-mark-v8" alt="" />
         DESQ
       </RouterLink>
+      <span class="workspace-badge">{{ translate('Workspace') }}</span>
       <nav :aria-label="translate('Workspace navigation')">
-        <RouterLink
+        <!-- <RouterLink
           to="/about"
           class="about-link"
           >{{ translate('About DESQ') }}</RouterLink
-        >
-        <span class="workspace-badge">{{ translate('Workspace') }}</span>
+        > -->
+
         <template v-if="isDockerBackend">
           <div v-if="user" class="avatar" :aria-label="user.name">
             <img v-if="avatarUrl" :src="avatarUrl" alt="" />
@@ -64,10 +65,10 @@
           </div>
           <div class="supported-formats" :aria-label="translate('Supported file types')" >
             <span class="format-type"><i class="format-icon powerpoint" aria-hidden="true">P</i> PowerPoint</span>
-            <span class="format-type"><i class="format-icon html" aria-hidden="true">&lt;/&gt;</i> HTML</span>
             <span class="format-type"><i class="format-icon publisher" aria-hidden="true">▤</i> Publisher</span>
             <span class="format-type"><i class="format-icon word" aria-hidden="true">W</i> Word</span>
             <span class="format-type"><i class="format-icon pdf" aria-hidden="true">PDF</i> PDF</span>
+            <span class="format-type"><i class="format-icon html" aria-hidden="true">&lt;/&gt;</i> HTML</span>
           </div>
         </div>
       </section>
@@ -561,7 +562,7 @@ h1 span {
 .supported-formats b { font-weight: 600; color: #355d45; }
 .formats-caption-break { flex-basis: 100%; height: 0; }
 .format-type { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
-.format-icon { display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 4px; color: white; font-size: 9px; font-style: normal; font-weight: 800; opacity: 0.7;}
+.format-icon { display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 4px; color: white; font-size: 9px; font-style: normal; font-weight: 800; opacity: 0.5;}
 .format-icon.powerpoint { background: #d45b42d9; }
 .format-icon.word { background: #3c76b4d9; }
 .format-icon.publisher { background: #43876bd9; }
