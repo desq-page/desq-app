@@ -38,7 +38,7 @@ const questions = [
       <a href="/" class="wordmark" aria-label="DESQ home"><img src="/favicon.svg?v=desq-mark-v8" alt="" />DESQ</a>
       <nav aria-label="Main navigation">
         <a href="https://github.com/desq-page/desq-app" target="_blank" class="nav-detail">Github</a>
-        <a href="/work" class="button button-dark">Workspace <span aria-hidden="true">↗</span></a>
+        <a href="/" class="button button-dark">Workspace <span aria-hidden="true">↗</span></a>
       </nav>
     </header>
 
@@ -51,7 +51,7 @@ const questions = [
               <h1 id="hero-title">Your next design <br/>is in a <em>slide</em>.</h1>
               <p class="hero-description">Import and edit designs as slides, with interactivity and layout intact. Create beautiful slides in NotebookLM or other AI tools and make their images editable. Use AI to create games and turn them into controllable slide animations.  Save your work as a single HTML file for easy distribution. All with the familiar features of a presentation editor.</p>
               <div class="hero-actions">
-                <a href="/work" class="button button-lime">Create now<span aria-hidden="true">↗</span></a>
+                <a href="/" class="button button-lime">Create now<span aria-hidden="true">↗</span></a>
                 <a href="#features" class="text-link">Explore the features <span aria-hidden="true">↓</span></a>
               </div>
               <p class="hero-note"><span aria-hidden="true">✓</span> Free to edit. Works offline in browser. Your files stay private</p>
@@ -78,7 +78,7 @@ const questions = [
       </section>
     </main>
 
-    <footer class="site-footer page-width"><a href="/" class="wordmark">DESQ</a><p>Office documents, with a life on the web.</p><nav aria-label="Footer navigation"><a href="/work">Workspace</a><a href="/terms">Terms</a><a href="/support">Support</a><a href="https://github.com/desq-page/desq-app" target="_blank" rel="noopener noreferrer">GitHub</a></nav></footer>
+    <footer class="site-footer page-width"><a href="/" class="wordmark">DESQ</a><p>Office documents, with a life on the web.</p><nav aria-label="Footer navigation"><a href="/">Workspace</a><a href="/terms">Terms</a><a href="/support">Support</a><a href="https://github.com/desq-page/desq-app" target="_blank" rel="noopener noreferrer">GitHub</a></nav></footer>
   </div>
 </template>
 

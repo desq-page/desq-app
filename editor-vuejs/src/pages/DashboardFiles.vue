@@ -60,6 +60,7 @@
           <td class="actions-column">
             <button
               class="close-document"
+              :disabled="openingCloseDialog"
               :aria-label="`${translate('Close')} ${file.name || file.title || translate('Untitled')}`"
               @click="closeDashboardFile(file.id)"
             >
@@ -76,13 +77,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { piniaInfo } from "@/lib/common/store";
 import dayjs from "dayjs";
+import { ref } from "vue";
 import { translate } from "@/lib/i18n";
 
-//@ts-ignore //?raw to import assets as string
-import { confirmCloseFile } from "@/lib/main/closeFile";
-//@ts-ignore
 const props = defineProps({
   localFiles: {
     type: Array as any,
@@ -90,14 +88,25 @@ const props = defineProps({
   },
   loadFiles: Function,
 });
+const emit = defineEmits<{ error: [message: string] }>();
+const openingCloseDialog = ref(false);
+
 async function closeDashboardFile(fileId) {
-  await confirmCloseFile(fileId, async () => {
-    await props.loadFiles?.();
-  });
+  if (openingCloseDialog.value) return;
+  openingCloseDialog.value = true;
+  try {
+    const { confirmCloseFile } = await import("@/lib/main/closeFile");
+    await confirmCloseFile(fileId, async () => {
+      await props.loadFiles?.();
+    });
+  } catch (error) {
+    emit("error", error instanceof Error ? error.message : "Unable to unload file");
+  } finally {
+    openingCloseDialog.value = false;
+  }
 }
 
 function openFile(id) {
-  piniaInfo().loadingBar = "Please wait...";
   // Use browser navigation so opening a cached document reaches the server.
   window.location.assign("/edit/" + encodeURIComponent(id));
 }

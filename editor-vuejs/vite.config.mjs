@@ -10,7 +10,6 @@ import vue from "@vitejs/plugin-vue";
 // import { optimizeCssModules } from "vite-plugin-optimize-css-modules";
 import { visualizer } from "rollup-plugin-visualizer";
 import mkcert from "vite-plugin-mkcert";
-import { staticHomePagePlugin } from "../scripts/render-homepage.mjs";
 import { localCorePlugin } from "../scripts/local-core-vite.mjs";
 import { vanEditorDevPlugin } from "../scripts/van-editor-dev.mjs";
 import { vanRuntimeGuard } from "../scripts/van-runtime-guard.mjs";
@@ -75,7 +74,6 @@ export default defineConfig(async ({ command, mode }) => ({
       ? [(await import(publisherHost.href)).agentHostPlugin()] : []),
     vanEditorDevPlugin(),
     vanRuntimeGuard(),
-    staticHomePagePlugin(),
     mkcert(),
     vue(),
     visualizer(),
@@ -230,7 +228,6 @@ export default defineConfig(async ({ command, mode }) => ({
       },
     },
     sourcemap: !process.env.PROD,
-    cssCodeSplit: false,
     // minify: "terser",
     // terserOptions: {
     //   mangle: {

@@ -7,8 +7,7 @@
         DESQ
       </RouterLink>
       <nav aria-label="Main navigation">
-        <RouterLink to="/">Back to home</RouterLink>
-        <RouterLink to="/work" class="start-button">Workspace <span aria-hidden="true">↗</span></RouterLink>
+        <RouterLink to="/" class="start-button">Workspace <span aria-hidden="true">↗</span></RouterLink>
       </nav>
     </header>
 
@@ -24,7 +23,7 @@
     <footer class="site-footer page-width">
       <RouterLink to="/" class="footer-brand">DESQ</RouterLink>
       <p>Office documents, with a life on the web.</p>
-      <RouterLink to="/work">Workspace</RouterLink>
+      <RouterLink to="/">Workspace</RouterLink>
     </footer>
   </div>
 </template>

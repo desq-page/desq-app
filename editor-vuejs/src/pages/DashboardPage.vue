@@ -12,9 +12,9 @@
       </RouterLink>
       <nav :aria-label="translate('Workspace navigation')">
         <RouterLink
-          to="/"
-          class="home-link"
-          >{{ translate('Back to home') }} <span aria-hidden="true">↗</span></RouterLink
+          to="/about"
+          class="about-link"
+          >{{ translate('About DESQ') }} <span aria-hidden="true">↗</span></RouterLink
         >
         <span class="workspace-badge">{{ translate('Workspace') }}</span>
         <template v-if="isDockerBackend">
@@ -45,12 +45,12 @@
         </div>
         <div class="workspace-actions">
           <div class="open-file-action">
-            <button class="button workspace-action action-open" :disabled="openingFile" @click="openFileInput?.click()" aria-describedby="open-file-privacy">
+            <button class="button workspace-action action-open" :disabled="!editorReady || openingFile" @click="openFileInput?.click()" aria-describedby="open-file-privacy">
               <span aria-hidden="true">↗</span> {{ translate(openingFile ? "Opening file…" : "Open or Import") }}
             </button>
           </div>
-          <button class="button workspace-action action-ai" @click="piniaInfo().openEditorAgentModal = true"><span aria-hidden="true">✦</span> {{ translate('Create with AI') }}</button>
-          <button class="button workspace-action action-blank" @click="createBlankPresentation"><span aria-hidden="true">▤</span> {{ translate('Blank Presentation') }}</button>
+          <button class="button workspace-action action-ai" :disabled="!editorReady" @click="openEditorAgent"><span aria-hidden="true">✦</span> {{ translate('Create with AI') }}</button>
+          <button class="button workspace-action action-blank" :disabled="!editorReady" @click="createBlankPresentation"><span aria-hidden="true">▤</span> {{ translate('Blank Presentation') }}</button>
           <input ref="openFileInput" type="file" accept=".pptx,.docx,.pub,.html,.htm,.pdf" hidden @change="openSelectedFile" />
           <div class="supported-formats" style="margin-top: 15px">
             <span id="open-file-privacy" class="privacy-caption">{{ translate('Open various formats as slides. Your files stay private on your device.') }}</span>
@@ -87,7 +87,7 @@
         <div v-if="loadingFiles" class="loading-state" role="status">
           <span class="loading-ring" aria-hidden="true"></span> {{ translate('Loading your documents…') }}
         </div>
-        <DashboardFiles v-else-if="localFiles.length" :localFiles :loadFiles />
+        <component :is="DashboardFiles" v-else-if="localFiles.length" :localFiles :loadFiles @error="showError" />
         <div v-else class="empty-state">
           <div class="empty-document" aria-hidden="true">
             <span></span><i></i><i></i><i></i><b>+</b>
@@ -111,6 +111,7 @@
     <footer class="workspace-footer page-width">
       <span>{{ translate('DESQ — Office documents, with a life on the web.') }}</span>
       <nav :aria-label="translate('Footer navigation')">
+        <RouterLink to="/about">{{ translate('About DESQ') }}</RouterLink>
         <RouterLink to="/terms">{{ translate('Terms & Privacy') }}</RouterLink>
         <RouterLink to="/support">{{ translate('Support') }}</RouterLink>
         <a href="https://github.com/desq-page/desq-app" target="_blank" rel="noopener noreferrer">GitHub</a>
@@ -119,12 +120,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getAllDexie } from "shared-vuejs/api/db";
 import { markFileCreated } from "shared-vuejs/api/homeNavigation";
-import { createNewFile } from "shared-vuejs/api/load";
-import { piniaInfo } from "@/lib/common/store";
-import { computed, defineAsyncComponent, onMounted, ref, watchEffect } from "vue";
+import { computed, nextTick, onMounted, ref, shallowRef, watchEffect } from "vue";
 import { RouterLink } from "vue-router";
+import { useDialog } from "naive-ui";
 import { language, languages, setLanguage, translate } from "@/lib/i18n";
 
 function changeLanguage(event: Event) {
@@ -133,25 +132,41 @@ function changeLanguage(event: Event) {
 }
 
 const loadDashboardFiles = () => import("./DashboardFiles.vue");
-const DashboardFiles = defineAsyncComponent(loadDashboardFiles);
+const DashboardFiles = shallowRef<Awaited<ReturnType<typeof loadDashboardFiles>>["default"]>();
 
 import dayjs from "dayjs";
 
 import { isDockerBackend } from "shared-vuejs/api/backend-config";
 
-// import { connectSocket } from "shared-vuejs/api/socket-client";
-import { genId } from "shared-vuejs/api/utility";
-import { showError } from "shared-vuejs/api/utils";
 
 import { fetchUser, refreshAccessToken } from "@/lib/common/useAuth";
+
+defineProps<{ editorReady: boolean }>();
+const emit = defineEmits<{ filesReady: [] }>();
+const dialog = useDialog();
+
+function showError(message: string) {
+  dialog.error({
+    title: translate("Error"),
+    content: translate(message),
+    positiveText: translate("OK"),
+  });
+}
 
 const localFiles: any = ref([]);
 const openFileInput = ref<HTMLInputElement | null>(null);
 const openingFile = ref(false);
 
+async function openEditorAgent() {
+  const { piniaInfo } = await import("@/lib/common/store");
+  piniaInfo().openEditorAgentModal = true;
+}
+
 async function createBlankPresentation() {
+  const { piniaInfo } = await import("@/lib/common/store");
   piniaInfo().loadingBar = "Please wait...";
   try {
+    const { createNewFile } = await import("shared-vuejs/api/load");
     await createNewFile("blank");
   } catch (error) {
     piniaInfo().loadingBar = "";
@@ -164,6 +179,7 @@ async function openSelectedFile(event: Event) {
   const file = input.files?.[0];
   if (!file) return;
   openingFile.value = true;
+  const { piniaInfo } = await import("@/lib/common/store");
   try {
     const extension = file.name.split(".").pop()?.toLowerCase();
     if (extension === "html" || extension === "htm") {
@@ -185,6 +201,7 @@ async function openSelectedFile(event: Event) {
       const { submitPub } = await import("shared-vuejs/api/submitPub");
       await submitPub(file, { fileName: file.name });
     } else if (extension === "pptx") {
+      const { genId } = await import("shared-vuejs/api/utility");
       const pptxSettings = {
         fileName: file.name,
         fileId: genId(10),
@@ -231,6 +248,23 @@ onMounted(() => {
   watchEffect(() => { document.title = translate("Your workspace — DESQ"); });
 });
 
+onMounted(loadInitialFiles);
+
+async function loadInitialFiles() {
+  // Give the browser a frame to paint the header before requesting the database module.
+  await new Promise<void>((resolve) => {
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+  });
+  try {
+    await loadFiles();
+  } catch (error) {
+    console.error("Unable to load your documents:", error);
+    showError("Unable to load your documents. Reload the workspace to try again.");
+  }
+  await nextTick();
+  emit("filesReady");
+}
+
 onMounted(async () => {
   let loggedIn = isDockerBackend ? await fetchUser() : null;
 
@@ -243,23 +277,23 @@ onMounted(async () => {
   if (loggedIn) {
     user.value = loggedIn;
   }
-
-  setTimeout(() => {
-    loadFiles();
-  }, 500);
 });
 
 async function loadFiles() {
   loadingFiles.value = true;
   try {
     await loadLocalFiles();
-    if (localFiles.value.length) await loadDashboardFiles();
+    if (localFiles.value.length && !DashboardFiles.value) {
+      DashboardFiles.value = (await loadDashboardFiles()).default;
+    }
   } finally {
     loadingFiles.value = false;
   }
 }
 
 async function loadLocalFiles() {
+  const { getAllDexie, setupDB } = await import("shared-vuejs/api/db");
+  await setupDB();
   const dbFiles: any = [...(await getAllDexie("files"))];
   dbFiles.sort((a, b) =>
     dayjs(a.timestamp).isBefore(dayjs(b.timestamp)) ? 1 : -1,
@@ -333,10 +367,10 @@ button:focus-visible {
   outline: 3px solid #598d24;
   outline-offset: 2px;
 }
-.home-link span {
+.about-link span {
   margin-left: 9px;
 }
-.home-link:hover,
+.about-link:hover,
 .workspace-footer a:hover {
   text-decoration: underline;
 }
@@ -758,7 +792,7 @@ h2 {
   .workspace-header nav {
     gap: 12px;
   }
-  .home-link, .workspace-badge {
+  .about-link, .workspace-badge {
     display: none;
   }
   .workspace-intro {

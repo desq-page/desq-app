@@ -1,11 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomePage from "../pages/HomePage.vue";
-import RawSSG from "../pages/RawSSG.vue";
 import LoginView from "../pages/LoginView.vue";
 import { logEditorOpen } from "../lib/editor-telemetry";
 
 const Player = () => import("../Player.vue");
 const EditorPage = () => import("../pages/EditorPage.vue");
+const HomePage = () => import("../pages/HomePage.vue");
 const DashboardWorkspace = () => import("../pages/DashboardWorkspace.vue");
 const TermsPage = () => import("../pages/TermsPage.vue");
 const SupportPage = () => import("../pages/SupportPage.vue");
@@ -19,38 +18,27 @@ const router = createRouter({
         id: "container",
         component: Player,
       },
-      // {
-      //   path: "/home",
-      //   name: "home",
-      //   component: HomePage,
-      //   meta: {
-      //     transition: true,
-      //   },
-      // },
       {
         path: "/",
         name: "root",
-        component: HomePage,
-        props: {
-          // rawFileName: "root",
-        },
+        component: DashboardWorkspace,
+      },
+      {
+        path: "/index.html",
+        redirect: "/",
       },
       {
         path: "/dashboard",
-        redirect: "/work",
+        redirect: "/",
       },
       {
         path: "/work",
-        name: "work",
-        component: DashboardWorkspace,
+        redirect: "/",
       },
       {
         path: "/about",
         name: "about",
-        component: RawSSG,
-        props: {
-          // rawFileName: "about",
-        },
+        component: HomePage,
       },
       {
         path: "/terms",
@@ -82,9 +70,15 @@ const router = createRouter({
       },
     ],
   });
+router.beforeResolve(async ({ name }) => {
+  if (name === "edit" || name === "edit2") {
+    const { setupDB } = await import("shared-vuejs/api/db");
+    await setupDB();
+  }
+});
 router.afterEach((to, from, failure) => {
   if (!failure && typeof document !== "undefined") {
-    const publicRoutes = new Set(["root", "work", "about", "terms", "support", "player"]);
+    const publicRoutes = new Set(["root", "about", "terms", "support", "player"]);
     const noindexRoutes = new Set(["login", "edit", "edit2"]);
     const routeName = String(to.name || "");
     const isNoindex = noindexRoutes.has(routeName) || !publicRoutes.has(routeName);

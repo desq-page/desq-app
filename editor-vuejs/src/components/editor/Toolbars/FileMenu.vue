@@ -62,7 +62,7 @@ function genViewOptions() {
       icon: Home,
       size: 24,
       color: 'green',
-      onClick: () => location.replace("/work"),
+      onClick: () => location.replace("/"),
     },
     {
       type: "divider",
@@ -139,7 +139,7 @@ function genViewOptions() {
       color: 'red',
       onClick: () => {
         const fileId = getFileInfo().id;
-        void confirmCloseFile(fileId, () => location.replace("/work"));
+        void confirmCloseFile(fileId, () => location.replace("/"));
       },
     },
     {

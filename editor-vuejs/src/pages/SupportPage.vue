@@ -11,8 +11,7 @@ onMounted(() => { document.title = "Support — DESQ"; });
     <header class="site-header page-width">
       <RouterLink to="/" class="wordmark" aria-label="DESQ home"><img src="/favicon.svg?v=desq-mark-v8" alt="" />DESQ</RouterLink>
       <nav aria-label="Main navigation">
-        <RouterLink to="/">Back to home</RouterLink>
-        <RouterLink to="/work" class="start-button">Workspace <span aria-hidden="true">↗</span></RouterLink>
+        <RouterLink to="/" class="start-button">Workspace <span aria-hidden="true">↗</span></RouterLink>
       </nav>
     </header>
 
@@ -45,7 +44,7 @@ onMounted(() => { document.title = "Support — DESQ"; });
 
     <footer class="site-footer page-width">
       <span>DESQ — Office documents, with a life on the web.</span>
-      <RouterLink to="/work">Workspace</RouterLink>
+      <RouterLink to="/">Workspace</RouterLink>
       <RouterLink to="/terms">Terms</RouterLink>
     </footer>
   </div>
