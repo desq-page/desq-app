@@ -606,7 +606,7 @@ serve-index | 1.9.1 | MIT | expressjs/serve-index
 serve-static | 1.16.2 | MIT | expressjs/serve-static
 setprototypeof | 1.1.0 | ISC | https://github.com/wesleytodd/setprototypeof.git
 setprototypeof | 1.2.0 | ISC | https://github.com/wesleytodd/setprototypeof.git
-shared-vuejs | 0.2.16 | ISC | node_modules/shared-vuejs
+shared-vuejs | 0.2.17 | ISC | node_modules/shared-vuejs
 sharp | 0.34.5 | Apache-2.0 | git://github.com/lovell/sharp.git
 sharp | 0.35.5 | Apache-2.0 | git+https://github.com/lovell/sharp.git
 shell-quote | 1.12.0 | MIT | http://github.com/ljharb/shell-quote.git
@@ -89579,7 +89579,7 @@ OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ==============================================================================
-shared-vuejs (0.2.16)
+shared-vuejs (0.2.17)
 License: ISC
 Source: node_modules/shared-vuejs
 
@@ -93628,7 +93628,7 @@ onnxruntime-web@1.22.0-dev.20250409-89f8206ba4: no standalone license/notice fil
 onnxruntime-web@1.31.0-dev.20260914-8d85527a0: no standalone license/notice file found in installed package
 parse-bmfont-ascii@1.0.6: no standalone license/notice file found in installed package
 select-hose@2.0.0: no standalone license/notice file found in installed package
-shared-vuejs@0.2.16: no standalone license/notice file found in installed package
+shared-vuejs@0.2.17: no standalone license/notice file found in installed package
 spdy-transport@3.0.0: no standalone license/notice file found in installed package
 spdy@4.0.2: no standalone license/notice file found in installed package
 vanjs-ext@0.6.3: no standalone license/notice file found in installed package

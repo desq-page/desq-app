@@ -3,7 +3,7 @@
     <div class="workspace-header-landscape">
     <header class="workspace-header page-width">
       <RouterLink
-        to="/"
+        to="/about"
         class="wordmark"
         aria-label="DESQ home"
       >
@@ -12,12 +12,6 @@
       </RouterLink>
       <span class="workspace-badge">{{ translate('Workspace') }}</span>
       <nav :aria-label="translate('Workspace navigation')">
-        <!-- <RouterLink
-          to="/about"
-          class="about-link"
-          >{{ translate('About DESQ') }}</RouterLink
-        > -->
-
         <template v-if="isDockerBackend">
           <div v-if="user" class="avatar" :aria-label="user.name">
             <img v-if="avatarUrl" :src="avatarUrl" alt="" />
@@ -41,7 +35,7 @@
             <span class="status-dot"></span> {{ translate('YOUR IDEAS START HERE') }}
           </p>
           <p class="intro-description">
-            {{ translate('Open your existing office document, or create something new, or pick up where you left off. Editing is free.') }}
+            {{ translate('Open your existing document, or create something new, or pick up where you left off. Editing is free.') }}
           </p>
         </div>
         <div class="workspace-actions">
@@ -66,7 +60,7 @@
           <div class="supported-formats" :aria-label="translate('Supported file types')" >
             <span class="format-type"><i class="format-icon powerpoint" aria-hidden="true">P</i> PowerPoint</span>
             <span class="format-type"><i class="format-icon publisher" aria-hidden="true">▤</i> Publisher</span>
-            <span class="format-type"><i class="format-icon word" aria-hidden="true">W</i> Word</span>
+            <!-- <span class="format-type"><i class="format-icon word" aria-hidden="true">W</i> Word</span> -->
             <span class="format-type"><i class="format-icon pdf" aria-hidden="true">PDF</i> PDF</span>
             <span class="format-type"><i class="format-icon html" aria-hidden="true">&lt;/&gt;</i> HTML</span>
           </div>
@@ -220,7 +214,7 @@ async function openSelectedFile(event: Event) {
       await submitPPTX(file, pptxSettings);
     } else {
       showError(
-        "Choose a PDF, editable HTML, PowerPoint (.pptx), Publisher (.pub), or Word (.docx) file",
+        "Choose a PDF, editable HTML, PowerPoint (.pptx), Publisher (.pub) file",
       );
     }
   } catch (error) {

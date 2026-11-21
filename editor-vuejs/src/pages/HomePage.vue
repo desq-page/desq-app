@@ -20,7 +20,7 @@ const questions = [
   { title: "Can I work offline and keep my files private?", answer: "Yes. Your HTML presentation includes its editor and viewer, so you can open and edit it offline in a browser. Local editing keeps files on your device. You choose when to share a file or use a connected AI service." },
   { title: "Can I create presentations using AI agents?", answer: "Yes. DESQ is designed to work with AI agents to create and edit presentations in HTML. Work with an agent, refine your slides in the browser, and save the result as HTML or an editable PowerPoint file." },
   { title: "Is DESQ an alternative to SlideShare?", answer: "For sharing and embedding presentations, DESQ offers a portable HTML workflow. Export PowerPoint to HTML and share the file directly or embed it on your own website, with animations, interactions, and an editor included." },
-  { title: "Can I import Word or Publisher files too?", answer: "Yes. Alongside PowerPoint presentations, DESQ supports importing Microsoft Word (.docx) and Publisher (.pub) files. Convert Office content to editable HTML and work with it in your browser." },
+  { title: "Can I import Word or Publisher files too?", answer: "Yes. Alongside PowerPoint presentations, DESQ also supports importing Publisher (.pub) files. Convert Office content to editable HTML and work with it in your browser." },
 ];
 </script>
 
@@ -50,7 +50,7 @@ const questions = [
             </div>
 
             <figure class="hero-workflow">
-              <img src="/images/desq-workflow.svg" alt="PowerPoint, Publisher, Word, PDF, ChatGPT, Gemini Notebook, and HTML feed into the DESQ slide editor, shown with slide thumbnails, an editable canvas, and formatting tools." width="600" height="422" />
+              <img src="/images/desq-workflow.svg" alt="PowerPoint, Publisher, PDF, ChatGPT, Gemini Notebook, and HTML feed into the DESQ slide editor, shown with slide thumbnails, an editable canvas, and formatting tools." width="600" height="422" />
             </figure>
           </div>
         </div>

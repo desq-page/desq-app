@@ -604,7 +604,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | serve-static | 1.16.2 | MIT | expressjs/serve-static |
 | setprototypeof | 1.1.0 | ISC | https://github.com/wesleytodd/setprototypeof.git |
 | setprototypeof | 1.2.0 | ISC | https://github.com/wesleytodd/setprototypeof.git |
-| shared-vuejs | 0.2.16 | ISC | node_modules/shared-vuejs |
+| shared-vuejs | 0.2.17 | ISC | node_modules/shared-vuejs |
 | sharp | 0.34.5 | Apache-2.0 | git://github.com/lovell/sharp.git |
 | sharp | 0.35.5 | Apache-2.0 | git+https://github.com/lovell/sharp.git |
 | shell-quote | 1.12.0 | MIT | http://github.com/ljharb/shell-quote.git |
