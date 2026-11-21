@@ -14,7 +14,7 @@
         <RouterLink
           to="/about"
           class="about-link"
-          >{{ translate('About DESQ') }} <span aria-hidden="true">↗</span></RouterLink
+          >{{ translate('About DESQ') }}</RouterLink
         >
         <span class="workspace-badge">{{ translate('Workspace') }}</span>
         <template v-if="isDockerBackend">

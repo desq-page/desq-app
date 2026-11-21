@@ -453,6 +453,7 @@
           v-if="!piniaSlides().masterView"
           :options="presentationOptions"
           :icon="Settings"
+          :size="22"
           :disabled="!!piniaInfo().useGrid"
         />
         <ToolbarItem type="spacing" />
@@ -563,11 +564,13 @@ import { language, languages, setLanguage, translate } from "@/lib/i18n";
 const presentationOptions = computed(() => [
   {
     label: "Publish",
+    key: 'publish',
     icon: Globe24Regular,
     onClick: () => (piniaInfo().openPublishModal = true),
   },
   {
     label: "File Settings",
+    key: 'settings',
     icon: Settings,
     onClick: () => toggleTaskPane("settings"),
   },
