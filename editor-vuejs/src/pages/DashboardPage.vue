@@ -40,17 +40,24 @@
             <span class="status-dot"></span> {{ translate('YOUR IDEAS START HERE') }}
           </p>
           <p class="intro-description">
-            {{ translate('Open or import your existing office document, or create something new, or pick up where you left off. Editing is free.') }}
+            {{ translate('Open your existing office document, or create something new, or pick up where you left off. Editing is free.') }}
           </p>
         </div>
         <div class="workspace-actions">
           <div class="open-file-action">
-            <button class="button workspace-action action-open" :disabled="!editorReady || openingFile" @click="openFileInput?.click()" aria-describedby="open-file-privacy">
-              <span aria-hidden="true">↗</span> {{ translate(openingFile ? "Opening file…" : "Open or Import") }}
+            <button class="button workspace-action action-open" :disabled="!editorReady || openingFile" :aria-busy="!editorReady || openingFile" @click="openFileInput?.click()" aria-describedby="open-file-privacy">
+              <span aria-hidden="true"><i v-if="!editorReady || openingFile" class="loading-ring"></i><template v-else>↗</template></span>
+              {{ translate(openingFile ? "Opening file…" : "Open...") }}
             </button>
           </div>
-          <button class="button workspace-action action-ai" :disabled="!editorReady" @click="openEditorAgent"><span aria-hidden="true">✦</span> {{ translate('Create with AI') }}</button>
-          <button class="button workspace-action action-blank" :disabled="!editorReady" @click="createBlankPresentation"><span aria-hidden="true">▤</span> {{ translate('Blank Presentation') }}</button>
+          <button class="button workspace-action action-ai" :disabled="!editorReady" :aria-busy="!editorReady" @click="openEditorAgent">
+            <span aria-hidden="true"><i v-if="!editorReady" class="loading-ring"></i><template v-else>✦</template></span>
+            {{ translate('Create with AI') }}
+          </button>
+          <button class="button workspace-action action-blank" :disabled="!editorReady" :aria-busy="!editorReady" @click="createBlankPresentation">
+            <span aria-hidden="true"><i v-if="!editorReady" class="loading-ring"></i><template v-else>▤</template></span>
+            {{ translate('Blank Presentation') }}
+          </button>
           <input ref="openFileInput" type="file" accept=".pptx,.docx,.pub,.html,.htm,.pdf" hidden @change="openSelectedFile" />
           <div class="supported-formats" style="margin-top: 15px">
             <span id="open-file-privacy" class="privacy-caption">{{ translate('Open various formats as slides. Your files stay private on your device.') }}</span>
@@ -491,6 +498,11 @@ h1 span {
   background: var(--action-icon);
   color: var(--action-icon-ink);
   font-size: 16px;
+}
+.workspace-action .loading-ring {
+  width: 14px;
+  height: 14px;
+  border-top-color: currentColor;
 }
 .open-file-action { display: flex; }
 .privacy-caption { margin: 0; grid-column: 1/-1; text-align: center; color: #487b39; font-size: 11px; font-weight: 600; line-height: 1.5; }

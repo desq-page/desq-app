@@ -544,20 +544,15 @@
     "Ý TƯỞNG BẮT ĐẦU TỪ ĐÂY",
     "IDE ANDA DIMULAI DI SINI"
   ],
-  "Open or import your existing office document, or create something new, or pick up where you left off. Editing is free.": [
+  "Open your existing office document, or create something new, or pick up where you left off. Editing is free.": [
     "打开或导入现有办公文档，创建新文档，或继续上次的工作。编辑免费。",
-    "Mở hoặc nhập tài liệu văn phòng, tạo tài liệu mới hoặc tiếp tục công việc đang làm. Chỉnh sửa miễn phí.",
-    "Buka atau impor dokumen kantor, buat dokumen baru, atau lanjutkan pekerjaan sebelumnya. Pengeditan gratis."
+    "Mở một tài liệu văn phòng, tạo tài liệu mới hoặc tiếp tục công việc đang làm. Chỉnh sửa miễn phí.",
+    "Buka dokumen kantor, buat dokumen baru, atau lanjutkan pekerjaan sebelumnya. Pengeditan gratis."
   ],
   "Opening file…": [
     "正在打开文件…",
     "Đang mở tệp…",
     "Membuka file…"
-  ],
-  "Open or Import": [
-    "打开或导入",
-    "Mở hoặc nhập",
-    "Buka atau impor"
   ],
   "Create with AI": [
     "使用 AI 创建",
@@ -581,7 +576,7 @@
   ],
   "Loaded documents": [
     "已加载的文档",
-    "Tài liệu đã tải",
+    "Tài liệu đã mở",
     "Dokumen yang dimuat"
   ],
   "Stored in cache memory of this browser": [

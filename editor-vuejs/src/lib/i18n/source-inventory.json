@@ -4041,7 +4041,8 @@
     "desq-app/editor-vuejs/src/pages/DashboardPage.vue"
   ],
   "Open...": [
-    "desq-app/editor-vuejs/src/components/editor/Toolbars/FileMenu.vue"
+    "desq-app/editor-vuejs/src/components/editor/Toolbars/FileMenu.vue",
+    "desq-app/editor-vuejs/src/pages/DashboardPage.vue"
   ],
   "Open/Import Completed": [
     "desq-app/editor-vuejs/src/components/editor/Toolbars/FileMenu.vue"
