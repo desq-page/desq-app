@@ -2,8 +2,7 @@
   <ToolbarItemDropdown
     quaternary
     :options="viewOptions"
-    :label="translate('File')"
-    :size="26"
+    :icon="MenuSharp"
     :onClick="() => exportFile()"
     :disabled="!!piniaInfo().useGrid"
     :style="{marginTop: '-5px'}"
@@ -23,12 +22,15 @@ import { getFileInfo, getSlideInfo } from "shared-vuejs/editor";
 
 import { FilePdfRegular, FilePowerpointRegular, FileWordRegular } from "@vicons/fa";
 import { piniaInfo, piniaSlides } from "@/lib/common/store";
-import { computed, ref } from "vue";
+import { computed, onMounted, onBeforeUnmount, ref, shallowRef } from "vue";
+import { getAllDexie } from "shared-vuejs/api/db";
+import { Application } from "@vicons/carbon";
 import ToolbarItemDropdown from "./ToolbarItemDropdown.vue";
 import SaveHtml from "../Dialogs/SaveHtml.vue";
 import { BrandHtml5 } from "@vicons/tabler";
 import {
   FolderOpen24Regular,
+  Open24Regular,
   Print24Regular,
   Save24Filled,
 } from "@vicons/fluent";
@@ -54,6 +56,20 @@ const viewOptions = computed(() => {
 });
 const showHtmlSave = ref(false);
 const openFileInput = ref<HTMLInputElement | null>(null);
+const localFiles = shallowRef<any[]>([]);
+const windowOptions = computed(() => localFiles.value.map(file => ({
+  label: `${!file.name || file.name === "No name" ? "Blank" : file.name} (${String(file.id).slice(-4)})${file.id === getFileInfo()?.id ? " — current" : ""}`,
+  key: `file:${file.id}`,
+  icon: Open24Regular,
+  onClick: () => location.replace("/edit/" + file.id),
+})));
+async function loadLocalFiles() {
+  const files = [...(await getAllDexie("files"))];
+  localFiles.value = files.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+}
+const refreshOnFocus = () => void loadLocalFiles();
+onMounted(() => { void loadLocalFiles(); window.addEventListener("focus", refreshOnFocus); });
+onBeforeUnmount(() => window.removeEventListener("focus", refreshOnFocus));
 function genViewOptions() {
   return [
     {
@@ -63,6 +79,12 @@ function genViewOptions() {
       size: 24,
       color: 'green',
       onClick: () => location.replace("/"),
+    },
+    {
+      label: "Window",
+      key: "window",
+      icon: Application,
+      children: windowOptions.value,
     },
     {
       type: "divider",

@@ -8,6 +8,27 @@
   >
     <div :class="$style['toolbar-left']">
       <FileMenu />
+      <ToolbarItem type="spacing" />
+      <ToolbarItem
+        quaternary
+        :on-click="undo"
+        :on-pointer-down="(e) => e.stopPropagation()"
+        :icon="UndoFilled"
+        tooltip="Undo"
+        :disabled="piniaInfo().undoIndex < 0"
+        color="green"
+      />
+      <ToolbarItem
+        quaternary
+        :on-click="redo"
+        :on-pointer-down="(e) => e.stopPropagation()"
+        :icon="RedoFilled"
+        tooltip="Redo"
+        :disabled="piniaInfo().undoIndex >= getUndoHistory().length - 1"
+        color="green"
+      />
+      <ToolbarItem type="spacing" />
+      <ToolbarItem type="spacing" />
       <NTabs
         :class="$style['toolbar-tabs']"
         size="small"
@@ -402,30 +423,7 @@
           <UseGridToolbar />
         </div>
       </NTabPane> -->
-        <template v-if="piniaResize().windowWidth >= 768" #suffix>
-          <WindowMenu />
-        </template>
       </NTabs>
-    </div>
-    <div :class="$style['toolbar-middle']">
-        <ToolbarItem
-          quaternary
-          :on-click="undo"
-          :on-pointer-down="(e) => e.stopPropagation()"
-          :icon="UndoFilled"
-          tooltip="Undo"
-          :disabled="piniaInfo().undoIndex < 0"
-          color="green"
-        />
-        <ToolbarItem
-          quaternary
-          :on-click="redo"
-          :on-pointer-down="(e) => e.stopPropagation()"
-          :icon="RedoFilled"
-          tooltip="Redo"
-          :disabled="piniaInfo().undoIndex >= getUndoHistory().length - 1"
-          color="green"
-        />
     </div>
     <div :class="$style['toolbar-right']">
         <ToolbarItem
@@ -447,7 +445,7 @@
           :disabled="!!piniaInfo().useGrid"
           button-type="primary"
           quaternary
-          label="Present"
+          :label="piniaResize().windowWidth >= 769 ? 'Present' : undefined"
         />
         <ToolbarItemDropdown
           v-if="!piniaSlides().masterView"
@@ -456,7 +454,6 @@
           :size="22"
           :disabled="!!piniaInfo().useGrid"
         />
-        <ToolbarItem type="spacing" />
     </div>
   </div>
 </template>
@@ -526,7 +523,6 @@ import {
   ScanText24Filled,
 } from "@vicons/fluent";
 import FileMenu from "./FileMenu.vue";
-import WindowMenu from "./WindowMenu.vue";
 // import ZoomToolbar from "./ZoomToolbar.vue";
 import { ChartBar, Ruler, TriangleSquareCircle } from "@vicons/tabler";
 import { changeLayout, editMaster } from "shared-vuejs/api/master";
@@ -918,7 +914,7 @@ const $style = useCssModule();
 
 .toolbar-tabs {
   display: block;
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   min-width: 0;
 }
 
@@ -942,7 +938,7 @@ const $style = useCssModule();
 .toolbar-left {
   flex: 1 1 0;
   justify-content: flex-start;
-  gap: 24px;
+  gap: 0px;
 }
 
 .toolbar-middle {
@@ -953,6 +949,7 @@ const $style = useCssModule();
 .toolbar-right {
   flex: 1 1 0;
   justify-content: flex-end;
+  max-width: 150px;
 }
 
 .file-menu {
