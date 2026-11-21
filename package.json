@@ -40,7 +40,7 @@
     "@agilie/canvas-image-cover-position": "^1.1.1",
     "@breezystack/lamejs": "^1.2.7",
     "@chenglou/pretext": "^0.0.8",
-    "@desq/player": "file:packages/desq-player-1.0.9.tgz",
+    "@desq/player": "file:packages/desq-player-1.0.10.tgz",
     "@huggingface/transformers": "4.3.1",
     "@jimp/js-tiff": "^1.6.1",
     "@jsep-plugin/arrow": "^1.0.6",

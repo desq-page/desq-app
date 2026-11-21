@@ -68,6 +68,9 @@
     },
     "shared-vuejs-0.2.17.tgz": {
       "sha256": "940fa3ceab45b1c1606dc7ac6c25b80139c7f47edf50cb4c5c8c6bb8f0c41c22"
+    },
+    "desq-player-1.0.10.tgz": {
+      "sha256": "405b53e8b603fe8667cf7d59c8bb1b5a8bcffa971af35bd1b7878b0a474e664a"
     }
   }
 }
