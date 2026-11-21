@@ -3,13 +3,6 @@ import { onMounted } from "vue";
 
 onMounted(() => {
   document.title = "DESQ — HTML Presentation Editor & Powerpoint to HTML";
-  let keywords = document.querySelector<HTMLMetaElement>('meta[name="keywords"]');
-  if (!keywords) {
-    keywords = document.createElement("meta");
-    keywords.name = "keywords";
-    document.head.appendChild(keywords);
-  }
-  keywords.content = "HTML presentation editor, Office document editor, Word to HTML, Publisher to HTML, PowerPoint to HTML, convert PPTX to HTML, export PowerPoint to HTML, Office to HTML, slide sharing, embed presentations, interactive slides, presentation animation, Powerpoint games, slide design, PowerPoint editor, editable HTML slides, offline presentations, AI presentation editor";
 });
 
 const features = [

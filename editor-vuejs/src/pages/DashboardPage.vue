@@ -129,7 +129,7 @@
 </template>
 <script setup lang="ts">
 import { markFileCreated } from "shared-vuejs/api/homeNavigation";
-import { computed, nextTick, onMounted, ref, shallowRef, watchEffect } from "vue";
+import { computed, nextTick, onMounted, ref, shallowRef } from "vue";
 import { RouterLink } from "vue-router";
 import { useDialog } from "naive-ui";
 import { language, languages, setLanguage, translate } from "@/lib/i18n";
@@ -253,7 +253,7 @@ const initial = computed(() => (user.value?.name || "?")[0].toUpperCase());
 const loadingFiles = ref(true);
 
 onMounted(() => {
-  watchEffect(() => { document.title = translate("Your workspace — DESQ"); });
+  document.title = "DESQ — HTML Presentation Editor & PowerPoint to HTML";
 });
 
 onMounted(loadInitialFiles);
