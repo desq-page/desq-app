@@ -3,8 +3,8 @@
     :class="$style.designerouter"
     :style="designerouterPos"
     @contextmenu.prevent
-    @keydown.stop
-    tabindex="-1"
+    @keydown.stop="handleTaskPaneKey"
+    :tabindex="piniaInfo().currentTaskPane === 'arrange' ? 0 : -1"
   >
     <!-- <InsertionPanel /> -->
     <div id="taskPane" :class="$style.taskPane" :style="taskPanePos">
@@ -15,7 +15,7 @@
         <ChangeAutoShapes v-if="piniaInfo().currentTaskPane == 'changeAutoshapes'" />
         <TextShapesPanel v-if="piniaInfo().currentTaskPane == 'texts'" />
         <ObjectShapes v-if="piniaInfo().currentTaskPane == 'objects'" />
-        <ArrangePanel v-if="piniaInfo().currentTaskPane == 'arrange'" />
+        <ArrangePanel v-if="piniaInfo().currentTaskPane == 'arrange'" ref="arrangePanel" />
 
         <SettingsPanel v-if="piniaInfo().currentTaskPane == 'settings'" />
         <SizingPanel v-if="piniaInfo().currentTaskPane == 'sizingpanel'" />
@@ -83,7 +83,7 @@ import PageSetupPanel from "@/components/editor/Dialogs/PageSetupPanel.vue";
 import AnimationList from "@/components/editor/Animation/AnimationList.vue";
 
 import ArrangePanel from "@/components/editor/Selection/ArrangePanel.vue";
-import { computed, onMounted, onUnmounted, useCssModule, watch } from "vue";
+import { computed, onMounted, onUnmounted, ref, useCssModule, watch } from "vue";
 import { on, off } from "shared-vuejs/events";
 import { toggleTaskPane } from "@/lib/main/utils";
 import MediaPanel from "@/components/editor/Media/MediaPanel.vue";
@@ -113,6 +113,14 @@ import PictureOptions from "../Media/PictureOptions.vue";
 import TextboxOptions from "../Text/TextboxOptions.vue";
 import { hideEditor } from "shared-vuejs/api/updateText.js";
 import TextShapesPanel from "../AutoShapes/TextShapesPanel.vue";
+
+const arrangePanel = ref<InstanceType<typeof ArrangePanel>>();
+
+function handleTaskPaneKey(event: KeyboardEvent) {
+  if (piniaInfo().currentTaskPane === "arrange") {
+    arrangePanel.value?.handleLayerKey(event);
+  }
+}
 // import FillPicture from "../Selection/FillPicture.vue";
 
 const $style = useCssModule();

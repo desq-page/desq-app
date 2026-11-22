@@ -18,7 +18,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | @chenglou/pretext | 0.0.8 | MIT | git+https://github.com/chenglou/pretext.git |
 | @css-render/plugin-bem | 0.15.14 | MIT | https://github.com/07akioni/css-render |
 | @css-render/vue3-ssr | 0.15.14 | MIT | node_modules/@css-render/vue3-ssr |
-| @desq/player | 1.0.9 | Not specified | node_modules/@desq/player |
+| @desq/player | 1.0.10 | Not specified | node_modules/@desq/player |
 | @dmsnell/diff-match-patch | 1.1.0 | Apache-2.0 | git+https://github.com/dmsnell/diff-match-patch.git |
 | @emnapi/runtime | 1.11.3 | MIT | node_modules/@emnapi/runtime |
 | @emotion/hash | 0.8.0 | MIT | https://github.com/emotion-js/emotion/tree/master/packages/hash |

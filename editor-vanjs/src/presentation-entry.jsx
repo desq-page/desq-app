@@ -19,7 +19,9 @@ export async function startPresentation() {
   }, { assets: assets.assets });
   await player.initSlides({ ...doc.file,
     scripting: doc.playbackScripting,
-    slides: doc.slides.map(({ id, title, name, transition, timing, show, layoutid, showMaster }) => ({ id, title: title || name, transition, timing, show, layoutid, showMaster })),
+    slides: doc.slides.map(({ id, title, name, transition, timing, show, layoutid, showMaster, shapes }) => ({
+      id, title: title || name, transition, timing, show, layoutid, showMaster, shapes,
+    })),
     layouts: [...(doc.layouts || []), ...(doc.masters || [])].map(({ id, parentid, timing }) => ({ id, parentid, timing })),
     grid: doc.file.grids, publish: doc.file.publish });
 }

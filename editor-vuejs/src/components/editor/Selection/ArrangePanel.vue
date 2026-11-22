@@ -19,78 +19,79 @@
       />
     </div>
 
-    <!-- <NTree :data="items" /> -->
-    <div
-      class="shape-item"
-      :class="{
-        'shape-selected': piniaSelect().selShps.includes(item.id),
-        'shape-hidden': item.hidden,
-      }"
-      v-for="item in items"
-      :key="item.id"
-      @click="(e) => clickShape(e, item.id)"
-    >
-      <div class="shape-row">
-        <span class="shape-name">
-          <ToolbarItem quaternary :shp="item.shp" :size="20" />
-          <NIcon v-if="item.locked">
-            <LockFilled />
-          </NIcon>
-          <input
-            class="nameinput"
-            :value="item.name"
-            v-if="piniaSelect().selShps.includes(item.id)"
-            @change="(e) => updateName(e, item)"
-            @click.stop="(e) => { if (e.shiftKey || e.ctrlKey || e.metaKey) clickShape(e, item.id); }"
-          />
-          <span v-if="!piniaSelect().selShps.includes(item.id)">{{ item.name }}</span>
-        </span>
-        <button
-          class="layer-visibility-button"
-          type="button"
-          :aria-label="visibilityLabel(item)"
-          :title="visibilityLabel(item)"
-          @click.stop="toggleVisibility($event, item)"
-        >
-          <NIcon aria-hidden="true">
-            <component :is="item.hidden ? EyeOff24Regular : Eye24Regular" />
-          </NIcon>
-        </button>
-      </div>
-      <TransitionGroup>
-        <div
-          v-for="child in item.children?.slice()?.reverse()"
-          :key="child.id"
-          class="shape-child"
-          :class="{
-            selected: piniaSelect().selGrpShps.includes(child.id),
-            'shape-hidden': child.hidden,
-          }"
-          @click="(e) => clickChildShape(e, child.id, item.id)"
-        >
-          <ToolbarItem :shp="child.shp" :size="20" />
-          <span class="parentName" v-if="child.parentid"> ⇒ </span>
-          <input
-            class="nameinput"
-            :value="child.name"
-            v-if="piniaSelect().selGrpShps.includes(child.id)"
-            @change="(e) => updateName(e, child)"
-            @click.stop
-          />
-          <span class="namedisplay" v-else>{{ child.name }}</span>
+    <div ref="layerList" class="layer-list" role="group" aria-label="Layers" tabindex="-1">
+      <div
+        class="shape-item"
+        :class="{
+          'shape-selected': piniaSelect().selShps.includes(item.id),
+          'shape-hidden': item.hidden,
+        }"
+        v-for="item in items"
+        :key="item.id"
+        @click="(e) => clickShape(e, item.id)"
+      >
+        <div class="shape-row">
+          <span class="shape-name">
+            <ToolbarItem quaternary :shp="item.shp" :size="20" />
+            <NIcon v-if="item.locked">
+              <LockFilled />
+            </NIcon>
+            <input
+              class="nameinput"
+              :value="item.name"
+              v-if="piniaSelect().selShps.includes(item.id)"
+              @change="(e) => updateName(e, item)"
+              @click.stop="(e) => { if (e.shiftKey || e.ctrlKey || e.metaKey) clickShape(e, item.id); }"
+            />
+            <span v-if="!piniaSelect().selShps.includes(item.id)">{{ item.name }}</span>
+          </span>
           <button
             class="layer-visibility-button"
             type="button"
-            :aria-label="visibilityLabel(child)"
-            :title="visibilityLabel(child)"
-            @click.stop="toggleVisibility($event, child)"
+            :aria-label="visibilityLabel(item)"
+            :title="visibilityLabel(item)"
+            @click.stop="toggleVisibility($event, item)"
           >
             <NIcon aria-hidden="true">
-              <component :is="child.hidden ? EyeOff24Regular : Eye24Regular" />
+              <component :is="item.hidden ? EyeOff24Regular : Eye24Regular" />
             </NIcon>
           </button>
         </div>
-      </TransitionGroup>
+        <TransitionGroup>
+          <div
+            v-for="child in item.children?.slice()?.reverse()"
+            :key="child.id"
+            class="shape-child"
+            :class="{
+              selected: piniaSelect().selGrpShps.includes(child.id),
+              'shape-hidden': child.hidden,
+            }"
+            @click="(e) => clickChildShape(e, child.id, item.id)"
+          >
+            <ToolbarItem :shp="child.shp" :size="20" />
+            <span class="parentName" v-if="child.parentid"> ⇒ </span>
+            <input
+              class="nameinput"
+              :value="child.name"
+              v-if="piniaSelect().selGrpShps.includes(child.id)"
+              @change="(e) => updateName(e, child)"
+              @click.stop
+            />
+            <span class="namedisplay" v-else>{{ child.name }}</span>
+            <button
+              class="layer-visibility-button"
+              type="button"
+              :aria-label="visibilityLabel(child)"
+              :title="visibilityLabel(child)"
+              @click.stop="toggleVisibility($event, child)"
+            >
+              <NIcon aria-hidden="true">
+                <component :is="child.hidden ? EyeOff24Regular : Eye24Regular" />
+              </NIcon>
+            </button>
+          </div>
+        </TransitionGroup>
+      </div>
     </div>
   </DialogBase>
 </template>
@@ -132,6 +133,7 @@ import { selectLayer } from "./layerSelection.mjs";
 
 
 const items: any = ref([]);
+const layerList = ref<HTMLElement>();
 let selectionAnchor: string | undefined;
 
 const selItems: any = [
@@ -358,7 +360,7 @@ function clickShape(e, id) {
   for (const selectedId of next.selected) {
     if (!piniaSelect().selShps.includes(selectedId)) addHandle(selectedId, { focusCanvas: false });
   }
-  shiftFocusToAvoidKeydown();
+  focusLayerList();
 }
 
 function clickChildShape(e, cid, shpid) {
@@ -368,23 +370,46 @@ function clickChildShape(e, cid, shpid) {
     piniaSelect().selGrpShps.push(cid);
     console.log(piniaSelect().selGrpShps);
     e.stopPropagation();
-    shiftFocusToAvoidKeydown();
+    focusLayerList();
   }
 }
 
-function shiftFocusToAvoidKeydown() {
-  nextTick(() => {
-    (document.querySelector("#taskPane") as any).parentNode.focus();
-  });
+function focusLayerList() {
+  nextTick(() => layerList.value?.focus({ preventScroll: true }));
 }
 
-// function handleKey(e) {
-//   console.log(e);
-//   e.preventDefault();
-//   e.stopPropagation();
-// }
+function handleLayerKey(event: KeyboardEvent) {
+  const target = event.target;
+  if (event.defaultPrevented || event.isComposing || event.altKey || event.shiftKey ||
+      (target instanceof HTMLElement &&
+        (target.isContentEditable || target.closest("input, textarea, select")))) return;
+
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "a") {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.repeat) return;
+    const layerIds = items.value.map(item => item.id);
+    deselectAll();
+    for (const id of layerIds) addHandle(id, { focusCanvas: false });
+    selectionAnchor = layerIds[0];
+  } else if ((event.key === "Delete" || event.key === "Backspace") && !event.ctrlKey && !event.metaKey) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.repeat || piniaInfo().useGrid || !piniaSelect().selShps.length) return;
+    deleteShape();
+    selectionAnchor = undefined;
+    focusLayerList();
+  }
+}
+
+defineExpose({ handleLayerKey });
 </script>
 <style scoped>
+.layer-list:focus-visible {
+  outline: 2px solid #1677ff;
+  outline-offset: -2px;
+}
+
 .arrange-toolbar {
   display: flex;
   padding: 5px 10px;

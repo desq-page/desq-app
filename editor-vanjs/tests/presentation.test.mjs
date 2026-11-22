@@ -25,11 +25,17 @@ test('presentation initializes player from document and renders slides on demand
       builder.onResolve({ filter: /.*/ }, args => args.kind === 'entry-point' ? undefined : { path: args.path, namespace: 'mock' });
       builder.onLoad({ filter: /.*/, namespace: 'mock' }, args => ({ contents: args.path.includes('shared-renderer')
         ? 'export const getStyles=()=>".slide{}";'
-        : args.path.includes('render.jsx') ? 'export const renderPlayerSlide=async(doc,index)=>{globalThis.fixture.rendered.push(index);return doc.slides[index-1].id};'
+        : args.path.includes('render.jsx') ? 'export const createPlayerAssetDocument=doc=>({document:doc,assets:[],forSlide:async()=>doc});export const renderPlayerSlide=async(doc,index)=>{globalThis.fixture.rendered.push(index);return doc.slides[index-1].id};'
         : args.path.includes('document.mjs') ? 'export const unpackDocumentAssets=doc=>doc;'
         : 'export const setEmbeddedSlides=fn=>globalThis.fixture.loader=fn;export const initSlides=config=>{globalThis.fixture.config=config};' }));
     } }] });
-  const doc = { file: { width: 100, height: 50 }, slides: [{ id: 'one', shapes: [], timing: { id: 'effect' } }, { id: 'two', shapes: [] }], layouts: [], masters: [] };
+  const arc = end => ({ id: 'arc', prstGeom: { $_prst: 'blockArc', avLst: {
+    gd: [{ $_name: 'adj2', $_fmla: `val ${end}` }],
+  } } });
+  const doc = { file: { width: 100, height: 50 }, slides: [
+    { id: 'one', shapes: [arc(11755086)], timing: { id: 'effect' } },
+    { id: 'two', shapes: [arc(20760407)] },
+  ], layouts: [], masters: [] };
   const fixture = { rendered: [] };
   const document = { readyState: 'loading', getElementById: () => ({ textContent: JSON.stringify(doc) }),
     addEventListener() {}, createElement: () => ({}), head: { append() {} } };
@@ -37,6 +43,8 @@ test('presentation initializes player from document and renders slides on demand
   vm.runInContext(result.outputFiles[0].text, context);
   await context.module.exports.startPresentation();
   assert.equal(fixture.config.slides[0].timing.id, 'effect');
+  assert.deepEqual(JSON.parse(JSON.stringify(fixture.config.slides.map(slide => slide.shapes))),
+    doc.slides.map(slide => slide.shapes));
   assert.deepEqual(fixture.rendered, []);
   assert.equal(await fixture.loader(2), 'two');
   assert.deepEqual(fixture.rendered, [2]);
