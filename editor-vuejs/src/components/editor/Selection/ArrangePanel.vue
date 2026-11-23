@@ -19,7 +19,15 @@
       />
     </div>
 
-    <div ref="layerList" class="layer-list" role="group" aria-label="Layers" tabindex="-1">
+    <div
+      ref="layerList"
+      class="layer-list"
+      role="group"
+      aria-label="Layers"
+      tabindex="-1"
+      @pointerdown.capture="trackNameInputPress"
+      @click.capture="suppressNameInputDragClick"
+    >
       <div
         class="shape-item"
         :class="{
@@ -135,6 +143,22 @@ import { selectLayer } from "./layerSelection.mjs";
 const items: any = ref([]);
 const layerList = ref<HTMLElement>();
 let selectionAnchor: string | undefined;
+let pressedNameInput: EventTarget | null = null;
+
+function trackNameInputPress(event: PointerEvent) {
+  const target = event.target;
+  pressedNameInput = target instanceof HTMLInputElement && target.classList.contains("nameinput")
+    ? target
+    : null;
+}
+
+function suppressNameInputDragClick(event: MouseEvent) {
+  if (event.detail === 0) return;
+  const input = pressedNameInput;
+  pressedNameInput = null;
+  // A drag that ends outside the input can dispatch a click on the shared ancestor.
+  if (input && event.target !== input) event.stopPropagation();
+}
 
 const selItems: any = [
   {
@@ -533,11 +557,15 @@ defineExpose({ handleLayerKey });
 }
 
 .nameinput {
-  background: white;
+  background: transparent;
   border: none;
   width: 90%;
   margin-left: -2px;
   user-select: text;
+}
+
+.nameinput:focus {
+  background: white;
 }
 </style>
 
