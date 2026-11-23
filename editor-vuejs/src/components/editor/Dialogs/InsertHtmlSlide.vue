@@ -43,6 +43,7 @@ const busy = ref(false), loadingContext = ref(false);
 const brief = ref(''), html = ref(''), status = ref(''), context = ref('');
 const fileInput = ref<HTMLInputElement | null>(null);
 const maxHtmlLength = 2_000_000;
+const maxContextCharsPerSlide = 600;
 
 const prompt = computed(() => [
   'Create one self-contained HTML slide using the deck dimensions, theme, and context below.',
@@ -50,7 +51,7 @@ const prompt = computed(() => [
   'Return only the HTML.',
   brief.value.trim() && `Slide brief: ${brief.value.trim()}`,
   context.value,
-].filter(Boolean).join('\n\n'));
+].filter(Boolean).join('\n').replace(/\n(?:[^\S\n]*\n)+/g, '\n'));
 
 function shapeText(shape: any): string[] {
   const ownText = nodeAsArray(shape.txBody?.p).map(para => nodeAsArray(para.r).map(getRunText).join('')).join('\n');
@@ -59,7 +60,10 @@ function shapeText(shape: any): string[] {
   let htmlText = '';
   if (typeof shape.htmlSlide === 'string') {
     const doc = new DOMParser().parseFromString(shape.htmlSlide, 'text/html');
-    doc.querySelectorAll('script, style, template, noscript').forEach(node => node.remove());
+    doc.querySelectorAll('script, style, template, noscript, nav, button, [role="navigation"], [role="button"]')
+      .forEach(node => node.replaceWith(' '));
+    doc.querySelectorAll('address, article, blockquote, br, div, figcaption, h1, h2, h3, h4, h5, h6, li, p, section, td, th')
+      .forEach(node => { node.before(' '); node.after(' '); });
     htmlText = doc.body.textContent || '';
   }
   return [ownText, htmlText, ...tableText, ...(shape.children || []).flatMap(shapeText)].filter(text => text.trim());
@@ -85,15 +89,18 @@ watch(open, async (show, _, onCleanup) => {
     const slides = await Promise.all(file.slides.map(({ id }, index) => {
       return Promise.resolve(id === current?.id ? current : loadSlideFromDexie(file.id, id, 'slides'))
         .then(slide => {
-          const text = (slide?.shapes || []).flatMap(shapeText).join('\n');
-          return text && `Slide ${index + 1}:\n${text}`;
+          const text = (slide?.shapes || []).flatMap(shapeText).join(' ').replace(/\s+/g, ' ').trim();
+          const excerpt = text.length > maxContextCharsPerSlide
+            ? text.slice(0, maxContextCharsPerSlide + 1).replace(/\s+\S*$/, '').slice(0, maxContextCharsPerSlide) + '…'
+            : text;
+          return excerpt && `Slide ${index + 1}: ${JSON.stringify(excerpt)}`;
         });
     }));
     if (active) context.value = [
       `Deck dimensions: ${file.width} × ${file.height} pixels.`,
       colors.length && `Theme colors: ${colors.join(', ')}.`,
-      slides.some(Boolean) && `Existing deck text:\n${slides.filter(Boolean).join('\n\n')}`,
-    ].filter(Boolean).join('\n\n');
+      slides.some(Boolean) && `Existing deck text:\n${slides.filter(Boolean).join('\n')}`,
+    ].filter(Boolean).join('\n');
   } catch {
     if (active) status.value = 'Could not read the presentation context.';
   } finally {
