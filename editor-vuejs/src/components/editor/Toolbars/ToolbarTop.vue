@@ -129,6 +129,13 @@
             :icon="AutoAwesomeOutlined"
             :onClick="() => piniaInfo().openEditorAgentModal = true"
           />
+          <ToolbarItem
+            caption="Insert HTML Slide"
+            :icon="Code24Regular"
+            :disabled="piniaSlides().masterView || !!piniaInfo().useGrid"
+            :onClick="() => showHtmlSlideDialog = true"
+          />
+          <InsertHtmlSlide v-if="showHtmlSlideDialog" v-model:show="showHtmlSlideDialog" />
           <ToolbarItem type="divider" v-if="piniaResize().windowWidth >= 769" />
           <ToolbarItemDropdown :options="TextOptions" :icon="TextT24Filled" caption="Text" />
           <ToolbarItemDropdown :options="ShapeOptions" :icon="TriangleSquareCircle" caption="Shapes" />
@@ -475,6 +482,8 @@ import {
 } from "@/lib/common/store";
 
 import ToolbarItem from "./ToolbarItem.vue";
+import InsertHtmlSlide from "../Dialogs/InsertHtmlSlide.vue";
+const showHtmlSlideDialog = ref(false);
 import TableDimensionPicker from "./TableDimensionPicker.vue";
 // import ViewMode from "./ViewMode.vue";
 
@@ -500,6 +509,7 @@ import {
 import g from "shared-vuejs/api/global";
 import {
   ClipboardPaste24Regular,
+  Code24Regular,
   Crop24Filled,
   DataLine20Filled,
   Image24Regular,

@@ -133,6 +133,8 @@ function updateUI() {
 
 onMounted(async () => {
   window.addEventListener("message", async (e) => {
+    // Sandboxed HTML slides cannot send editor commands.
+    if (e.origin === "null" || !e.data) return;
     // receive from external (like hub)
     if (e.data.cmd == "externalPPTX") {
       const pptxSettings: any = {};
