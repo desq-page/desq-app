@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 import {Marked, Renderer} from 'marked';
 
 const publicRoot = new URL('../editor-vuejs/public/', import.meta.url);
-export const authoringAssetPaths = ['AGENTS.md', 'docs/html-slide-interactions.md', 'docs/local-scripting.md', 'examples/html-slides/local-quiz.html', 'examples/html-slides/quiz.html'];
+export const authoringAssetPaths = ['AGENTS.md', 'docs/html-slide-interactions.md', 'docs/insert-html-slide.md', 'docs/local-scripting.md', 'examples/html-slides/local-quiz.html', 'examples/html-slides/quiz.html'];
 
 const renderer = new Renderer();
 renderer.link = function (token) {

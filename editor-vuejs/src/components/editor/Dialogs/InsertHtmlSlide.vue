@@ -45,9 +45,8 @@ const maxHtmlLength = 2_000_000;
 
 const prompt = computed(() => [
   'Create one self-contained HTML slide using the deck dimensions, theme, and context below.',
-  'Return a complete HTML document with inline CSS, inline JavaScript, and any required assets embedded. Fit the full slide in the viewport. Keep visible text in ordinary HTML elements so it stays editable.',
-  'Make the slide interactive. Choose an interaction that helps explain the topic, such as tabs that switch information panels, a quiz with immediate feedback, or a slider that updates a chart. Include at least one visible, clearly labeled control and wire it up so using it changes what the audience sees. Include a reset control when the interaction has multiple steps.',
-  'Write the initial view and controls directly in the HTML. Use native buttons or form controls with keyboard support. Keep all behavior inside this slide. For custom click targets, use a button or call event.stopPropagation() so the presentation stays on the slide. Use no external libraries, network requests, or parent-window APIs. Return only the HTML.',
+  'Read and follow the Insert HTML Slide guide at https://desq.page/docs/insert-html-slide.html before writing the slide. If you cannot access the guide, ask me to provide it.',
+  'Return only the HTML.',
   brief.value.trim() && `Slide brief: ${brief.value.trim()}`,
   context.value,
 ].filter(Boolean).join('\n\n'));

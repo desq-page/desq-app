@@ -35,6 +35,12 @@ test('published authoring assets match their sources and include linked local re
       }
     }
   }
+  const insertDialog=await readFile(new URL('../editor-vuejs/src/components/editor/Dialogs/InsertHtmlSlide.vue',import.meta.url),'utf8');
+  const insertGuide=insertDialog.match(/https:\/\/desq\.page\/(docs\/insert-html-slide\.html)/);
+  assert.ok(insertGuide,'Insert HTML Slide prompts link to the dedicated guide');
+  const insertGuideHtml=await readFile(new URL(insertGuide[1],target),'utf8');
+  assert.match(insertGuideHtml,/<h1>Insert HTML Slide<\/h1>/);
+  assert.match(insertGuideHtml,/<code>event\.stopPropagation\(\)<\/code>/);
   await writeFile(new URL('AGENTS.md',target),'stale guide');
   await prepareAuthoringAssets(target);
   assert.equal(await readFile(new URL('AGENTS.md',target),'utf8'),await readFile(new URL('../AGENTS.md',import.meta.url),'utf8'));
