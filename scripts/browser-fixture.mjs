@@ -3,7 +3,7 @@ import WebSocket from 'ws';
 
 // Wait on the actual async fixture, not headless Chrome's virtual-clock idle
 // heuristic (which can finish before PDF worker/MessageChannel work completes).
-export async function runBrowserFixture(chrome,url,profile) {
+export async function runBrowserFixture(chrome,url,profile,drive) {
   const child=spawn(chrome,['--headless','--no-sandbox','--disable-gpu','--allow-file-access-from-files','--no-first-run','--disable-background-networking',`--user-data-dir=${profile}`,'--remote-debugging-port=0','about:blank'],{stdio:['ignore','ignore','pipe']});
   let socket;
   const pending=new Map();let sequence=0;let loaded;
@@ -25,6 +25,7 @@ export async function runBrowserFixture(chrome,url,profile) {
     await send('Page.enable',{},sessionId);
     const loadEvent=new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('Fixture page did not load.')),15000);loaded=()=>{clearTimeout(timer);resolve();};});
     await send('Page.navigate',{url},sessionId);await loadEvent;
+    await drive?.((method, params) => send(method, params, sessionId));
     const result=await send('Runtime.evaluate',{expression:`new Promise(resolve => {const started=Date.now();function check(){if(document.getElementById('result')||Date.now()-started>40000)resolve(document.documentElement.outerHTML);else setTimeout(check,50);}check();})`,awaitPromise:true,returnByValue:true},sessionId);
     if(result.exceptionDetails)throw Error(JSON.stringify(result.exceptionDetails));
     return result.result.value;
