@@ -41,6 +41,7 @@ test('published authoring assets match their sources and include linked local re
   const insertGuideHtml=await readFile(new URL(insertGuide[1],target),'utf8');
   assert.match(insertGuideHtml,/<h1>Insert HTML Slide<\/h1>/);
   assert.match(insertGuideHtml,/<code>event\.stopPropagation\(\)<\/code>/);
+  assert.match(insertGuideHtml,/<code>data-desq-image-placeholder<\/code>/);
   await writeFile(new URL('AGENTS.md',target),'stale guide');
   await prepareAuthoringAssets(target);
   assert.equal(await readFile(new URL('AGENTS.md',target),'utf8'),await readFile(new URL('../AGENTS.md',import.meta.url),'utf8'));

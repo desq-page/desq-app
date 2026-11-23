@@ -20,6 +20,7 @@
         </NButton>
       </div>
       <div>{{ translate('Double-click text to edit it. Press Enter or click away to save. Use Preview or Present to try the interactive controls.') }}</div>
+      <div>{{ translate('Double-click a marked image placeholder, or select it and press Enter, to replace it.') }}</div>
       <div v-if="status" role="status">{{ translate(status) }}</div>
     </div>
   </NModal>
