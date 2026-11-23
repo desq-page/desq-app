@@ -80,6 +80,9 @@
     },
     "shared-vuejs-0.2.19.tgz": {
       "sha256": "197230a338ade363aa853f7e40bc330d2931191e40483e0a55797c8ed4f78593"
+    },
+    "shared-vuejs-0.2.20.tgz": {
+      "sha256": "f71a96b15af48b1777cccf494b5cc002a5980dc5f9070e5dacdc1a08bf266551"
     }
   }
 }

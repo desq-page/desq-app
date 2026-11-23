@@ -207,6 +207,7 @@ async function searchImages() {
       id: m.name,
       src: getBaseHref(getFileInfo().id) + "media/" + m.name,
       title: m.name,
+      intrinsicSize: { w: m.w, h: m.h },
       width: m.name.includes(".mp3") ? 40 : m.w || 100,
       height: m.name.includes(".mp3") ? 40 : m.h || 100,
     })),
