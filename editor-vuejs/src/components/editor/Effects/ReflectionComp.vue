@@ -219,10 +219,10 @@
 </template>
 
 <script setup lang="ts">
-import { getShapeDeep, updateShape } from "shared-vuejs/editor";
 
 import LayoutHeader from "@/components/common/Layouts/LayoutHeader.vue";
 import IframeInputbox from "@/components/common/IframeInputbox.vue";
+import { applyToSelectedShapes } from "./selected-shape-effects";
 import { saveDexie } from "shared-vuejs/api/dbutils";
 import { piniaSelect } from "@/lib/common/store";
 import { EMU } from "shared-vuejs/api/globalUtility";
@@ -355,29 +355,27 @@ function saveReflection(val?) {
     });
     saveDexie();
   } else {
-    const curShp = getShapeDeep(piniaSelect().selShpFormat?.id);
-    if (!curShp) return;
-    if (reflType.value == "none") {
-      delete curShp.effectLst?.reflection;
-    } else {
-      curShp.effectLst = {
-        ...curShp.effectLst,
-        reflection: {
-          $_algn: "bl",
-          $_dir: 5400000,
-          $_sy: -100000,
-          $_rotWithShape: "0",
-          ...curShp.effectLst?.reflection,
-          $_dist: Math.round(dist.value * EMU),
-          $_endPos: Math.round(size.value * 1000),
-          $_stA: Math.round((100 - transparency.value) * 1000),
-          $_blurRad: Math.round(blur.value * EMU),
-          ...val,
-        },
-      };
-    }
-    updateShape(curShp);
-    saveDexie();
+    if (applyToSelectedShapes(curShp => {
+      if (reflType.value == "none") {
+        delete curShp.effectLst?.reflection;
+      } else {
+        curShp.effectLst = {
+          ...curShp.effectLst,
+          reflection: {
+            $_algn: "bl",
+            $_dir: 5400000,
+            $_sy: -100000,
+            $_rotWithShape: "0",
+            $_dist: Math.round(dist.value * EMU),
+            $_endPos: Math.round(size.value * 1000),
+            $_stA: Math.round((100 - transparency.value) * 1000),
+            $_blurRad: Math.round(blur.value * EMU),
+            ...curShp.effectLst?.reflection,
+            ...val,
+          },
+        };
+      }
+    })) saveDexie();
   }
 }
 </script>

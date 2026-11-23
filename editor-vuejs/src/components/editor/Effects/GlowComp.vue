@@ -153,10 +153,11 @@
 </template>
 
 <script setup lang="ts">
-import { getShapeDeep, updateShape, getTheme, getMasterInfo } from "shared-vuejs/editor";
+import { getTheme, getMasterInfo } from "shared-vuejs/editor";
 
 import LayoutHeader from "@/components/common/Layouts/LayoutHeader.vue";
 import IframeInputbox from "@/components/common/IframeInputbox.vue";
+import { applyToSelectedShapes } from "./selected-shape-effects";
 import { saveDexie } from "shared-vuejs/api/dbutils";
 import { piniaSelect } from "@/lib/common/store";
 import { EMU, ue } from "shared-vuejs/api/globalUtility";
@@ -321,21 +322,20 @@ function saveGlow(val?) {
     });
     saveDexie();
   } else {
-    const curShp = getShapeDeep(piniaSelect().selShpFormat?.id);
-    if (!curShp) return;
-    if (glowType.value == "none") {
-      delete curShp.effectLst?.glow;
-    } else {
-      curShp.effectLst = {
-        ...curShp.effectLst,
-        glow: {
-          ...curShp.effectLst?.glow,
-          ...val,
-        },
-      };
-    }
-    updateShape(curShp);
-    saveDexie();
+    const reference = piniaSelect().selShpFormat?.effectLst;
+    if (applyToSelectedShapes(curShp => {
+      if (glowType.value == "none") {
+        delete curShp.effectLst?.glow;
+      } else {
+        curShp.effectLst = {
+          ...curShp.effectLst,
+          glow: {
+            ...(curShp.effectLst?.glow ?? reference?.glow),
+            ...val,
+          },
+        };
+      }
+    })) saveDexie();
   }
 }
 </script>

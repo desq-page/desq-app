@@ -170,10 +170,11 @@
   </template>
 </template>
 <script setup lang="ts">
-import { getShapeDeep, updateShape, getTheme, getMasterInfo } from "shared-vuejs/editor";
+import { getTheme, getMasterInfo } from "shared-vuejs/editor";
 
 import LayoutHeader from "@/components/common/Layouts/LayoutHeader.vue";
 import IframeInputbox from "@/components/common/IframeInputbox.vue";
+import { applyToSelectedShapes } from "./selected-shape-effects";
 import { saveDexie } from "shared-vuejs/api/dbutils";
 import { piniaSelect } from "@/lib/common/store";
 import { EMU, ue } from "shared-vuejs/api/globalUtility";
@@ -331,29 +332,27 @@ function saveShadow(val?) {
     });
     saveDexie();
   } else {
-    const curShp = getShapeDeep(piniaSelect().selShpFormat?.id);
-    if (shdwType.value == "none") {
-      delete curShp.effectLst?.outerShdw;
-      delete curShp.effectLst?.innerShdw;
-      delete curShp.effectLst?.glow;
-    } else {
-      if (shdwType.value == "inner") {
+    const reference = piniaSelect().selShpFormat?.effectLst;
+    applyToSelectedShapes(curShp => {
+      if (shdwType.value == "none") {
         delete curShp.effectLst?.outerShdw;
-      } else if (shdwType.value == "outer") {
         delete curShp.effectLst?.innerShdw;
-      } else if (shdwType.value == "glow") {
-        // delete curShp.effectLst?.innerShdw;
+      } else {
+        if (shdwType.value == "inner") {
+          delete curShp.effectLst?.outerShdw;
+        } else if (shdwType.value == "outer") {
+          delete curShp.effectLst?.innerShdw;
+        }
+        const shdtype = shdwType.value + "Shdw";
+        curShp.effectLst = {
+          ...curShp.effectLst,
+          [shdtype]: {
+            ...(curShp.effectLst?.[shdtype] ?? reference?.[shdtype]),
+            ...val,
+          },
+        };
       }
-      const shdtype = shdwType.value + "Shdw";
-      curShp.effectLst = {
-        ...curShp.effectLst,
-        [shdtype]: {
-          ...curShp.effectLst?.[shdtype],
-          ...val,
-        },
-      };
-    }
-    updateShape(curShp);
+    });
   }
 }
 </script>

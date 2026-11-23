@@ -19,7 +19,7 @@
               !!piniaSelect().selShpFormat?.effectLst?.[ef.eff] ||
               !!piniaSelect().selShpFormat?.sp3d?.[ef.eff]
             "
-            :on-update:value="() => clickFunc(ef)"
+            :on-update:value="enabled => setEffectEnabled(ef, enabled)"
             style="margin-right: 10px"
           />
         </template>
@@ -38,7 +38,7 @@
   </DialogBase>
 </template>
 <script setup lang="ts">
-import { getShapeDeep, updateShape, getSelectSelShpFormat } from "shared-vuejs/editor";
+import { getSelectSelShpFormat } from "shared-vuejs/editor";
 
 // import { applyShadow } from "shared-vuejs/api/layout";
 // import ShapeSize from "./ShapeSize.vue";
@@ -47,6 +47,7 @@ import { NSwitch } from "naive-ui";
 import { piniaSelect } from "@/lib/common/store";
 import DialogBase from "@/components/common/Layouts/DialogBase.vue";
 import RangeSlider from "@/components/common/RangeSlider.vue";
+import { applyToSelectedShapes } from "./selected-shape-effects";
 import { saveDexie } from "shared-vuejs/api/dbutils";
 import { round } from "shared-vuejs/api/utility";
 import {
@@ -110,29 +111,16 @@ const effects: any = [
 
 // ALSO check selection gid('selShapeLeft').disabled line 263 to 271 not working
 
-function clickFunc(eff) {
-  // applyShadow(eff.eff, eff.id);
-  const shp = getShapeDeep(getSelectSelShpFormat()?.id);
-  if (shp) {
-    if (shp.effectLst?.[eff.eff]) {
-      shp.effectLst[eff.eff] = undefined;
-    } else if (shp.sp3d?.[eff.eff]) {
-      shp.sp3d[eff.eff] = undefined;
+function setEffectEnabled(effect, enabled: boolean) {
+  const key = effect.eff;
+  const property = key === "bevel" ? "sp3d" : "effectLst";
+  if (applyToSelectedShapes(shape => {
+    if (enabled) {
+      shape[property] = { ...shape[property], [key]: structuredClone(effect.value) };
     } else {
-      if (eff.eff == "bevel") {
-        shp.sp3d = {
-          ...shp.sp3d,
-          [eff.eff]: eff.value,
-        };
-      } else {
-        shp.effectLst = {
-          ...shp.effectLst,
-          [eff.eff]: eff.value,
-        };
-      }
+      delete shape[property]?.[key];
     }
-    updateShape(shp);
-  }
+  })) saveDexie();
 }
 
 function getCurValue(eff) {
@@ -150,30 +138,12 @@ function getCurValue(eff) {
 }
 
 function updateSlider(eff, val) {
-  const shp = getShapeDeep(getSelectSelShpFormat()?.id);
-  if (eff == "reflection") {
-    const def: any = effects.find((ef) => ef.eff == "reflection");
-    shp.effectLst = {
-      ...shp.effectLst,
-      [eff]: {
-        ...def,
-        $_dist: val * 10000,
-        $_endPos: 1000,
-      },
-    };
-  } else if (eff == "blur" || eff == "softEdge") {
-    shp.effectLst = {
-      ...shp.effectLst,
-      [eff]: {
-        $_rad: val * EMU,
-      },
-    };
-  } else {
-    shp.effectLst = {
-      ...shp.effectLst,
-      [eff]: val / 100,
-    };
-  }
-  updateShape(shp);
+  applyToSelectedShapes(shape => {
+    const previous = shape.effectLst?.[eff];
+    const effect = eff === "blur" || eff === "softEdge"
+      ? { ...previous, $_rad: val * EMU }
+      : val / 100;
+    shape.effectLst = { ...shape.effectLst, [eff]: effect };
+  });
 }
 </script>

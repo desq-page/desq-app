@@ -32,7 +32,7 @@
 </template>
 <script setup lang="ts">
 import { NInputNumber } from 'naive-ui';
-import { getShapeDeep, getSelectSelShpFormat, updateShape } from 'shared-vuejs/editor';
+import { applyToSelectedShapes } from './selected-shape-effects';
 import { saveDexie } from 'shared-vuejs/api/dbutils';
 import { EMU } from 'shared-vuejs/api/globalUtility';
 import { genScene3d } from 'shared-vuejs/api/sp3d';
@@ -44,11 +44,7 @@ const bevelPresets = ['none', 'circle', 'angle', 'relaxedInset', 'softRound', 'h
 function value(field: string) { return read3dValue(piniaSelect().selShpFormat, field, EMU, genScene3d); }
 function set(field: string, next: string | number | null, save = false) {
   if (next == null || (typeof next === 'number' && !Number.isFinite(next))) return;
-  const id = getSelectSelShpFormat()?.id;
-  const shape = id && getShapeDeep(id);
-  if (!shape) return;
-  updateShape(set3dValue(shape, field, next, EMU, genScene3d));
-  if (save) saveDexie();
+  if (applyToSelectedShapes(shape => set3dValue(shape, field, next, EMU, genScene3d)) && save) saveDexie();
 }
 </script>
 <style scoped>
