@@ -124,14 +124,14 @@
       <NTabPane name="insert" :tab="translate('Insert')" :disabled="showSpecialTab()" >
         <div :class="$style['header-left']">
           <ToolbarSlide />
-          <ToolbarItem
+          <!-- <ToolbarItem
             caption="Agent"
             :icon="AutoAwesomeOutlined"
             :onClick="() => piniaInfo().openEditorAgentModal = true"
-          />
+          /> -->
           <ToolbarItem
-            caption="Insert HTML Slide"
-            :icon="Code24Regular"
+            caption="HTML Slide"
+            :icon="AutoAwesomeOutlined"
             :disabled="piniaSlides().masterView || !!piniaInfo().useGrid"
             :onClick="() => showHtmlSlideDialog = true"
           />

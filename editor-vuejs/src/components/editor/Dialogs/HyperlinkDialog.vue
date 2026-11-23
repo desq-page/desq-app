@@ -502,23 +502,23 @@ function updateDisplayURL() {
 onMounted(async () => {
   const common = [
     {
-      label: "Next Page",
+      label: "Next Slide",
       value: "#next",
     },
     {
-      label: "Previous Page",
+      label: "Previous Slide",
       value: "#prev",
     },
     {
-      label: "First Page",
+      label: "First Slide",
       value: "#first",
     },
     {
-      label: "Last Page",
+      label: "Last Slide",
       value: "#last",
     },
     {
-      label: "Last Page Viewed",
+      label: "Last Slide Viewed",
       value: "#viewed",
     },
     {
