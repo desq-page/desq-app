@@ -2,7 +2,9 @@
   <!-- <SelectionToolbar /> -->
   <DialogBase
     shapeOnly
-    title="Format Shape"
+    :title="piniaSelect().selShpFormat?.$_otag == 'pic'
+        ? 'Format Picture'
+        : 'Format Shape'"
     :sub-tabbar-items="subTabbarItems"
   >
     <LayoutHeader label="Shadow" :arrow="false" />

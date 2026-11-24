@@ -140,6 +140,13 @@
           <ToolbarItemDropdown :options="TextOptions" :icon="TextT24Filled" caption="Text" />
           <ToolbarItemDropdown :options="ShapeOptions" :icon="TriangleSquareCircle" caption="Shapes" />
           <ToolbarItem caption="Media" :icon="Image24Regular" :onClick="() => toggleTaskPane('mediaPanel')" :active="piniaInfo().currentTaskPane == 'mediaPanel'" />
+          <ToolbarItem
+            caption="AI Gen"
+            :icon="AutoAwesomeOutlined"
+            :onClick="() => showAiGenDialog = true"
+            :disabled="piniaSlides().masterView || !!piniaInfo().useGrid"
+          />
+          <AiGen v-if="showAiGenDialog" v-model:show="showAiGenDialog" />
           <ToolbarItemDropdown
             :options="tableOptions"
             :icon="Table24Regular"
@@ -484,7 +491,9 @@ import {
 
 import ToolbarItem from "./ToolbarItem.vue";
 import InsertHtmlSlide from "../Dialogs/InsertHtmlSlide.vue";
+import AiGen from "../Dialogs/AiGen.vue";
 const showHtmlSlideDialog = ref(false);
+const showAiGenDialog = ref(false);
 import TableDimensionPicker from "./TableDimensionPicker.vue";
 // import ViewMode from "./ViewMode.vue";
 

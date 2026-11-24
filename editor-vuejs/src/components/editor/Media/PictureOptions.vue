@@ -239,7 +239,9 @@ function pasteImage() {
 <template>
   <DialogBase
     :shape-only="!background"
-    :title="background ? 'Format Background' : 'Format Shape'"
+    :title="background ? 'Format Background' : piniaSelect().selShpFormat?.$_otag == 'pic'
+        ? 'Format Picture'
+        : 'Format Shape'"
     :sub-tabbar-items="background ? bgPictureSubTabbarItems : subTabbarItems"
   >
   <template v-if="background">
@@ -284,6 +286,7 @@ function pasteImage() {
   </template>
   <template v-else>
   <LocalMedia
+    v-if="piniaSelect().selShpFormat?.$_otag == 'pic'"
     title="Change Picture"
     preview
     :hideSamples="!!piniaSelect().selShpFormat?.blipFill"

@@ -47,7 +47,7 @@ export default defineConfig(async ({ command, mode }) => ({
   // invalidate dependency URLs already loaded by the page when they are used.
   optimizeDeps: {
     include: [
-      'idb', '@huggingface/transformers',
+      'idb', '@huggingface/transformers', '@websr/websr', 'onnxruntime-web/webgpu',
       ...(process.env.DESQ_LOCAL_CORE === '1' ? [] : ['shared-vuejs/api/unzipPPTX']),
     ],
     // Let Vite serve the worker as a URL module instead of asking Rolldown

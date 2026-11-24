@@ -160,12 +160,16 @@ watch(
     } else if (piniaInfo().currentTaskPane == "pictureoptions" && sel && !sel.blipFill) {
       piniaInfo().setCurTaskPane("shapefill");
     } else if (
-      piniaInfo().currentTaskPane == "changeAutoshapes" && piniaInfo().lastTaskPane
+      ["changeAutoshapes", "localmediatab"].includes(piniaInfo().currentTaskPane) && piniaInfo().lastTaskPane
     ) {
       // make sure changeAutoshapes is closed
       // other modal should be similar
       if (sel) {
-        piniaInfo().setCurTaskPane("shapefill");
+        if (piniaInfo().currentTaskPane == 'localmediatab' && sel.$_otag == 'pic') {
+          piniaInfo().setCurTaskPane("pictureoptions");
+        } else {
+          piniaInfo().setCurTaskPane("shapefill");
+        }
       } else {
         piniaInfo().setCurTaskPane("formatslide");
       }

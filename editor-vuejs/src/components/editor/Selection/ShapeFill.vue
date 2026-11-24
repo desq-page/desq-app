@@ -1,7 +1,9 @@
 <template>
   <!-- <SelectionToolbar /> -->
   <DialogBase
-    title="Format Shape"
+    :title="piniaSelect().selShpFormat?.$_otag == 'pic'
+        ? 'Format Picture'
+        : 'Format Shape'"
     :sub-tabbar-items="subTabbarItems"
     :fill-selectors="fillSelectors"
     shapeOnly
@@ -13,7 +15,7 @@
         <LayoutHeader label="Solid Fill" />
         <SlideColorPicker
           :cur-color="currentSolidFillColor"
-          :on-change="setFillColor" 
+          :on-change="setFillColor"
           :showNoColor="false"
         />
         <!-- <div class="subtitle">Pick Color</div> -->
@@ -29,7 +31,7 @@
           :shp-id="piniaSelect().selShpFormat?.id"
           :use-system-picker="false && !ue.android"
         /> -->
-        <div class="subtitle">{{ translate('Fill Opacity') }}</div>
+        <div class="subtitle">{{ translate("Fill Opacity") }}</div>
         <RangeSlider
           :value="shpOpacity"
           :on-input="updateOpacity"
@@ -44,10 +46,7 @@
         <!-- <LayoutHeader label="Quick Fill Colors" /> -->
       </div>
       <div v-if="curFill == 'gradFill'">
-        <FillGradient
-          :target="gradientTarget"
-          :on-change="setGradient"
-        />
+        <FillGradient :target="gradientTarget" :on-change="setGradient" />
       </div>
       <div v-if="curFill == 'blipFill'">
         <FillPicture :on-picture-change="setBlipFill" />
@@ -58,7 +57,16 @@
 
 <script setup lang="ts">
 import { translate } from "@/lib/i18n";
-import { getShapeDeep, updateShape, getSelectEditingTextObject, getSelectSelShpFormat, getTheme, getFileInfo, getMasterInfo, getSlideInfo } from "shared-vuejs/editor";
+import {
+  getShapeDeep,
+  updateShape,
+  getSelectEditingTextObject,
+  getSelectSelShpFormat,
+  getTheme,
+  getFileInfo,
+  getMasterInfo,
+  getSlideInfo,
+} from "shared-vuejs/editor";
 
 import { piniaSelect } from "@/lib/common/store";
 import { computed, onMounted, watch } from "vue";
@@ -89,8 +97,9 @@ import LayoutHeader from "@/components/common/Layouts/LayoutHeader.vue";
 const currentTableFillProperties = computed(() => {
   const selected = piniaSelect().selShpFormat;
   if (selected?.type !== "table") return null;
-  const table = selected.graphic?.graphicData?.tbl
-    || getShapeDeep(selected.id)?.graphic?.graphicData?.tbl;
+  const table =
+    selected.graphic?.graphicData?.tbl ||
+    getShapeDeep(selected.id)?.graphic?.graphicData?.tbl;
   const bounds = getTableCellBounds(selected);
   if (bounds) {
     return table?.tr?.[bounds[0]]?.tc?.[bounds[2]]?.tcPr;
@@ -98,20 +107,31 @@ const currentTableFillProperties = computed(() => {
   return table?.tblPr;
 });
 
-const currentTableSolidFill = computed(() => currentTableFillProperties.value?.solidFill);
-const gradientTarget = computed(() => piniaSelect().selShpFormat?.type === "table"
-  ? { gradFill: currentTableFillProperties.value?.gradFill }
-  : piniaSelect().selShpFormat);
+const currentTableSolidFill = computed(
+  () => currentTableFillProperties.value?.solidFill,
+);
+const gradientTarget = computed(() =>
+  piniaSelect().selShpFormat?.type === "table"
+    ? { gradFill: currentTableFillProperties.value?.gradFill }
+    : piniaSelect().selShpFormat,
+);
 
 function getTableCellBounds(selected) {
   const selection = piniaSelect().selCells;
   if (selection?.length === 4) {
-    return [Number(selection[0]), Number(selection[1]), Number(selection[2]), Number(selection[3])];
+    return [
+      Number(selection[0]),
+      Number(selection[1]),
+      Number(selection[2]),
+      Number(selection[3]),
+    ];
   }
-  const editingId = piniaSelect().editingTextObject || getSelectEditingTextObject();
-  const match = typeof editingId === "string"
-    ? editingId.match(/^tbl:(.+):(\d+):(\d+)$/)
-    : null;
+  const editingId =
+    piniaSelect().editingTextObject || getSelectEditingTextObject();
+  const match =
+    typeof editingId === "string"
+      ? editingId.match(/^tbl:(.+):(\d+):(\d+)$/)
+      : null;
   if (match && match[1] === selected?.id) {
     const row = Number(match[2]);
     const col = Number(match[3]);
@@ -152,9 +172,10 @@ const curFill = computed(() => {
 
 const currentSolidFillColor = computed(() => {
   const selected = piniaSelect().selShpFormat;
-  const solidFill = selected?.type === "table"
-    ? currentTableSolidFill.value
-    : selected?.solidFill;
+  const solidFill =
+    selected?.type === "table"
+      ? currentTableSolidFill.value
+      : selected?.solidFill;
   return mapStyleThemeColor(
     solidFill?.uniClr,
     getTheme(),
@@ -220,9 +241,10 @@ watch(
 
 function getOpacity() {
   const selected = piniaSelect().selShpFormat;
-  const solidFill = selected?.type === "table"
-    ? currentTableSolidFill.value
-    : selected?.solidFill;
+  const solidFill =
+    selected?.type === "table"
+      ? currentTableSolidFill.value
+      : selected?.solidFill;
   let opacity = solidFill?.uniClr?.alpha?.$_val / 100000;
   if (isNaN(opacity)) opacity = 1;
   shpOpacity.value = round(opacity * 100);
@@ -263,13 +285,20 @@ function applyTableFill(tableShape, fillType, value, bounds) {
     for (let row = bounds[0]; row <= bounds[1]; row++) {
       for (let col = bounds[2]; col <= bounds[3]; col++) {
         const cell = table.tr[row]?.tc?.[col];
-        if (cell) properties.push(cell.tcPr ||= {});
+        if (cell) properties.push((cell.tcPr ||= {}));
       }
     }
   } else {
-    properties.push(table.tblPr ||= {});
+    properties.push((table.tblPr ||= {}));
   }
-  const fillTypes = ["solidFill", "gradFill", "blipFill", "pattFill", "grpFill", "noFill"];
+  const fillTypes = [
+    "solidFill",
+    "gradFill",
+    "blipFill",
+    "pattFill",
+    "grpFill",
+    "noFill",
+  ];
   for (const props of properties) {
     for (const type of fillTypes) props[type] = null;
     if (fillType) props[fillType] = deepUnref(value ?? {});
@@ -302,16 +331,25 @@ function setFillColor(color?) {
   const selectedShape = getSelectSelShpFormat();
   if (selectedShape?.type === "table") {
     const rgba = color
-      ? (typeof color === "string" ? color2array(color) : color.slice())
+      ? typeof color === "string"
+        ? color2array(color)
+        : color.slice()
       : null;
     if (rgba && rgba.length === 3) rgba.push(shpOpacity.value / 100);
-    setTableFill(rgba ? "solidFill" : null, rgba ? {
-      uniClr: {
-        $_otag: "srgbClr",
-        $_val: array2hex(rgba.slice(0, 3), true).toUpperCase(),
-        ...(rgba[3] != null ? { alpha: { $_val: Math.round(rgba[3] * 100000) } } : {}),
-      },
-    } : null);
+    setTableFill(
+      rgba ? "solidFill" : null,
+      rgba
+        ? {
+            uniClr: {
+              $_otag: "srgbClr",
+              $_val: array2hex(rgba.slice(0, 3), true).toUpperCase(),
+              ...(rgba[3] != null
+                ? { alpha: { $_val: Math.round(rgba[3] * 100000) } }
+                : {}),
+            },
+          }
+        : null,
+    );
     return;
   }
   setStyles("gradFill", null);
@@ -370,17 +408,32 @@ function applySelectedFill(ids, fillType, createFill, tableBounds = null) {
   let changed = false;
   for (const id of ids) {
     const shp = getShapeDeep(id);
-    if (!shp || ["html", "video", "audio", "iframe", "line"].includes(shp.type)) continue;
+    if (!shp || ["html", "video", "audio", "iframe", "line"].includes(shp.type))
+      continue;
 
     if (shp.type === "table" && fillType === "blipFill") {
       shp.$_useBgFill = null;
       shp.pattFill = null;
-      applyTableFill(shp, fillType, createFill(shp, false), tableBounds?.id === id ? tableBounds.bounds : null);
+      applyTableFill(
+        shp,
+        fillType,
+        createFill(shp, false),
+        tableBounds?.id === id ? tableBounds.bounds : null,
+      );
     } else {
       const isPicture = shp.$_otag === "pic" || shp.ph?.$_type === "pic";
-      const property = isPicture && fillType === "blipFill" ? "blipPr" : fillType;
+      const property =
+        isPicture && fillType === "blipFill" ? "blipPr" : fillType;
       const fill = createFill(shp, isPicture);
-      for (const type of ["grpFill", "noFill", "solidFill", "gradFill", "pattFill", "$_useBgFill", isPicture ? "blipPr" : "blipFill"]) {
+      for (const type of [
+        "grpFill",
+        "noFill",
+        "solidFill",
+        "gradFill",
+        "pattFill",
+        "$_useBgFill",
+        isPicture ? "blipPr" : "blipFill",
+      ]) {
         shp[type] = null;
       }
       shp[property] = fill;
@@ -395,13 +448,16 @@ function applySelectedFill(ids, fillType, createFill, tableBounds = null) {
 
 type FillImage = { id: string; width: number; height: number };
 
-async function setBlipFill(source?: FillImage | Promise<FillImage | undefined>) {
+async function setBlipFill(
+  source?: FillImage | Promise<FillImage | undefined>,
+) {
   const ids = selectedFillIds();
   if (!ids.length) return;
   const selected = getSelectSelShpFormat();
-  const tableBounds = selected?.type === "table"
-    ? { id: selected.id, bounds: getTableCellBounds(selected) }
-    : null;
+  const tableBounds =
+    selected?.type === "table"
+      ? { id: selected.id, bounds: getTableCellBounds(selected) }
+      : null;
   const fileId = getFileInfo()?.id;
   const slideId = getSlideInfo()?.id;
   const image = await source;
@@ -410,26 +466,36 @@ async function setBlipFill(source?: FillImage | Promise<FillImage | undefined>) 
   if (getFileInfo()?.id !== fileId || getSlideInfo()?.id !== slideId) return;
   const target = image?.id || media?.[0]?.name || "image1.png";
 
-  applySelectedFill(ids, "blipFill", (shp, isPicture) => {
-    if (!image) return { blip: { $_target: target } };
-    const property = isPicture ? "blipPr" : "blipFill";
-    const fill = {
-      blip: {
-        ...shp[property]?.blip,
-        $_w: image.width,
-        $_h: image.height,
-        $_target: target,
-      },
-    };
-    if (shp.type !== "table") {
-      const { iX, iY, iW, iH } = genImgCrop(image.width, image.height, shp);
-      const croppedShape = { w: shp.w, h: shp.h, blipFill: {}, [property]: fill };
-      updateBlipFillCrop(croppedShape, iX, iY, iW, iH, isPicture);
-      if (isPicture) shp.$_otag = "pic";
-      return croppedShape[property];
-    }
-    return fill;
-  }, tableBounds);
+  applySelectedFill(
+    ids,
+    "blipFill",
+    (shp, isPicture) => {
+      if (!image) return { blip: { $_target: target } };
+      const property = isPicture ? "blipPr" : "blipFill";
+      const fill = {
+        blip: {
+          ...shp[property]?.blip,
+          $_w: image.width,
+          $_h: image.height,
+          $_target: target,
+        },
+      };
+      if (shp.type !== "table") {
+        const { iX, iY, iW, iH } = genImgCrop(image.width, image.height, shp);
+        const croppedShape = {
+          w: shp.w,
+          h: shp.h,
+          blipFill: {},
+          [property]: fill,
+        };
+        updateBlipFillCrop(croppedShape, iX, iY, iW, iH, isPicture);
+        if (isPicture) shp.$_otag = "pic";
+        return croppedShape[property];
+      }
+      return fill;
+    },
+    tableBounds,
+  );
 }
 
 function setBgFill() {
