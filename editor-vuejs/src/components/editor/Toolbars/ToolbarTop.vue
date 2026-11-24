@@ -356,6 +356,7 @@
             :disabled="!hasWrapSelection || !!piniaInfo().useGrid"
             usePointerUp
           />
+          <ToolbarAlign />
 
           <ToolbarItem
             quaternary
@@ -540,6 +541,7 @@ import { NTabPane, NTabs } from "naive-ui";
 import InsertionItem from "../Insertion/InsertionItem.vue";
 import ToolbarText from "../Text/ToolbarText.vue";
 import ToolbarShapeStyle from "./ToolbarShapeStyle.vue";
+import ToolbarAlign from "./ToolbarAlign.vue";
 import ToolbarSlide from "./ToolbarSlide.vue";
 import ToolbarDesign from "./ToolbarDesign.vue";
 import ToolbarTransition from "./ToolbarTransition.vue";
