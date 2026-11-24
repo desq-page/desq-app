@@ -56,7 +56,7 @@
   ],
   "Shape Format": [
     "形状格式",
-    "Định dạng hình",
+    "Định dạng hình vẽ",
     "Format Bentuk"
   ],
   "AI Edits": [
@@ -896,7 +896,7 @@
   ],
   "Format Shape": [
     "设置形状格式",
-    "Định dạng hình",
+    "Định dạng hình vẽ",
     "Format Bentuk"
   ],
   "Format Picture": [
@@ -1121,12 +1121,12 @@
   ],
   "Change Shape...": [
     "更改形状…",
-    "Đổi hình…",
+    "Đổi hình vẽ…",
     "Ubah Bentuk…"
   ],
   "Convert to shape": [
     "转换为形状",
-    "Chuyển thành hình",
+    "Chuyển thành hình vẽ",
     "Ubah menjadi Bentuk"
   ],
   "Animations...": [
@@ -1141,7 +1141,7 @@
   ],
   "Format Shape...": [
     "设置形状格式…",
-    "Định dạng hình…",
+    "Định dạng hình vẽ…",
     "Format Bentuk…"
   ],
   "Format Picture...": [
