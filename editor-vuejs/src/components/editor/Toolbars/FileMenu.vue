@@ -61,7 +61,7 @@ const windowOptions = computed(() => localFiles.value.map(file => ({
   label: `${!file.name || file.name === "No name" ? "Blank" : file.name} (${String(file.id).slice(-4)})${file.id === getFileInfo()?.id ? " — current" : ""}`,
   key: `file:${file.id}`,
   icon: Open24Regular,
-  onClick: () => location.replace("/edit/" + file.id),
+  onClick: () => window.open("/edit/" + file.id),
 })));
 async function loadLocalFiles() {
   const files = [...(await getAllDexie("files"))];
