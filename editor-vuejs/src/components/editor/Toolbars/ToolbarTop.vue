@@ -130,8 +130,8 @@
             :onClick="() => piniaInfo().openEditorAgentModal = true"
           /> -->
           <ToolbarItem
-            caption="HTML Slide"
-            :icon="AutoAwesomeOutlined"
+            caption="AI HTML Slide"
+            :icon="GeneratingTokensOutlined"
             :disabled="piniaSlides().masterView || !!piniaInfo().useGrid"
             :onClick="() => showHtmlSlideDialog = true"
           />
@@ -503,6 +503,7 @@ import {
   RedoFilled,
   SlideshowFilled,
   TouchAppOutlined,
+  GeneratingTokensOutlined,
 } from "@vicons/material";
 
 import { redo, undo } from "shared-vuejs/api/undo";
