@@ -238,7 +238,7 @@
               piniaSelect().editingInfo &&
               piniaSelect().editingInfo.selectionText == ''
             "
-          /><label for="chkHlinkAction2">Page</label>
+          /><label for="chkHlinkAction2">Slide</label>
 
           <n-select
             :value="gotoSlide"
@@ -533,7 +533,7 @@ onMounted(async () => {
     idx++;
     const sldId = sldInfo.id;
     slides.push({
-      label: "Page " + idx + (sldInfo.title ? " (" + sldInfo.title + ")" : ""),
+      label: "Slide " + idx + (sldInfo.title ? " (" + sldInfo.title + ")" : ""),
       value: `@sld:${sldId}`,
       image: `thumb-${sldId}`,
     });
@@ -549,7 +549,7 @@ function renderSlide(option) {
   if (option.image) {
     return [
       h("img", {
-        src: getBaseHref(getFileInfo().id) + option.image + ".jpg",
+        src: getBaseHref(getFileInfo().id) + 'media/' + option.image + ".jpg",
         style: {
           width: "40px",
           verticalAlign: "middle",

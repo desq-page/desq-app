@@ -4,7 +4,7 @@
     style="width: 760px; max-width: calc(100vw - 32px)">
     <div :class="$style.form" @pointerdown.stop @pointerup.stop @keydown.stop @keyup.stop @paste.stop>
       <label for="html-slide-brief">{{ translate('What should the slide show?') }}</label>
-      <NInput id="html-slide-brief" v-model:value="brief" :placeholder="translate('Optional slide brief')" />
+      <NInput id="html-slide-brief" v-model:value="brief" :placeholder="translate('Describe your app, game or presentation, its audience, content and how it should work…')" />
       <label for="html-slide-prompt">{{ translate('Generated prompt') }}</label>
       <textarea id="html-slide-prompt" rows="6" readonly :value="prompt" />
       <div>
@@ -43,7 +43,7 @@ const busy = ref(false), loadingContext = ref(false);
 const brief = ref(''), html = ref(''), status = ref(''), context = ref('');
 const fileInput = ref<HTMLInputElement | null>(null);
 const maxHtmlLength = 2_000_000;
-const maxContextCharsPerSlide = 600;
+const maxTitleLength = 160;
 
 const prompt = computed(() => [
   'Create one self-contained HTML slide using the deck dimensions, theme, and context below.',
@@ -53,20 +53,13 @@ const prompt = computed(() => [
   context.value,
 ].filter(Boolean).join('\n').replace(/\n(?:[^\S\n]*\n)+/g, '\n'));
 
-function shapeText(shape: any): string[] {
-  const ownText = nodeAsArray(shape.txBody?.p).map(para => nodeAsArray(para.r).map(getRunText).join('')).join('\n');
-  const tableText = nodeAsArray(shape.graphic?.graphicData?.tbl?.tr)
-    .flatMap(row => nodeAsArray(row.tc).flatMap(shapeText));
-  let htmlText = '';
-  if (typeof shape.htmlSlide === 'string') {
-    const doc = new DOMParser().parseFromString(shape.htmlSlide, 'text/html');
-    doc.querySelectorAll('script, style, template, noscript, nav, button, [role="navigation"], [role="button"]')
-      .forEach(node => node.replaceWith(' '));
-    doc.querySelectorAll('address, article, blockquote, br, div, figcaption, h1, h2, h3, h4, h5, h6, li, p, section, td, th')
-      .forEach(node => { node.before(' '); node.after(' '); });
-    htmlText = doc.body.textContent || '';
-  }
-  return [ownText, htmlText, ...tableText, ...(shape.children || []).flatMap(shapeText)].filter(text => text.trim());
+function slideTitle(slide: any): string {
+  const titleShape = slide?.shapes?.find(shape =>
+    ['title', 'ctrTitle'].includes(shape.ph?.$_type ?? shape.ph));
+  const placeholderText = nodeAsArray(titleShape?.txBody?.p)
+    .map(para => nodeAsArray(para.r).map(getRunText).join('')).join(' ');
+  const title = (placeholderText.trim() || slide?.title || '').replace(/\s+/g, ' ').trim();
+  return title.length > maxTitleLength ? title.slice(0, maxTitleLength - 1) + '…' : title;
 }
 
 watch(open, async (show, _, onCleanup) => {
@@ -86,20 +79,21 @@ watch(open, async (show, _, onCleanup) => {
       const color = entry?.uniClr && mapStyleThemeColor(entry.uniClr, theme, null);
       return color ? [`${slot}: ${color}`] : [];
     });
-    const slides = await Promise.all(file.slides.map(({ id }, index) => {
-      return Promise.resolve(id === current?.id ? current : loadSlideFromDexie(file.id, id, 'slides'))
-        .then(slide => {
-          const text = (slide?.shapes || []).flatMap(shapeText).join(' ').replace(/\s+/g, ' ').trim();
-          const excerpt = text.length > maxContextCharsPerSlide
-            ? text.slice(0, maxContextCharsPerSlide + 1).replace(/\s+\S*$/, '').slice(0, maxContextCharsPerSlide) + '…'
-            : text;
-          return excerpt && `Slide ${index + 1}: ${JSON.stringify(excerpt)}`;
-        });
-    }));
+    const currentIndex = file.slides.findIndex(({ id }) => id === current?.id);
+    const firstIndex = Math.max(0, currentIndex - 2);
+    const previousTitles = await Promise.all(
+      file.slides.slice(firstIndex, Math.max(0, currentIndex)).map(async ({ id }, index) => {
+        const slide = await loadSlideFromDexie(file.id, id, 'slides');
+        const title = slideTitle(slide) || slideTitle(file.slides[firstIndex + index]);
+        return title && `Slide ${firstIndex + index + 1}: ${JSON.stringify(title)}`;
+      }),
+    );
+    const currentTitle = slideTitle(current) || slideTitle(file.slides[currentIndex]);
     if (active) context.value = [
       `Deck dimensions: ${file.width} × ${file.height} pixels.`,
       colors.length && `Theme colors: ${colors.join(', ')}.`,
-      slides.some(Boolean) && `Existing deck text:\n${slides.filter(Boolean).join('\n')}`,
+      currentTitle && `Current slide title: ${JSON.stringify(currentTitle)}`,
+      previousTitles.some(Boolean) && `Previous slide titles:\n${previousTitles.filter(Boolean).join('\n')}`,
     ].filter(Boolean).join('\n');
   } catch {
     if (active) status.value = 'Could not read the presentation context.';

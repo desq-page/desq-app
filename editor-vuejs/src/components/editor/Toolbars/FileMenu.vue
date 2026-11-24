@@ -97,7 +97,7 @@ function genViewOptions() {
       label: "New...",
     },
     {
-      label: "Open...",
+      label: "Open File...",
       icon: FolderOpen24Regular,
       size: 24,
       key: "open-file",

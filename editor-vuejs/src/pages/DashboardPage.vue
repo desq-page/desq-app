@@ -42,13 +42,13 @@
           <div class="open-file-action">
             <button class="button workspace-action action-open" :disabled="!editorReady || openingFile" :aria-busy="!editorReady || openingFile" @click="openFileInput?.click()" aria-describedby="open-file-privacy">
               <span aria-hidden="true"><i v-if="!editorReady || openingFile" class="loading-ring"></i><template v-else>↗</template></span>
-              {{ translate(openingFile ? "Opening file…" : "Open...") }}
+              {{ translate(openingFile ? "Opening file…" : "Open File...") }}
             </button>
           </div>
-          <button class="button workspace-action action-ai" :disabled="!editorReady" :aria-busy="!editorReady" @click="openEditorAgent">
+          <!-- <button class="button workspace-action action-ai" :disabled="!editorReady" :aria-busy="!editorReady" @click="openEditorAgent">
             <span aria-hidden="true"><i v-if="!editorReady" class="loading-ring"></i><template v-else>✦</template></span>
             {{ translate('Create with AI') }}
-          </button>
+          </button> -->
           <button class="button workspace-action action-blank" :disabled="!editorReady" :aria-busy="!editorReady" @click="createBlankPresentation">
             <span aria-hidden="true"><i v-if="!editorReady" class="loading-ring"></i><template v-else>▤</template></span>
             {{ translate('Blank Presentation') }}
@@ -462,7 +462,7 @@ h1 span {
 }
 .workspace-actions {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
   flex-shrink: 0;
 }

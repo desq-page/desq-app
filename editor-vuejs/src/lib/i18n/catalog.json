@@ -484,10 +484,10 @@
     "Tạo mới…",
     "Baru…"
   ],
-  "Open...": [
-    "打开…",
-    "Mở…",
-    "Buka…"
+  "Open File...": [
+    "打开文件…",
+    "Mở Tệp…",
+    "Buka File…"
   ],
   "Save As": [
     "另存为",

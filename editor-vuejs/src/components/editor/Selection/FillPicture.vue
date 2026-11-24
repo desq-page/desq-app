@@ -2,7 +2,6 @@
 import { translate } from "@/lib/i18n";
 import { getShapeDeep, updateShape, getSelectEditingTextObject, getSelectSelShpFormat } from "shared-vuejs/editor";
 
-import { applyGroupFill } from "shared-vuejs/api/selection";
 import { saveDexie } from "shared-vuejs/api/dbutils";
 import {
   getImageDimension,
@@ -17,10 +16,14 @@ import ToolbarItemSwitch from "../Toolbars/ToolbarItemSwitch.vue";
 import { computed } from "vue";
 import { replaceColor } from "shared-vuejs/api/replace-color";
 
-import { genImgCrop } from "shared-vuejs/api/genUtils";
-import { updateBlipFillCrop } from "shared-vuejs/api/calcHandleBox";
 import { processImage } from "shared-vuejs/api/upload";
 import crc32 from "crc/crc32";
+
+type FillImage = { id: string; width: number; height: number };
+
+const props = defineProps<{
+  onPictureChange: (image: FillImage | Promise<FillImage | undefined>) => Promise<void>;
+}>();
 
 async function setImageTile(val) {
   const oldShp = getShapeDeep(getSelectSelShpFormat()?.id);
@@ -91,89 +94,18 @@ async function makeTransparent(origColor) {
 // }
 
 function setShapePicture(e, img) {
-  applyShapePicture(img);
+  props.onPictureChange(img);
   e.preventDefault();
 }
 
-async function pasteShapePicture(image) {
-  if (!image) return;
-  const name = `f${crc32(await image.arrayBuffer()).toString(16)}.webp`;
-  const media = await processImage(image, { name });
-  if (media) {
-    applyShapePicture({ id: media.name, width: media.w, height: media.h });
-  }
+function pasteShapePicture(image) {
+  if (image) return props.onPictureChange(preparePastedPicture(image));
 }
 
-function applyShapePicture(img) {
-  const shp = getShapeDeep(getSelectSelShpFormat()?.id);
-  if (shp) {
-    if (shp.type === "table") {
-      const blipFill = {
-        blip: {
-          $_w: img.width,
-          $_h: img.height,
-          $_target: img.id,
-        },
-      };
-      for (const properties of getTableFillTargets(shp)) {
-        properties.blipFill = structuredClone(blipFill);
-        for (const type of ["noFill", "solidFill", "gradFill", "pattFill", "grpFill"]) {
-          properties[type] = null;
-        }
-      }
-      updateShape(shp);
-      saveDexie();
-      return;
-    }
-    // let iX =0, iY =0, iW = 100, iH = 100;
-    // if (shp.i?.tile) {
-    //   iX = shp.i.iX;
-    //   iY = shp.i.iY;
-    //   iW = shp.i.iW;
-    //   iH = shp.i.iH;
-    // } else {
-    //   iX = round3((-(newW - shp?.w) / 2 / shp?.w) * 100 || 0);
-    //   iW = round3(((newW - shp?.w + shp?.w) / shp?.w) * 100 || 100);
-    //   iY = round3((-(newH - shp?.h) / 2 / shp?.h) * 100 || 0);
-    //   iH = round3(((newH - shp?.h + shp?.h) / shp?.h) * 100 || 100);
-    // }
-    const isPic = shp.$_otag == "pic" || shp.ph?.$_type == "pic";
-    const { iX, iY, iW, iH } = genImgCrop(
-      img.width,
-      img.height,
-      getSelectSelShpFormat(),
-    );
-    const blip = {
-      $_w: img.width,
-      $_h: img.height,
-      $_target: img.id,
-    };
-    if (!isPic) {
-      shp.blipFill = {
-        blip: {
-          ...shp.blipFill.blip,
-          ...blip,
-        },
-      };
-      updateBlipFillCrop(shp, iX, iY, iW, iH);
-    } else {
-      shp.blipPr = {
-        blip: {
-          ...shp.blipPr.blip,
-          ...blip,
-        },
-      };
-      updateBlipFillCrop(shp, iX, iY, iW, iH, true);
-    }
-
-    if (isPic) {
-      shp.$_otag = "pic";
-    }
-
-    applyGroupFill(shp);
-    updateShape(shp);
-    saveDexie();
-  }
+async function preparePastedPicture(image) {
+  const name = `f${crc32(await image.arrayBuffer()).toString(16)}.webp`;
+  const media = await processImage(image, { name });
+  if (media) return { id: media.name, width: media.w, height: media.h };
 }
 
 const title = computed(() => {
