@@ -138,7 +138,7 @@
   
 </template>
 <script setup lang="ts">
-import { getShapeDeep, getSelectSelShpFormat, getFileInfo, getSlideInfo, setPendingCurrentTaskPaneProps } from "shared-vuejs/editor";
+import { getFileInfo, getSlideInfo, setPendingCurrentTaskPaneProps } from "shared-vuejs/editor";
 
 import { NFlex, NSpin } from "naive-ui";
 import { nextTick, onMounted, ref, watch } from "vue";
@@ -161,7 +161,8 @@ import ToolbarItemDropdown from "../Toolbars/ToolbarItemDropdown.vue";
 import ToolbarItem from "../Toolbars/ToolbarItem.vue";
 
 import { getClipboardContents, pasteShape } from "shared-vuejs/api/clipboard.js";
-import { getAllMediaPics, loadSlideFromDexie } from "shared-vuejs/api/dbutils.js";
+import { processImage, replaceShapeImage } from "shared-vuejs/api/upload";
+import { getAllMediaPics, loadSlideFromDexie, saveDexie } from "shared-vuejs/api/dbutils.js";
 import { visibleEditTextMedia } from "shared-vuejs/api/edit-text-media";
 import AiGen from "../Dialogs/AiGen.vue";
 
@@ -306,8 +307,20 @@ async function processPasteReplace() {
     if (props.clipboardFunc) {
       await props.clipboardFunc(clpImage);
     } else {
-      const shp = getShapeDeep(getSelectSelShpFormat()?.id);
-      pasteShape(null, shp);
+      // This button is an explicit media replacement action. Toolbar paste
+      // and Ctrl+V continue to insert a new object on the slide.
+      const selection = piniaSelect().selShpFormat;
+      if (selection?.blipFill) {
+        const shp = piniaSelect().selShps.length === 1 ? selection : null;
+        const media = await processImage(clpImage);
+        if (media && shp) {
+          replaceShapeImage(shp, media);
+          saveDexie();
+        }
+        else if (media) pasteShape();
+      } else {
+        pasteShape();
+      }
     }
   } else {
     showMessage("No picture in clipboard", 3000)
