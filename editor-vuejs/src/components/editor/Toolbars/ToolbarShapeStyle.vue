@@ -3,7 +3,9 @@
     quaternary
     :onClick="
       (e) => {
-        if (
+        if (isSvgPicture(piniaSelect().selShpFormat)) {
+          toggleTaskPane('shapefill');
+        } else if (
           piniaSelect().selShpFormat?.$_otag == 'pic' ||
           piniaSelect().selShpFormat?.ph?.$_type == 'pic'
         ) {
@@ -54,6 +56,7 @@
 <script setup lang="ts">
 import { piniaInfo, piniaSelect } from "@/lib/common/store";
 import { toggleTaskPane } from "@/lib/main/utils";
+import { isSvgPicture } from "@/lib/main/svgPaint";
 import ToolbarItem from "./ToolbarItem.vue";
 import { PaintBucket24Filled } from "@vicons/fluent";
 defineProps({

@@ -12,6 +12,7 @@
         <ShapeOptions v-if="piniaInfo().currentTaskPane == 'shapeoptions'" />
         <ShapeFill v-if="piniaInfo().currentTaskPane == 'shapefill'" />
         <InsertAutoShapes v-if="piniaInfo().currentTaskPane == 'insertAutoshapes'" />
+        <InsertIcons v-if="piniaInfo().currentTaskPane === 'icons'" />
         <ChangeAutoShapes v-if="piniaInfo().currentTaskPane == 'changeAutoshapes'" />
         <TextShapesPanel v-if="piniaInfo().currentTaskPane == 'texts'" />
         <ObjectShapes v-if="piniaInfo().currentTaskPane == 'objects'" />
@@ -83,7 +84,7 @@ import PageSetupPanel from "@/components/editor/Dialogs/PageSetupPanel.vue";
 import AnimationList from "@/components/editor/Animation/AnimationList.vue";
 
 import ArrangePanel from "@/components/editor/Selection/ArrangePanel.vue";
-import { computed, onMounted, onUnmounted, ref, useCssModule, watch } from "vue";
+import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, useCssModule, watch } from "vue";
 import { on, off } from "shared-vuejs/events";
 import { toggleTaskPane } from "@/lib/main/utils";
 import MediaPanel from "@/components/editor/Media/MediaPanel.vue";
@@ -115,6 +116,7 @@ import { hideEditor } from "shared-vuejs/api/updateText.js";
 import TextShapesPanel from "../AutoShapes/TextShapesPanel.vue";
 
 const arrangePanel = ref<InstanceType<typeof ArrangePanel>>();
+const InsertIcons = defineAsyncComponent(() => import("./InsertIcons.vue"));
 
 function handleTaskPaneKey(event: KeyboardEvent) {
   if (piniaInfo().currentTaskPane === "arrange") {

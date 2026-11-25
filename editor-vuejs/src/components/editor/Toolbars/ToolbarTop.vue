@@ -139,6 +139,13 @@
           <ToolbarItem type="divider" v-if="piniaResize().windowWidth >= 769" />
           <ToolbarItemDropdown :options="TextOptions" :icon="TextT24Filled" caption="Text" />
           <ToolbarItemDropdown :options="ShapeOptions" :icon="TriangleSquareCircle" caption="Shapes" />
+          <ToolbarItem
+            caption="Icons"
+            :icon="Star24Regular"
+            :disabled="!!piniaInfo().useGrid"
+            :onClick="() => toggleTaskPane('icons')"
+            :active="piniaInfo().currentTaskPane === 'icons'"
+          />
           <ToolbarItem caption="Media" :icon="Image24Regular" :onClick="() => toggleTaskPane('mediaPanel')" :active="piniaInfo().currentTaskPane == 'mediaPanel'" />
           <ToolbarItem
             caption="AI Gen"
@@ -386,7 +393,7 @@
             caption="Merge"
             use-pointer-up
           />
-          <template v-if="piniaSelect().selShpFormat?.blipFill">
+          <template v-if="piniaSelect().selShpFormat?.blipFill && !isSvgPicture(piniaSelect().selShpFormat)">
             <ToolbarItem type="divider" />
             <ToolbarItem
               quaternary
@@ -536,6 +543,7 @@ import {
   TextColor24Filled,
   StarArrowRightStart24Regular,
   StarEmphasis24Regular,
+  Star24Regular,
   StarArrowRightEnd24Regular,
   StarEdit24Regular,
   ImageEdit20Regular,
@@ -557,6 +565,7 @@ import ToolbarDesign from "./ToolbarDesign.vue";
 import ToolbarTransition from "./ToolbarTransition.vue";
 import { GroupObjects, Layers, StarReview } from "@vicons/carbon";
 import { toggleGroup } from "shared-vuejs/api/group";
+import { isSvgPicture } from "@/lib/main/svgPaint";
 import { editablePicture, extractPictureText, selectPictureRegion, selectPictureTextRegion } from "shared-vuejs/api/edit-picture-text";
 import { showCrop, showEditingPoint, showGroup, unionOptions, rmbgUsingXenova } from "./ToolbarUtils";
 import ToolbarLocalScript from "@/components/addon/ToolbarLocalScript.vue";
@@ -613,7 +622,7 @@ const animationGroups = [
 const hasAnimationSelection = computed(() =>
   !!(piniaSelect().selGrpShps?.length || piniaSelect().selShps?.length),
 );
-const canExtractObject = computed(() => !!editablePicture());
+const canExtractObject = computed(() => !isSvgPicture(piniaSelect().selShpFormat) && !!editablePicture());
 function selectObjectRegion() {
   const info = piniaInfo();
   selectPictureRegion(info, "Draw a box around the object and its shadow", async (pictureId, region) => {

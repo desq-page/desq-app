@@ -7,7 +7,7 @@
         : 'Format Shape'"
 
     :sub-tabbar-items="subTabbarItems"
-    :fill-selectors="fillSelectors"
+    :fill-selectors="svgPicture ? undefined : fillSelectors"
   >
     <!-- <ToolbarItemSwitch
       label="Draw Line/Border"
@@ -16,7 +16,15 @@
     />
     <LayoutHeader label="Line Color" v-if="lineInfo?.drawOn" /> -->
 
-    <div v-if="lineInfo.type == 'solidFill'">
+    <template v-if="svgPicture">
+      <LayoutHeader label="Line Color" />
+      <SlideColorPicker
+        :cur-color="svgPicture.svgPaint?.stroke === 'none' ? '' : svgPicture.svgPaint?.stroke"
+        :on-change="color => setSvgPaint('stroke', color)"
+        :show-no-color="true"
+      />
+    </template>
+    <div v-else-if="lineInfo.type == 'solidFill'">
       <!-- <div class="subtitle" style="margin-top: 0">Standard Colors</div> -->
       <!-- <StandardColors :onChange="setLineColor" :showNoColor="false" /> -->
       <div class="subtitle">Line Color</div>
@@ -54,14 +62,14 @@
         </template>
       </LayoutHeader>
     </div>
-    <div v-if="lineInfo.type == 'gradFill'">
+    <div v-if="!svgPicture && lineInfo.type == 'gradFill'">
       <FillGradient
         type="line"
         :target="piniaSelect().selShpFormat?.ln"
         :on-change="setLineGradient"
       />
     </div>
-    <template v-if="lineInfo.type != 'noFill' && piniaSelect().selShpFormat?.type !== 'table'">
+    <template v-if="!svgPicture && lineInfo.type != 'noFill' && piniaSelect().selShpFormat?.type !== 'table'">
       <LayoutHeader label="Line Weight" clear-background>
         <template #extra>
           <RangeSlider
@@ -125,6 +133,12 @@ import {
 import FillGradient from "../Selection/FillGradient.vue";
 
 import SlideColorPicker from "@/components/common/SlideColorPicker.vue";
+import { isSvgPicture, setSvgPaint } from "@/lib/main/svgPaint";
+
+const svgPicture = computed(() => {
+  const selected = piniaSelect().selShpFormat;
+  return isSvgPicture(selected) ? selected : null;
+});
 
 // import "element-plus/es/components/slider/style/css";
 // const drawOn = ref(true);

@@ -1,3 +1,4 @@
+import { isSvgPicture } from "@/lib/main/svgPaint";
 import { piniaInfo, piniaSelect, piniaShapes } from "@/lib/common/store";
 import {
   bringForward,
@@ -339,6 +340,7 @@ export const showEditingPoint = () =>
   !piniaSelect().cropShp &&
   !isTextShape(piniaSelect().selShpFormat) &&
   !piniaSelect().selShpFormat?.svg &&
+  piniaSelect().selShpFormat?.type !== 'svg' &&
   piniaSelect().selShpFormat?.type !== "line" &&
   !piniaSelect().selShpFormat?.d?.includes("E") &&
   !piniaSelect().selShpFormat?.children &&
@@ -350,6 +352,7 @@ export const showEditingPoint = () =>
 
 
 export function showCrop() {
+  if (isSvgPicture(piniaSelect().selShpFormat)) return false;
   return (
     (piniaSelect().selShpFormat?.blipFill ||
       piniaSelect().selShpFormat?.spPr?.blipFill) &&

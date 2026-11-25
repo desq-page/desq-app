@@ -5,12 +5,20 @@
         ? 'Format Picture'
         : 'Format Shape'"
     :sub-tabbar-items="subTabbarItems"
-    :fill-selectors="fillSelectors"
+    :fill-selectors="svgPicture ? undefined : fillSelectors"
     shapeOnly
     :disableTab="piniaSelect().selShpFormat?.type == 'line'"
   >
     <!-- <ShapeFormatOptions mode="shape" active="shapefill" /> -->
-    <div v-if="piniaSelect().selShpFormat?.type !== 'iframe'">
+    <template v-if="svgPicture">
+      <LayoutHeader label="Fill Color" />
+      <SlideColorPicker
+        :cur-color="svgPicture.svgPaint?.fill === 'none' ? '' : svgPicture.svgPaint?.fill"
+        :on-change="color => setSvgPaint('fill', color)"
+        :show-no-color="true"
+      />
+    </template>
+    <div v-else-if="piniaSelect().selShpFormat?.type !== 'iframe'">
       <div v-if="curFill == 'solidFill'">
         <LayoutHeader label="Solid Fill" />
         <SlideColorPicker
@@ -93,6 +101,12 @@ import { ref } from "vue";
 import { deepUnref } from "@/components/vue-utils/unref.js";
 import SlideColorPicker from "@/components/common/SlideColorPicker.vue";
 import LayoutHeader from "@/components/common/Layouts/LayoutHeader.vue";
+import { isSvgPicture, setSvgPaint } from "@/lib/main/svgPaint";
+
+const svgPicture = computed(() => {
+  const selected = piniaSelect().selShpFormat;
+  return isSvgPicture(selected) ? selected : null;
+});
 
 const currentTableFillProperties = computed(() => {
   const selected = piniaSelect().selShpFormat;

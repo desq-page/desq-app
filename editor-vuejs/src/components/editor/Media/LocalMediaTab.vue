@@ -15,6 +15,6 @@ const props = defineProps({
     title="Uploaded Media"
     :backLink="piniaInfo().lastTaskPane || 'mediaPanel'"
   >
-    <LocalMedia :clickFunc="getPendingCurrentTaskPaneProps()?.clickFunc"/>
+    <LocalMedia :clickFunc="getPendingCurrentTaskPaneProps()?.clickFunc" hide-svg />
   </DialogBase>
 </template>

@@ -12,9 +12,11 @@
     "editor:dev:package": "node ../scripts/prepare-player-assets.mjs && vite"
   },
   "dependencies": {
-    "vue3-google-login": "^2.0.33",
-    "shared-vuejs": "file:../packages/shared-vuejs-0.2.20.tgz",
-    "@desq/player": "file:../packages/desq-player-1.0.11.tgz"
+    "@desq/player": "file:../packages/desq-player-1.0.11.tgz",
+    "@iconify/utils": "^3.1.7",
+    "dompurify": "^3.5.0",
+    "shared-vuejs": "file:../packages/shared-vuejs-0.2.21.tgz",
+    "vue3-google-login": "^2.0.33"
   },
   "license": "AGPL-3.0-only"
 }

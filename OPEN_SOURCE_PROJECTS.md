@@ -7,6 +7,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | Project | Version | Declared license | Project/source |
 | --- | --- | --- | --- |
 | @agilie/canvas-image-cover-position | 1.1.1 | MIT | https://github.com/agilie/canvas-image-cover-position |
+| @antfu/install-pkg | 2.1.0 | MIT | git+https://github.com/antfu-collective/install-pkg.git |
 | @babel/helper-string-parser | 7.29.7 | MIT | https://github.com/babel/babel.git |
 | @babel/helper-validator-identifier | 7.29.7 | MIT | https://github.com/babel/babel.git |
 | @babel/parser | 7.29.9 | MIT | https://github.com/babel/babel.git |
@@ -20,7 +21,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | @css-render/vue3-ssr | 0.15.14 | MIT | node_modules/@css-render/vue3-ssr |
 | @desq/player | 1.0.11 | Not specified | node_modules/@desq/player |
 | @dmsnell/diff-match-patch | 1.1.0 | Apache-2.0 | git+https://github.com/dmsnell/diff-match-patch.git |
-| @emnapi/runtime | 1.11.3 | MIT | git+https://github.com/toyobayashi/emnapi.git |
+| @emnapi/runtime | 1.11.3 | MIT | node_modules/@emnapi/runtime |
 | @emotion/hash | 0.8.0 | MIT | https://github.com/emotion-js/emotion/tree/master/packages/hash |
 | @firebase/ai | 2.16.0 | Apache-2.0 | git+https://github.com/firebase/firebase-js-sdk.git |
 | @firebase/analytics-compat | 0.2.31 | Apache-2.0 | git+https://github.com/firebase/firebase-js-sdk.git |
@@ -73,6 +74,8 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | @huggingface/tokenizers | 0.2.0 | Apache-2.0 | git+https://github.com/huggingface/tokenizers.js.git |
 | @huggingface/transformers | 3.8.1 | Apache-2.0 | git+https://github.com/huggingface/transformers.js.git |
 | @huggingface/transformers | 4.3.1 | Apache-2.0 | git+https://github.com/huggingface/transformers.js.git |
+| @iconify/types | 2.0.0 | MIT | https://github.com/iconify/iconify.git |
+| @iconify/utils | 3.1.7 | MIT | https://github.com/iconify/iconify.git |
 | @img/colour | 1.1.0 | MIT | git+https://github.com/lovell/colour.git |
 | @img/sharp-darwin-arm64 | 0.34.5 | Apache-2.0 | git+https://github.com/lovell/sharp.git |
 | @img/sharp-darwin-arm64 | 0.35.5 | Apache-2.0 | git+https://github.com/lovell/sharp.git |
@@ -116,7 +119,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | @img/sharp-linuxmusl-x64 | 0.34.5 | Apache-2.0 | node_modules/@bg0/browser/node_modules/@img/sharp-linuxmusl-x64 |
 | @img/sharp-linuxmusl-x64 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-linuxmusl-x64 |
 | @img/sharp-wasm32 | 0.34.5 | Apache-2.0 AND LGPL-3.0-or-later AND MIT | node_modules/@bg0/browser/node_modules/@img/sharp-wasm32 |
-| @img/sharp-wasm32 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later AND MIT | git+https://github.com/lovell/sharp.git |
+| @img/sharp-wasm32 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later AND MIT | node_modules/@img/sharp-wasm32 |
 | @img/sharp-webcontainers-wasm32 | 0.35.5 | Apache-2.0 | node_modules/@img/sharp-webcontainers-wasm32 |
 | @img/sharp-win32-arm64 | 0.34.5 | Apache-2.0 AND LGPL-3.0-or-later | node_modules/@bg0/browser/node_modules/@img/sharp-win32-arm64 |
 | @img/sharp-win32-arm64 | 0.35.5 | Apache-2.0 AND LGPL-3.0-or-later | node_modules/@img/sharp-win32-arm64 |
@@ -340,7 +343,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | detect-node | 2.1.0 | MIT | https://github.com/iliakan/detect-node |
 | diff | 5.2.2 | BSD-3-Clause | git://github.com/kpdecker/jsdiff.git |
 | dns-packet | 5.6.1 | MIT | mafintosh/dns-packet |
-| dompurify | 3.4.16 | (MPL-2.0 OR Apache-2.0) | git://github.com/cure53/DOMPurify.git |
+| dompurify | 3.5.0 | (MPL-2.0 OR Apache-2.0) | git://github.com/cure53/DOMPurify.git |
 | dunder-proto | 1.0.1 | MIT | git+https://github.com/es-shims/dunder-proto.git |
 | ecdsa-sig-formatter | 1.0.11 | Apache-2.0 | git+ssh://git@github.com/Brightspace/node-ecdsa-sig-formatter.git |
 | echarts | 5.6.0 | Apache-2.0 | git+https://github.com/apache/echarts.git |
@@ -423,6 +426,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | ieee754 | 1.2.1 | BSD-3-Clause | git://github.com/feross/ieee754.git |
 | image-q | 4.0.0 | MIT | https://github.com/ibezkrovnyi/image-quantization |
 | imagetracer | 0.2.2 | MIT | git+https://github.com/murongg/imagetracer.git |
+| import-meta-resolve | 4.2.0 | MIT | wooorm/import-meta-resolve |
 | inflight | 1.0.6 | ISC | https://github.com/npm/inflight.git |
 | inherits | 2.0.3 | ISC | git://github.com/isaacs/inherits |
 | inherits | 2.0.4 | ISC | git://github.com/isaacs/inherits |
@@ -535,6 +539,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | p-limit | 3.1.0 | MIT | sindresorhus/p-limit |
 | p-locate | 5.0.0 | MIT | sindresorhus/p-locate |
 | p-retry | 6.2.1 | MIT | sindresorhus/p-retry |
+| package-manager-detector | 1.9.0 | MIT | git+https://github.com/antfu-collective/package-manager-detector.git |
 | page-flip | 2.0.7 | MIT | https://github.com/Nodlik/StPageFlip.git |
 | pako | 1.0.11 | (MIT AND Zlib) | nodeca/pako |
 | pako | 2.1.0 | (MIT AND Zlib) | nodeca/pako |
@@ -605,7 +610,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | serve-static | 1.16.2 | MIT | expressjs/serve-static |
 | setprototypeof | 1.1.0 | ISC | https://github.com/wesleytodd/setprototypeof.git |
 | setprototypeof | 1.2.0 | ISC | https://github.com/wesleytodd/setprototypeof.git |
-| shared-vuejs | 0.2.20 | ISC | node_modules/shared-vuejs |
+| shared-vuejs | 0.2.21 | ISC | node_modules/shared-vuejs |
 | sharp | 0.34.5 | Apache-2.0 | git://github.com/lovell/sharp.git |
 | sharp | 0.35.5 | Apache-2.0 | git+https://github.com/lovell/sharp.git |
 | shell-quote | 1.12.0 | MIT | http://github.com/ljharb/shell-quote.git |
@@ -643,6 +648,7 @@ Includes editor, server, and player runtime dependency trees plus vendored notic
 | thunky | 1.1.0 | MIT | git://github.com/mafintosh/thunky.git |
 | tiny-inflate | 1.0.3 | MIT | git://github.com/devongovett/tiny-inflate.git |
 | tinycolor2 | 1.6.0 | MIT | https://github.com/bgrins/TinyColor.git |
+| tinyexec | 1.4.0 | MIT | git+https://github.com/tinylibs/tinyexec.git |
 | to-regex-range | 5.0.1 | MIT | micromatch/to-regex-range |
 | toidentifier | 1.0.1 | MIT | component/toidentifier |
 | token-types | 6.1.2 | MIT | git+https://github.com/Borewit/token-types.git |

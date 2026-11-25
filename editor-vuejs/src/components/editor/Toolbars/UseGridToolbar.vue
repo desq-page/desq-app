@@ -57,6 +57,7 @@
   <ToolbarItem type="divider" />
     <ToolbarItem
     quaternary
+    v-if="!isSvgPicture(piniaSelect().selShpFormat)"
     :icon="Crop24Filled"
     :size="26"
     :onClick="
@@ -99,6 +100,8 @@
 </template>
 
 <script setup lang="ts">
+import { isSvgPicture } from "@/lib/main/svgPaint";
+
 import { getShapeDeep, updateShape, getInfoUseGrid, getSelectCropShp, getSelectSelShps, getSlideAnimations, getSlidesSlideId, getSlideInfo, setInfoUseGrid } from "shared-vuejs/editor";
 
 import { piniaInfo, piniaSelect } from "@/lib/common/store";

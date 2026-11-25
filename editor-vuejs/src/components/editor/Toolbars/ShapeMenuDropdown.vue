@@ -75,6 +75,7 @@ import g from "shared-vuejs/api/global";
 import { toggleTaskPane } from "@/lib/main/utils.js";
 import { rmbgUsingXenova } from "./ToolbarUtils";
 import { ImageAltText24Regular, Image24Regular, ScanText24Filled, VideoBackgroundEffect20Filled } from "@vicons/fluent";
+import { isSvgPicture } from "@/lib/main/svgPaint";
 import { aiEditOptions } from "./shapeContextMenuOptions";
 
 const props = defineProps({
@@ -92,7 +93,7 @@ const props = defineProps({
 // );
 
 const ShapeContextMenuOptions = computed(() => [
-  ...(piniaInfo().curPopupId === "shape-toolbar-popup" && editablePicture() ? aiEditOptions : []),
+  ...(piniaInfo().curPopupId === "shape-toolbar-popup" && !isSvgPicture(piniaSelect().selShpFormat) && editablePicture() ? aiEditOptions : []),
   {
     label: "Manage",
     key: "editshape",
@@ -260,7 +261,7 @@ const ShapeContextMenuOptions = computed(() => [
     label: "Change Shape...",
     icon: SquareHintArrowBack16Regular,
     key: "changeshape",
-    show: !["line", "connector", "table", "chart"].includes(piniaSelect().selShpFormat?.type),
+    show: !["line", "connector", "table", "chart", "svg"].includes(piniaSelect().selShpFormat?.type),
     
     onClick: (e) => {
       toggleTaskPane("changeAutoshapes");
@@ -323,7 +324,7 @@ const ShapeContextMenuOptions = computed(() => [
     // show: !piniaSelect().editingTextObject,
     
     onClick: (e) => {
-      if (isPic()) {
+      if (isPic() && !isSvgPicture(piniaSelect().selShpFormat)) {
         toggleTaskPane("pictureoptions");
       } else {
         toggleTaskPane("shapefill");
@@ -371,7 +372,8 @@ function selectObjectRegion() {
 }
 
 const isPic = () => {
-  return piniaSelect().selShpFormat?.$_otag == "pic" || piniaSelect().selShpFormat?.ph?.$_type == "pic"
+  const selected = piniaSelect().selShpFormat;
+  return (selected?.$_otag === "pic" || selected?.ph?.$_type === "pic");
 }
 
 // const bounds: any = ref();

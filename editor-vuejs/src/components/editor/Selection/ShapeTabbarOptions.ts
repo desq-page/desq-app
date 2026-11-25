@@ -1,3 +1,4 @@
+import { isSvgPicture } from "@/lib/main/svgPaint";
 import { piniaSelect } from "@/lib/common/store";
 import { Paragraph } from "@vicons/carbon";
 import {
@@ -15,7 +16,7 @@ export const shapeTabbarItems = computed(() => [
   {
     label:
       "Format " +
-      (piniaSelect().selShpFormat?.$_otag == "pic" ? "Picture" : "Shape"),
+      (piniaSelect().selShpFormat?.$_otag == "pic" && !isSvgPicture(piniaSelect().selShpFormat) ? "Picture" : "Shape"),
     taskpane: "shapefill",
     taskpanes: [
       "shapefill",

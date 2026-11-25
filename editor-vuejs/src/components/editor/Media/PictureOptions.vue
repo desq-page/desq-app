@@ -35,6 +35,7 @@ import LocalMedia from "./LocalMedia.vue";
 import { Image24Regular, PaintBucket24Filled } from "@vicons/fluent";
 import { getSlideBg } from "shared-vuejs/api/slideUtils";
 import { updateCurrentSlideBackground } from "@/lib/main/slideBackground";
+import { isSvgPicture } from "@/lib/main/svgPaint";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 import { off, on } from "shared-vuejs/events";
 
@@ -286,7 +287,7 @@ function pasteImage() {
   </template>
   <template v-else>
   <LocalMedia
-    v-if="piniaSelect().selShpFormat?.$_otag == 'pic'"
+    v-if="piniaSelect().selShpFormat?.$_otag == 'pic' && !isSvgPicture(piniaSelect().selShpFormat)"
     title="Change Picture"
     preview
     :hideSamples="!!piniaSelect().selShpFormat?.blipFill"
@@ -304,6 +305,7 @@ function pasteImage() {
     vertical
     v-if="
       piniaSelect().selShpFormat?.blipFill &&
+      !isSvgPicture(piniaSelect().selShpFormat) &&
       piniaSelect().selShps.length == 1
     "
   >

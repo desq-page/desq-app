@@ -159,6 +159,7 @@ const props = defineProps({
   title: String,
   clickFunc: Function,
   hideSamples: Boolean,
+  hideSvg: Boolean,
   clipboardFunc: Function,
 });
 
@@ -197,6 +198,9 @@ async function searchImages() {
   if (version !== searchVersion || getFileInfo()?.id !== file.id) return;
   let mediaColl = visibleEditTextMedia(records || [], pages);
 
+  if (props.hideSvg) {
+    mediaColl = mediaColl.filter(record => !/\.svg(?:\+xml)?$/i.test(record.name));
+  }
   if (props.preview) {
     mediaColl = mediaColl?.slice(0, 3);
   }

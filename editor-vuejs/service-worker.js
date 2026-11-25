@@ -83,9 +83,10 @@ self.addEventListener("fetch", function (e) {
         const basename = mediaPath.split("/").pop() || decodedName;
         const isThumbnail = basename.startsWith("thumb-");
         try {
+          const mediaPart = mediaPath.startsWith("ppt/") ? mediaPath : `ppt/media/${mediaPath || decodedName}`;
           const opfsPath = isThumbnail
             ? `thumbnails/${encodeURIComponent(decodedFileId)}/${encodeURIComponent(basename)}`
-            : `pptx/${encodeURIComponent(decodedFileId)}/${mediaPath.startsWith("ppt/") ? mediaPath : `ppt/media/${mediaPath || decodedName}`}`;
+            : `pptx/${encodeURIComponent(decodedFileId)}/${mediaPart.replace(/(\.svg)\+(xml)$/i, "$1%2B$2")}`;
           const optimized = isThumbnail ? undefined : await optimizedVideo(decodedFileId, mediaPath || decodedName);
           const file = optimized || await getFileFromOPFS(opfsPath);
           return responseWithFile(e.request, url, file, optimized ? "video/mp4" : undefined);
@@ -146,7 +147,7 @@ function responseWithHeaders(url, data, extraHeaders = null) {
     headers["Content-Type"] = "image/webp";
   } else if (url.endsWith(".glb")) {
     headers["Content-Type"] = "model/gltf-binary";
-  } else if (url.endsWith(".svg")) {
+  } else if (/\.svg(?:(?:\+|%2b)xml)?$/i.test(url)) {
     headers["Content-Type"] = "image/svg+xml";
   } else if (url.endsWith(".mp4")) {
     headers["Content-Type"] = "video/mp4";

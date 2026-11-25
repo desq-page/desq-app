@@ -3,7 +3,7 @@
     title="Insert Media"
     :icon="Image24Regular"
   >
-    <LocalMedia title="Local Pictures" />
+    <LocalMedia title="Local Pictures" hide-svg />
     <!-- <LayoutHeader label="Online Pictures" />
 
     <div class="taskpane-guide">{{ guide }}</div>
