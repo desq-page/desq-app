@@ -75,7 +75,7 @@
 </template>
 <script setup lang="ts">
 import { translate } from "@/lib/i18n";
-import { updateSlide, getSlidesMasterView, getSlidesMultiSelected, getSlidesSlideId, getTheme, getFileInfo, getLayoutInfo, getMasterInfo, getSlideInfo } from "shared-vuejs/editor";
+import { getSlidesMasterView, getSlidesMultiSelected, getSlidesSlideId, getTheme, getFileInfo, getLayoutInfo, getMasterInfo, getSlideInfo } from "shared-vuejs/editor";
 
 // import DialogBase from "@/components/common/Layouts/DialogBase.vue";
 import { piniaSlides } from "@/lib/common/store";
@@ -107,7 +107,7 @@ import { processImage } from "shared-vuejs/api/upload.js";
 import { crc32 } from "crc";
 import { off, on } from "shared-vuejs/events";
 import SlideColorPicker from "@/components/common/SlideColorPicker.vue";
-import { refreshSlideBackground } from "@/lib/main/slideBackground";
+import { refreshSlideBackground, updateCurrentSlideBackground } from "@/lib/main/slideBackground";
 import { Image24Regular } from "@vicons/fluent";
 
 // function updateTitle(val) {
@@ -292,8 +292,7 @@ async function updateBgFill(bg) {
       : await loadSlideFromDexie(fileInfo.id, sldId, sldType);
     sldInfo.bg = bg;
     if (isCurrentSlide) {
-      updateSlide(sldInfo);
-      refreshSlideBackground();
+      await updateCurrentSlideBackground(bg, false);
     } else {
       await putSlideToDexie(fileInfo.id, sldInfo.id, sldInfo, sldType);
       await saveThumb(sldInfo.id);

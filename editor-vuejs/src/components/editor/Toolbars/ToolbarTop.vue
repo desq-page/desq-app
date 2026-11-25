@@ -196,7 +196,7 @@
             color="#957606"
             :icon="ClipboardPaste24Regular"
             :size="26"
-            caption="Clipboard"
+            caption="Paste"
           />
         </div>
       </NTabPane>
