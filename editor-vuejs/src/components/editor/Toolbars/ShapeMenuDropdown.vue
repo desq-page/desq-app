@@ -173,9 +173,9 @@ const ShapeContextMenuOptions = computed(() => [
       },
     ],
   },
-  {
-    type: "divider",
-  },
+  // {
+  //   type: "divider",
+  // },
   {
     label: "Arrange",
     key: "layers",
@@ -186,7 +186,6 @@ const ShapeContextMenuOptions = computed(() => [
   {
     type: "divider",
   },
-  ...(piniaInfo().curPopupId === "shape-toolbar-popup" && !isSvgPicture(piniaSelect().selShpFormat) && editablePicture() ? aiEditOptions : []),
   {
     label: "Table",
     key: "table",
@@ -234,6 +233,7 @@ const ShapeContextMenuOptions = computed(() => [
   //   type: "divider",
   //   show: showFlipShape() || showEditingPoint(),
   // },
+  ...(piniaInfo().curPopupId === "shape-toolbar-popup" && !isSvgPicture(piniaSelect().selShpFormat) && editablePicture() ? aiEditOptions : []),
   {
     label: "Merge",
     key: "mergeshape",

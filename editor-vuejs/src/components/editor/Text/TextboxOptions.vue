@@ -10,7 +10,9 @@
       <span>Left</span>
       <input
         class="dim-field"
-        :value="piniaSelect().selShpFormat?.txBody?.bodyPr?.$_lIns / EMU || 0"
+        :value="
+          round3(piniaSelect().selShpFormat?.txBody?.bodyPr?.$_lIns / EMU) || 0
+        "
         @change="(e) => updateField((e.target as any)?.value || 0, 'marginL')"
       />
     </div>
@@ -18,7 +20,9 @@
       <span>Right</span>
       <input
         class="dim-field"
-        :value="piniaSelect().selShpFormat?.txBody?.bodyPr?.$_rIns / EMU || 0"
+        :value="
+          round3(piniaSelect().selShpFormat?.txBody?.bodyPr?.$_rIns / EMU) || 0
+        "
         @change="(e) => updateField((e.target as any)?.value || 0, 'marginR')"
       />
     </div>
@@ -26,7 +30,9 @@
       <span>Top</span>
       <input
         class="dim-field"
-        :value="piniaSelect().selShpFormat?.txBody?.bodyPr?.$_tIns / EMU || 0"
+        :value="
+          round3(piniaSelect().selShpFormat?.txBody?.bodyPr?.$_tIns / EMU) || 0
+        "
         @change="(e) => updateField((e.target as any)?.value || 0, 'marginT')"
       />
     </div>
@@ -34,7 +40,9 @@
       <span>Bottom</span>
       <input
         class="dim-field"
-        :value="piniaSelect().selShpFormat?.txBody?.bodyPr?.$_bIns / EMU || 0"
+        :value="
+          round3(piniaSelect().selShpFormat?.txBody?.bodyPr?.$_bIns / EMU) || 0
+        "
         @change="(e) => updateField((e.target as any)?.value || 0, 'marginB')"
       />
     </div>
@@ -84,6 +92,7 @@ import {
 
 import LinkedTextboxOptions from "./LinkedTextboxOptions.vue";
 import { EMU } from "shared-vuejs/api/globalUtility.js";
+import { round3 } from "shared-vuejs/api/utility";
 
 // const showExtra = ref(false);
 function changeWrap() {
@@ -159,8 +168,6 @@ function updateField(val, fieldName) {
     saveDexie();
   }
 }
-
-
 </script>
 <style scoped>
 .field-info {

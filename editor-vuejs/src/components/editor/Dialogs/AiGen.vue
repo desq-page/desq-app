@@ -9,7 +9,7 @@
         :autosize="{ minRows: 3, maxRows: 6 }" :maxlength="1000"
         :disabled="generating || inserting" />
       <div :class="$style.hint">
-        {{ translate('The first use downloads about 382 MB AI model.') }}
+        {{ translate('Produce quick and rough image. For better quality, use external image tools. The first use downloads about 382 MB AI model.') }}
       </div>
       <div v-if="status" role="status" :class="$style.status">{{ status }}</div>
       <NProgress v-if="generating && percent != null" type="line" :percentage="percent" />

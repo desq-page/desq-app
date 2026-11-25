@@ -27,7 +27,7 @@ export const aiEditOptions = [
  
     ],
   },
-  { type: "divider" },
+  // { type: "divider" },
 ];
 
 export const aiEditActions = aiEditOptions[0].children;
