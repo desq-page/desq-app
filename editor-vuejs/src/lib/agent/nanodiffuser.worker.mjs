@@ -103,7 +103,7 @@ async function runModel(files, name, inputs, outputName, shape) {
     outputs = await session.run(inputs);
     const output = outputs[outputName];
     if (!output || output.dims.join() !== shape.join()) {
-      throw new Error(`NanoDiffuser returned an unexpected ${outputName} shape.`);
+      throw new Error(`Diffuser returned an unexpected ${outputName} shape.`);
     }
     const data = await output.getData();
     // Copy the output before releasing the inference session and its tensors.
@@ -170,7 +170,7 @@ async function upscaleImage(source) {
 
 async function generate(prompt) {
   if (typeof Float16Array !== 'function' || !await navigator.gpu?.requestAdapter({ powerPreference: 'high-performance' })) {
-    throw new Error('NanoDiffuser requires a recent browser with WebGPU and hardware acceleration.');
+    throw new Error('Diffuser requires a recent browser with WebGPU and hardware acceleration.');
   }
   env.wasm.numThreads = 1;
   env.wasm.wasmPaths = { wasm: new URL(wasmUrl, self.location.href).href };

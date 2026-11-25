@@ -147,12 +147,6 @@
             :active="piniaInfo().currentTaskPane === 'icons'"
           />
           <ToolbarItem caption="Media" :icon="Image24Regular" :onClick="() => toggleTaskPane('mediaPanel')" :active="piniaInfo().currentTaskPane == 'mediaPanel'" />
-          <ToolbarItem
-            caption="AI Gen"
-            :icon="AutoAwesomeOutlined"
-            :onClick="() => showAiGenDialog = true"
-            :disabled="piniaSlides().masterView || !!piniaInfo().useGrid"
-          />
           <AiGen v-if="showAiGenDialog" v-model:show="showAiGenDialog" />
           <ToolbarItemDropdown
             :options="tableOptions"

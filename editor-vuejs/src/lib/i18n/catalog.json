@@ -284,10 +284,10 @@
     "Tách đối tượng tiền cảnh",
     "Ekstrak Objek Latar Depan"
   ],
-  "Re-extract Foreground Object": [
-    "重新提取前景对象",
-    "Tách lại đối tượng tiền cảnh",
-    "Ekstrak Ulang Objek Latar Depan"
+  "Manual Erase Background": [
+    "手动擦除背景",
+    "Xóa nền thủ công",
+    "Hapus Latar Belakang Secara Manual"
   ],
   "Cut Out Standalone Image Region": [
     "剪出独立图像区域",
@@ -419,10 +419,10 @@
     "Không thể tinh chỉnh vùng này. Hãy thử kéo lại.",
     "Area ini tidak dapat disempurnakan. Coba goresan lain."
   ],
-  "Erase Background": [
-    "擦除背景",
-    "Xóa nền",
-    "Hapus Latar Belakang"
+  "Auto Erase Background": [
+    "自动擦除背景",
+    "Xóa nền tự động",
+    "Hapus Latar Belakang Secara Otomatis"
   ],
   "Extract Text By Region": [
     "按区域提取文字",

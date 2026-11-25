@@ -33,6 +33,14 @@
       buttonType="primary"
       ghost
       bordered
+      @click="() => showAiGenDialog = true"
+      class="media-button"
+      label="✨ AI Gen..."
+    />
+    <ToolbarItem
+      buttonType="primary"
+      ghost
+      bordered
       @click="processPasteReplace()"
       class="media-button"
       label="📋 Clipboard"
@@ -125,6 +133,8 @@
     </div>
   </div>
 
+  <AiGen v-if="showAiGenDialog" v-model:show="showAiGenDialog" />
+
   
 </template>
 <script setup lang="ts">
@@ -153,6 +163,7 @@ import ToolbarItem from "../Toolbars/ToolbarItem.vue";
 import { getClipboardContents, pasteShape } from "shared-vuejs/api/clipboard.js";
 import { getAllMediaPics, loadSlideFromDexie } from "shared-vuejs/api/dbutils.js";
 import { visibleEditTextMedia } from "shared-vuejs/api/edit-text-media";
+import AiGen from "../Dialogs/AiGen.vue";
 
 const props = defineProps({
   preview: Boolean,
@@ -167,6 +178,7 @@ const resultGroup: any = ref([]);
 const isSearching = ref(false);
 const searchResultBox = ref();
 const reloading = ref(false);
+const showAiGenDialog = ref(false);
 
 onMounted(searchImages);
 

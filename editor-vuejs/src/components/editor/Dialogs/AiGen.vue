@@ -9,13 +9,13 @@
         :autosize="{ minRows: 3, maxRows: 6 }" :maxlength="1000"
         :disabled="generating || inserting" />
       <div :class="$style.hint">
-        {{ translate('NanoDiffuser runs on your browser’s GPU. The first use downloads about 382 MiB.') }}
+        {{ translate('The first use downloads about 382 MB AI model.') }}
       </div>
       <div v-if="status" role="status" :class="$style.status">{{ status }}</div>
       <NProgress v-if="generating && percent != null" type="line" :percentage="percent" />
       <img v-if="preview" :src="preview" :alt="translate('Generated image')" :class="$style.preview" />
       <div :class="$style.actions">
-        <NButton :loading="generating" :disabled="!prompt.trim() || generating || inserting" @click="generate">
+        <NButton type="primary" :loading="generating" :disabled="!prompt.trim() || generating || inserting" @click="generate">
           {{ translate('Generate Image') }}
         </NButton>
         <NButton type="primary" :loading="inserting" :disabled="!image || generating || inserting" @click="insert">
@@ -61,7 +61,7 @@ function generate() {
   if (!description || generating.value || inserting.value) return;
   generating.value = true;
   percent.value = undefined;
-  status.value = translate("Starting NanoDiffuser");
+  status.value = translate("Starting Diffuser Model");
   clearPreview();
 
   try {
@@ -85,14 +85,14 @@ function generate() {
       worker.onerror = () => {
         stopWorker();
         generating.value = false;
-        status.value = translate("NanoDiffuser could not start. Try again.");
+        status.value = translate("Diffuser could not start. Try again.");
       };
     }
     worker.postMessage({ prompt: `${description}, ${imageStyle}` });
   } catch {
     stopWorker();
     generating.value = false;
-    status.value = translate("NanoDiffuser could not start. Try again.");
+    status.value = translate("Diffuser could not start. Try again.");
   }
 }
 

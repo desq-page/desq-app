@@ -93,7 +93,7 @@ const props = defineProps({
 // );
 
 const ShapeContextMenuOptions = computed(() => [
-  ...(piniaInfo().curPopupId === "shape-toolbar-popup" && !isSvgPicture(piniaSelect().selShpFormat) && editablePicture() ? aiEditOptions : []),
+  
   {
     label: "Manage",
     key: "editshape",
@@ -186,6 +186,7 @@ const ShapeContextMenuOptions = computed(() => [
   {
     type: "divider",
   },
+  ...(piniaInfo().curPopupId === "shape-toolbar-popup" && !isSvgPicture(piniaSelect().selShpFormat) && editablePicture() ? aiEditOptions : []),
   {
     label: "Table",
     key: "table",
