@@ -14,7 +14,15 @@
     accept=".pptx,.pub,.docx,.html,.htm,.pdf"
     hidden
     @change="openSelectedFile"
+    @cancel="showOpenFilePrompt = true"
   />
+  <NModal v-model:show="showOpenFilePrompt" preset="card" title="Open a file" :style="{ width: 'min(420px, calc(100vw - 32px))' }">
+    <p>Choose a file to open in this window.</p>
+    <div class="open-file-prompt-actions">
+      <NButton @click="closeOpenFilePrompt">Cancel</NButton>
+      <NButton type="primary" @click="openFileInput?.click()">Choose file…</NButton>
+    </div>
+  </NModal>
 </template>
 <script setup lang="ts">
 import { translate } from "@/lib/i18n";
@@ -47,6 +55,8 @@ import { exportFile } from "shared-vuejs/api/html";
 import { genId } from "shared-vuejs/api/utility";
 import { confirmCloseFile } from "@/lib/main/closeFile";
 import { isWordDocument, saveDocument } from "shared-vuejs/api/save-document";
+import { useRoute } from "vue-router";
+import { NButton, NModal } from "naive-ui";
 
 // const disabled = ref(false);
 const viewOptions = computed(() => {
@@ -56,6 +66,8 @@ const viewOptions = computed(() => {
 });
 const showHtmlSave = ref(false);
 const openFileInput = ref<HTMLInputElement | null>(null);
+const showOpenFilePrompt = ref(false);
+const route = useRoute();
 const localFiles = shallowRef<any[]>([]);
 const windowOptions = computed(() => localFiles.value.map(file => ({
   label: `${!file.name || file.name === "No name" ? "Blank" : file.name} (${String(file.id).slice(-4)})${file.id === getFileInfo()?.id ? " — current" : ""}`,
@@ -68,7 +80,14 @@ async function loadLocalFiles() {
   localFiles.value = files.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 }
 const refreshOnFocus = () => void loadLocalFiles();
-onMounted(() => { void loadLocalFiles(); window.addEventListener("focus", refreshOnFocus); });
+onMounted(() => {
+  void loadLocalFiles();
+  window.addEventListener("focus", refreshOnFocus);
+  if (route.query.openFile === "1") {
+    showOpenFilePrompt.value = true;
+    requestAnimationFrame(() => openFileInput.value?.click());
+  }
+});
 onBeforeUnmount(() => window.removeEventListener("focus", refreshOnFocus));
 function genViewOptions() {
   return [
@@ -92,7 +111,7 @@ function genViewOptions() {
     {
       icon: InsertDriveFileOutlined,
       size: 24,
-      onClick: () => (piniaInfo().openNewFileModal = true),
+      onClick: createBlankInNewWindow,
       key: "blank",
       label: "New...",
     },
@@ -101,7 +120,7 @@ function genViewOptions() {
       icon: FolderOpen24Regular,
       size: 24,
       key: "open-file",
-      onClick: () => openFileInput.value?.click(),
+      onClick: () => createBlankInNewWindow(true),
     },
         {
       label: "Save As",
@@ -210,6 +229,34 @@ function genViewOptions() {
   ];
 }
 
+function createBlankInNewWindow(openFileDialog = false) {
+  const popup = window.open("about:blank", "_blank");
+  if (!popup) {
+    showError("Allow pop-ups to create a new document in a separate window");
+    return;
+  }
+  piniaInfo().loadingBar = "Please wait...";
+  void import("shared-vuejs/api/load")
+    .then(({ createNewFile }) => createNewFile("blank", popup, { openFileDialog }))
+    .catch((error) => {
+      piniaInfo().loadingBar = "";
+      popup.close();
+      showError(error instanceof Error ? error.message : "Unable to create file");
+    });
+}
+
+function clearOpenFileQuery() {
+  const url = new URL(location.href);
+  if (!url.searchParams.has("openFile")) return;
+  url.searchParams.delete("openFile");
+  history.replaceState(history.state, "", url.pathname + url.search + url.hash);
+}
+
+function closeOpenFilePrompt() {
+  showOpenFilePrompt.value = false;
+  clearOpenFileQuery();
+}
+
 async function doExportPdf() {
   const { exportPDF } = await import("shared-vuejs/api/pdf");
   exportPDF();
@@ -240,6 +287,8 @@ async function openSelectedFile(event: Event) {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
   if (!file) return;
+  showOpenFilePrompt.value = false;
+  clearOpenFileQuery();
 
   try {
     const extension = file.name.split(".").pop()?.toLowerCase();
@@ -293,3 +342,11 @@ async function openSelectedFile(event: Event) {
   }
 }
 </script>
+<style scoped>
+.open-file-prompt-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+</style>
