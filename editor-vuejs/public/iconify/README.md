@@ -2,4 +2,4 @@
 
 This is a snapshot of 200 collections from [@iconify/json 2.2.561](https://www.npmjs.com/package/@iconify/json/v/2.2.561). The collection catalog preserves Iconify's author and license metadata. Each collection retains its own license.
 
-DESQ loads the files in `sets/` on demand. Each file contains a complete Iconify JSON collection compressed with gzip. The picker uses the [Iconify Search API](https://iconify.design/docs/api/search.html) to search the full catalog or the selected set. Results outside the snapshot load their SVG from Iconify.
+DESQ searches the bundled icon and alias names in `search-index.json.gz` and loads the complete collections in `sets/` on demand to render icons. After updating the bundled collections, regenerate the search index with `node scripts/build-icon-search-index.mjs` from the repository root.

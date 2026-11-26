@@ -69,16 +69,14 @@ interface CollectionInfo {
 type IconSet = Parameters<typeof getIconData>[0];
 
 const ASSETS = `${import.meta.env.BASE_URL}iconify`;
-const ICONIFY_API = "https://api.iconify.design";
 const FEATURED_SETS = ["lucide", "tabler", "heroicons", "mdi"];
 const PAGE_SIZE = 36;
 const MAX_CACHED_SETS = 12;
-const iconName = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const query = ref("");
 const prefix = ref("");
 const collections = shallowRef<Record<string, CollectionInfo>>({});
-const searchCollections = new Map<string, CollectionInfo>();
 const cachedSets = new Map<string, Promise<IconSet>>();
+let searchIndex: Promise<Record<string, string[]>> | undefined;
 const previews = ref<Record<string, string | null>>({});
 const previewRetry = ref(0);
 const icons = shallowRef<string[]>([]);
@@ -111,18 +109,21 @@ async function fetchAsset(url: string, signal?: AbortSignal) {
   return response;
 }
 
+async function loadGzipJson(filename: string) {
+  const response = await fetchAsset(`${ASSETS}/${filename}`);
+  // Fetch decodes Content-Encoding automatically. Some hosts serve raw gzip.
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  const body = bytes[0] === 0x1f && bytes[1] === 0x8b
+    ? new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"))
+    : bytes;
+  return new Response(body).json();
+}
+
 function loadSet(set: string): Promise<IconSet> {
   const cached = cachedSets.get(set);
   cachedSets.delete(set);
-  const pending = cached ?? fetchAsset(`${ASSETS}/sets/${set}.json.gz`)
-    .then(async response => {
-      // Fetch decodes Content-Encoding automatically. Some hosts serve the gzip file as raw bytes.
-      const bytes = new Uint8Array(await response.arrayBuffer());
-      const isGzip = bytes[0] === 0x1f && bytes[1] === 0x8b;
-      const body = isGzip
-        ? new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"))
-        : bytes;
-      const data: IconSet = await new Response(body).json();
+  const pending = cached ?? loadGzipJson(`sets/${set}.json.gz`)
+    .then((data: IconSet) => {
       if (data.prefix !== set || !data.icons) throw new Error("Invalid Iconify collection");
       return data;
     })
@@ -138,19 +139,12 @@ function loadSet(set: string): Promise<IconSet> {
   return pending;
 }
 
-async function buildIcon(icon: string, color: string, signal?: AbortSignal) {
+async function buildIcon(icon: string, color: string) {
   const [set, name] = icon.split(":");
-  if (Object.hasOwn(collections.value, set)) {
-    const data = getIconData(await loadSet(set), name);
-    if (data) {
-      const { body, attributes } = iconToSVG(data);
-      return iconToHTML(replaceIDs(body).replace(/currentColor/gi, color), attributes);
-    }
-  }
-  const response = await fetchAsset(
-    `${ICONIFY_API}/${set}/${name}.svg?color=${encodeURIComponent(color)}`, signal,
-  );
-  return response.text();
+  const data = getIconData(await loadSet(set), name);
+  if (!data) throw new Error("Icon missing from bundled collection");
+  const { body, attributes } = iconToSVG(data);
+  return iconToHTML(replaceIDs(body).replace(/currentColor/gi, color), attributes);
 }
 
 watch([visibleIcons, previewRetry], ([visible], _, onCleanup) => {
@@ -161,7 +155,7 @@ watch([visibleIcons, previewRetry], ([visible], _, onCleanup) => {
     .map(icon => [icon, previews.value[icon]]));
   for (const icon of visible) {
     if (previews.value[icon]) continue;
-    buildIcon(icon, "#536678", signal).then(svg => {
+    buildIcon(icon, "#536678").then(svg => {
       if (!signal.aborted) previews.value[icon] = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
     }).catch(() => {
       if (!signal.aborted) previews.value[icon] = null;
@@ -171,17 +165,24 @@ watch([visibleIcons, previewRetry], ([visible], _, onCleanup) => {
 
 async function findIcons(set: string, search: string, signal: AbortSignal) {
   if (search) {
-    const query = new URLSearchParams({ query: search, limit: "128" });
-    if (set) query.set("prefixes", set);
-    const response = await fetchAsset(`${ICONIFY_API}/search?${query}`, signal);
-    const result: { icons: string[]; collections?: Record<string, CollectionInfo> } = await response.json();
-    if (signal.aborted) return [];
-    for (const [id, info] of Object.entries(result.collections ?? {})) searchCollections.set(id, info);
-    return result.icons.filter(icon => {
-      const [resultSet, name, extra] = icon.split(":");
-      return extra === undefined && iconName.test(resultSet) && (!set || resultSet === set)
-        && iconName.test(name ?? "");
+    searchIndex ??= loadGzipJson("search-index.json.gz").catch(error => {
+      searchIndex = undefined;
+      throw error;
     });
+    const index = await searchIndex;
+    if (signal.aborted) return [];
+    const terms = search.split(/[\s-]+/).filter(Boolean);
+    if (!terms.length) return [];
+    const phrase = terms.join("-");
+    const exact: string[] = [], startsWith: string[] = [], other: string[] = [];
+    for (const id of set ? [set] : Object.keys(collections.value)) {
+      for (const name of index[id] ?? []) {
+        if (!terms.every(term => name.includes(term))) continue;
+        const matches = name === phrase ? exact : name.startsWith(phrase) ? startsWith : other;
+        matches.push(`${id}:${name}`);
+      }
+    }
+    return exact.concat(startsWith, other);
   }
 
   if (set) {
@@ -235,7 +236,7 @@ async function insertIcon(icon: string) {
   const { signal } = insertionController;
   let inserted = false;
   try {
-    const text = await buildIcon(icon, "#172923", signal);
+    const text = await buildIcon(icon, "#172923");
     if (signal.aborted) return;
     if (getFileInfo()?.id !== file.id || getSlideInfo()?.id !== slideId || piniaInfo().useGrid) {
       insertError.value = "The active slide changed. Select the icon again to insert it.";
@@ -260,7 +261,7 @@ async function insertIcon(icon: string) {
     }
 
     const [set, name] = icon.split(":");
-    const info = collections.value[set] ?? searchCollections.get(set);
+    const info = collections.value[set];
     const description = svg.ownerDocument.createElementNS(svg.namespaceURI, "desc");
     description.textContent = [icon, info?.name, info?.author?.name, info?.license?.title, info?.license?.url]
       .filter(Boolean).join(" · ");
