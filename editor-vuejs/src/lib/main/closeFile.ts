@@ -1,7 +1,7 @@
-import { getFileInfo } from "shared-vuejs/editor";
+import { getFileInfo, getSlideInfo } from "shared-vuejs/editor";
 import g from "shared-vuejs/api/global";
 import { getDexie } from "shared-vuejs/api/db";
-import { deleteFile, flushPendingDexieSaves } from "shared-vuejs/api/dbutils";
+import { deleteFile, flushPendingDexieSaves, loadSlideFromDexie } from "shared-vuejs/api/dbutils";
 import { createSinglePresentationHtml } from "shared-vuejs/api/presentation-export";
 import { downloadFile, selectDownloadFile } from "shared-vuejs/api/downloadShape";
 
@@ -18,6 +18,24 @@ export async function confirmCloseFile(
 ) {
   const fileInfo = await getDexie("files", fileId);
   const isActiveFile = getFileInfo()?.id === fileId;
+  let slide = null;
+  if (fileInfo?.slides?.length === 1) {
+    const slideId = fileInfo.slides[0].id;
+    const activeSlide = isActiveFile ? getSlideInfo() : null;
+    if (activeSlide?.id === slideId) {
+      slide = activeSlide;
+    } else {
+      try {
+        slide = await loadSlideFromDexie(fileId, slideId, "slides", true);
+      } catch {
+        // If the stored slide is unavailable, keep the normal unload prompt.
+      }
+    }
+  }
+  if (slide && !slide.shapes?.length) {
+    await closeFile(fileId, onClosed);
+    return;
+  }
   const dirty = isActiveFile
     ? piniaInfo().fileDirty
     : Boolean(fileInfo?.dirty);

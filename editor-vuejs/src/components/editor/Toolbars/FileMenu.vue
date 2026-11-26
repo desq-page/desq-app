@@ -14,15 +14,7 @@
     accept=".pptx,.pub,.docx,.html,.htm,.pdf"
     hidden
     @change="openSelectedFile"
-    @cancel="showOpenFilePrompt = true"
   />
-  <NModal v-model:show="showOpenFilePrompt" preset="card" title="Open a file" :style="{ width: 'min(420px, calc(100vw - 32px))' }">
-    <p>Choose a file to open in this window.</p>
-    <div class="open-file-prompt-actions">
-      <NButton @click="closeOpenFilePrompt">Cancel</NButton>
-      <NButton type="primary" @click="openFileInput?.click()">Choose file…</NButton>
-    </div>
-  </NModal>
 </template>
 <script setup lang="ts">
 import { translate } from "@/lib/i18n";
@@ -55,8 +47,6 @@ import { exportFile } from "shared-vuejs/api/html";
 import { genId } from "shared-vuejs/api/utility";
 import { confirmCloseFile } from "@/lib/main/closeFile";
 import { isWordDocument, saveDocument } from "shared-vuejs/api/save-document";
-import { useRoute } from "vue-router";
-import { NButton, NModal } from "naive-ui";
 
 // const disabled = ref(false);
 const viewOptions = computed(() => {
@@ -66,8 +56,6 @@ const viewOptions = computed(() => {
 });
 const showHtmlSave = ref(false);
 const openFileInput = ref<HTMLInputElement | null>(null);
-const showOpenFilePrompt = ref(false);
-const route = useRoute();
 const localFiles = shallowRef<any[]>([]);
 const windowOptions = computed(() => localFiles.value.map(file => ({
   label: `${!file.name || file.name === "No name" ? "Blank" : file.name} (${String(file.id).slice(-4)})${file.id === getFileInfo()?.id ? " — current" : ""}`,
@@ -83,10 +71,6 @@ const refreshOnFocus = () => void loadLocalFiles();
 onMounted(() => {
   void loadLocalFiles();
   window.addEventListener("focus", refreshOnFocus);
-  if (route.query.openFile === "1") {
-    showOpenFilePrompt.value = true;
-    requestAnimationFrame(() => openFileInput.value?.click());
-  }
 });
 onBeforeUnmount(() => window.removeEventListener("focus", refreshOnFocus));
 function genViewOptions() {
@@ -113,14 +97,14 @@ function genViewOptions() {
       size: 24,
       onClick: createBlankInNewWindow,
       key: "blank",
-      label: "New...",
+      label: "New Window...",
     },
     {
       label: "Open File...",
       icon: FolderOpen24Regular,
       size: 24,
       key: "open-file",
-      onClick: () => createBlankInNewWindow(true),
+      onClick: () => openFileInput.value?.click(),
     },
         {
       label: "Save As",
@@ -229,7 +213,7 @@ function genViewOptions() {
   ];
 }
 
-function createBlankInNewWindow(openFileDialog = false) {
+function createBlankInNewWindow() {
   const popup = window.open("about:blank", "_blank");
   if (!popup) {
     showError("Allow pop-ups to create a new document in a separate window");
@@ -237,24 +221,12 @@ function createBlankInNewWindow(openFileDialog = false) {
   }
   piniaInfo().loadingBar = "Please wait...";
   void import("shared-vuejs/api/load")
-    .then(({ createNewFile }) => createNewFile("blank", popup, { openFileDialog }))
+    .then(({ createNewFile }) => createNewFile("blank", popup))
     .catch((error) => {
       piniaInfo().loadingBar = "";
       popup.close();
       showError(error instanceof Error ? error.message : "Unable to create file");
     });
-}
-
-function clearOpenFileQuery() {
-  const url = new URL(location.href);
-  if (!url.searchParams.has("openFile")) return;
-  url.searchParams.delete("openFile");
-  history.replaceState(history.state, "", url.pathname + url.search + url.hash);
-}
-
-function closeOpenFilePrompt() {
-  showOpenFilePrompt.value = false;
-  clearOpenFileQuery();
 }
 
 async function doExportPdf() {
@@ -287,9 +259,6 @@ async function openSelectedFile(event: Event) {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
   if (!file) return;
-  showOpenFilePrompt.value = false;
-  clearOpenFileQuery();
-
   try {
     const extension = file.name.split(".").pop()?.toLowerCase();
     let newId: string | undefined;
