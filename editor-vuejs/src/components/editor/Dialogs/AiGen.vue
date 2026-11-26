@@ -16,10 +16,10 @@
       <img v-if="preview" :src="preview" :alt="translate('Generated image')" :class="$style.preview" />
       <div :class="$style.actions">
         <NButton type="primary" :loading="generating" :disabled="!prompt.trim() || generating || inserting" @click="generate">
-          {{ translate('Generate Image') }}
+          {{ translate('Generate New Image') }}
         </NButton>
         <NButton type="primary" :loading="inserting" :disabled="!image || generating || inserting" @click="insert">
-          {{ translate('Insert Image') }}
+          {{ translate('Insert Generated Image') }}
         </NButton>
       </div>
     </div>
