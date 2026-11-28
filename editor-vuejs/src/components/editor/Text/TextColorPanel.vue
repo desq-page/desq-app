@@ -228,12 +228,13 @@ function updateCurrentColor() {
     // try get the textbox
     const textbox = gid(piniaSelect().selShpFormat?.id)?.querySelector(".textbox");
     if (textbox) {
-      textGradient.value = textbox.style.getPropertyValue("--grad")
-      const firstRun = textbox.querySelector<HTMLElement>('p [style*="--clr"]');
-      const color = firstRun?.style.getPropertyValue("--clr") || textbox.style.getPropertyValue("--clr") || "#000000";
+      const firstRun = textbox.querySelector<HTMLElement>('p [style*="--clr:"]:not(.end-para)');
+      const fillStyle = getComputedStyle(firstRun || textbox);
+      textGradient.value = fillStyle.getPropertyValue("--grad").trim();
+      const color = fillStyle.getPropertyValue("--clr").trim() || "#000000";
       textOpacity.value = Math.round(colorOpacity(color) * 100);
       textColor.value = array2hex(color2array(color).slice(0, 3)) || "#000000";
-      if (textbox.style.getPropertyValue("--img")) {
+      if (fillStyle.getPropertyValue("--img").trim()) {
         textInfo.value = {
           type: 'blipFill'
         }
@@ -241,7 +242,7 @@ function updateCurrentColor() {
         textInfo.value = {
           type: 'gradFill'
         }
-      } else if (textColor.value) {
+      } else if (textOpacity.value > 0) {
         textInfo.value = {
           type: 'solidFill'
         }
